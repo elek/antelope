@@ -151,9 +151,9 @@ public class AntelopeProperties {
             // one is.
          }
       }
+      props_table.addMouseListener( new TableCellViewer( props_table ) );
 
       // project references
-
       map = new TreeMap( project.getReferences() );
       JTable ref_table = new JTable();
       model = new DefaultTableModel( new String[] {"Name", "Value"}, map.size() );
@@ -168,9 +168,9 @@ public class AntelopeProperties {
          }
          catch ( Exception ignored ) {}
       }
+      ref_table.addMouseListener( new TableCellViewer( ref_table ) );
 
       // user (mutable) properties
-
       final Hashtable user_props = project.getUserProperties();
       map = new TreeMap( user_props );
       JTable user_table = new JTable();
@@ -187,9 +187,9 @@ public class AntelopeProperties {
          }
          catch ( Exception ignored ) {}
       }
+      user_table.addMouseListener( new TableCellViewer( user_table ) );
 
       // project description
-
       StringBuffer sb = new StringBuffer();
       sb.append( getProjectDescription( project ) ).append( lSep );
       sb.append( printTargets( project, true ) );
@@ -449,5 +449,36 @@ public class AntelopeProperties {
       }
       return res;
    }
+
+   /**
+    * Grabs the string value of the contents of a table cell and shows it
+    * in a popup.
+    */
+   public class TableCellViewer extends MouseAdapter {
+      private JTable table = null;
+      private JTextArea ta;
+      private JPopupMenu pm;
+      public TableCellViewer( JTable table ) {
+         this.table = table;
+         ta = new JTextArea( 10, 40 );
+         ta.setLineWrap( true );
+         ta.setEditable( false );
+         pm = new JPopupMenu();
+         pm.add( new JScrollPane( ta ) );
+      }
+      public void mousePressed( MouseEvent me ) {
+         if ( me.isPopupTrigger() ) {
+            Point p = me.getPoint();
+            int col = table.columnAtPoint( p );
+            int row = table.rowAtPoint( p );
+            Object value = table.getModel().getValueAt( row, col );
+            if ( value != null ) {
+               ta.setText( value.toString() );
+               GUIUtils.showPopupMenu( pm, table, me.getX(), me.getY() );
+            }
+         }
+      }
+   }
+
 }
 

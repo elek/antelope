@@ -12,6 +12,7 @@
 </bookinfo>
 
 <chapter id="legal">
+@@style@@
     <title>Legalities</title>
     <para>
     Per the Apache license (see below):
@@ -136,6 +137,7 @@ such jurisdiction.
 </chapter>
 
 <chapter id="intro">
+@@style@@
 <title>Introduction</title>
 
 <para>
@@ -178,6 +180,7 @@ In either mode, Antelope provides property and reference inspection and the abil
 </chapter>
 
 <chapter id="installation">
+@@style@@
 <title>Installation</title>
 <section id="install_ant">
 <title>Install Ant</title>
@@ -282,6 +285,7 @@ Start jEdit.
 </chapter>
 
 <chapter id="requirements">
+@@style@@
 <title>Requirements</title>
 
 <para>
@@ -304,6 +308,7 @@ A note about Ant 1.6: With the release of Ant 1.6, the Ant developers have choos
 </chapter>
 
 <chapter id="runningantelope">
+@@style@@
 <title>Running Antelope</title>
 
 <section id="options">
@@ -601,6 +606,7 @@ Here is Antelope running in jEdit:
 </chapter>
 
 <chapter id="runningtargets">
+@@style@@
 
 <title>Running Ant Targets</title>
 
@@ -624,6 +630,7 @@ Multiple targets can be selected to run one right after another by selecting the
 </chapter>
 
 <chapter id="propertydisplay">
+@@style@@
 <title>Displaying Ant Properties</title>
 <para>
 The "Properties" button displays the current properties and references known to Ant from the current build file and the system environment. This is handy for determining exactly what Ant thinks a specific property value is. "Properties" and "References" are for viewing only, not for editing. The "Properties" shows all properties known to the Ant project: system properties, user properties, and global properties set in the build file. The "References" tab shows all global references known to the Ant project. 
@@ -671,6 +678,7 @@ The "Description" tab shows some information about the build file project. The v
 </chapter>
 
 <chapter id="editing">
+@@style@@
 <title>Editing the Build File</title>
 
 <para>
@@ -714,6 +722,7 @@ Here is Antelope in edit mode:
 </chapter>
 
 <chapter id="tracing">
+@@style@@
 <title>Tracing Target Execution</title>
 <para>
 Antelope is put into 'tracing mode' when the "Trace" button is clicked. When in tracing mode, the background of the button panel will be blue. When in tracing mode, clicking the target buttons will not actually execute the target. Instead, the output will show the specific order of execution of tasks performed by the target and targets that the selected target depends on. This is useful for figuring out exactly what a specific target does and the order of operations. To turn off tracing mode, click the "Trace" button a second time.
@@ -786,6 +795,7 @@ So the 'deploy_all' target first causes the 'clean' target to execute a 'delete'
 
 
 <chapter id="antlogger">
+@@style@@
 <title>AntLogger</title>
 
 <para>
@@ -920,6 +930,7 @@ Messages for certain build events are sent at a particular log Level. See java.u
 </chapter>
 
 <chapter id="for-developers">
+@@style@@
    <title>API for jEdit Plugin Developers</title>
    
 <para>
@@ -1077,6 +1088,7 @@ This method will cause Antelope to load the given build file.
 </chapter>
 
 <chapter id="faq">
+@@style@@
 <title>Frequently Asked Questions</title>
 <para>
 <itemizedlist>
@@ -1207,6 +1219,7 @@ Antelope version 2.53 and earlier did not support external entities. Upgrade to 
 </chapter>
 
 <chapter id="support">
+@@style@@
 <title>Support</title>
 
 <para>

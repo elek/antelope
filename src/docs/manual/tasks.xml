@@ -13,6 +13,7 @@
 </bookinfo>
 
 <chapter id="introduction">
+@@style@@
 <title>Introduction</title>
 
 <para>
@@ -50,6 +51,7 @@ These tasks have become indispensible for me in daily use. I think you will find
 </chapter>
 
 <chapter id="license">
+@@style@@
     <title>License</title>
     
     <para>
@@ -117,6 +119,7 @@ information on the Apache Software Foundation, please see
 </chapter>
 
 <chapter id="installation">
+@@style@@
     <title>Installation</title>
     <para>
         If you are running your build files from Antelope, these tasks are already installed and nothing more needs to be done. The following discusses installing the tasks by hand for use outside of Antelope.
@@ -175,6 +178,7 @@ information on the Apache Software Foundation, please see
 </chapter>
 
 <chapter id="Assert">
+@@style@@
     <title>Assert Task</title>
     
 <para>
@@ -339,6 +343,7 @@ If the <computeroutput>ant.enable.asserts</computeroutput> property is set to fa
 </chapter>
 
 <chapter id="IfTask">
+@@style@@
     <title>If Task</title>
 
 <section>
@@ -973,6 +978,7 @@ comparison is used.
 </chapter>
 
 <chapter id="switch">
+@@style@@
     <title>SwitchTask</title>
 <para>
 The "Switch" task works much like the Java "switch" construct. It supports nested "case" elements, which in turn, support nested "break" elements. There is also a "default" case element, so this should be very natural for Java developers to use.
@@ -1066,6 +1072,7 @@ The "Switch" task works much like the Java "switch" construct. It supports neste
 </chapter>
 
 <chapter id="TryTask">
+@@style@@
     <title>Try Task</title>
     
 <para>
@@ -1247,6 +1254,7 @@ See the <link linkend="post">post</link> task for a better way to do a post.
 </chapter>
 
 <chapter id="Variable">
+@@style@@
     <title>Variable Task</title>
     
 <para>
@@ -1396,6 +1404,7 @@ The next example shows Variable, If, Assert, and Try working together to make su
 </chapter>
 
 <chapter id="stopwatch">
+@@style@@
     <title>Stopwatch</title>
 <para>
 The Stopwatch task makes it easy to add performance timing to Ant targets. Stopwatches are named so that multiple watches can run simultaneously.
@@ -1469,6 +1478,7 @@ Example:
 
 
 <chapter id="Limit">
+@@style@@
    <title>Limit</title>
    
 <para>
@@ -1555,6 +1565,7 @@ Neither the echo nore the fail will happen in this example. The build will not c
 
 
 <chapter id="math">
+@@style@@
     <title>Math</title>
     
 <para>
@@ -1818,6 +1829,7 @@ Some examples:
 
 </chapter>
 <chapter id="post">
+@@style@@
     <title>HTTP Post</title>
     
 <para>
@@ -2037,6 +2049,7 @@ I googled for the URL in the following example.
 
 
 <chapter id="ssh">
+@@style@@
 
 <title>SSH and SCP</title>
 
@@ -2046,6 +2059,7 @@ The ssh and scp tasks are no longer included in the main Antelope distribution a
 </chapter>
 
 <chapter id="antfetch">
+@@style@@
     <title>AntFetch</title>
     
 <para>
@@ -2139,6 +2153,7 @@ For other attribute and nested element information and more examples, see the do
 
 
 <chapter id="antcallback">
+@@style@@
     <title>AntCallBack</title>
     
 <para>
@@ -2242,6 +2257,7 @@ For other attribute and nested element information and more examples, see the do
 </chapter>
 
 <chapter id="calltask">
+@@style@@
     <title>Call Task</title>
 <para>
 This is the simplest and possibly the most obvious of the "call" type of tasks. It simply calls a target in the current build file and provides exactly the functionality expected by many users of "antcall".
@@ -2305,6 +2321,7 @@ There is none of the weird property manipulation done by "ant", "antcall", "antf
 </chapter>
 
 <chapter id="performance">
+@@style@@
     <title>Performance Monitoring</title>
     
 <para>
@@ -2416,6 +2433,7 @@ Total time: 8.476 sec
 </chapter>
 
 <chapter id="feedback">
+@@style@@
     <title>Feedback</title>
 
 <para>

@@ -113,11 +113,11 @@ public class UserPreferences extends AbstractPreferences {
          return null;
       }
    }
-   
+
    protected void syncSpi() throws BackingStoreException {
-      // no-op   
+      // no-op
    }
-   
+
    public void sync() throws BackingStoreException {
       try {
          if ( isRemoved() ) {
@@ -130,7 +130,7 @@ public class UserPreferences extends AbstractPreferences {
          File f = new File( getDirectory(), "prefs" );
          if ( !f.exists() )
             return ;
-         ObjectInputStream decoder = new ObjectInputStream(new FileInputStream(f));
+         ObjectInputStream decoder = new ObjectInputStream( new FileInputStream( f ) );
          Hashtable map = ( Hashtable ) decoder.readObject();
          decoder.close();
          root.putAll( map );
@@ -149,13 +149,19 @@ public class UserPreferences extends AbstractPreferences {
             parent().flush();
             return ;
          }
-         File f = new File( getDirectory(), "prefs" );
-         ObjectOutputStream encoder = new ObjectOutputStream(new FileOutputStream(f));
+         File dir = getDirectory();
+         if ( dir == null )
+            throw new BackingStoreException( "Can't open directory." );
+         File f = new File( dir, "prefs" );
+         ObjectOutputStream encoder = new ObjectOutputStream( new FileOutputStream( f ) );
          encoder.writeObject( root );
          encoder.close();
       }
+      catch ( BackingStoreException bse ) {
+         throw bse;
+      }
       catch ( Exception e ) {
-         //e.printStackTrace();
+         // ignore
       }
    }
 
