@@ -1082,8 +1082,10 @@ public class AntelopePanel extends JPanel implements Constants {
          // ProjectHelper is captured
          p.addBuildListener( _build_logger );
 
-         ProjectHelper ph = ProjectHelper.getProjectHelper();
-         ph.parse(p, build_file);
+         /// this is the "recommended" way, but throws an NPE
+         //ProjectHelper ph = ProjectHelper.getProjectHelper();
+         //ph.parse(p, build_file);
+         ProjectHelper.configureProject(p, build_file);
          p.setProperty( "ant.file", build_file.getAbsolutePath() );
          p.setProperty( "ant.version", Main.getAntVersion() );
 

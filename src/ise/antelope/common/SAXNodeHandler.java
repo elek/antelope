@@ -12,11 +12,12 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 
 import org.xml.sax.InputSource;
-import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.LocatorImpl;
+
+
 
 /**
  * Builds a tree of TreeNodes as a SAX parser reads an xml file.
@@ -49,6 +50,11 @@ public class SAXNodeHandler extends DefaultHandler {
     */
    public SAXNodeHandler( File in ) {
       infile = in;
+   }
+
+   public SAXNodeHandler( File in, SAXTreeNode root ) {
+      infile = in;
+      rootNode = root;
    }
 
    /**
@@ -89,11 +95,37 @@ public class SAXNodeHandler extends DefaultHandler {
    public void startElement( String uri, String localName, String qName, Attributes attributes ) throws SAXException {
       Locator l = new LocatorImpl( locator );
       SAXTreeNode child = new SAXTreeNode( qName, new Point( l.getLineNumber(), l.getColumnNumber() ), attributes );
+      if ( infile != null )
+         child.setFile( infile );
+      if ( qName.equals( "import" ) ) {
+         int index = attributes.getIndex( "file" );
+         if ( index > -1 ) {
+            String filename = attributes.getValue( index );
+            File f = new File( filename );
+            if ( !f.exists() ) {
+               f = new File( infile.getParent(), filename );
+            }
+            System.out.println("file = " + f.toString());
+            if ( f.exists() ) {
+               try {
+                  System.out.println("attempting import");
+                  InputSource source = new InputSource( new FileReader( f ) );
+                  SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+                  SAXNodeHandler handler = new SAXNodeHandler( f, getRoot() );
+                  handler.setDocumentLocator( locator );
+                  parser.parse( source, handler );
+               }
+               catch ( Exception e ) {
+                  e.printStackTrace();
+               }
+            }
+         }
+      }
       if ( stack.empty() ) {
          rootNode = child;
       }
       else {
-         SAXTreeNode parent = (SAXTreeNode)stack.peek();
+         SAXTreeNode parent = ( SAXTreeNode ) stack.peek();
          parent.add( child );
       }
       stack.push( child );
@@ -121,8 +153,7 @@ public class SAXNodeHandler extends DefaultHandler {
     * @param systemId          Description of the Parameter
     * @exception SAXException  Description of the Exception
     */
-   public void notationDecl( String name, String publicId, String systemId ) throws SAXException {
-   }
+   public void notationDecl( String name, String publicId, String systemId ) throws SAXException {}
 
 
    /**
@@ -134,8 +165,7 @@ public class SAXNodeHandler extends DefaultHandler {
     * @param noticationName    Description of the Parameter
     * @exception SAXException  Description of the Exception
     */
-   public void unparsedEntityDecl( String name, String publicId, String systemId, String noticationName ) throws SAXException {
-   }
+   public void unparsedEntityDecl( String name, String publicId, String systemId, String noticationName ) throws SAXException {}
 
    /**
     * Description of the Method
