@@ -144,7 +144,7 @@
    <target name="run" 
            description="Runs Antelope as a standalone app."
            depends="setClasspath, compile, copy_resources">
-      <java classname="ise.antelope.app.Antelope" fork="true">
+      <java classname="ise.antelope.common.gui.Project" fork="true">
          <classpath refid="classpathref"/>
       </java>
    </target>

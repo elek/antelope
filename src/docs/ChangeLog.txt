@@ -1,6 +1,20 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.0.2:
+23 Feb 2004
+o changed default for showing targets to "Show all targets".
+o fixed bug in setting for auto-reload of build file. Now auto-reload is the default, which it should have been all along but wasn't.
+
+21 Feb 2004
+o added popup to properties dialog so that right clicking (option clicking) on any of the tables shows the cell value in a scrollable text area. This makes it easier to read and copy long values.
+
+
+3.0.1: 
+15 Feb 2004
+o Inadvertently dropped the Main-Class attribute from the manifest, so the -jar option didn't work.
+
+
 26 Jan 2004:
 o Put Antelope back on jEdit's "Plugins" menu. It had inadvertently been removed in the last release.
 

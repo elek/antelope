@@ -10,7 +10,7 @@ public class OptionSettings implements Constants {
    private File _build_file;
    private Preferences _prefs;
    private boolean _save_before_run = true;
-   private boolean _show_all_targets = false;
+   private boolean _show_all_targets = true;
    private boolean _show_targets_wo_desc = false;
    private boolean _show_targets_w_dot = false;
    private boolean _show_targets_w_dash = false;
@@ -38,7 +38,7 @@ public class OptionSettings implements Constants {
       int hashCode = _build_file.hashCode();
       _prefs = PREFS.node( String.valueOf( hashCode ) );
       _save_before_run = _prefs.getBoolean( SAVE_BEFORE_RUN, true );
-      _show_all_targets = _prefs.getBoolean( SHOW_ALL_TARGETS, false );
+      _show_all_targets = _prefs.getBoolean( SHOW_ALL_TARGETS, true );
       _show_targets_wo_desc = _prefs.getBoolean( SHOW_TARGETS_WO_DESC, false );
       _show_targets_w_dot = _prefs.getBoolean( SHOW_TARGETS_W_DOTS, false );
       _show_targets_w_dash = _prefs.getBoolean( SHOW_TARGETS_W_DASH, false );
@@ -49,7 +49,7 @@ public class OptionSettings implements Constants {
       _show_log_messages = _prefs.getBoolean( SHOW_LOG_MSGS, true );
       _use_error_parsing = _prefs.getBoolean( USE_ERROR_PARSING, true );
       _show_performance_output = _prefs.getBoolean( SHOW_PERFORMANCE_OUTPUT, false );
-      _auto_reload = _prefs.getBoolean( AUTO_RELOAD, false );
+      _auto_reload = _prefs.getBoolean( AUTO_RELOAD, true );
    }
 
    public void save() {
