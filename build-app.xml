@@ -7,7 +7,7 @@
     <property file="build.props"/>
 
     <!-- version number, override in build.props if necessary -->
-    <property name="build.num" value="2.88.2"/>
+    <property name="build.num" value="3.0.3"/>
         
     
     <!-- shouldn't need to override the following properties -->
@@ -33,6 +33,11 @@
     
     <!-- where to put the finished distribution file -->
     <property name="dist.dir" location="dist"/>
+    
+    <!-- compiler settings -->
+    <property name="showDeprecated" value="false"/>
+    <property name="showDebug" value="false"/>
+    <property name="showWarnings" value="false"/>
     
 
     
@@ -66,9 +71,12 @@
     <target name="compile"
             description="Compile"
             depends="init,setClasspath,copy_resources">
-        <javac deprecation="on" 
-               debug="on" 
-               nowarn="on" 
+        <condition property="nowarn" value="no">
+           <istrue value="${showWarnings}"/>
+        </condition>
+        <javac deprecation="${showDeprecated}" 
+               debug="${showDebug}" 
+               nowarn="${nowarn}" 
                destdir="${classes.dir}"
                srcdir="${src.dir}">
             <classpath refid="classpathref" />

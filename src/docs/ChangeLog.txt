@@ -1,6 +1,12 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.0.4:
+21 Mar 2004:
+o Fixed a bunch of compiler warnings about deprecated methods. Several deprecated methods were not fixed as they would break Ant 1.5 compatibility.
+o Adjusted the "Please wait loading Ant" code as it would occasionally hang.
+o Right click on a target in "Edit" mode will show a popup of the dependency tree for that target. Clicking a target in the dependency tree moves the cursor to that target.
+
 3.0.3:
 15 Mar 2004:
 o showing 'private' targets in italics in all modes modes. Targets are considered 'private' if:

@@ -250,7 +250,7 @@ public class Variable extends Task {
          }
       }
       catch ( IOException ex ) {
-         throw new BuildException( ex, location );
+         throw new BuildException( ex, getLocation() );
       }
    }
 
@@ -286,6 +286,8 @@ public class Variable extends Task {
          while ( !resolved ) {
             Vector fragments = new Vector();
             Vector propertyRefs = new Vector();
+            /// this is the Ant 1.5 way of doing it. The Ant 1.6 PropertyHelper
+            /// should be used -- eventually. 
             ProjectHelper.parsePropertyString( value, fragments,
                   propertyRefs );
 

@@ -458,7 +458,7 @@ public class PostTask extends Task {
       }
       catch ( IOException ex ) {
          if ( failOnError ) {
-            throw new BuildException( ex, location );
+            throw new BuildException( ex, getLocation() );
          }
       }
    }
@@ -520,6 +520,8 @@ public class PostTask extends Task {
          while ( !resolved ) {
             Vector fragments = new Vector();
             Vector propertyRefs = new Vector();
+            /// this is the Ant 1.5 way of doing it. The Ant 1.6 PropertyHelper
+            /// should be used -- eventually. 
             ProjectHelper.parsePropertyString( value, fragments,
                   propertyRefs );
 

@@ -114,20 +114,28 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
    public void init() {
       SwingUtilities.invokeLater( new Runnable() {
                public void run() {
-                  // load ant
-                  String ant_jars = AntelopePlugin.getAntJars( true );
-                  if ( ant_jars != null ) {
-                     jEdit.setProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars", ant_jars );
-                     StringTokenizer st = new StringTokenizer( AntelopePlugin.getAntJars( false ) );
-                     while ( st.hasMoreTokens() ) {
-                        String token = st.nextToken();
-                        jEdit.addPluginJAR( token );
+                  try {
+                     // load ant
+                     jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
+                     String ant_jars = AntelopePlugin.getAntJars( true );
+                     if ( ant_jars != null ) {
+                        jEdit.setProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars", ant_jars );
+                        StringTokenizer st = new StringTokenizer( AntelopePlugin.getAntJars( false ) );
+                        while ( st.hasMoreTokens() ) {
+                           String token = st.nextToken();
+                           jEdit.addPluginJAR( token );
+                        }
+                        AntelopePlugin.getAntelopePluginJAR().checkDependencies();
+                        _view.getStatus().setMessageAndClear( "Antelope finished loading Ant." );
                      }
-                     AntelopePlugin.getAntelopePluginJAR().checkDependencies();
-                     _view.getStatus().setMessageAndClear( "Antelope finished loading Ant." );
+                  }
+                  catch ( Exception e ) {
+                     // start Antelope anyway
+                     /// really? what good is antelope without ant???
                   }
 
                   // set up Antelope's menu
+                  _view.getStatus().setMessageAndClear( "Loading Antelope..." );
                   JMenuItem mi = new JMenuItem( "Open Current Buffer" );
                   mi.addActionListener( new ActionListener() {
                            public void actionPerformed( ActionEvent ae ) {
@@ -145,7 +153,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                   if ( name != null ) {
                      file = new File( name );
                   }
-                  
+
                   // create and add Antelope
                   antelopePanel = new AntelopePanel( file, AntelopePluginPanel.this, true, menu_items );
                   removeAll();
@@ -160,6 +168,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                   // set up the logger
                   _console_handler = new ConsolePluginHandler( AntelopePluginPanel.this );
                   antelopePanel.addLogHandler( _console_handler );
+                  _view.getStatus().setMessageAndClear( "Antelope loaded." );
                }
             }
                                 );
@@ -345,6 +354,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
       switch ( ae.getID() ) {
          case EDIT_EVENT:
             if ( ae.getSource() instanceof Point ) {
+               try {
                Point p = ( Point ) ae.getSource();
                final int offset = getView().getTextArea().getLineStartOffset( p.x - 1 );
                SwingUtilities.invokeLater(
@@ -356,6 +366,10 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                      }
                   }
                );
+               }
+               catch(Exception e) {
+                  // ignore this  
+               }
             }
             else {
                try {

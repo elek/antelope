@@ -204,10 +204,12 @@ public class AntelopePlugin extends EBPlugin implements Constants {
    public void handleMessage( EBMessage message ) {
       //org.gjt.sp.util.Log.log(org.gjt.sp.util.Log.DEBUG, this, message);
       if ( message instanceof BufferUpdate ) {
+         if (panelList == null)
+            return;
          // check if the updated buffer is our build file, if it is and it's being
          // saved, reload this panel
          BufferUpdate msg = ( BufferUpdate ) message;
-         if ( msg.getWhat().equals( BufferUpdate.SAVING ) ) {
+         if ( msg.getWhat().equals( BufferUpdate.SAVED ) ) {
             String filename = msg.getBuffer().getPath();
             if ( filename != null ) {
                File f = new File( filename );

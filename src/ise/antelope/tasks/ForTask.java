@@ -160,9 +160,9 @@ public class ForTask extends Task implements TaskContainer {
    }
 
    private void addTaskToTarget( Target target, Task task ) {
-      UnknownElement replacement = new UnknownElement( taskType );
+      UnknownElement replacement = new UnknownElement( getTaskType() );
       replacement.setProject( getProject() );
-      invokeMethod( replacement, "setTaskType", taskType );
+      invokeMethod( replacement, "setTaskType", getTaskType() );
       replacement.setTaskName( task.getTaskName() );
       replacement.setLocation( task.getLocation() );
       replacement.setOwningTarget( target );

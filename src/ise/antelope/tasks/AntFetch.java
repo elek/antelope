@@ -154,7 +154,7 @@ public class AntFetch extends Task {
       newProject = new Project();
       newProject.setJavaVersionProperty();
       newProject.addTaskDefinition( "property",
-            (Class)project.getTaskDefinitions()
+            (Class)getProject().getTaskDefinitions()
             .get( "property" ) );
    }
 
@@ -212,7 +212,7 @@ public class AntFetch extends Task {
    private void initializeProject() {
       newProject.setInputHandler( getProject().getInputHandler() );
 
-      Vector listeners = project.getBuildListeners();
+      Vector listeners = getProject().getBuildListeners();
       final int count = listeners.size();
       for ( int i = 0; i < count; i++ ) {
          newProject.addBuildListener( (BuildListener)listeners.elementAt( i ) );
@@ -239,7 +239,7 @@ public class AntFetch extends Task {
          }
       }
 
-      Hashtable taskdefs = project.getTaskDefinitions();
+      Hashtable taskdefs = getProject().getTaskDefinitions();
       Enumeration et = taskdefs.keys();
       while ( et.hasMoreElements() ) {
          String taskName = (String)et.nextElement();
@@ -251,7 +251,7 @@ public class AntFetch extends Task {
          newProject.addTaskDefinition( taskName, taskClass );
       }
 
-      Hashtable typedefs = project.getDataTypeDefinitions();
+      Hashtable typedefs = getProject().getDataTypeDefinitions();
       Enumeration e = typedefs.keys();
       while ( e.hasMoreElements() ) {
          String typeName = (String)e.nextElement();
@@ -338,7 +338,7 @@ public class AntFetch extends Task {
          }
 
          if ( ( dir == null ) && ( inheritAll ) ) {
-            dir = project.getBaseDir();
+            dir = getProject().getBaseDir();
          }
 
          initializeProject();
@@ -351,7 +351,7 @@ public class AntFetch extends Task {
             }
          }
          else {
-            dir = project.getBaseDir();
+            dir = getProject().getBaseDir();
          }
 
          overrideProperties();
@@ -367,7 +367,7 @@ public class AntFetch extends Task {
                 + " in build file " + antFile.toString(),
                Project.MSG_VERBOSE );
          newProject.setUserProperty( "ant.file", antFile );
-         ProjectHelper.configureProject( newProject, new File( antFile ) );
+         ProjectHelper.getProjectHelper().parse( newProject, new File( antFile ) );
 
          if ( target == null ) {
             target = newProject.getDefaultTarget();
@@ -376,8 +376,8 @@ public class AntFetch extends Task {
          addReferences();
 
          // Are we trying to call the target in which we are defined?
-         if ( newProject.getBaseDir().equals( project.getBaseDir() ) &&
-               newProject.getProperty( "ant.file" ).equals( project.getProperty( "ant.file" ) ) &&
+         if ( newProject.getBaseDir().equals( getProject().getBaseDir() ) &&
+               newProject.getProperty( "ant.file" ).equals( getProject().getProperty( "ant.file" ) ) &&
                getOwningTarget() != null &&
                target.equals( this.getOwningTarget().getName() ) ) {
 
@@ -394,12 +394,12 @@ public class AntFetch extends Task {
                String name = st.nextToken().trim();
                String value = newProject.getUserProperty( name );
                if ( value != null ) {
-                  project.setUserProperty( name, value );
+                  getProject().setUserProperty( name, value );
                }
                else {
                   value = newProject.getProperty( name );
                   if ( value != null ) {
-                     project.setProperty( name, value );
+                     getProject().setProperty( name, value );
                   }
                }
             }
@@ -448,7 +448,7 @@ public class AntFetch extends Task {
     * @exception BuildException  Description of the Exception
     */
    private void addReferences() throws BuildException {
-      Hashtable thisReferences = (Hashtable)project.getReferences().clone();
+      Hashtable thisReferences = (Hashtable)getProject().getReferences().clone();
       Hashtable newReferences = newProject.getReferences();
       Enumeration e;
       if ( references.size() > 0 ) {
@@ -500,7 +500,7 @@ public class AntFetch extends Task {
     * @param newKey  Description of the Parameter
     */
    private void copyReference( String oldKey, String newKey ) {
-      Object orig = project.getReference( oldKey );
+      Object orig = getProject().getReference( oldKey );
       Class c = orig.getClass();
       Object copy = orig;
       try {
@@ -531,7 +531,7 @@ public class AntFetch extends Task {
          catch ( Exception e2 ) {
             String msg = "Error setting new project instance for "
                    + "reference with id " + oldKey;
-            throw new BuildException( msg, e2, location );
+            throw new BuildException( msg, e2, getLocation() );
          }
       }
       newProject.addReference( newKey, copy );

@@ -111,7 +111,7 @@ public class SwitchTask extends Task  {
     public void execute() throws BuildException {
         if ( name == null )
             throw new BuildException( "'name' attribute cannot be null." );
-        String value = project.getProperty( name );
+        String value = getProject().getProperty( name );
         if ( value == null )
             throw new BuildException( "Property " + name + " does not exist." );
         boolean disregardValue = false;     // should the case fall through to the next?

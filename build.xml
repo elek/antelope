@@ -158,5 +158,7 @@
      <mkdir dir="${dist.dir}"/>
      <property name="init.done" value="true"/>
    </target>
+   
+   <target name="test target" description="blah"/>
 
 </project>

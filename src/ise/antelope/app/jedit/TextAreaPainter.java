@@ -345,7 +345,6 @@ public class TextAreaPainter extends JComponent implements TabExpander
 	 * Sets the font for this component. This is overridden to update the
 	 * cached font metrics and to recalculate which lines are visible.
 	 * @param font The font
-    * @deprecated
 	 */
 	public void setFont(Font font)
 	{

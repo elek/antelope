@@ -138,10 +138,11 @@ public class TraceTarget {
          if ( task_name.equals( "antcall" ) ) {
             // trace the target specified by an 'antcall' task
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-            org.xml.sax.AttributeList attrs = rc.getAttributes();
-            for ( int j = 0; j < attrs.getLength(); j++ ) {
-               String name = attrs.getName( j );
-               String value = attrs.getValue( j );
+            Hashtable attrs = rc.getAttributeMap();
+            Iterator it = attrs.keySet().iterator();
+            while(it.hasNext()) {
+               String name = (String)it.next();
+               String value = (String)attrs.get(name);
                if ( name.equals( "target" ) ) {
                   Hashtable targets = target.getProject().getTargets();
                   Target subtarget = (Target)targets.get( value );
@@ -157,13 +158,14 @@ public class TraceTarget {
             // be in another build file, so need to grab the build file name
             // and directory and load a project from it.
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-            org.xml.sax.AttributeList attrs = rc.getAttributes();
+            Hashtable attrs = rc.getAttributeMap();
             String antfile = "build.xml";
             String dir = "";
             String subtarget = "";
-            for ( int j = 0; j < attrs.getLength(); j++ ) {
-               String name = attrs.getName( j );
-               String value = attrs.getValue( j );
+            Iterator it = attrs.keySet().iterator();
+            while(it.hasNext()) {
+               String name = (String)it.next();
+               String value = (String)attrs.get(name);
                if ( name.equals( "antfile" ) )
                   antfile = value;
                if ( name.equals( "dir" ) )
@@ -193,12 +195,13 @@ public class TraceTarget {
          }
          else if ( task_name.equals( "property" ) ) {
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-            org.xml.sax.AttributeList attrs = rc.getAttributes();
             String property_name = "";
             String property_value = "";
-            for ( int j = 0; j < attrs.getLength(); j++ ) {
-               String name = attrs.getName( j );
-               String value = attrs.getValue( j );
+            Hashtable attrs = rc.getAttributeMap();
+            Iterator it = attrs.keySet().iterator();
+            while(it.hasNext()) {
+               String name = (String)it.next();
+               String value = (String)attrs.get(name);
                if ( name.equals( "name" ) )
                   property_name = value;
                if ( name.equals( "value" ) )
@@ -214,10 +217,11 @@ public class TraceTarget {
             sb.append( "<" ).append( target.getName() ).append( ">" );
             sb.append( "[" ).append( task_name );
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-            org.xml.sax.AttributeList attrs = rc.getAttributes();
-            for ( int j = 0; j < attrs.getLength(); j++ ) {
-               String name = attrs.getName( j );
-               String value = attrs.getValue( j );
+            Hashtable attrs = rc.getAttributeMap();
+            Iterator it = attrs.keySet().iterator();
+            while(it.hasNext()) {
+               String name = (String)it.next();
+               String value = (String)attrs.get(name);
                value = parseValue( value, target.getProject() );
                sb.append( " " ).append( name ).append( "=" ).append( quote( value ) );
             }
@@ -327,7 +331,8 @@ public class TraceTarget {
       Project p = new Project();
       try {
          p.init();   // this takes as much as 9 seconds the first time, less than 1/2 second later
-         ProjectHelper.configureProject( p, build_file );
+         ProjectHelper ph = ProjectHelper.getProjectHelper();
+         ph.parse(p, build_file);
          p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
 
          // copy the inherited properties

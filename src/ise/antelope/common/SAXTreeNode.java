@@ -1,6 +1,7 @@
 package ise.antelope.common;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
 import java.awt.Point;
 import java.io.File;
 import org.xml.sax.Attributes;
@@ -12,7 +13,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * the original xml document.
  * @author Dale Anson, danson@germane-software.com
  */
-public class SAXTreeNode extends DefaultMutableTreeNode {
+public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable{
 
    private String name;
    private Point location;
@@ -46,5 +47,5 @@ public class SAXTreeNode extends DefaultMutableTreeNode {
    public File getFile() {
       return file;  
    }
-
+   
 }
