@@ -128,10 +128,6 @@
                destdir="${doc.dir}/manual"
                includes="userguide.xml">
             <param name="html.stylesheet" expression="./style.css"/>
-            <xmlcatalog>
-               <dtd publicId="-//OASIS//DTD DocBook XML V4.1.2//EN"
-                    location="${docbook.xsl}/docbookx.dtd"/>
-            </xmlcatalog>        
         </style>
         <property name="docs.done" value="true"/>
    </target>

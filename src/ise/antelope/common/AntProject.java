@@ -431,7 +431,10 @@ public class AntProject extends Project {
     */
    public String replaceProperties( String value )
    throws BuildException {
-      return ProjectHelper.replaceProperties( this, value, properties );
+      /// this means Ant 1.6 is required...
+      ///PropertyHelper ph = PropertyHelper.getPropertyHelper(this);
+      ///return ph.replaceProperties( this, value, properties );
+      return ProjectHelper.replaceProperties(this, value, properties);
    }
 
 

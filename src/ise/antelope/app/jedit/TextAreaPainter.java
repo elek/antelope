@@ -64,6 +64,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 	/**
 	 * Returns if this component can be traversed by pressing the
 	 * Tab key. This returns false.
+    * @deprecated
 	 */
 	public final boolean isManagingFocus()
 	{
@@ -344,6 +345,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 	 * Sets the font for this component. This is overridden to update the
 	 * cached font metrics and to recalculate which lines are visible.
 	 * @param font The font
+    * @deprecated
 	 */
 	public void setFont(Font font)
 	{

@@ -43,7 +43,6 @@ public class ElementPanel extends JPanel implements java.io.Serializable, java.l
          
          // get display name if target
          NodeAttribute na = (NodeAttribute)attributes.get("name");
-         System.out.println(na);
          if ((na == null || na.getValue().equals("")) && element.getName().equals(DNDConstants.TARGET)) {
             String rtn = JOptionPane.showInputDialog(null, "Enter name for target:");
             if (rtn != null){
@@ -56,6 +55,10 @@ public class ElementPanel extends JPanel implements java.io.Serializable, java.l
          }
       }
 
+      // do some specific checking
+      if ( element_name.equals( DNDConstants.TARGET ) ) {
+         element_name = JOptionPane.showInputDialog( null, "Enter target name:" );
+      }
 
       setLayout( new BorderLayout() );
       setBorder( new DropShadowBorder() );
@@ -92,7 +95,7 @@ public class ElementPanel extends JPanel implements java.io.Serializable, java.l
          doPopup( me );
       }
       private void doPopup( MouseEvent me ) {
-         if ( me.isPopupTrigger()) {
+         if ( me.isPopupTrigger() ) {
             GUIUtils.showPopupMenu( pm, me.getComponent(), me.getX(), me.getY() );
          }
       }

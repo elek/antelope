@@ -47,7 +47,6 @@ public class ProjectTreePanel extends JPanel {
          }
          else {
             project_tree.setSelectionPath(tp);  
-            System.out.println("selection path is " + tp);
          }
       }
    }

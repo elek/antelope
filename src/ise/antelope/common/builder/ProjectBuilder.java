@@ -19,6 +19,9 @@ public class ProjectBuilder extends JPanel {
    private String defaultTarget = "";
    private String basedir = ".";
 
+   private JSplitPane splitpane = null;
+   private JSplitPane right_pane = null;
+
    public ProjectBuilder() {
       init();
    }
@@ -104,21 +107,27 @@ public class ProjectBuilder extends JPanel {
          //project_tree.addMouseListener( new AttributeViewer( project_tree ) );
          project_tree.setDragEnabled( true );
 
-         ElementPanel project_panel = new ElementPanel(project_tree.getPathForRow(0));
+         ElementPanel project_panel = new ElementPanel( project_tree.getPathForRow( 0 ) );
          ProjectTreePanel project_tree_panel = new ProjectTreePanel();
-         JSplitPane splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
+         right_pane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, true, new JScrollPane( project_tree_panel ), new JScrollPane( project_panel ) );
+         splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
                true,
                new JScrollPane( project_tree ),
-               new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, new JScrollPane(project_tree_panel), new JScrollPane( project_panel )) );
+               right_pane );
          setLayout( new LambdaLayout() );
          add( splitpane, "0, 0, 1, 1, 0, wh, 3" );
-         project_tree.setDragEnabled(true);
-         project_tree.setTransferHandler(new TreeTransferHandler());
+         project_tree.setDragEnabled( true );
+         project_tree.setTransferHandler( new TreeTransferHandler() );
       }
       catch ( Exception e ) {
          e.printStackTrace();
       }
 
+   }
+
+   public void initSplitters() {
+      right_pane.setDividerLocation( 0.33 );
+      splitpane.setDividerLocation( 0.25 );
    }
 
    private void addChildren( DefaultMutableTreeNode node ) {
@@ -245,6 +254,7 @@ public class ProjectBuilder extends JPanel {
                   frame.setSize( 600, 600 );
                   frame.setVisible( true );
                   frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+                  pb.initSplitters();
                }
             }
                                             );

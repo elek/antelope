@@ -265,20 +265,21 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
          String task_name = task.getTaskName();
          if ( task instanceof TaskContainer ) {
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-            org.xml.sax.AttributeList attrs = rc.getAttributes();
+            Hashtable attrs = rc.getAttributeMap();
             if ( attrs == null )
                continue;
-            task_count += attrs.getLength();
+            task_count += attrs.size();
          }
          else if ( task_name.equals( "antcall" ) || task_name.equals( "call" ) ) {
             // count the tasks in the target specified by an 'antcall' task
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-            org.xml.sax.AttributeList attrs = rc.getAttributes();
+            Hashtable attrs = rc.getAttributeMap();
             if ( attrs == null )
                continue;
-            for ( int j = 0; j < attrs.getLength(); j++ ) {
-               String name = attrs.getName( j );
-               String value = attrs.getValue( j );
+            Iterator it = attrs.keySet().iterator();
+            while ( it.hasNext() ) {
+               String name = (String)it.next();;
+               String value = (String)attrs.get( name );
                if ( name.equals( "target" ) ) {
                   Hashtable targets = target.getProject().getTargets();
                   Target subtarget = ( Target ) targets.get( value );
@@ -291,15 +292,16 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
             // be in another build file, so need to grab the build file name
             // and directory and load a project from it.
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-            org.xml.sax.AttributeList attrs = rc.getAttributes();
+            Hashtable attrs = rc.getAttributeMap();
             if ( attrs == null )
                continue;
             String antfile = "build.xml";
             String dir = "";
             String subtarget = "";
-            for ( int j = 0; j < attrs.getLength(); j++ ) {
-               String name = attrs.getName( j );
-               String value = attrs.getValue( j );
+            Iterator it = attrs.keySet().iterator();
+            while(it.hasNext()) {
+               String name = (String)it.next();
+               String value = (String)attrs.get(name);
                if ( name.equals( "antfile" ) )
                   antfile = value;
                if ( name.equals( "dir" ) )
@@ -391,7 +393,8 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
       Project p = new Project();
       try {
          p.init();   // this takes as much as 9 seconds the first time, less than 1/2 second later
-         ProjectHelper.configureProject( p, build_file );
+         ProjectHelper ph = ProjectHelper.getProjectHelper();
+         ph.parse( p, build_file );
          p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
 
          // copy the inherited properties
