@@ -19,13 +19,19 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable{
    private Point location;
    private Attributes attributes;
    private File file = null;
+   private boolean isImported = false;
 
    public SAXTreeNode( String name, Point location, Attributes attr ) {
+      this(name, location, attr, null);
+   }
+   
+   public SAXTreeNode( String name, Point location, Attributes attr, File f) {
       super( name );
       this.name = name;
       this.location = location;
       if ( attr != null )
          this.attributes = new AttributesImpl( attr );
+      file = f;
    }
 
    public Attributes getAttributes() {
@@ -46,6 +52,14 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable{
    
    public File getFile() {
       return file;  
+   }
+   
+   public void setImported(boolean b) {
+      isImported = b;  
+   }
+   
+   public boolean isImported() {
+      return isImported;  
    }
    
 }

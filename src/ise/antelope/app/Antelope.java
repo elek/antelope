@@ -95,6 +95,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
    /** Description of the Field  */
    private JMenu _recent_menu = null;
+   
+   private File _build_file = null;
 
    /** Constructor for the Antelope object  */
    public Antelope() {
@@ -244,7 +246,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                }
             }
          }
-             );
+      );
       new_mi.addActionListener( getEditButtonAction() );
       open_mi.addActionListener( _antelope_panel.getOpenActionListener() );
       save_mi.addActionListener(
@@ -253,7 +255,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                saveBuildFile();
             }
          }
-             );
+      );
       exit_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
@@ -261,13 +263,13 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                System.exit( 0 );
             }
          }
-             );
+      );
       help_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                try {
                   java.net.URL url = ClassLoader.getSystemResource(
-                        "manual/index.html" );
+                           "manual/index.html" );
                   AboutDialog help_dialog = new AboutDialog( Antelope.this,
                         "Help", url, true );
                   GUIUtils.fillScreen( help_dialog );
@@ -278,13 +280,13 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                }
             }
          }
-             );
+      );
       about_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                try {
                   java.net.URL url = ClassLoader.getSystemResource(
-                        "about.html" );
+                           "about.html" );
                   AboutDialog about_dialog = new AboutDialog( Antelope.this,
                         "About", url, true );
                   GUIUtils.center( Antelope.this, about_dialog );
@@ -295,7 +297,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                }
             }
          }
-             );
+      );
 
       final AntelopeGUILogHandler logger = new AntelopeGUILogHandler( false );
       logger.setFont( _font );
@@ -318,7 +320,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                   find.setVisible( true );
                }
             }
-         } );
+         }
+      );
 
       replace_mi.addActionListener(
          new ActionListener() {
@@ -330,7 +333,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                   find.setVisible( true );
                }
             }
-         } );
+         }
+      );
 
       font_mi.addActionListener(
          new ActionListener() {
@@ -345,7 +349,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                }
             }
          }
-             );
+      );
       syntax_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
@@ -354,14 +358,14 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                   _editor.getPainter().setStyles( sc.getStyles() );
             }
          }
-             );
+      );
       options_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                OptionChooser oc = OptionChooser.showDialog( Antelope.this, _editor );
             }
          }
-             );
+      );
 
       _tabs.add( "Output", new JScrollPane( ta ) );
       output_mi.addActionListener(
@@ -377,7 +381,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
                   if ( rtn == JFileChooser.CANCEL_OPTION ) {
 
-                     return;
+                     return ;
                   }
 
                   File output_file = chooser.getSelectedFile();
@@ -385,11 +389,10 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                   FileWriter writer = new FileWriter( output_file );
                   FileUtilities.copyToWriter( reader, writer );
                }
-               catch ( Exception e ) {
-               }
+               catch ( Exception e ) {}
             }
          }
-             );
+      );
       clear_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
@@ -397,11 +400,10 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                   Document doc = logger.getTextComponent().getDocument();
                   doc.remove( 0, doc.getLength() );
                }
-               catch ( Exception e ) {
-               }
+               catch ( Exception e ) {}
             }
          }
-             );
+      );
       _editor = new JEditTextArea();
       OptionSettings settings = new OptionSettings();
       settings.load();
@@ -409,9 +411,9 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       _editor.setTokenMarker( new XMLTokenMarker() );
       _editor.getPainter().setStyles( AntelopeSyntaxUtilities.getStoredStyles() );
       _font = new Font(
-            Constants.PREFS.get( FONT_FAMILY, "dialog" ),
-            Constants.PREFS.getInt( FONT_STYLE, Font.PLAIN ),
-            Constants.PREFS.getInt( FONT_SIZE, 12 ) );
+                 Constants.PREFS.get( FONT_FAMILY, "dialog" ),
+                 Constants.PREFS.getInt( FONT_STYLE, Font.PLAIN ),
+                 Constants.PREFS.getInt( FONT_SIZE, 12 ) );
       _editor.getPainter().setFont( _font );
       _editor.setCaretPosition( 0 );
       _editor.scrollToCaret();
@@ -429,7 +431,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                else
                   replace_mi.setVisible( true );
             }
-         } );
+         }
+      );
 
       undo_mi.addActionListener(
          new ActionListener() {
@@ -439,7 +442,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                redo_mi.setEnabled( _editor.canRedo() );
             }
          }
-             );
+      );
       redo_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
@@ -448,35 +451,35 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                redo_mi.setEnabled( _editor.canRedo() );
             }
          }
-             );
+      );
       cut_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                _editor.cut();
             }
          }
-             );
+      );
       copy_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                _editor.copy();
             }
          }
-             );
+      );
       paste_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                _editor.paste();
             }
          }
-             );
+      );
       open_mi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                loadBuildFile();
             }
          }
-             );
+      );
 
       loadBuildFile();
 
@@ -486,7 +489,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                loadBuildFile();
             }
          }
-             );
+      );
       addWindowListener(
          new WindowAdapter() {
             public void windowClosing( WindowEvent we ) {
@@ -494,7 +497,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                System.exit( 0 );
             }
          }
-             );
+      );
 
       undo_mi.setEnabled( _editor.canUndo() );
       redo_mi.setEnabled( _editor.canRedo() );
@@ -502,7 +505,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       pack();
       ta.requestFocus();
       GUIUtils.fillScreen( this );
-      split_pane.setDividerLocation(0.25);
+      split_pane.setDividerLocation( 0.25 );
       setVisible( true );
    }
 
@@ -543,8 +546,22 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
     * AntelopePanel.
     */
    private void loadBuildFile() {
-      final File build_file = _antelope_panel.getBuildFile();
+      File build_file = _antelope_panel.getBuildFile();
       if ( build_file == null )
+         return ;
+      openFile( build_file );
+   }
+
+   /**
+    * Loads the editor with the contents of the given build file.   
+    */
+   public void openFile( File file ) {
+      final File build_file = file;
+      if (build_file == null)
+         return;
+      if (build_file.isDirectory())
+         return;
+      if (build_file.equals(_build_file))
          return;
       try {
          FileReader reader = new FileReader( build_file );
@@ -571,10 +588,10 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                public void removeUpdate( DocumentEvent de ) {
                   setTitle( "Antelope: " + build_file.getAbsolutePath() + "*" );
                }
-            } );
+            }
+         );
       }
-      catch ( Exception e ) {
-      }
+      catch ( Exception e ) {}
    }
 
    /**
@@ -585,7 +602,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
       File build_file = _antelope_panel.getBuildFile();
       if ( build_file == null )
-         return;
+         return ;
 
       try {
          StringReader reader = new StringReader( _editor.getText() );
@@ -623,8 +640,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                Preferences node = PREFS.node( String.valueOf( file.hashCode() ) );
                node.removeNode();
             }
-            catch ( Exception e ) {
-            }
+            catch ( Exception e ) {}
             continue;
          }
          JMenuItem item = new JMenuItem( filename );
@@ -640,7 +656,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
    public class MenuItemListener implements ActionListener {
       public void actionPerformed( ActionEvent ae ) {
-         JMenuItem mi = (JMenuItem)ae.getSource();
+         JMenuItem mi = ( JMenuItem ) ae.getSource();
          String filename = mi.getText();
          _antelope_panel.openBuildFile( new File( filename ) );
       }
@@ -658,7 +674,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       Iterator it = list.iterator();
 
       while ( it.hasNext() ) {
-         _file_menu.add( (JMenuItem)it.next() );
+         _file_menu.add( ( JMenuItem ) it.next() );
       }
    }
 
@@ -667,8 +683,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
     *
     * @param thread  The new targetExecutionThread value
     */
-   public void setTargetExecutionThread( Thread thread ) {
-   }
+   public void setTargetExecutionThread( Thread thread ) {}
 
    /** Description of the Method */
    public void updateGUI() {
@@ -691,12 +706,10 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
    }
 
    /** Description of the Method  */
-   public void saveBeforeRun() {
-   }
+   public void saveBeforeRun() {}
 
    /** Description of the Method  */
-   public void clearErrorSource() {
-   }
+   public void clearErrorSource() {}
 
    /**
     * Description of the Method
@@ -721,7 +734,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                _tabs.setSelectedIndex( 1 );
             }
          }
-            ;
+         ;
    }
 
    /**
@@ -737,7 +750,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                _tabs.setSelectedIndex( 0 );
             }
          }
-            ;
+         ;
    }
 
    /**
@@ -757,26 +770,25 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
    public String getAntJarLocation() {
       return null;
    }
-   
+
    public java.util.List getAntJarList() {
-      return null;  
+      return null;
    }
-   
+
    public void reloadAnt() {
-      
    }
 
    /**
     * Expects the name of a target as the action command. Moves the cursor to
     * that target if found in the build file.
     *
-    * @param ae
+    * @param ae an ActionEvent
     */
    public void actionPerformed( ActionEvent ae ) {
       switch ( ae.getID() ) {
          case CommonHelper.EDIT_EVENT:
             if ( ae.getSource() instanceof Point ) {
-               Point p = (Point)ae.getSource();
+               Point p = ( Point ) ae.getSource();
                int offset = _editor.getLineStartOffset( p.x - 1 );
                _editor.setCaretPosition( offset );
                _editor.scrollToCaret();
@@ -828,7 +840,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       try {
          if ( args.length == 1 ) {
 
-            File f = new File( args[0] );
+            File f = new File( args[ 0 ] );
 
             if ( !f.exists() )
                throw new IllegalArgumentException( usage );

@@ -37,6 +37,8 @@ public class SAXNodeHandler extends DefaultHandler {
    private SAXTreeNode rootNode = null;
    /** Description of the Field */
    private File infile = null;
+   
+   private boolean isImported = false;
 
    /** Description of the Method */
    public SAXNodeHandler() {
@@ -50,11 +52,6 @@ public class SAXNodeHandler extends DefaultHandler {
     */
    public SAXNodeHandler( File in ) {
       infile = in;
-   }
-
-   public SAXNodeHandler( File in, SAXTreeNode root ) {
-      infile = in;
-      rootNode = root;
    }
 
    /**
@@ -95,6 +92,7 @@ public class SAXNodeHandler extends DefaultHandler {
    public void startElement( String uri, String localName, String qName, Attributes attributes ) throws SAXException {
       Locator l = new LocatorImpl( locator );
       SAXTreeNode child = new SAXTreeNode( qName, new Point( l.getLineNumber(), l.getColumnNumber() ), attributes );
+      child.setImported(isImported);
       if ( infile != null )
          child.setFile( infile );
       if ( qName.equals( "import" ) ) {
@@ -105,15 +103,26 @@ public class SAXNodeHandler extends DefaultHandler {
             if ( !f.exists() ) {
                f = new File( infile.getParent(), filename );
             }
-            System.out.println("file = " + f.toString());
             if ( f.exists() ) {
                try {
-                  System.out.println("attempting import");
+                  SAXTreeNode old_root = getRoot();
+                  Locator old_locator = locator;
+                  Locator old_doc_locator = docLocator;
+                  File old_infile = infile;
+                  boolean old_is_imported = isImported;
+                  
+                  infile = f;
+                  isImported = true;
+                  
                   InputSource source = new InputSource( new FileReader( f ) );
                   SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-                  SAXNodeHandler handler = new SAXNodeHandler( f, getRoot() );
-                  handler.setDocumentLocator( locator );
-                  parser.parse( source, handler );
+                  parser.parse( source, this );
+
+                  rootNode = old_root;
+                  locator = old_locator;
+                  docLocator = old_doc_locator;
+                  infile = old_infile;
+                  isImported = old_is_imported;
                }
                catch ( Exception e ) {
                   e.printStackTrace();

@@ -58,8 +58,8 @@ public interface CommonHelper extends ActionListener {
     * @return   The edit button action
     */
    public ActionListener getEditButtonAction();
-   
-   
+
+
    /**
     * The action that the helper would like to have happen when the
     * Run button is clicked.
@@ -67,6 +67,12 @@ public interface CommonHelper extends ActionListener {
     * @return   The run button action
     */
    public ActionListener getRunButtonAction();
+
+   /**
+    * Opens the given file in an editor.
+    * @param the file to open.
+    */
+   public void openFile( java.io.File f );
 
    /**
     * Generally, the classloader returned by the helper should be null, but
@@ -77,11 +83,11 @@ public interface CommonHelper extends ActionListener {
     * @return   The classloader that loaded Ant.
     */
    public ClassLoader getAntClassLoader();
-   
+
    public String getAntJarLocation();
-   
+
    public java.util.List getAntJarList();
-   
+
    public void updateGUI();
 }
 

@@ -71,9 +71,14 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
             if ( attr != null ) {
                name.append( "<b>" );
                boolean p = isPrivate( node );
+               boolean i = node.isImported();
                if ( p )
                   name.append( "<i>" );
+               if (i)
+                  name.append("<u>");
                name.append( attr.getValue( attr.getIndex( "name" ) ) );
+               if (i)
+                  name.append("</u>");
                if ( p )
                   name.append( "</i>" );
                name.append( "</b>" );
@@ -88,6 +93,10 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
                      name.append( "\"" );
                   }
                }
+            }
+            if (showAttributes && node.isImported()) {
+               name.append( " imported from=" );
+               name.append( node.getFile());
             }
          }
          else {
@@ -110,8 +119,23 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
    public ImageIcon getImageIcon( SAXTreeNode node ) {
       ImageIcon icon = null;
       if ( node != null ) {
+         if ( node.getName().equals( "project" ) ) {
+            String image_src = "";
+            if (node.isImported())
+               image_src = "images/red_ant.gif";
+            else
+               image_src = "images/ant.gif";
+            java.net.URL url = getClass().getClassLoader().getResource( image_src );
+            if ( url != null )
+               icon = new ImageIcon( url );
+         }
          if ( node.getName().equals( "target" ) ) {
-            java.net.URL url = getClass().getClassLoader().getResource( "images/Target16.gif" );
+            String image_src = "";
+            if (node.isImported())
+               image_src = "images/RedTarget16.gif";
+            else
+               image_src = "images/Target16.gif";
+            java.net.URL url = getClass().getClassLoader().getResource( image_src );
             if ( url != null )
                icon = new ImageIcon( url );
          }

@@ -17,6 +17,10 @@ import javax.swing.tree.*;
 import org.xml.sax.Attributes;
 import java.util.StringTokenizer;
 
+/**
+ * Shows an xml file in a tree.
+ * @author Dale Anson
+ */
 public class SAXPanel extends JPanel implements Navable {
 
    private JTree tree = null;
@@ -66,6 +70,9 @@ public class SAXPanel extends JPanel implements Navable {
                            Object object = path.getLastPathComponent();
                            if ( object instanceof SAXTreeNode ) {
                               SAXTreeNode node = ( SAXTreeNode ) object;
+                              System.out.println("node file = " + node.getFile());
+                              if (node.getFile() != null)
+                                 _helper.openFile(node.getFile());
                               _helper.actionPerformed( new ActionEvent( node.getLocation(), CommonHelper.EDIT_EVENT, "" ) );
                               _nav.update( node.getLocation() );
                            }
@@ -84,7 +91,7 @@ public class SAXPanel extends JPanel implements Navable {
                   }
 
                   private void showPopup( MouseEvent me ) {
-                     if ( me.getSource().equals(tree) ) {
+                     if ( me.getSource().equals( tree ) ) {
                         JTree tree = ( JTree ) me.getSource();
                         TreePath path = tree.getClosestPathForLocation( me.getX(),
                               me.getY() );
@@ -95,12 +102,13 @@ public class SAXPanel extends JPanel implements Navable {
                               SAXTreeNode node = ( SAXTreeNode ) object;
                               TreeModel tm = getDependencyModel( node );
                               if ( tm != null ) {
-                                 JPanel panel = new JPanel();
+                                 JPanel panel = new JPanel(new BorderLayout());
+                                 panel.add(new JLabel("Dependency Tree"), BorderLayout.NORTH);
                                  JTree dt = new JTree( tm );
-                                 dt.addMouseListener(this);
-                                 dt.setCellRenderer(new SAXTreeCellRenderer());
-                                 for (int i = 0; i < dt.getRowCount(); i++) {
-                                    dt.expandRow(i);  
+                                 dt.addMouseListener( this );
+                                 dt.setCellRenderer( new SAXTreeCellRenderer() );
+                                 for ( int i = 0; i < dt.getRowCount(); i++ ) {
+                                    dt.expandRow( i );
                                  }
                                  panel.add( new JScrollPane( dt ) );
                                  JPopupMenu pm = new JPopupMenu();
@@ -139,7 +147,7 @@ public class SAXPanel extends JPanel implements Navable {
    public TreeModel getDependencyModel( SAXTreeNode node ) {
       if ( node == null )
          return null;
-      SAXTreeNode root = new SAXTreeNode(node.getName(), node.getLocation(), node.getAttributes());
+      SAXTreeNode root = new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes() );
       addDependentTargetNodes( root );
       return new DefaultTreeModel( root );
    }
@@ -156,8 +164,7 @@ public class SAXPanel extends JPanel implements Navable {
 
    /**
     * @return a clone of the SAXTreeNode corresponding to the given target name or
-    * null if no target with that name is found.
- Note that in the case of
+    * null if no target with that name is found. Note that in the case of
     * duplicate target names, the first one found will be returned.
     */
    private SAXTreeNode getTargetNode( String target_name ) {
@@ -169,6 +176,28 @@ public class SAXPanel extends JPanel implements Navable {
          int child_count = model.getChildCount( root );
          for ( int i = 0; i < child_count; i++ ) {
             SAXTreeNode node = ( SAXTreeNode ) model.getChild( root, i );
+
+            // check targets in imported projects
+            if ( node.getName().equals( "project" ) ) {
+               int sub_child_count = model.getChildCount( node );
+               for ( int j = 0; j < sub_child_count; j++ ) {
+                  SAXTreeNode sub_node = ( SAXTreeNode ) model.getChild( node, j );
+                  if ( !sub_node.getName().equals( "target" ) )
+                     continue;
+                  Attributes attrs = sub_node.getAttributes();
+                  int index = attrs.getIndex( "name" );
+                  if ( index == -1 )
+                     continue;
+                  String name = attrs.getValue( index );
+                  if ( target_name.equals( name ) ){
+                     SAXTreeNode stn = new SAXTreeNode( sub_node.getName(), sub_node.getLocation(), sub_node.getAttributes(), sub_node.getFile() );
+                     stn.setImported(sub_node.isImported());
+                     return stn;
+                  }
+               }
+            }
+
+            // check targets in top-level build file
             if ( !node.getName().equals( "target" ) )
                continue;
             Attributes attrs = node.getAttributes();
@@ -176,8 +205,11 @@ public class SAXPanel extends JPanel implements Navable {
             if ( index == -1 )
                continue;
             String name = attrs.getValue( index );
-            if ( target_name.equals( name ) )
-               return new SAXTreeNode(node.getName(), node.getLocation(), node.getAttributes());
+            if ( target_name.equals( name ) ){
+               SAXTreeNode stn = new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes(), node.getFile() );
+               stn.setImported(node.isImported());
+               return stn;
+            }
          }
       }
       catch ( Exception e ) {

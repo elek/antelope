@@ -226,6 +226,8 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
          return ;
       if ( f.isDirectory() )
          return ;
+      if (getView().getBuffer().getPath().equals(f.getAbsolutePath()))
+         return;
       jEdit.openFile( getView(), f.getAbsolutePath() );
    }
 
