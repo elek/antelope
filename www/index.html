@@ -13,7 +13,23 @@
 </head>
 <body>
 <p>
-<img src="images/antelope.jpg"/><br>
+<style>
+<!--
+.logoBackground {url(images/antelope.jpg) no-repeat}
+.logoH1 {
+   color: black;
+   font-family: verdana, tahoma, geneva, sans-serif;
+   font-size: 36px;
+}
+-->
+</style>
+<table class="logoBackground">
+<tr>
+<td>
+<h1 class="logoH1">Antelope</h1>
+</td>
+</tr>
+</table>
 Antelope is a graphical user interface for running <a href="http://ant.apache.org" target="_blank">Ant</a>. While new to tigris.org, Antelope is a mature application that is in wide use as a front end to Apache Ant. Antelope provides a set of buttons, one per target, which makes it easy to start a specific Ant operation. Basically, an Ant build file is opened with Antelope and the targets defined in the build file can be executed by clicking a button. Antelope is much more than a thin wrapper around Ant, however. 
 </p>
 
