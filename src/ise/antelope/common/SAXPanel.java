@@ -7,6 +7,7 @@ import ise.library.GUIUtils;
 
 import java.awt.BorderLayout;
 import java.io.*;
+import java.util.*;
 import javax.swing.*;
 import java.beans.Beans;
 import java.awt.event.ActionListener;
@@ -70,9 +71,8 @@ public class SAXPanel extends JPanel implements Navable {
                            Object object = path.getLastPathComponent();
                            if ( object instanceof SAXTreeNode ) {
                               SAXTreeNode node = ( SAXTreeNode ) object;
-                              System.out.println("node file = " + node.getFile());
-                              if (node.getFile() != null)
-                                 _helper.openFile(node.getFile());
+                              if ( node.getFile() != null )
+                                 _helper.openFile( node.getFile() );
                               _helper.actionPerformed( new ActionEvent( node.getLocation(), CommonHelper.EDIT_EVENT, "" ) );
                               _nav.update( node.getLocation() );
                            }
@@ -102,8 +102,8 @@ public class SAXPanel extends JPanel implements Navable {
                               SAXTreeNode node = ( SAXTreeNode ) object;
                               TreeModel tm = getDependencyModel( node );
                               if ( tm != null ) {
-                                 JPanel panel = new JPanel(new BorderLayout());
-                                 panel.add(new JLabel("Dependency Tree"), BorderLayout.NORTH);
+                                 JPanel panel = new JPanel( new BorderLayout() );
+                                 panel.add( new JLabel( "Dependency Tree" ), BorderLayout.NORTH );
                                  JTree dt = new JTree( tm );
                                  dt.addMouseListener( this );
                                  dt.setCellRenderer( new SAXTreeCellRenderer() );
@@ -140,7 +140,7 @@ public class SAXPanel extends JPanel implements Navable {
     * target. Returns null if the target is not found.
     */
    public TreeModel getDependencyModel( String target_name ) {
-      SAXTreeNode initial_target = getTargetNode( target_name );
+      SAXTreeNode initial_target = getTargetNode( target_name, ( SAXTreeNode ) tree.getModel().getRoot() );
       return getDependencyModel( initial_target );
    }
 
@@ -151,53 +151,136 @@ public class SAXPanel extends JPanel implements Navable {
    public TreeModel getDependencyModel( SAXTreeNode node ) {
       if ( node == null )
          return null;
-      SAXTreeNode root = new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes() );
-      root.setFile(node.getFile());
+      SAXTreeNode root = (SAXTreeNode)node.clone();//new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes() );
+      root.setFile( node.getFile() );
       addDependentTargetNodes( root );
+      addCalledTargetNodes( node, root );
       return new DefaultTreeModel( root );
    }
 
-   private void addDependentTargetNodes( SAXTreeNode node ) {
-      SAXTreeNode[] depends = getDependentTargetNodes( node );
-      for ( int i = 0; i < depends.length; i++ ) {
-         if ( depends[ i ] != null ) {
-            node.add( depends[ i ] );
-            addDependentTargetNodes( depends[ i ] );
+   private void addCalledTargetNodes( SAXTreeNode src, SAXTreeNode dest ) {
+      SAXTreeNode[] called_targets = getCalledTargetNodes(src);
+      if (called_targets.length > 0) {
+         SAXTreeNode called_root = new SAXTreeNode( "Calls", dest.getLocation(), null, dest.getFile() );
+         for (int i = 0; i < called_targets.length; i++) {
+            called_root.add(called_targets[i]);  
          }
+         dest.add(called_root);
       }
    }
 
    /**
+    * Looks through the given node for ant and antcall (and call, runtarget, and antcallback) tasks.   
+    * @return an array of child nodes representing ant and/or antcall tasks.
+    * The array may be empty, but won't be null.
+    */
+   private SAXTreeNode[] getCalledTargetNodes( SAXTreeNode node ) {
+      int child_count = node.getChildCount();
+      ArrayList children = new ArrayList();
+      for ( int i = 0; i < child_count; i++ ) {
+         SAXTreeNode child_node = ( SAXTreeNode ) node.getChildAt( i );
+         String child_name = child_node.getName();
+         if ( child_name.equals( "antcall" ) || child_name.equals("call") || child_name.equals("runtarget") || child_name.equals("antcallback")) {
+            Attributes attrs = child_node.getAttributes();
+            int index = attrs.getIndex( "target" );
+            if ( index == -1 )
+               continue;
+            String called_target = attrs.getValue( "target" );
+            SAXTreeNode called_node = getTargetNode( called_target, ( SAXTreeNode ) tree.getModel().getRoot() );
+            if ( called_node != null ) {
+               called_node.setCalled( true );
+               children.add( called_node );
+            }
+         }
+         if ( child_name.equals( "ant" ) ) {
+            // get the build file name, default is build.xml
+            String antfile = "build.xml";
+            int index = attrs.getIndex("antfile");
+            if (index > -1)
+               antfile = attrs.getValue("antfile");
+            
+            // get the directory, default is the basedir of the current project
+            String dir = node.getFile() != null ? node.getFile().getParent().getAbsolutePath() : "";
+            index = attrs.getIndex("dir");
+            if (index > -1)
+               dir = attrs.getValue("dir");
+            
+            // make sure the build file exists
+            File build_file = new File(dir, antfile);
+            if (!build_file.exists())
+               continue;
+            
+            // load the build file using the SAXNodeHandler, get a project node
+            
+            // get the target name, default is the default target in the build file
+            
+            // get the target dependencies and called targets
+            
+            // add some nodes
+         }
+      }
+      SAXTreeNode[] nodes = new SAXTreeNode[children.size()];
+      Iterator it = children.iterator();
+      for (int i = 0; it.hasNext(); i++) {
+         nodes[i] = (SAXTreeNode)it.next();  
+      }
+      return nodes;
+   }
+
+   private void addDependentTargetNodes( SAXTreeNode node ) {
+      SAXTreeNode depends_root = new SAXTreeNode( "Depends on", node.getLocation(), null, node.getFile() );
+      SAXTreeNode[] depends = getDependentTargetNodes( node );
+      for ( int i = 0; i < depends.length; i++ ) {
+         if ( depends[ i ] != null ) {
+            depends_root.add( depends[ i ] );
+            //addDependentTargetNodes( depends[ i ] );
+         }
+      }
+      if ( depends_root.getChildCount() > 0 )
+         node.add( depends_root );
+   }
+
+   /**
+    * @param target_name the name of the target to find
+    * @param root the root node of the tree to look for the target. The target
+    * may be a child of this node, or in the case of imported files, may be in
+    * any depth of imported projects.
     * @return a clone of the SAXTreeNode corresponding to the given target name or
     * null if no target with that name is found. Note that in the case of
     * duplicate target names, the first one found will be returned.
     */
-   private SAXTreeNode getTargetNode( String target_name ) {
+   private SAXTreeNode getTargetNode( String target_name, SAXTreeNode root ) {
       if ( target_name == null )
          return null;
       try {
-         DefaultTreeModel model = ( DefaultTreeModel ) tree.getModel();
-         SAXTreeNode root = ( SAXTreeNode ) model.getRoot();
-         int child_count = model.getChildCount( root );
+         int child_count = root.getChildCount( );
          SAXTreeNode candidate = null;
          for ( int i = 0; i < child_count; i++ ) {
-            SAXTreeNode node = ( SAXTreeNode ) model.getChild( root, i );
+            SAXTreeNode node = ( SAXTreeNode ) root.getChildAt( i );
 
             // check targets in imported projects
             if ( node.getName().equals( "project" ) && candidate == null ) {
-               int sub_child_count = model.getChildCount( node );
-               for ( int j = 0; j < sub_child_count; j++ ) {
-                  SAXTreeNode sub_node = ( SAXTreeNode ) model.getChild( node, j );
-                  if ( !sub_node.getName().equals( "target" ) )
-                     continue;
-                  Attributes attrs = sub_node.getAttributes();
-                  int index = attrs.getIndex( "name" );
-                  if ( index == -1 )
-                     continue;
-                  String name = attrs.getValue( index );
-                  if ( target_name.equals( name ) ){
-                     candidate = new SAXTreeNode( sub_node.getName(), sub_node.getLocation(), sub_node.getAttributes(), sub_node.getFile() );
-                     candidate.setImported(sub_node.isImported());
+               Attributes attrs = node.getAttributes();
+               int index = attrs.getIndex( "name" );
+               if ( index > -1 ) {
+                  String subproject_name = attrs.getValue( index );
+                  int sub_child_count = node.getChildCount();
+                  for ( int j = 0; j < sub_child_count; j++ ) {
+                     SAXTreeNode sub_node = ( SAXTreeNode ) node.getChildAt( j );
+                     if ( !sub_node.getName().equals( "target" ) )
+                        continue;
+                     attrs = sub_node.getAttributes();
+                     index = attrs.getIndex( "name" );
+                     if ( index == -1 )
+                        continue;
+                     String name = attrs.getValue( index );
+                     if ( target_name.startsWith( subproject_name ) ) {
+                        String tn = target_name.substring( subproject_name.length() + 1 ); // +1 for the dot
+                        if ( tn.equals( name ) ) {
+                           candidate = (SAXTreeNode)sub_node.clone();
+                           candidate.setImported( sub_node.isImported() );
+                        }
+                     }
                   }
                }
             }
@@ -210,9 +293,10 @@ public class SAXPanel extends JPanel implements Navable {
             if ( index == -1 )
                continue;
             String name = attrs.getValue( index );
-            if ( target_name.equals( name ) ){
-               candidate = new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes(), node.getFile() );
-               candidate.setImported(node.isImported());
+            if ( target_name.equals( name ) ) {
+               candidate = (SAXTreeNode)node.clone();
+               addDependentTargetNodes(candidate);
+               addCalledTargetNodes(node, candidate);
                return candidate;
             }
          }
@@ -242,7 +326,7 @@ public class SAXPanel extends JPanel implements Navable {
          return new SAXTreeNode[ 0 ];
       SAXTreeNode[] nodes = new SAXTreeNode[ size ];
       for ( int i = 0; st.hasMoreTokens(); i++ ) {
-         SAXTreeNode node = getTargetNode( st.nextToken().trim() );
+         SAXTreeNode node = getTargetNode( st.nextToken().trim(), ( SAXTreeNode ) tree.getModel().getRoot() );
          nodes[ i ] = node;
       }
       return nodes;

@@ -123,12 +123,18 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
             if ( url != null )
                icon = new ImageIcon( url );
          }
-         if ( node.getName().equals( "target" ) ) {
+         else if ( node.getName().equals( "target" ) ) {
             String image_src = "";
             if (node.isImported())
                image_src = "images/RedTarget16.gif";
             else
                image_src = "images/Target16.gif";
+            java.net.URL url = getClass().getClassLoader().getResource( image_src );
+            if ( url != null )
+               icon = new ImageIcon( url );
+         }
+         else if (node.isTask()) {
+            String image_src = "images/wrench.jpg";
             java.net.URL url = getClass().getClassLoader().getResource( image_src );
             if ( url != null )
                icon = new ImageIcon( url );

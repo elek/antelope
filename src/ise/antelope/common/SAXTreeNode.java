@@ -13,19 +13,24 @@ import org.xml.sax.helpers.AttributesImpl;
  * the original xml document.
  * @author Dale Anson, danson@germane-software.com
  */
-public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable{
+public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable {
 
    private String name;
    private Point location;
    private Attributes attributes;
    private File file = null;
    private boolean isImported = false;
+   private boolean isCalled = false;
+   private boolean isTask = false;
+   private boolean isType = false;
+   private boolean isTarget = false;
+   private boolean isProject = false;
 
    public SAXTreeNode( String name, Point location, Attributes attr ) {
-      this(name, location, attr, null);
+      this( name, location, attr, null );
    }
-   
-   public SAXTreeNode( String name, Point location, Attributes attr, File f) {
+
+   public SAXTreeNode( String name, Point location, Attributes attr, File f ) {
       super( name );
       this.name = name;
       this.location = location;
@@ -45,21 +50,86 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable{
    public String getName() {
       return name;
    }
-   
-   public void setFile(File file) {
+
+   public void setFile( File file ) {
       this.file = file;
    }
-   
+
    public File getFile() {
-      return file;  
+      return file;
    }
-   
-   public void setImported(boolean b) {
-      isImported = b;  
+
+   /**
+    * Set to true if this node has been imported by the &lt;import&gt; task.
+    */
+   public void setImported( boolean b ) {
+      isImported = b;
    }
-   
+
+   /**
+    * @return true if this node was imported by an &lt;import&gt; task.   
+    */
    public boolean isImported() {
-      return isImported;  
+      return isImported;
+   }
+
+   /**
+    * Set to true if this node was called by either the &lt;ant&gt; 
+    * or &lt;antcall&gt; tasks.   
+    */
+   public void setCalled( boolean b ) {
+      isCalled = b;
+   }
+
+   /**
+    * @return true if this node is the target node for an &lt;ant&gt; 
+    * or &lt;antcall&gt; task   
+    */
+   public boolean isCalled() {
+      return isCalled;
    }
    
+   public void setType(boolean b) {
+      isType = b;  
+   }
+   
+   public boolean isType() {
+      return isType;  
+   }
+   
+   public void setTask(boolean b) {
+      isTask = b;  
+   }
+   
+   public boolean isTask() {
+      return isTask;  
+   }
+   
+   public void setTarget(boolean b) {
+      isTarget = b;  
+   }
+   
+   public boolean isTarget() {
+      return isTarget;  
+   }
+   
+   public void setProject(boolean b) {
+      isProject = b;  
+   }
+   
+   public boolean isProject() {
+      return isProject;  
+   }
+
+   public String toString() {
+      StringBuffer sb = new StringBuffer();
+      sb.append( "[" ).append( getName() ).append( ";" );
+      if ( getAttributes() != null )
+         sb.append( getAttributes().toString() ).append( ";" );
+      if ( getFile() != null )
+         sb.append( getFile().toString() ).append( ";" );
+      sb.append(isImported() ? "imported;" : "not imported;");
+      sb.append(isCalled() ? "called]" : "not called]");
+      return sb.toString();
+   }
 }
