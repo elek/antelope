@@ -1,0 +1,202 @@
+Antelope Change Log
+Version: 3.0.0
+
+26 Jan 2004:
+o Put Antelope back on jEdit's "Plugins" menu. It had inadvertently been removed in the last release.
+
+o Now it is much easier to set up Ant with Antelope and jEdit. This isn't an issue with Antelope as an application as Ant is used to start the application. As a plugin, Antelope looks for Ant like this:
+1. check if jEdit loaded ant.jar. This would happen if ant.jar is in the $user.home/.jedit/jars directory.
+2. look for ant.jar in the classpath. If found, assume any other jars needed for Ant are already in the classpath.
+3. check Antelope's preferences for ANT_HOME
+4. check for a System property named ANT_HOME
+5. check for an environment variable named ANT_HOME
+6. ask the user, then store their choice in Antelope's preferences
+The preferred method is to set an environment variable for ANT_HOME, this is also recommended by the Ant manual when installing Ant.
+
+22 Jan 2004:
+o Replaced the default Java Preferences with a custom preferences eliminates the annoying error messages produced on several versions of Linux due to several bugs ( at least bugs 4868444 and 4751177, there may be others) in Sun's implementation of preferences on that platform. You might want to take notice of a couptle of things: First, the new custom preferences are used on all platforms, not just Linux. Second, previously stored preferences are not converted to the new system. If you absolutely must use the old preferences, start Antelope with this setting on the command line:
+
+-Djava.util.prefs.PreferencesFactory=java.util.prefs.FileSystemPreferences
+
+o Set default for auto reload of build file to 'on', that is, do automatically reload the build file. Of course, this is a saved setting, so you can set Antelope to not load your build file. Note that for the new Ant 1.6 <import> task, this setting applies to all imported build files as well.
+
+o Fixed several thread issues with the auto reload with regards to how it interacts with the performance listener and the button panel.
+
+o Adjusted the performance listener to work correctly when running in multiple target mode. Previously, only statistics for the last target were displayed, now it accumulates statistics for all targets.
+
+o Added Antelope version number to the Properties/Description tab. This will make it easier for users of the jEdit plugin to verify which version of Antelope they are using.
+
+o Updates for Ant 1.6. Antelope now works well with all Ant versions 1.5 and later. No regression testing has been done with Ant versions older than 1.5. For Ant 1.6, the new <include> task is support as are top level tasks (that is, tasks that are not in a target).
+
+o Fixed the progress bar, bug 877996. This was broke in version 2.75, which was the first release to support Ant 1.6. Changes in the Ant API made the progress not work quite right. Now it works correctly with Ant 1.5.x and Ant 1.6. Also, the progress bar now shows the name of the targe that is running instead of the percentage. This seems more useful, especially as the progress bar itself gives a good visual indication of the progress.
+
+o Made a number of small fixes and code refactorings that result in cleaner code and somewhat faster execution. (Note: the sometimes slow start up of Antelope is actually due to Ant, initially loading a project can take as long as 10 seconds on an older machine.)
+
+23 Oct 2003:
+o Fixed all open bugs:
+740496	correct taskdef
+786439	Trouble with the xml logger of Ant and the break task
+818781	dtd relative folder
+820814	antelope shows tasks with empty descriptions.
+827162	NullPointer Exception
+827914	ant.version property not set on Windows
+o Added option to automatically reload build file prior to running a target.
+
+27 Sep 2003:
+o Updated tasks to work with Ant 1.6.
+o Update plugin code to work with jEdit 4.2.
+o Removed dependency on CommonControls.jar for plugin.
+o Refactored build files.
+
+15 May 2003:
+o Added run.bat and run.sh scripts to make starting stand-alone app easier.
+o Fixed bug #734867, "Limit Ant Task doesn't fail correctly".
+o Added <bool> support to Assert task.
+o Added code to Stopwatch task so that the elapsed or total time is stored in a property of the same name as the stopwatch.
+o Added IsGreaterThan and IsLessThan conditions to If task. Assert task now can use these same conditions. See testcases/limittest.xml for an example.
+o Went to the new Matrix movie!
+o Antelope can now parse files that use external entities. Nice!
+
+12 Mar 2003, release version 2.42:
+o Added ability to run multiple targets. This is so handy, I don't know why I didn't implement it sooner.
+o Updated build.xml, installPlugin.xml, and run.xml to work much better. Now all distribution files will "run right out of the box", and use the Antelope tasks, too!
+
+10 Mar 2003
+o Added find and replace to stand-alone.
+o Modified Try task to be able to store exception message and/or stack trace in a property.
+
+9 Mar 2003
+o A few files were inadvertently left out of the 2.38 build and the start up run.xml file has been cleaned up a bit. The main build file has also been cleaned up, so external dependencies are not required to do a basic build.
+o Removed the "right click for options" tooltip as right clicking does nothing.
+
+6 Mar 2003, released version 2.38:
+I'm behind on this, so the details aren't as good as they should be.
+o Fixed a bug in the editor where switching between build files would cause the old build file to be appended to the new one.
+o Fixed warning messages about invalid build/xml files.
+o You can now browse any xml file (well, many xml files) via the "Edit" tree. There is no support for xml files with dtds, which typically build files do not have.
+o updated "Edit" mode to show a tree of the build file so navigating the file is easier.
+o added "back" and "next" buttons in "Edit" mode. These work like the back and next buttons in a web browser.
+o Added some new tasks. The "call" task is particularly useful.
+o Source distribution now includes the unit tests for the extra Ant tasks.
+o Updated run.xml so that tools.jar is automatically included in the claspath if it can be found.
+o Added some public API for running as a jEdit plugin so that other plugins can easily interact with Antelope for running targets. 
+
+21 Dec 2002
+o the editor is really nice now. The syntax highlighting is configurable, as is the font and many editor options. Documentation is lagging a bit on this, but hopefully the configuration is obvious enough.
+o added undo, redo, cut, copy, and paste to the editor.
+o updated the Math task to use any of the methods in java.lang.Math.
+o removed the ssh and scp tasks to their own distribution package.
+o changed the 'Options' popup to be a regular dialog with an 'Apply' button.
+o refactored the property and settings persistence, this works much better now with all properties being saved and restored correctly.
+o added a StopWatch task for timing of build events.
+o added "startswith" and "endswith" boolean conditions to the "If" task.
+
+6 Dec 2002
+o replaced Antelope editor with an older, MIT licensed version of the jEdit text editor. This makes syntax highlighting configurable and fast.
+o replaced "Format" menu with "Options" menu to support configuration of syntax highlighting and editor options.
+
+24 Nov 2002
+o This is the last 1.xx version. There are a few known bugs that are being pushed to version 2.x for resolution. Version 2 will provide a better editor, a GUI to create build files, and other items related to creating and editing build files.
+o Added input handler so the Ant 'input' task can be used from within Antelope.
+o Added progress bar to show percent complete for running target. This is useful for long running targets. The percent is calculated from the total number of tasks that a target will run and makes no assumptions about how long a particular task will take. It could be that there are only two tasks, but the first one takes 2 seconds and the second takes 10 minutes, the progress will show at 50% until the second one is done.
+o Added ability to gather performance statistics for running target. This should be useful for optimization of build files.
+o Build file syntax highlighting is very slow in app mode, added menu item under Format menu to turn the syntax colorization on or off. Default is off, which makes for much faster performance. Colorization is a bit flaky when changed from on to off or vice versa.
+
+8 Nov 2002
+o Added If, Try, and Variable task.
+o Now works in multiple views in jEdit.
+o rewrote docs in docbook format.
+o improved AntLogger.
+o rearranged packages for tasks to be in a separate package.
+o tasks available in separate jar file
+o added option for display of targets starting with a dash
+
+
+12 Oct 2002
+o Added Assert task.
+o Fixed several bugs in AntLogger.
+o Improved tracing ability.
+o Optimized Antelope editor to make colorizing faster, but this is still really slow on all but the smallest build files.
+o Added Ant coding standards.
+o Updated documentation.
+
+
+23 Sep 2002
+o Adjusted AntProject.java to be able to work correctly when using Antelope as a plugin. The jEdit classloader was preventing certain property files in ant.jar from being accessible to AntProject.java. 
+
+o Moved the config and docs directories inside the src directory. The build file copies them to the proper config and docs directories for distribution. This lets the build file adjust the build number automatically within the config and doc files, which keeps everything at the same displayed build number, and keeps all the source files in the src directory.
+
+22 Sep 2002
+o added "User" tab to properties. This tab allows the user to add properties. These properties are treated as if they were passed to Ant on the command line. These properties are persistent for the build file, so each time the build file is opened, the user properties will be restored.
+
+o added "New" menu item to stand-alone app. A very basic build file is created, the user needs to fill in the details.
+
+14 Sep 2002
+o added 'recent files' menus to both stand-alone and plugin. This will track the last 10 opened build files.
+o updated tracing to trace 'ant' tasks.
+o removed references to the classes to link to the ProjectViewer plugin. The
+source for these classes is still included, but they are not compiled by the default 'compile' target in the supplied build file.
+
+8 Sep 2002
+o Fixed the storage of the settings so they actually work correctly. Option settings are stored per build file, plus font settings for the stand-alone and the last build file open are stored and used on application startup.
+o Changed the "Edit" button to be a "mode" like the trace action. Now when the Edit button is clicked, the panel background turns green to indicate 'edit mode', the build file is loaded for editing (either in the "Edit" tab in the stand-alone app or in a jEdit buffer as a plugin), and clicking on a target button will scroll the build file to the target definition.
+o Fixed the Trace button to select the "Output" tab when clicked in stand-alone.
+
+6 Sep 2002
+O Fixed the abstraction mentioned below so that AntelopePanel and AntelopeOptions really don't depend on compiling AntelopePluginPanel. 
+
+5 Sep 2002
+o Major rearrangement of package layout.
+o Abstracted the interaction between AntelopePluginPanel and AntelopePanel so that AntelopePanel no longer depends on compiling AntelopePluginPanel (which depends on ProjectViewer), so the stand-alone application can be compiled without any dependency on jEdit or jEdit plugins.
+o Added KappaLayout.jar to the distribution zip. This was supposed to be there all along, but has been missing until now.
+o Adjusted the build file to include a few new targets for compiling the stand-alone, the plugin, and building the distribution zip file.
+
+3 Sep 2002
+o Updated tracing to include the actual values of properties and references.
+o Added font dialog to stand-alone.
+o Made 'Properties' dialog non-modal.
+o Fixed a bug where if the build file contained an error, all the buttons would disappear. Now at least the non-target buttons will stay visible and a dialog with the build file error will explain the problem.
+o Updated the build file to make the zip target better -- the readme, antelope.jar and kappalayout.jar are at the top level, the directory structure for the development files are in directories.
+
+2 Sep 2002
+Made a number of modifications to the stand-alone application:
+o Added ability to save output to a file.
+o Made output area editable.
+o Added ability to edit the build file.
+o Added ability to save modifications to the build file.
+o Added color coding to the build file editor.
+o Added help and about menu items.
+o Added help viewer.
+o Added icons to the menu items.
+
+1 Sep 2002
+o Added 'Trace' button to show exactly what targets and tasks will be executed when a particular target runs. This is useful for tracking down the execution flow in convoluted build files.
+
+29 Aug 2002
+o included a file inadvertently left out of the last distribution. This file lets Antelope run without ProjectViewer when run as a jEdit plugin.
+
+o Did some optimization in AntelopePanel. It can take as long as 8 - 10 seconds to change build files, it turns out this is in Ant's Project class, so there's not much I can do about it (at least, not without joining the Ant project...)
+
+18 Aug 2002
+o Added code to integrate Antelope with ProjectViewer plugin in jEdit. This integration requires the bleeding edge ProjectViewer from CVS. Right click on your build file in ProjectViewer and set it as your build file, and Antelope will be notified and adjust itself accordingly. Antelope will run without ProjectViewer, but won't necessarily compile without it.
+
+17 Aug 2002
+o Fixed a problem with option settings not being restored. They were being saved, but the controls were not being set with the stored values on start up. Settings are stored per build file, so each time a build file is opened, the settings for the particular file are set.
+
+o Major modifications to AntLogger. This is now very useful outside of Antelope and has several settings that can be adjusted either via Ant command line options or build file properties. See the documentation for details.
+
+o Added an "Edit" button when running as a jEdit plugin. This will open the current build file in jEdit for editing.
+
+
+14 Aug 2002
+o Fixed a problem with capturing output from javac when running as a plugin. jEdit diddles with the System print streams, which meant I had to also to be able to catch the output. This caused significant changes to AntLogger, which now only writes to java.util.logging.Logger, there is no more print stream output. Output to a console window is via a java.util.logging.ConsoleHandler.
+
+o Added color coding of output when running as a plugin.
+
+o Fixed a potention null pointer exception when trying to view the properties. (Why does Java hava a null pointer exception, but not pointers?)
+
+o Removed the option panel from jEdit's global plugin properties. There was a problem with trying to maintain two different panels (one on the global menu, one for the options button), so I opted for using the Options button only. This makes the code easier to maintain for stand-alone use.
+
+o Cleaned up some dead methods and old comments.
+
+o Converted all files to contain the same license. Antelope is licensed under an Apache license. 

@@ -1,0 +1,56 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Formatting</title><link href="./style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.60.1" name="generator"><link rel="home" href="index.html" title="Antelope Users Guide"><link rel="up" href="bk02ch03.html" title="Chapter&nbsp;3.&nbsp;Build File Structure and Formatting"><link rel="previous" href="bk02ch03.html" title="Chapter&nbsp;3.&nbsp;Build File Structure and Formatting"><link rel="next" href="bk02ch04.html" title="Chapter&nbsp;4.&nbsp;Projects"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Formatting</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="bk02ch03.html">Prev</a>&nbsp;</td><th align="center" width="60%">Chapter&nbsp;3.&nbsp;Build File Structure and Formatting</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="bk02ch04.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N10466"></a>Formatting</h2></div></div><div></div></div><p>
+Four spaces should be used as the unit of indentation. 
+</p><p>
+Do not use tabs instead, use 4 spaces in place of a single tab. Many editors can do this automatically.
+</p><p>
+Vertically align start and end tags for an element. Indent child elements.
+</p><p>
+Avoid lines longer than 80 characters, since they're not handled well by many terminals and tools.
+</p><p>
+Use a single space after a comma.
+</p><p>
+Group properties by use, for example, group directory definitions together. Insert a single blank line between groups.
+</p><p>
+Insert two blank lines between targets.
+</p><p>
+Insert one blank line between tasks within a target.
+</p><p>
+When an expression will not fit on a single line, break it according to these general principles:
+<div class="itemizedlist"><ul type="disc"><li><p>Break before an attribute.</p></li><li><p>Break after a space or comma.</p></li><li><p>Prefer higher-level breaks to lower-level breaks.</p></li><li><p>Align the new line with the beginning of the expression at the same level on the previous line.</p></li><li><p>If the above rules lead to confusing code or to code that's squished up against the right margin, just indent 8 spaces instead.</p></li></ul></div> 
+</p><p>
+Examples:
+</p><p>
+<pre class="programlisting">
+
+    &lt;property name="modules"
+        value="libs, junit_tests, images, docs, api_docs, external_libs,
+              sources" /&gt;
+        
+    &lt;copy todir="${unit_test_deploy}" overwrite="true"&gt;
+        &lt;fileset dir="${unit_test_home}"&gt;
+            &lt;exclude name="**/CVS" /&gt;
+        &lt;/fileset&gt;
+    &lt;/copy&gt;
+
+</pre>
+</p><p>
+This is wrong:
+</p><p>
+<pre class="programlisting">
+
+  &lt;target name="test_all" depends="clean,setupApp,
+                                    setupTests,setupLogger,
+                    startReportServlet,runTests"/&gt;
+
+</pre>
+</p><p>
+This is right:
+</p><p>
+<pre class="programlisting">
+
+    &lt;target name="test_all" 
+        depends="clean, setupApp, setupTests, setupLogger, 
+                startReportServlet, runTests"/&gt;
+
+</pre>
+</p></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="bk02ch03.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="bk02ch03.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="bk02ch04.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Chapter&nbsp;3.&nbsp;Build File Structure and Formatting&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;4.&nbsp;Projects</td></tr></table></div></body></html>
