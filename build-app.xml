@@ -75,6 +75,7 @@
             <exclude name="testcases/**/*"/>
             <exclude name="**/plugin/**/*"/>
         </javac>
+        <copy file="${src.dir}/ant.dtd" todir="${classes.dir}/ise/antelope/common/builder"/>
     </target>
     
    <!-- ========================================================================
@@ -143,7 +144,7 @@
    ========================================================================= -->
    <target name="run" 
            description="Runs Antelope as a standalone app."
-           depends="setClasspath, compile, copy_resources">
+           depends="setClasspath, copy_resources">
       <java classname="ise.antelope.common.builder.ProjectBuilder" fork="true">
          <classpath refid="classpathref"/>
       </java>
@@ -198,6 +199,10 @@
         <copy todir="${classes.dir}/images">
             <fileset dir="${src.dir}/images" includes="**/*" />
         </copy>
+        <copy todir="${classes.dir}/ise/antelope/common/gui">
+            <fileset dir="${src.dir}" includes="ant.dtd"/>
+        </copy>
+        
         <copy todir="${classes.dir}/ise/antelope/tasks">
             <fileset dir="${src.dir}/ise/antelope/tasks" includes="antelope.taskdefs"/>
             <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
