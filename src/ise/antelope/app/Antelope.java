@@ -436,7 +436,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         _editor.addCaretListener(new CaretListener() {
                     public void caretUpdate(CaretEvent ce) {
                         int dot = ce.getDot();
-                        status.setLine(_editor.getLineOfOffset(dot), _editor.getLineCount());
+                        status.setLine(_editor.getLineOfOffset(dot) + 1, _editor.getLineCount());
                     }
                 }
                                 );

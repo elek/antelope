@@ -435,7 +435,7 @@ public class SAXPanel extends JPanel implements Navable {
     * @return a list of targets in the current build file. Key is the target name,
     * value is a SAXTreeNode.
     */
-   protected HashMap getTargets() {
+   protected Map getTargets() {
       SAXTreeModel model = (SAXTreeModel)tree.getModel();
       return model.getTargets();
    }

@@ -147,9 +147,9 @@ public class SAXTreeModel extends DefaultTreeModel {
     * @return a list of targets in the current build file. Key is the target name,
     * value is a SAXTreeNode.
     */
-   public HashMap getTargets() {
+   public Map getTargets() {
       // list of targets, key is target name, value is a SAXTreeNode representing a target
-      HashMap list = new HashMap();
+      Map list = new LinkedHashMap();
       
       // project children
       Enumeration en = ( ( SAXTreeNode ) getRoot() ).children();
@@ -166,7 +166,7 @@ public class SAXTreeModel extends DefaultTreeModel {
       return list;
    }
 
-   private void addSubProjectTargets( SAXTreeNode project, HashMap list ) {
+   private void addSubProjectTargets( SAXTreeNode project, Map list ) {
       Enumeration en = project.children();
       String project_name = project.getAttributeValue( "name" );
       if ( project_name == null )
@@ -193,7 +193,7 @@ public class SAXTreeModel extends DefaultTreeModel {
       StringBuffer sb = new StringBuffer();
       
       // check target dependencies for each target
-      HashMap targets = getTargets();
+      Map targets = getTargets();
       Iterator it = targets.keySet().iterator();
       while ( it.hasNext() ) {
          String name = ( String ) it.next();

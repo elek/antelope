@@ -56,7 +56,11 @@
       deletes all files from the dist directory
    ========================================================================= -->
     <target name="clean" description="Delete all files from the dist directory.">
-        <delete dir="${dist.dir}"/>
+        <delete>
+	   <fileset dir="${dist.dir}">
+              <include name="**/*"/>
+	   </fileset>
+	</delete>
     </target>
     
    <!-- ========================================================================

@@ -88,7 +88,7 @@ public class AntelopePanel extends JPanel implements Constants {
     */
    private Target _unnamed_target = null;
 
-   private TreeMap _targets = null;   // key is a String, value is a Target
+   private Map _targets = null;   // key is a String, value is a Target
    private ArrayList _buttons = null;
    private ArrayList _execute_targets = null;
    private DeckPanel _center_panel = null;
@@ -366,7 +366,7 @@ public class AntelopePanel extends JPanel implements Constants {
       }
 
       _multi.setToolTipText( "Execute multiple targets sequentially" );
-      _multi.setSelected(_settings.getMultipleTargets());
+      _multi.setSelected( _settings.getMultipleTargets() );
       _multi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
@@ -474,16 +474,16 @@ public class AntelopePanel extends JPanel implements Constants {
                            }
                         }
                         Iterator itr = targets.iterator();
-                        while(itr.hasNext()) {
-                           String target_name = (String)itr.next();
-                           for (i = 0; i < components.length; i++) {
-                              AbstractButton btn = (AbstractButton)components[i];
-                              if ( target_name.equals( btn.getActionCommand())) {
+                        while ( itr.hasNext() ) {
+                           String target_name = ( String ) itr.next();
+                           for ( i = 0; i < components.length; i++ ) {
+                              AbstractButton btn = ( AbstractButton ) components[ i ];
+                              if ( target_name.equals( btn.getActionCommand() ) ) {
                                  btn.doClick();
                                  break;
                               }
                            }
-                        }  
+                        }
                      }
 
                      // set button color
@@ -929,8 +929,8 @@ public class AntelopePanel extends JPanel implements Constants {
    public void openBuildFile( final File build_file ) {
       if ( build_file == null || !build_file.exists() )
          return ;
-      boolean new_file = !build_file.equals(_build_file);
-      
+      boolean new_file = !build_file.equals( _build_file );
+
       _build_file = build_file;
       try {
          // constraints for layout
@@ -1014,8 +1014,8 @@ public class AntelopePanel extends JPanel implements Constants {
 
                // set up "Execute" button for multiple targets
                ArrayList last_used_targets = null;
-               if (new_file) {
-                  _multi.setSelected(_settings.getMultipleTargets());
+               if ( new_file ) {
+                  _multi.setSelected( _settings.getMultipleTargets() );
                }
                if ( _multi.isSelected() ) {
                   JButton execute_btn = new JButton( "Execute" );
@@ -1032,7 +1032,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
                // load the targets from the build file, only keep the targets
                // that meet the user's subtarget display settings.
-               Hashtable targets = _project.getTargets();
+               Map targets = _project.getTargets();
                if ( targets == null || targets.size() == 0 ) {
                   //System.out.println( "no targets in project" );
                   return ;   /// ??? really ???
@@ -1040,6 +1040,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
                // Ant 1.6 has an un-named target to hold project-level tasks, so
                // find it and save it for later.
+
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
                   Iterator iter = targets.keySet().iterator();
@@ -1051,12 +1052,16 @@ public class AntelopePanel extends JPanel implements Constants {
                }
 
                // make buttons by sorting the targets by name
-               _targets = new TreeMap( java.text.Collator.getInstance() );
-               HashMap sax_targets = _sax_panel.getTargets();
-               Enumeration enum = targets.keys();
-               while ( enum.hasMoreElements() ) {
+               if ( _settings.getSortTargets() )
+                  _targets = new TreeMap( java.text.Collator.getInstance() );
+               else{
+                  _targets = new LinkedHashMap();
+               }
+               Map sax_targets = _sax_panel.getTargets();
+               Iterator it = targets.keySet().iterator();
+               while ( it.hasNext() ) {
                   // adjust which targets are showing --
-                  String target_name = ( String ) enum.nextElement();
+                  String target_name = ( String ) it.next();
 
                   // Ant 1.6 has an un-named target to hold project-level tasks.
                   // It has no name and shouldn't be executed by itself, so
@@ -1110,7 +1115,7 @@ public class AntelopePanel extends JPanel implements Constants {
                // for the targets for this project
                _buttons = new ArrayList();
                _execute_targets = new ArrayList();
-               Iterator it = _targets.keySet().iterator();
+               it = _targets.keySet().iterator();
                while ( it.hasNext() ) {
                   String target_name = ( String ) it.next();
                   Target target = ( Target ) _targets.get( target_name );
@@ -1168,14 +1173,14 @@ public class AntelopePanel extends JPanel implements Constants {
                   ++con.y;
                }
                // if new and was multi, restore selected targets
-               if (new_file && _multi.isSelected()) {
+               if ( new_file && _multi.isSelected() ) {
                   it = _settings.getMultipleTargetList().iterator();
-                  while(it.hasNext()) {
-                     String name = (String)it.next();
+                  while ( it.hasNext() ) {
+                     String name = ( String ) it.next();
                      Iterator itr = _buttons.iterator();
-                     while(itr.hasNext()) {
-                        AbstractButton btn = (AbstractButton)itr.next();
-                        if (btn.getActionCommand().equals(name))
+                     while ( itr.hasNext() ) {
+                        AbstractButton btn = ( AbstractButton ) itr.next();
+                        if ( btn.getActionCommand().equals( name ) )
                            btn.doClick();
                      }
                   }
@@ -1202,7 +1207,7 @@ public class AntelopePanel extends JPanel implements Constants {
          e.printStackTrace();
       }
       fireEvent( _build_file );
-      
+
    }
 
    /**
@@ -1281,10 +1286,10 @@ public class AntelopePanel extends JPanel implements Constants {
 
          // add the gui input handler
          try {
-            Object ih = PrivilegedAccessor.getNewInstance("ise.antelope.common.AntInputHandler", new Object[]{(Component)this});
-            PrivilegedAccessor.invokeMethod(p, "setInputHandler", new Object[]{ih});
+            Object ih = PrivilegedAccessor.getNewInstance( "ise.antelope.common.AntInputHandler", new Object[] {( Component ) this} );
+            PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
          }
-         catch(Exception e) {
+         catch ( Exception e ) {
             e.printStackTrace();
          }
 
@@ -1532,40 +1537,41 @@ public class AntelopePanel extends JPanel implements Constants {
 
    /** Description of the Method */
    private void saveConfigurationSettings() {
-      _settings.setMultipleTargets(_multi.isSelected());
-      if (_buttons != null && _multi.isSelected()) {
-         TreeSet btns = new TreeSet(new Comparator(){
-            public int compare(Object a, Object b) {
-               AbstractButton btna = (AbstractButton)a;
-               AbstractButton btnb = (AbstractButton)b;
-               String aname = btna.getText();
-               String bname = btnb.getText();
-               aname = aname.substring(0, aname.length() - 1);
-               aname = aname.substring(aname.lastIndexOf("(") + 1);
-               bname = bname.substring(0, bname.length() - 1);
-               bname = bname.substring(bname.lastIndexOf("(") + 1);
-               int aint = Integer.parseInt(aname);
-               int bint = Integer.parseInt(bname);
-               if (aint < bint)
-                  return -1;
-               if (aint == bint)
-                  return 0;
-               return 1;
-            }
-         });
+      _settings.setMultipleTargets( _multi.isSelected() );
+      if ( _buttons != null && _multi.isSelected() ) {
+         TreeSet btns = new TreeSet( new Comparator() {
+                  public int compare( Object a, Object b ) {
+                     AbstractButton btna = ( AbstractButton ) a;
+                     AbstractButton btnb = ( AbstractButton ) b;
+                     String aname = btna.getText();
+                     String bname = btnb.getText();
+                     aname = aname.substring( 0, aname.length() - 1 );
+                     aname = aname.substring( aname.lastIndexOf( "(" ) + 1 );
+                     bname = bname.substring( 0, bname.length() - 1 );
+                     bname = bname.substring( bname.lastIndexOf( "(" ) + 1 );
+                     int aint = Integer.parseInt( aname );
+                     int bint = Integer.parseInt( bname );
+                     if ( aint < bint )
+                        return -1;
+                     if ( aint == bint )
+                        return 0;
+                     return 1;
+                  }
+               }
+                                   );
          Iterator it = _buttons.iterator();
-         while(it.hasNext()) {
-            AbstractButton btn = (AbstractButton)it.next();
-            if(btn.isSelected())
-               btns.add(btn);
+         while ( it.hasNext() ) {
+            AbstractButton btn = ( AbstractButton ) it.next();
+            if ( btn.isSelected() )
+               btns.add( btn );
          }
          it = btns.iterator();
          ArrayList target_list = new ArrayList();
-         while(it.hasNext()) {
-            String target_name = ((AbstractButton)it.next()).getActionCommand();
-            target_list.add(target_name);
+         while ( it.hasNext() ) {
+            String target_name = ( ( AbstractButton ) it.next() ).getActionCommand();
+            target_list.add( target_name );
          }
-         _settings.setMultipleTargetList(target_list);
+         _settings.setMultipleTargetList( target_list );
       }
       if ( _prefs != null ) {
          try {

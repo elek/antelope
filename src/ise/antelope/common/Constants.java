@@ -125,6 +125,7 @@ public interface Constants {
    public final static String SHOW_TARGETS_WO_DESC = "showTargetsWODesc";
    public final static String SHOW_TARGETS_W_DOTS  = "showTargetsWDots";
    public final static String SHOW_TARGETS_W_DASH  = "showTargetsWDash";
+   public final static String SORT_TARGETS         = "sortTargets";
    public final static String MSG_LEVEL            = "msgLevel";
    public final static String SHOW_BUILD_EVENTS    = "showBuildEvents";
    public final static String SHOW_TARGET_EVENTS   = "showTargetEvents";

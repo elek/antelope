@@ -81,7 +81,7 @@ public class AntelopeOptions extends JPanel implements Constants {
    /**
     * Description of the Field
     */
-   private JCheckBox cb_auto_reload, cba, cba2, cba3, cb00, cb0, cb1, cb1a, cb2, cb3, cb4, cb5, cb6, cb7;
+   private JCheckBox cb_auto_reload, cba, cba2, cba3, cb00, cb0, cb1, cb1a, cb1b, cb2, cb3, cb4, cb5, cb6, cb7;
    /**
     * Description of the Field
     */
@@ -294,6 +294,17 @@ public class AntelopeOptions extends JPanel implements Constants {
             }
          }
       );
+      cb1b = new JCheckBox( "Sort target buttons" );
+      cb1b.setSelected( settings.getSortTargets() );
+      cb1b.setToolTipText( "<html>If checked, the target buttons will be sorted alphabetically by target name." );
+      cb1b.addActionListener(
+         new ActionListener() {
+            public void actionPerformed( ActionEvent ae ) {
+               JCheckBox cb = ( JCheckBox ) ae.getSource();
+               settings.setSortTargets( cb.isSelected() );
+            }
+         }
+      );
 
       ++con.y;
       target_panel.add( label0, con );
@@ -305,7 +316,8 @@ public class AntelopeOptions extends JPanel implements Constants {
       target_panel.add( cb1, con );
       ++con.y;
       target_panel.add( cb1a, con );
-
+      ++con.y;
+      target_panel.add( cb1b, con);
       
       // Message Level panel
       JPanel msg_panel = new JPanel(new KappaLayout());

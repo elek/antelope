@@ -16,6 +16,7 @@ public class OptionSettings implements Constants {
    private boolean _show_targets_wo_desc = false;
    private boolean _show_targets_w_dot = false;
    private boolean _show_targets_w_dash = false;
+   private boolean _sort_targets = true;
    private int _message_level = Project.MSG_INFO;
    private boolean _show_build_events = true;
    private boolean _show_target_events = false;
@@ -52,6 +53,7 @@ public class OptionSettings implements Constants {
          _show_targets_wo_desc = _prefs.getBoolean( SHOW_TARGETS_WO_DESC, false );
          _show_targets_w_dot = _prefs.getBoolean( SHOW_TARGETS_W_DOTS, false );
          _show_targets_w_dash = _prefs.getBoolean( SHOW_TARGETS_W_DASH, false );
+         _sort_targets = _prefs.getBoolean(SORT_TARGETS, true);
          _message_level = _prefs.getInt( MSG_LEVEL, Project.MSG_INFO );
          _show_build_events = _prefs.getBoolean( SHOW_BUILD_EVENTS, true );
          _show_target_events = _prefs.getBoolean( SHOW_TARGET_EVENTS, false );
@@ -83,6 +85,7 @@ public class OptionSettings implements Constants {
       _prefs.putBoolean( SHOW_TARGETS_W_DASH, _show_targets_w_dash );
       _prefs.putBoolean( SHOW_TARGETS_W_DOTS, _show_targets_w_dot );
       _prefs.putBoolean( SHOW_TARGETS_WO_DESC, _show_targets_wo_desc );
+      _prefs.putBoolean( SORT_TARGETS, _sort_targets);
       _prefs.putBoolean( SHOW_TASK_EVENTS, _show_task_events );
       _prefs.putBoolean( USE_ERROR_PARSING, _use_error_parsing );
       _prefs.putBoolean( AUTO_RELOAD, _auto_reload );
@@ -155,6 +158,10 @@ public class OptionSettings implements Constants {
    public void setShowTargetsWDash( boolean b ) {
       _show_targets_w_dash = b;
    }
+   
+   public void setSortTargets(boolean b) {
+      _sort_targets = b;  
+   }
 
    public boolean getShowTargetsWDot() {
       return _show_targets_w_dot;
@@ -162,6 +169,10 @@ public class OptionSettings implements Constants {
 
    public boolean getShowTargetsWDash() {
       return _show_targets_w_dash;
+   }
+   
+   public boolean getSortTargets() {
+      return _sort_targets;  
    }
 
    public void setMessageOutputLevel( int level ) {

@@ -24,7 +24,7 @@ public class DependencyViewer {
 
       // load the build file and get all target nodes
       SAXTreeModel model = new SAXTreeModel( _build_file );
-      HashMap target_nodes = model.getTargets();
+      Map target_nodes = model.getTargets();
 
       // make corresponding graph nodes
       HashMap graph_nodes = new HashMap();
