@@ -7,7 +7,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDComment implements DTDOutput
+public class DTDComment implements DTDOutput, java.io.Serializable
 {
 /** The comment text */
     public String text;

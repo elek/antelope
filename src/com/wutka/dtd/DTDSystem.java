@@ -8,7 +8,7 @@ import java.io.*;
  * @version $Revision$ $Date$ by $Author$
  */
 
-public class DTDSystem extends DTDExternalID
+public class DTDSystem extends DTDExternalID implements java.io.Serializable
 {
     public DTDSystem()
     {

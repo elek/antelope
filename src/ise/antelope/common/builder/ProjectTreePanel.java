@@ -18,6 +18,7 @@ public class ProjectTreePanel extends JPanel {
       project_tree.setModel( tree_model );
       add( project_tree );
       project_tree.setTransferHandler( new MutableTreeTransferHandler() );
+      project_tree.setDragEnabled(true);
       setBackground( project_tree.getBackground() );
       project_tree.addMouseListener( new MouseDelegate() );
       project_tree.setCellRenderer(new ProjectTreeCellRenderer());
@@ -35,14 +36,18 @@ public class ProjectTreePanel extends JPanel {
          }
       }
       public void mouseReleased( MouseEvent me ) {
+         TreePath tp = project_tree.getClosestPathForLocation( me.getX(), me.getY() );
          if ( me.isPopupTrigger() ) {
-            TreePath tp = project_tree.getClosestPathForLocation( me.getX(), me.getY() );
             DroppableTreeNode node = ( DroppableTreeNode ) tp.getLastPathComponent();
             ElementPanel ep = ( ElementPanel ) node.getUserObject();
             MouseListener[] ml = ep.getMouseListeners();
             for ( int i = 0; i < ml.length; i++ ) {
                ml[ i ].mouseReleased( me );
             }
+         }
+         else {
+            project_tree.setSelectionPath(tp);  
+            System.out.println("selection path is " + tp);
          }
       }
    }

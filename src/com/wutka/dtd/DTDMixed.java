@@ -10,7 +10,7 @@ import java.util.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDMixed extends DTDContainer
+public class DTDMixed extends DTDContainer implements java.io.Serializable
 {
     public DTDMixed()
     {

@@ -7,7 +7,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public abstract class DTDItem implements DTDOutput {
+public abstract class DTDItem implements DTDOutput, java.io.Serializable {
    /** Indicates how often the item may occur */
    public DTDCardinal cardinal;
 

@@ -7,7 +7,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDProcessingInstruction implements DTDOutput
+public class DTDProcessingInstruction implements DTDOutput, java.io.Serializable
 {
 /** The processing instruction text */
     public String text;

@@ -73,6 +73,7 @@
    <target name="source" 
            description="Build distribution file for Antelope source.">
       <ant antfile="build-source.xml"/>
+      <ant antfile="build-plugin-src.xml"/>
    </target>
    
    <!-- ========================================================================

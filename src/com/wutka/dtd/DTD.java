@@ -10,7 +10,7 @@ import java.io.*;
  */
 
 
-public class DTD implements DTDOutput {
+public class DTD implements DTDOutput, java.io.Serializable {
    /** Contains all the elements defined in the DTD */
    public Hashtable elements;
 

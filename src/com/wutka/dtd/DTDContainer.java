@@ -9,7 +9,7 @@ import java.util.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public abstract class DTDContainer extends DTDItem {
+public abstract class DTDContainer extends DTDItem implements java.io.Serializable {
    protected Vector items;
 
    /** Creates a new DTDContainer */

@@ -8,7 +8,7 @@ import java.io.*;
  * @version $Revision$ $Date$ by $Author$
  */
 
-public class DTDAttribute implements DTDOutput {
+public class DTDAttribute implements DTDOutput, java.io.Serializable {
    /** The name of the attribute */
    public String name;
 

@@ -9,7 +9,7 @@ import java.util.*;
  * @version $Revision$ $Date$ by $Author$
  */
 
-class Scanner
+class Scanner implements java.io.Serializable
 {
 	public static final TokenType LTQUES = new TokenType(0, "LTQUES");
 	public static final TokenType IDENTIFIER = new TokenType(1, "IDENTIFIER");

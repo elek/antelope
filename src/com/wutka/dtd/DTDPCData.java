@@ -7,7 +7,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDPCData extends DTDItem
+public class DTDPCData extends DTDItem implements java.io.Serializable
 {
     public DTDPCData()
     {

@@ -8,7 +8,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDNotationList implements DTDOutput {
+public class DTDNotationList implements DTDOutput, java.io.Serializable {
    protected Vector items;
 
    /** Creates a new notation */

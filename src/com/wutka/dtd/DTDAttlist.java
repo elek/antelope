@@ -12,7 +12,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDAttlist implements DTDOutput
+public class DTDAttlist implements DTDOutput, java.io.Serializable
 {
 /** The name of the element */
     public String name;

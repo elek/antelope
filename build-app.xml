@@ -151,6 +151,18 @@
    </target>
    
    <!-- ========================================================================
+      Target: run
+      Runs Antelope as a stand-alone application.
+   ========================================================================= -->
+   <target name="runBuilder" 
+           description="Runs Antelope Builder as a standalone app."
+           depends="setClasspath, copy_resources">
+      <java classname="ise.antelope.common.builder.ProjectBuilder" fork="true">
+         <classpath refid="classpathref"/>
+      </java>
+   </target>
+   
+   <!-- ========================================================================
       Target: docs-xalan
       Generate docs from docbook format xml files with Xalan. This uses the 
       files in ${src.dir}/docs and puts the finished files in ${prep.dir}/docs.

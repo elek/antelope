@@ -9,7 +9,7 @@ import java.net.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDParser implements EntityExpansion
+public class DTDParser implements EntityExpansion, java.io.Serializable
 {
     protected Scanner scanner;
     protected DTD dtd;

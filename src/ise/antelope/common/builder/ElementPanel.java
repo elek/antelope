@@ -44,7 +44,7 @@ public class ElementPanel extends JPanel implements java.io.Serializable, java.l
          // get display name if target
          NodeAttribute na = (NodeAttribute)attributes.get("name");
          System.out.println(na);
-         if ((na == null || na.getName().equals("")) && element.getName().equals(DNDConstants.TARGET)) {
+         if ((na == null || na.getValue().equals("")) && element.getName().equals(DNDConstants.TARGET)) {
             String rtn = JOptionPane.showInputDialog(null, "Enter name for target:");
             if (rtn != null){
                display_name = rtn;

@@ -1,6 +1,6 @@
 package com.wutka.dtd;
 
-public class DTDParseException extends java.io.IOException
+public class DTDParseException extends java.io.IOException implements java.io.Serializable
 {
     public String uriID = "";
     public int lineNumber;

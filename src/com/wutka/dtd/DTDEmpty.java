@@ -7,7 +7,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDEmpty extends DTDItem {
+public class DTDEmpty extends DTDItem implements java.io.Serializable {
    public DTDEmpty() {}
 
    /** Writes out the keyword "EMPTY" */

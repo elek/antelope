@@ -9,7 +9,7 @@ import java.util.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDSequence extends DTDContainer
+public class DTDSequence extends DTDContainer implements java.io.Serializable
 {
     public DTDSequence()
     {

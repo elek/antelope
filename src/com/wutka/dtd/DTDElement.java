@@ -8,7 +8,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDElement implements DTDOutput {
+public class DTDElement implements DTDOutput, java.io.Serializable {
    /** The name of the element */
    public String name;
 

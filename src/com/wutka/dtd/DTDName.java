@@ -7,7 +7,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDName extends DTDItem
+public class DTDName extends DTDItem implements java.io.Serializable
 {
     public String value;
 

@@ -5,7 +5,7 @@ package com.wutka.dtd;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-class Token
+class Token implements java.io.Serializable
 {
 	public TokenType type;
 	public String value;

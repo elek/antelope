@@ -8,7 +8,7 @@ import java.net.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDEntity implements DTDOutput {
+public class DTDEntity implements DTDOutput, java.io.Serializable {
    public String name;
    public boolean isParsed;
    public String value;

@@ -13,7 +13,7 @@ import java.io.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDCardinal implements DTDOutput
+public class DTDCardinal implements DTDOutput, java.io.Serializable
 {
 /** Indicates no cardinality (implies a single object) */
     public static final DTDCardinal NONE = new DTDCardinal(0, "NONE");

@@ -10,7 +10,7 @@ import java.net.URL;
  * @version $Revision$ $Date$ by $Author$
  */
 
-class Tokenize
+class Tokenize implements java.io.Serializable
 {
 	public static void main(String[] args)
 	{

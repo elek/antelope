@@ -9,7 +9,7 @@ import java.util.*;
  * @author Mark Wutka
  * @version $Revision$ $Date$ by $Author$
  */
-public class DTDChoice extends DTDContainer
+public class DTDChoice extends DTDContainer implements java.io.Serializable
 {
     public DTDChoice()
     {
