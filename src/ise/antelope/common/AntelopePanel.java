@@ -882,8 +882,9 @@ public class AntelopePanel extends JPanel implements Constants {
                         filelist.put( f, new Long( f.lastModified() ) );
                         resolved.add( value );
                     }
-                    else
-                        _logger.warning( "Unable to find property file for " + value );
+                    // see issue #21, Ant standard is to quietly ignore files not found
+                    //else
+                    //    _logger.warning( "Unable to find property file for " + value );
                 }
             }
             it = resolved.iterator();
