@@ -1,60 +1,10 @@
-/*
-* The Apache Software License, Version 1.1
-*
-* Copyright (c) 2001-2002 The Apache Software Foundation.  All rights
-* reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions
-* are met:
-*
-* 1. Redistributions of source code must retain the above copyright
-*    notice, this list of conditions and the following disclaimer.
-*
-* 2. Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in
-*    the documentation and/or other materials provided with the
-*    distribution.
-*
-* 3. The end-user documentation included with the redistribution, if
-*    any, must include the following acknowlegement:
-*       "This product includes software developed by the
-*        Apache Software Foundation (http://www.apache.org/)."
-*    Alternately, this acknowlegement may appear in the software itself,
-*    if and wherever such third-party acknowlegements normally appear.
-*
-* 4. The names "The Jakarta Project", "Ant", and "Apache Software
-*    Foundation" must not be used to endorse or promote products derived
-*    from this software without prior written permission. For written
-*    permission, please contact apache@apache.org.
-*
-* 5. Products derived from this software may not be called "Apache"
-*    nor may "Apache" appear in their names without prior written
-*    permission of the Apache Group.
-*
-* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-* ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-* SUCH DAMAGE.
-* ====================================================================
-*
-* This software consists of voluntary contributions made by many
-* individuals on behalf of the Apache Software Foundation.  For more
-* information on the Apache Software Foundation, please see
-* <http://www.apache.org/>.
-*/
 package ise.antelope.tasks;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Vector;
 import java.util.Enumeration;
 
@@ -62,11 +12,29 @@ import java.util.Enumeration;
  * Provides access to java.lang.Math and java.lang.StrictMath for Ant. Provides
  * add, subtract, multiply, divide and mod methods as well as access to all methods
  * java.lang.Math and java.lang.StrictMath via reflection. 
+ * <p>Copyright 2003, Dale Anson, all rights reserved
  * @author Dale Anson, danson@germane-software.com
  */
 public class Math {
 
    private boolean strict = false;
+
+   public static Class BIGDECIMAL_TYPE;
+   public static Class BIGINT_TYPE;
+   static {
+      try {
+         BIGDECIMAL_TYPE = Class.forName( "java.math.BigDecimal" );
+      }
+      catch ( ClassNotFoundException e ) {
+         BIGDECIMAL_TYPE = null;
+      }
+      try {
+         BIGINT_TYPE = Class.forName( "java.math.BigInteger" );
+      }
+      catch ( Exception e ) {
+         BIGINT_TYPE = null;
+      }
+   }
 
    public Math() {}
 
@@ -82,6 +50,46 @@ public class Math {
       return strict;
    }
 
+   public static BigDecimal add( BigDecimal a, BigDecimal b ) {
+      return a.add( b );
+   }
+
+   public static BigInteger add( BigInteger a, BigInteger b ) {
+      return a.add( b );
+   }
+
+   public static BigInteger and( BigInteger a, BigInteger b ) {
+      return a.and( b );
+   }
+
+   public static int and( int a, int b ) {
+      return a & b;
+   }
+
+   public static BigInteger or( BigInteger a, BigInteger b ) {
+      return a.or( b );
+   }
+
+   public static int or( int a, int b ) {
+      return a | b;
+   }
+
+   public static BigInteger not( BigInteger a ) {
+      return a.not();
+   }
+
+   public static int not( int a ) {
+      return ~a;
+   }
+
+   public static BigInteger xor( BigInteger a, BigInteger b ) {
+      return a.xor( b );
+   }
+
+   public static int xor( int a, int b ) {
+      return a ^ b;
+   }
+
    public static double add( double a, double b ) {
       return a + b;
    }
@@ -93,6 +101,16 @@ public class Math {
    }
    public static int add( int a, int b ) {
       return a + b;
+   }
+   public static BigInteger add( BigInteger[] a ) {
+      if ( a.length == 0 )
+         throw new IllegalArgumentException();
+      if ( a.length == 1 )
+         return a[ 0 ];
+      BigInteger b = a[ 0 ];
+      for ( int i = 1; i < a.length; i++ )
+         b = b.add( a[ i ] );
+      return b;
    }
    public static double add( double[] a ) {
       if ( a.length == 0 )
@@ -135,6 +153,14 @@ public class Math {
       return b;
    }
 
+   public static BigDecimal subtract( BigDecimal a, BigDecimal b ) {
+      return a.subtract( b );
+   }
+
+   public static BigInteger subtract( BigInteger a, BigInteger b ) {
+      return a.subtract( b );
+   }
+
    public static double subtract( double a, double b ) {
       return a - b;
    }
@@ -146,6 +172,26 @@ public class Math {
    }
    public static int subtract( int a, int b ) {
       return a - b;
+   }
+   public static BigDecimal subtract( BigDecimal[] a ) {
+      if ( a.length == 0 )
+         throw new IllegalArgumentException();
+      if ( a.length == 1 )
+         return a[ 0 ];
+      BigDecimal b = a[ 0 ];
+      for ( int i = 1; i < a.length; i++ )
+         b = b.subtract( a[ i ] );
+      return b;
+   }
+   public static BigInteger subtract( BigInteger[] a ) {
+      if ( a.length == 0 )
+         throw new IllegalArgumentException();
+      if ( a.length == 1 )
+         return a[ 0 ];
+      BigInteger b = a[ 0 ];
+      for ( int i = 1; i < a.length; i++ )
+         b = b.subtract( a[ i ] );
+      return b;
    }
    public static double subtract( double[] a ) {
       if ( a.length == 0 )
@@ -188,6 +234,14 @@ public class Math {
       return b;
    }
 
+   public static BigDecimal multiply( BigDecimal a, BigDecimal b ) {
+      return a.multiply( b );
+   }
+
+   public static BigInteger multiply( BigInteger a, BigInteger b ) {
+      return a.multiply( b );
+   }
+
    public static double multiply( double a, double b ) {
       return a * b;
    }
@@ -199,6 +253,26 @@ public class Math {
    }
    public static int multiply( int a, int b ) {
       return a * b;
+   }
+   public static BigDecimal multiply( BigDecimal[] a ) {
+      if ( a.length == 0 )
+         throw new IllegalArgumentException();
+      if ( a.length == 1 )
+         return a[ 0 ];
+      BigDecimal b = a[ 0 ];
+      for ( int i = 1; i < a.length; i++ )
+         b = b.multiply( a[ i ] );
+      return b;
+   }
+   public static BigInteger multiply( BigInteger[] a ) {
+      if ( a.length == 0 )
+         throw new IllegalArgumentException();
+      if ( a.length == 1 )
+         return a[ 0 ];
+      BigInteger b = a[ 0 ];
+      for ( int i = 1; i < a.length; i++ )
+         b = b.multiply( a[ i ] );
+      return b;
    }
    public static double multiply( double[] a ) {
       if ( a.length == 0 )
@@ -241,6 +315,19 @@ public class Math {
       return b;
    }
 
+   public static BigDecimal divide( BigDecimal a, BigDecimal b ) {
+      try {
+         return a.divide( b, BigDecimal.ROUND_HALF_EVEN );
+      }
+      catch ( Throwable e ) {
+         return a.divide( b, BigDecimal.ROUND_HALF_EVEN );
+      }
+   }
+
+   public static BigInteger divide( BigInteger a, BigInteger b ) {
+      return a.divide( b );
+   }
+
    public static double divide( double a, double b ) {
       return a / b;
    }
@@ -252,6 +339,26 @@ public class Math {
    }
    public static int divide( int a, int b ) {
       return a / b;
+   }
+   public static BigDecimal divide( BigDecimal[] a ) {
+      if ( a.length == 0 )
+         throw new IllegalArgumentException();
+      if ( a.length == 1 )
+         return a[ 0 ];
+      BigDecimal b = a[ 0 ];
+      for ( int i = 1; i < a.length; i++ )
+         b = b.divide( a[ i ], BigDecimal.ROUND_HALF_EVEN );
+      return b;
+   }
+   public static BigInteger divide( BigInteger[] a ) {
+      if ( a.length == 0 )
+         throw new IllegalArgumentException();
+      if ( a.length == 1 )
+         return a[ 0 ];
+      BigInteger b = a[ 0 ];
+      for ( int i = 1; i < a.length; i++ )
+         b = b.divide( a[ i ] );
+      return b;
    }
    public static double divide( double[] a ) {
       if ( a.length == 0 )
@@ -294,6 +401,10 @@ public class Math {
       return b;
    }
 
+   public static BigInteger mod( BigInteger a, BigInteger b ) {
+      return a.mod( b );
+   }
+
    public static double mod( double a, double b ) {
       return a % b;
    }
@@ -305,6 +416,16 @@ public class Math {
    }
    public static int mod( int a, int b ) {
       return a % b;
+   }
+   public static BigInteger mod( BigInteger[] a ) {
+      if ( a.length == 0 )
+         throw new IllegalArgumentException();
+      if ( a.length == 1 )
+         return a[ 0 ];
+      BigInteger b = a[ 0 ];
+      for ( int i = 1; i < a.length; i++ )
+         b = b.mod( a[ i ] );
+      return b;
    }
    public static double mod( double[] a ) {
       if ( a.length == 0 )
@@ -346,7 +467,140 @@ public class Math {
          b %= a[ i ];
       return b;
    }
+   
+   // comparisons
+   public static boolean greaterThan(int x, int y) {
+      return x > y;  
+   }
+   public static boolean greaterThan(long x, long y) {
+      return x > y;  
+   }
+   public static boolean greaterThan(double x, double y) {
+      return x > y;  
+   }
+   public static boolean greaterThan(BigInteger x, BigInteger y) {
+      return x.compareTo(y) > 0;      
+   }
+   public static boolean greaterThan(BigDecimal x, BigDecimal y) {
+      return x.compareTo(y) > 0;      
+   }
+   public static boolean lessThan(int x, int y) {
+      return x < y;  
+   }
+   public static boolean lessThan(long x, long y) {
+      return x < y;  
+   }
+   public static boolean lessThan(double x, double y) {
+      return x < y;  
+   }
+   public static boolean lessThan(BigInteger x, BigInteger y) {
+      return x.compareTo(y) < 0;      
+   }
+   public static boolean lessThan(BigDecimal x, BigDecimal y) {
+      return x.compareTo(y) < 0;      
+   }
+   public static boolean equal(int x, int y) {
+      return x == y;  
+   }
+   public static boolean equal(long x, long y) {
+      return x == y;  
+   }
+   public static boolean equal(double x, double y) {
+      return x == y;  
+   }
+   public static boolean equal(BigInteger x, BigInteger y) {
+      return x.compareTo(y) == 0;      
+   }
+   public static boolean equal(BigDecimal x, BigDecimal y) {
+      return x.compareTo(y) == 0;      
+   }
+   public static boolean notEqual(int x, int y) {
+      return x != y;  
+   }
+   public static boolean notEqual(long x, long y) {
+      return x != y;  
+   }
+   public static boolean notEqual(double x, double y) {
+      return x != y;  
+   }
+   public static boolean notEqual(BigInteger x, BigInteger y) {
+      return x.compareTo(y) != 0;      
+   }
+   public static boolean notEqual(BigDecimal x, BigDecimal y) {
+      return x.compareTo(y) != 0;      
+   }
 
+   public static BigInteger factorial( BigInteger x ) {
+      if ( x.compareTo( new BigInteger( "0" ) ) < 0 )
+         throw new IllegalArgumentException( "number must be greater than 0" );
+      BigInteger y = x;
+      for ( x = x.subtract( new BigInteger( "1" ) ); x.toString().compareTo( "1" ) > 0; x = x.subtract( new BigInteger( "1" ) ) ) {
+         y = y.multiply( x );
+      }
+      return y;
+   }
+
+   public static int factorial( double x ) {
+      return factorial( ( int ) x );
+   }
+
+   public static int factorial( float x ) {
+      return factorial( ( int ) x );
+   }
+
+   public static int factorial( int x ) {
+      if ( x < 0 )
+         throw new IllegalArgumentException( "number must be greater than 0" );
+      int y = x;
+      for ( x -= 1; x > 1; x-- )
+         y *= x;
+      return y;
+   }
+
+   public static BigDecimal min( BigDecimal a, BigDecimal b ) {
+      return a.min( b );
+   }
+
+   public static BigInteger min( BigInteger a, BigInteger b ) {
+      return a.min( b );
+   }
+
+   public static BigDecimal max( BigDecimal a, BigDecimal b ) {
+      return a.max( b );
+   }
+
+   public static BigInteger max( BigInteger a, BigInteger b ) {
+      return a.max( b );
+   }
+
+   /**
+    * y raised to the x power   
+    */
+   public static BigInteger pow( BigInteger y, BigInteger x ) {
+      int exp = x.intValue();
+      if ( exp < 1 )
+         throw new IllegalArgumentException( "Exponent must be greater than 0" );
+      return y.pow( x.intValue() );
+   }
+
+   /**
+    * y raised to the x power   
+    */
+   public static BigDecimal pow( BigDecimal y, BigDecimal x ) {
+      if ( x.compareTo( new BigDecimal( "1" ) ) <= 0 ) {
+         throw new ArithmeticException( "Powers of BigDecimals must be integers greater than 1" );
+      }
+      String exp = x.toString();
+      if ( exp.indexOf( "." ) > 0 )
+         exp = exp.substring( 0, exp.indexOf( "." ) );
+      BigInteger e = new BigInteger( exp );
+      BigDecimal z = new BigDecimal( y.toString() );
+      for ( ;e.compareTo( BigInteger.ONE ) > 0; e = e.subtract( BigInteger.ONE ) ) {
+         y = y.multiply( z );
+      }
+      return y;
+   }
+   
    /**
     * Do a mathematical calculation. The allowed operations are all 
     * operations supported by java.lang.Math and this class. Assumes data 
@@ -364,22 +618,24 @@ public class Math {
     * @param op the name of a mathematical operation to perform
     * @param type the data type of the operands
     * @param the operands for the operation  
+    * @return the result of the calculation. For boolean operations, returns
+    * 1 for true, 0 for false;
     */
    public Number calculate( String op, String type, String[] operands ) {
       try {
-         if ( operands.length > 2 ) {
-            if ( op.equals( "add" ) ||
-                    op.equals( "subtract" ) ||
-                    op.equals( "multiply" ) ||
-                    op.equals( "divide" ) ||
-                    op.equals( "mod" ) ) {
-               return calculateArray( op, type, operands );
-            }
-            else
-               throw new IllegalArgumentException( "too many operands" );
+         if ( operands.length >= 2 && ( op.equals( "add" ) ||
+                 op.equals( "subtract" ) ||
+                 op.equals( "multiply" ) ||
+                 op.equals( "divide" ) ||
+                 op.equals( "mod" ) ) ) {
+            return calculateArray( op, type, operands );
          }
 
+         if ( operands.length > 2 )
+            throw new IllegalArgumentException( "too many operands" );
+
          Class c;
+         Method m;
          if ( strict )
             c = Class.forName( "java.lang.StrictMath" );
          else
@@ -388,7 +644,7 @@ public class Math {
          // check if op is 'random'. Random is a special case in that it is
          // the only method in Math that takes no parameters.
          if ( op.equals( "random" ) ) {
-            Method m = c.getDeclaredMethod( op, new Class[] {} );
+            m = c.getDeclaredMethod( op, new Class[] {} );
             Object result = m.invoke( c, null );
             return ( Number ) result;
          }
@@ -399,20 +655,17 @@ public class Math {
          for ( int i = 0; i < methods.length; i++ ) {
             String name = methods[ i ].getName();
             if ( name.equals( op ) ) {
-               candidates.addElement( methods[ i ] );
+               candidates.addElement( new Candidate( c, methods[ i ] ) );
             }
          }
 
-         if ( candidates.size() == 0 ) {
-            // try the other Math
-            //c = Class.forName( "ise.antelope.tasks.Math" );
-            c = this.getClass();
-            methods = c.getDeclaredMethods();
-            for ( int i = 0; i < methods.length; i++ ) {
-               String name = methods[ i ].getName();
-               if ( name.equals( op ) ) {
-                  candidates.addElement( methods[ i ] );
-               }
+         // also look for candidate methods in this class
+         c = this.getClass();
+         methods = c.getDeclaredMethods();
+         for ( int i = 0; i < methods.length; i++ ) {
+            String name = methods[ i ].getName();
+            if ( name.equals( op ) ) {
+               candidates.addElement( new Candidate( c, methods[ i ] ) );
             }
          }
 
@@ -430,16 +683,17 @@ public class Math {
          //int paramCount = ( ( Method ) candidates.elementAt( 0 ) ).getParameterTypes().length;
          int paramCount = -1;
          try {
-            for (int i = 0; i <= candidates.size(); i++) {
-               Method candidate = (Method)candidates.elementAt(i);
-               paramCount = candidate.getParameterTypes().length;
-               if (paramCount == operands.length)
+            for ( int i = 0; i <= candidates.size(); i++ ) {
+               Candidate candidate = ( Candidate ) candidates.elementAt( i );
+               Method method = candidate.getCandidateMethod();
+               paramCount = method.getParameterTypes().length;
+               if ( paramCount == operands.length )
                   break;
             }
          }
-         catch(Exception e) {
-            throw new RuntimeException("Wrong number of arguments, have " +
-               operands.length + ", but can't find corresponding method.");            
+         catch ( Exception e ) {
+            throw new RuntimeException( "Wrong number of arguments, have " +
+                  operands.length + ", but can't find corresponding method." );
          }
 
          // make sure there are enough arguments to pass to the method
@@ -453,14 +707,18 @@ public class Math {
          // typeClass from the method itself, not the desired.
          Class typeClass = null;
          if ( candidates.size() == 1 ) {
-            Method m = ( Method ) candidates.elementAt( 0 );
+            Candidate candidate = ( Candidate ) candidates.elementAt( 0 );
+            c = candidate.getCandidateClass();
+            m = candidate.getCandidateMethod();
             typeClass = m.getParameterTypes() [ 0 ];
          }
          else {
             // check each candidate to find one with the desired type
             Enumeration en = candidates.elements();
             while ( en.hasMoreElements() ) {
-               Method m = ( Method ) en.nextElement();
+               Candidate candidate = ( Candidate ) en.nextElement();
+               c = candidate.getCandidateClass();
+               m = candidate.getCandidateMethod();
                if ( m.getParameterTypes() [ 0 ].equals( wantTypeClass ) ) {
                   typeClass = wantTypeClass;
                   break;
@@ -475,33 +733,49 @@ public class Math {
          for ( int i = 0; i < paramCount; i++ ) {
             paramTypes[ i ] = typeClass;
          }
-         Method m = c.getDeclaredMethod( op, paramTypes );
-         
+         m = c.getDeclaredMethod( op, paramTypes );
+         //System.out.println( "Math.calculate, invoking: " + m.toString() );
+
          // load the parameters and invoke the method
          Object[] params = getParams( typeClass, operands );
-         Object result = m.invoke( c, params );
 
-         return ( Number ) result;
-
+         try {
+            //System.out.println( "Math.calculateArray, invoking: " + m.toString() );
+            Object result = m.invoke( c, params );
+            if (result instanceof Boolean) {
+               result = new Integer(((Boolean)result).booleanValue() ? 1 : 0);  
+            }
+            return ( Number ) result;
+         }
+         catch ( InvocationTargetException ite ) {
+            Throwable t = ite.getCause();
+            if ( t != null && t instanceof ArithmeticException ) {
+               throw ( ArithmeticException ) t;
+            }
+            else {
+               throw ite;
+            }
+         }
       }
       catch ( Exception e ) {
-         e.printStackTrace();
+         if ( e instanceof RuntimeException )
+            throw ( RuntimeException ) e;
       }
       return null;
    }
 
    /**
-    * Performs a calculation on an array of numbers. The mathematical methods
-    * in this class will accept an array of numbers, so 
-    * <code>add(new int[]{1, 2, 3})</code>
-    * is equivalent to 
-    * <code>add(add(1, 2), 3)</code> 
-    * which is equivalent to 1 + 2 + 3.
-    * @param op the operation to perform
-    * @type the data type of the operands. All operands will be cast to the same
-    * data type
-    * @param operands these strings must parse to numbers.   
-    */
+   * Performs a calculation on an array of numbers. The mathematical methods
+   * in this class will accept an array of numbers, so
+   * <code>add(new int[]{1, 2, 3})</code>
+   * is equivalent to
+   * <code>add(add(1, 2), 3)</code>
+   * which is equivalent to 1 + 2 + 3.
+   * @param op the operation to perform
+   * @type the data type of the operands. All operands will be cast to the same
+   * data type
+   * @param operands these strings must parse to numbers.
+   */
    private Number calculateArray( String op, String type, String[] operands ) {
       try {
          Class c = this.getClass();
@@ -534,24 +808,42 @@ public class Math {
             if ( m.getParameterTypes() [ 0 ].equals( wantTypeClass.getClass() ) ) {
                typeClass = getDataType( type );
                Object[] params = getParamsArray( typeClass, operands );
-               Object result = m.invoke( c, params );
-               return ( Number ) result;
+               try {
+                  //System.out.println( "Math.calculateArray, invoking: " + m.toString() );
+                  Object result = m.invoke( c, params );
+                  return ( Number ) result;
+               }
+               catch ( InvocationTargetException ite ) {
+                  Throwable t = ite.getCause();
+                  if ( t != null && t instanceof ArithmeticException ) {
+                     //System.out.println( "caught ArithmeticException in Math" );
+                     throw ( ArithmeticException ) t;
+                  }
+                  else {
+                     //System.out.println( "throwing " + ite.getMessage() );
+                     throw ite;
+                  }
+               }
             }
          }
       }
       catch ( Exception e ) {
          e.printStackTrace();
+         if ( e instanceof ArithmeticException ) {
+            //System.out.println("rethrowing " + e.getMessage());
+            throw ( ArithmeticException ) e;
+         }
       }
       return null;
    }
 
    /**
-    * Converts a string representing a data type into the actual type.
-    * @param type one of "int", "long", "float", or "double"
-    * @return one of Integer.TYPE, Long.TYPE, Float.TYPE, or Double.TYPE. If the 
-    * given type is null or not one of the allowed types, Double.TYPE will be
-    * returned.   
-    */
+   * Converts a string representing a data type into the actual type.
+   * @param type one of "int", "long", "float", or "double"
+   * @return one of Integer.TYPE, Long.TYPE, Float.TYPE, or Double.TYPE. If the
+   * given type is null or not one of the allowed types, Double.TYPE will be
+   * returned.
+   */
    private Class getDataType( String type ) {
       if ( type == null )
          return Double.TYPE;
@@ -564,17 +856,31 @@ public class Math {
       else if ( type.equals( "float" ) ) {
          return Float.TYPE;
       }
-      else {
-         return Double.TYPE;
+      else if ( type.equals( "bigint" ) ) {
+         try {
+            return Class.forName( "java.math.BigInteger" );
+         }
+         catch ( Exception e ) {
+            //e.printStackTrace();
+         }
       }
+      else if ( type.equals( "bigdecimal" ) ) {
+         try {
+            return Class.forName( "java.math.BigDecimal" );
+         }
+         catch ( Exception e ) {
+            //e.printStackTrace();
+         }
+      }
+      return Double.TYPE;
    }
 
    /**
-    * Converts a string representing a data type into an Array.
-    * @param type one of "int", "long", "float", or "double"
-    * @param length how long to make the array
-    * @return an Array representing the data type   
-    */
+   * Converts a string representing a data type into an Array.
+   * @param type one of "int", "long", "float", or "double"
+   * @param length how long to make the array
+   * @return an Array representing the data type
+   */
    private Object getDataTypeArray( String type, int length ) {
       if ( type == null )
          return Array.newInstance( Double.TYPE, length );
@@ -587,18 +893,34 @@ public class Math {
       else if ( type.equals( "float" ) ) {
          return Array.newInstance( Float.TYPE, length );
       }
+      else if ( type.equals( "bigdecimal" ) ) {
+         return Array.newInstance( BIGDECIMAL_TYPE, length );
+      }
+      else if ( type.equals( "bigint" ) ) {
+         return Array.newInstance( BIGINT_TYPE, length );
+      }
       else {
          return Array.newInstance( Double.TYPE, length );
       }
    }
 
    /**
-    * @returns the given operands as an array of the given type.   
-    */
+   * @returns the given operands as an array of the given type.
+   */
    private Object[] getParams( Class typeClass, String[] operands ) {
       int paramCount = operands.length;
       Object[] params = new Object[ paramCount ];
-      if ( typeClass == Double.TYPE ) {
+      if ( typeClass == BIGDECIMAL_TYPE ) {
+         for ( int i = 0; i < paramCount; i++ ) {
+            params[ i ] = new BigDecimal( operands[ i ] );
+         }
+      }
+      else if ( typeClass == BIGINT_TYPE ) {
+         for ( int i = 0; i < paramCount; i++ ) {
+            params[ i ] = new BigInteger( operands[ i ] );
+         }
+      }
+      else if ( typeClass == Double.TYPE ) {
          for ( int i = 0; i < paramCount; i++ ) {
             params[ i ] = new Double( operands[ i ] );
          }
@@ -625,11 +947,25 @@ public class Math {
    }
 
    /**
-    * Converts the given operands into an array of the given type.   
-    */
+   * Converts the given operands into an array of the given type.
+   */
    private Object[] getParamsArray( Class typeClass, String[] operands ) {
       int paramCount = operands.length;
-      if ( typeClass == Double.TYPE ) {
+      if ( typeClass == BIGDECIMAL_TYPE ) {
+         BigDecimal[] array = ( BigDecimal[] ) Array.newInstance( typeClass, operands.length );
+         for ( int i = 0; i < paramCount; i++ ) {
+            array[ i ] = new BigDecimal( operands[ i ] );
+         }
+         return new Object[] {array};
+      }
+      else if ( typeClass == BIGINT_TYPE ) {
+         BigInteger[] array = ( BigInteger[] ) Array.newInstance( typeClass, operands.length );
+         for ( int i = 0; i < paramCount; i++ ) {
+            array[ i ] = new BigInteger( operands[ i ] );
+         }
+         return new Object[] {array};
+      }
+      else if ( typeClass == Double.TYPE ) {
          double[] array = ( double[] ) Array.newInstance( typeClass, operands.length );
          for ( int i = 0; i < paramCount; i++ ) {
             Array.setDouble( array, i, new Double( operands[ i ] ).doubleValue() );
@@ -654,14 +990,26 @@ public class Math {
          // Integer.TYPE is only other choice
          Object array = Array.newInstance( typeClass, operands.length );
          for ( int i = 0; i < paramCount; i++ ) {
+            if (operands[i].indexOf(".") > 0)
+               operands[i] = operands[i].substring(0, operands[i].indexOf("."));
             Array.setInt( array, i, new Integer( operands[ i ] ).intValue() );
          }
          return new Object[] {array};
       }
    }
 
-   public static void main ( String[] args ) {
-      Math math = new Math();
-      System.out.println( math.calculate( "add", new String[] {"6", "5", "4"} ) );
+   public class Candidate {
+      private Class c;
+      private Method m;
+      public Candidate( Class c, Method m ) {
+         this.c = c;
+         this.m = m;
+      }
+      public Class getCandidateClass() {
+         return c;
+      }
+      public Method getCandidateMethod() {
+         return m;
+      }
    }
 }

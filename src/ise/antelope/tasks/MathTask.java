@@ -173,12 +173,12 @@ public class MathTask extends Task {
          if ( operand1 != null ) {
             Num num = new Num();
             num.setValue( operand1 );
-            op.addNum( num );
+            op.addConfiguredNum( num );
          }
          if ( operand2 != null ) {
             Num num = new Num();
             num.setValue( operand2 );
-            op.addNum( num );
+            op.addConfiguredNum( num );
          }
       }
       if ( op == null )

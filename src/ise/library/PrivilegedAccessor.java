@@ -91,7 +91,7 @@ public class PrivilegedAccessor {
       for ( int i = 0; i < methods.length; i++ ) {
          Method method = methods[ i ];
          Class[] paramTypes = method.getParameterTypes();
-         if ( compare( paramTypes, args ) ) {
+         if ( method.getName( ).equals( methodName ) && compare( paramTypes, args ) ) {
             return method.invoke( instance, args );
          }
       }

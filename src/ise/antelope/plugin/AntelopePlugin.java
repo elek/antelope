@@ -378,9 +378,9 @@ public class AntelopePlugin extends EBPlugin implements Constants {
       ProjectHelper.configureProject( project, buildFile );
       Hashtable h = project.getTargets();
       String[] targets = new String[ h.size() ];
-      Enumeration enum = h.keys();
+      Enumeration en = h.keys();
       for ( int i = 0; i < targets.length; i++ ) {
-         targets[ i ] = ( String ) enum.nextElement();
+         targets[ i ] = ( String ) en.nextElement();
       }
       return targets;
    }
