@@ -1,0 +1,66 @@
+<project name="AntelopeSrc" default="dist" basedir=".">
+    <description>
+       This build file packages the Antelope source code for distribution.
+    </description>
+    
+    <!-- read build.props to override properties set below -->
+    <property file="build.props"/>
+
+    <!-- version number, override in build.props if necessary -->
+    <property name="build.num" value="2.88.2"/>
+        
+    
+    <!-- shouldn't need to override the following properties -->
+    
+    <!-- source code directory, this is where the .java files live -->
+    <property name="src.dir" location="src" />
+    
+    <!-- build directory, all files contained in the src directory are copied
+    to this directory for processing (tag substitution, mostly) -->
+    <property name="prep.dir" location="prep"/>
+
+    <!-- configuration directory, this is where the configuration files for the
+    plugin are placed for pre-processing prior to getting jarred. -->
+    <property name="config.dir" location="${prep.dir}/config" />
+
+    <!-- documentation directory, this is where the plugin documentation
+    files live. Files in this directory will be distributed with the plugin -->
+    <property name="doc.dir" location="${prep.dir}/docs" />
+
+    <!-- the directory for the compiled classes. Files in this directory will be
+    included in the finished jar file. -->
+    <property name="classes.dir" location="classes" />
+    
+    <!-- where to put the finished distribution file -->
+    <property name="dist.dir" location="dist"/>
+    
+
+   <!-- ========================================================================
+      Target: dist
+   ========================================================================= -->
+    <target name="dist"
+            description="Creates a source distribution zip file.">
+        
+        <!-- zip the source and documentation and put the zip file in
+        the $dist directory -->
+        <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
+           <zipfileset prefix="${ant.project.name}_${build.num}" dir="${basedir}">
+              <include name="src/**/*"/>
+           </zipfileset>
+           <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}">
+              <include name="docs/manual/**/*"/>
+           </zipfileset>
+           <zipfileset prefix="${ant.project.name}_${build.num}" dir="${basedir}">
+              <include name="build.xml"/>
+              <include name="build-app.xml"/>
+              <include name="build-plugin.xml"/>
+              <include name="build-tasks.xml"/>
+              <include name="build-source.xml"/>
+              <include name="build.props.example"/>
+              <include name="run.xml"/>
+           </zipfileset>
+        </zip>
+        
+    </target>
+    
+</project>
