@@ -81,7 +81,8 @@
             debug="on"
             nowarn="on"
             destdir="${classes.dir}"
-            srcdir="${src.dir}">
+            srcdir="${src.dir}"
+            source="1.4">
          <classpath refid="classpathref" />
          <include name="**/tasks/**/*"/>
          <include name="**/library/**/*"/>

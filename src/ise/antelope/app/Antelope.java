@@ -776,15 +776,6 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       return null;
    }
 
-   /**
-    * Gets the antJarLocation attribute of the Antelope object
-    *
-    * @return   The antJarLocation value
-    */
-   public String getAntJarLocation() {
-      return null;
-   }
-
    public java.util.List getAntJarList() {
       return null;
    }

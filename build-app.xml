@@ -85,7 +85,9 @@
                debug="${showDebug}" 
                nowarn="${nowarn}" 
                destdir="${classes.dir}"
-               srcdir="${src.dir}">
+               srcdir="${src.dir}"
+               source="1.4">
+            
             <classpath refid="classpathref" />
             <exclude name="testcases/**/*"/>
             <exclude name="**/plugin/**/*"/>
@@ -146,9 +148,11 @@
               <include name="install.txt"/>
               <include name="ChangeLog.txt"/>
            </zipfileset>
+           <!--
            <zipfileset prefix="${ant.project.name}_${build.num}/lib" dir="${lib.dir}">
               <include name="**/*.jar"/>
            </zipfileset>
+           -->
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${basedir}">
               <include name="run.xml"/>
            </zipfileset>
@@ -175,7 +179,8 @@
    <target name="runBuilder" 
            description="Runs Antelope Builder as a standalone app."
            depends="setClasspath, copy_resources">
-      <java classname="ise.antelope.common.dependency.DependencyViewer" fork="true">
+      <java classname="ise.library.FontDialog" fork="true">
+         <jvmarg value="-ea"/>
          <classpath refid="classpathref"/>
       </java>
    </target>

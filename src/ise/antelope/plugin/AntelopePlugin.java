@@ -439,6 +439,8 @@ public class AntelopePlugin extends EBPlugin implements Constants {
     * Once found, return a String containing a list of the jars found in $ANT_HOME/lib,
     * one jar per line. Ant also includes all jars found in $user_home/.ant/lib,
     * so any jars found there are included also.
+    * @param relative use true to have the returned path use relative paths, false
+    * for full paths.
     * @return a path-separated list of jars from $ANT_HOME/lib and $user_home/.ant/lib.   
     */
    public static String getAntJars( boolean relative ) {
@@ -486,6 +488,9 @@ public class AntelopePlugin extends EBPlugin implements Constants {
 
       // put all jars from ANT_HOME into line-separated string
       File lib_dir = new File( ant_home, "lib" );
+      if (!lib_dir.exists()) {
+         lib_dir = new File(ant_home);  
+      }
       File[] ant_jars = lib_dir.listFiles( new FileFilter() {
                public boolean accept( File name ) {
                   return name.getName().toLowerCase().endsWith( ".jar" );

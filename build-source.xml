@@ -49,9 +49,11 @@
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${basedir}">
               <include name="src/**/*"/>
            </zipfileset>
+           <!--
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${lib.dir}">
               <include name="**/*.jar"/>
            </zipfileset>
+           -->
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}">
               <include name="docs/manual/**/*"/>
            </zipfileset>

@@ -26,8 +26,8 @@ public class AntelopeOptions implements OptionPane, Constants {
    }
 
    public void init() {
-      if (panel != null)
-         return;
+      if ( panel != null )
+         return ;
       panel = new JPanel( new KappaLayout() );
 
       JLabel label = new JLabel( "<html><b>Ant Home</b><br>You may change the location of Ant here. jEdit will need<br>to be restarted for the change to take effect." );
@@ -56,18 +56,24 @@ public class AntelopeOptions implements OptionPane, Constants {
                   if ( rtn == JFileChooser.APPROVE_OPTION ) {
                      try {
                         File f = chooser.getSelectedFile();
+                           System.out.println("f = " + f.getAbsolutePath());
                         if ( !f.exists() ) {
                            JOptionPane.showMessageDialog( null, "Directory " + f.toString() + " does not exist.", "Error", JOptionPane.ERROR_MESSAGE );
                            return ;
                         }
-                        File ant_jar = new File( f.getAbsolutePath() + File.separator + "lib", "ant.jar" );
+                        File ant_jar = new File( f.getAbsolutePath(), "ant.jar" );
                         if ( !ant_jar.exists() ) {
-                           JOptionPane.showMessageDialog( null, "Directory " + f.toString() + " does not appear to contain Ant.", "Error", JOptionPane.ERROR_MESSAGE );
-                           return ;
+                           ant_jar = new File( f.getAbsolutePath() + File.separator + "lib", "ant.jar" );
+                           if ( !ant_jar.exists() ) {
+                              JOptionPane.showMessageDialog( null, "Directory " + f.toString() + " does not appear to contain Ant.", "Error", JOptionPane.ERROR_MESSAGE );
+                              return ;
+                           }
                         }
 
-                        if ( f.equals( new File( ant_home ) ) )
+                        if ( f.equals( new File( ant_home ) ) ){
+                           System.out.println("f2 = " + f.getAbsolutePath());
                            return ;
+                        }
                         ant_home = f.getAbsolutePath();
                         PREFS.put( ANT_HOME, ant_home );
                         PREFS.flush();
@@ -96,7 +102,7 @@ public class AntelopeOptions implements OptionPane, Constants {
 
    public Component getComponent() {
       if ( panel == null )
-      init();
+         init();
       return panel;
    }
 

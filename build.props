@@ -1,16 +1,16 @@
 # required settings
 # linux:
-jedit.install.dir=${user.home}/apps/jedit/4.2pre8
-docbook.xsl=file:///usr/share/sgml/docbook/xsl-stylesheets-1.60.1
-docbookx.dtd=file:///usr/share/sgml/docbook/xml-dtd-4.1.2/docbookx.dtd
+#jedit.install.dir=${user.home}/apps/jedit/4.2pre8
+#docbook.xsl=file:///usr/share/sgml/docbook/xsl-stylesheets-1.60.1
+#docbookx.dtd=file:///usr/share/sgml/docbook/xml-dtd-4.1.2/docbookx.dtd
 
 # windows:
-#jedit.install.dir=c:/jEdit
-#docbook.xsl=file:///C:/cygwin/usr/share/docbook-xsl
-#docbookx.dtd=file:///C:/cygwin/usr/share/docbook-xml42/docbookx.dtd
+jedit.install.dir=c:/jEdit
+docbook.xsl=file:///C:/cygwin/usr/share/docbook-xsl
+docbookx.dtd=file:///C:/cygwin/usr/share/docbook-xml42/docbookx.dtd
 
 install.dir=${user.home}/.jedit/jars
-build.num=3.1.4
+build.num=3.1.6
 
 # optional settings, remove if you don't use jikes
 build.compiler=jikes

@@ -32,7 +32,7 @@
       Sets the classpath for Antelope by adding appropriate jars. Include
       jdk tools.jar, Ant's classpath, and Antelope's own jars.
    ========================================================================= -->
-   <target name="-setClasspath">
+   <target name="-setClasspath" depends="-init">
       <available property="haveToolsJar" 
                  value="${java.home}/lib/tools.jar"
                  file="${java.home}/lib/tools.jar"/>
@@ -50,6 +50,10 @@
          <pathelement path="${java.class.path}"/>
          <pathelement location="${tools.jar}"/>
       </path>
+   </target>
+   
+   <target name="-init">
+      <mkdir dir="${basedir}/lib"/>
    </target>
    
 </project>

@@ -314,7 +314,7 @@ public class Os {
          Process process = Runtime.getRuntime().exec( env_cmd );
          InputStream is = new BufferedInputStream( process.getInputStream() );
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
-         ise.library.FileUtilities.copyToStream( is, baos );
+         ise.library.FileUtilities.copy( is, baos );
 
          BufferedReader in = new BufferedReader( new StringReader( baos.toString() ) );
 

@@ -135,6 +135,8 @@ public interface Constants {
    public final static String AUTO_RELOAD          = "autoReload";
    public final static String SHOW_BUTTON_TEXT     = "showButtonText";
    public final static String SHOW_BUTTON_ICON     = "showButtonIcon";
+   public final static String MULTIPLE_TARGETS     = "multipleTargets";
+   public final static String TARGET_LIST          = "targetList";
    
    // node name for Ant user properties
    public final static String ANT_USER_PROPS = "ant_user_props";

@@ -21,7 +21,7 @@
     
     <!-- source code directory, this is where the .java files live -->
    <property name="src.dir" location="src" />
-   
+
    <property name="lib.dir" location="lib"/>
     
     <!-- build directory, all files contained in the src directory are copied
@@ -92,7 +92,8 @@
             debug="on"
             nowarn="on"
             destdir="${classes.dir}"
-            srcdir="${src.dir}">
+            srcdir="${src.dir}"
+            source="1.4">
          <classpath refid="classpathref" />
          <exclude name="testcases/**/*"/>
          <exclude name="**/app/**/*"/>
@@ -259,8 +260,8 @@
       
       <!-- insert the style into the documentation -->
       <replace dir="${prep.dir}" token="@@style@@"
-            value="&lt;STYLE TYPE=&quot;text/css&quot;&gt; &lt;!--   @import url(./style.css); --&gt; &lt;/STYLE&gt;" />
-      
+            value="&lt;STYLE TYPE=&quot;text/css&quot;&gt; &lt;!-- @import url(./style.css); --&gt; &lt;/STYLE&gt;" />
+
    </target>
    
    <!-- ========================================================================
@@ -280,5 +281,16 @@
       <mkdir dir="${dist.dir}"/>
       <property name="init.done" value="true"/>
    </target>
-   
+
+   <target name="test input">
+      <input
+            message="All data is going to be deleted from DB continue (y/n)?"
+            validargs="y,n"
+            addproperty="do.delete" />
+      <condition property="do.abort">
+         <equals arg1="n" arg2="${do.delete}"/>
+      </condition>
+      <fail if="do.abort">Build aborted by user.</fail>
+   </target>
+
 </project>

@@ -160,9 +160,9 @@ public class ForTask extends Task implements TaskContainer {
    }
 
    private void addTaskToTarget( Target target, Task task ) {
-      UnknownElement replacement = new UnknownElement( getTaskType() );
+      UnknownElement replacement = new UnknownElement( taskType );  // shouldn't do taskType, for Ant 1.6 and later there is a getTaskType method
       replacement.setProject( getProject() );
-      invokeMethod( replacement, "setTaskType", getTaskType() );
+      invokeMethod( replacement, "setTaskType", taskType );
       replacement.setTaskName( task.getTaskName() );
       replacement.setLocation( task.getLocation() );
       replacement.setOwningTarget( target );

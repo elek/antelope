@@ -60,8 +60,6 @@ import javax.swing.event.*;
 
 import ise.library.*;
 
-import ise.library.*;
-
 import org.apache.tools.ant.*;
 
 /**
@@ -191,10 +189,10 @@ public class AntelopePanel extends JPanel implements Constants {
 
       setLayout( new BorderLayout() );
 
-      _build_file = build_file;
+      //_build_file = build_file;
       _helper = helper;
       _use_internal_menu = use_internal_menu;
-      setPrefs( _build_file );
+      setPrefs( build_file );
 
       try {
          // for some reason, the GUIUtils aren't always loaded in jEdit,
@@ -368,6 +366,7 @@ public class AntelopePanel extends JPanel implements Constants {
       }
 
       _multi.setToolTipText( "Execute multiple targets sequentially" );
+      _multi.setSelected(_settings.getMultipleTargets());
       _multi.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
@@ -380,7 +379,7 @@ public class AntelopePanel extends JPanel implements Constants {
       initLogger();
 
       // initialize from the build file
-      openBuildFile( _build_file );
+      openBuildFile( build_file );
    }
 
    private ActionListener _cb_listener =
@@ -469,14 +468,22 @@ public class AntelopePanel extends JPanel implements Constants {
                            AbstractButton btn = ( AbstractButton ) components[ i ];
                            if ( btn instanceof JCheckBox ) {
                               String target_name = btn.getActionCommand();
-                              if ( targets.contains( target_name ) ) {
-                                 btn.setSelected( true );
-                              }
-                              else {
+                              if ( !targets.contains( target_name ) ) {
                                  targets.remove( target_name );
                               }
                            }
                         }
+                        Iterator itr = targets.iterator();
+                        while(itr.hasNext()) {
+                           String target_name = (String)itr.next();
+                           for (i = 0; i < components.length; i++) {
+                              AbstractButton btn = (AbstractButton)components[i];
+                              if ( target_name.equals( btn.getActionCommand())) {
+                                 btn.doClick();
+                                 break;
+                              }
+                           }
+                        }  
                      }
 
                      // set button color
@@ -850,8 +857,8 @@ public class AntelopePanel extends JPanel implements Constants {
          Iterator it = _property_files.keySet().iterator();
          while ( it.hasNext() ) {
             Object o = it.next();
-            if (o == null)
-               continue; 
+            if ( o == null )
+               continue;
             File f = null;
             if ( o instanceof File ) {
                f = ( File ) o;
@@ -922,6 +929,8 @@ public class AntelopePanel extends JPanel implements Constants {
    public void openBuildFile( final File build_file ) {
       if ( build_file == null || !build_file.exists() )
          return ;
+      boolean new_file = !build_file.equals(_build_file);
+      
       _build_file = build_file;
       try {
          // constraints for layout
@@ -996,19 +1005,24 @@ public class AntelopePanel extends JPanel implements Constants {
 
          // create the project and set up the build logger
          if ( isAntBuildFile ) {
-            // set up "Execute" button for multiple targets
             try {
+
+               // load the settings for the build file and create an
+               // Ant project
+               _project = createProject( _build_file );
+               loadPropertyFiles();
+
+               // set up "Execute" button for multiple targets
+               ArrayList last_used_targets = null;
+               if (new_file) {
+                  _multi.setSelected(_settings.getMultipleTargets());
+               }
                if ( _multi.isSelected() ) {
                   JButton execute_btn = new JButton( "Execute" );
                   _button_panel.add( execute_btn, con );
                   execute_btn.addActionListener( _execute_listener );
                   ++con.y;
                }
-
-               // load the settings for the build file and create an
-               // Ant project
-               _project = createProject( _build_file );
-               loadPropertyFiles();
 
                // set the label with the name of this project
                String project_name = _project.getProperty( "ant.project.name" );
@@ -1020,14 +1034,12 @@ public class AntelopePanel extends JPanel implements Constants {
                // that meet the user's subtarget display settings.
                Hashtable targets = _project.getTargets();
                if ( targets == null || targets.size() == 0 ) {
-                  System.out.println( "no targets in project" );
+                  //System.out.println( "no targets in project" );
                   return ;   /// ??? really ???
                }
 
                // Ant 1.6 has an un-named target to hold project-level tasks, so
                // find it and save it for later.
-
-
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
                   Iterator iter = targets.keySet().iterator();
@@ -1155,6 +1167,19 @@ public class AntelopePanel extends JPanel implements Constants {
                   _buttons.add( button );
                   ++con.y;
                }
+               // if new and was multi, restore selected targets
+               if (new_file && _multi.isSelected()) {
+                  it = _settings.getMultipleTargetList().iterator();
+                  while(it.hasNext()) {
+                     String name = (String)it.next();
+                     Iterator itr = _buttons.iterator();
+                     while(itr.hasNext()) {
+                        AbstractButton btn = (AbstractButton)itr.next();
+                        if (btn.getActionCommand().equals(name))
+                           btn.doClick();
+                     }
+                  }
+               }
             }
             catch ( Exception e ) {
                e.printStackTrace();
@@ -1177,6 +1202,7 @@ public class AntelopePanel extends JPanel implements Constants {
          e.printStackTrace();
       }
       fireEvent( _build_file );
+      
    }
 
    /**
@@ -1254,7 +1280,13 @@ public class AntelopePanel extends JPanel implements Constants {
          p.addBuildListener( _progress );
 
          // add the gui input handler
-         p.setInputHandler( new AntInputHandler( this ) );
+         try {
+            Object ih = PrivilegedAccessor.getNewInstance("ise.antelope.common.AntInputHandler", new Object[]{(Component)this});
+            PrivilegedAccessor.invokeMethod(p, "setInputHandler", new Object[]{ih});
+         }
+         catch(Exception e) {
+            e.printStackTrace();
+         }
 
          // optionally add the antelope performance listener
          if ( _settings.getShowPerformanceOutput() ) {
@@ -1355,7 +1387,13 @@ public class AntelopePanel extends JPanel implements Constants {
     */
    public int getAntVersion() {
       String ant_version = org.apache.tools.ant.Main.getAntVersion();
-      return ant_version.indexOf( "1.6" ) > -1 ? 16 : 15;
+      if ( ant_version.indexOf( "1.6" ) > -1 )
+         return 16;
+      if ( ant_version.indexOf( "1.5" ) > -1 )
+         return 15;
+      if ( ant_version.indexOf( "1.4" ) > -1 )
+         return 14;
+      return 15;
    }
 
    /**
@@ -1494,11 +1532,46 @@ public class AntelopePanel extends JPanel implements Constants {
 
    /** Description of the Method */
    private void saveConfigurationSettings() {
+      _settings.setMultipleTargets(_multi.isSelected());
+      if (_buttons != null && _multi.isSelected()) {
+         TreeSet btns = new TreeSet(new Comparator(){
+            public int compare(Object a, Object b) {
+               AbstractButton btna = (AbstractButton)a;
+               AbstractButton btnb = (AbstractButton)b;
+               String aname = btna.getText();
+               String bname = btnb.getText();
+               aname = aname.substring(0, aname.length() - 1);
+               aname = aname.substring(aname.lastIndexOf("(") + 1);
+               bname = bname.substring(0, bname.length() - 1);
+               bname = bname.substring(bname.lastIndexOf("(") + 1);
+               int aint = Integer.parseInt(aname);
+               int bint = Integer.parseInt(bname);
+               if (aint < bint)
+                  return -1;
+               if (aint == bint)
+                  return 0;
+               return 1;
+            }
+         });
+         Iterator it = _buttons.iterator();
+         while(it.hasNext()) {
+            AbstractButton btn = (AbstractButton)it.next();
+            if(btn.isSelected())
+               btns.add(btn);
+         }
+         it = btns.iterator();
+         ArrayList target_list = new ArrayList();
+         while(it.hasNext()) {
+            String target_name = ((AbstractButton)it.next()).getActionCommand();
+            target_list.add(target_name);
+         }
+         _settings.setMultipleTargetList(target_list);
+      }
       if ( _prefs != null ) {
          try {
-
-            PREFS.flush();
-
+            //_settings.save();
+            //PREFS.flush();
+            _prefs.flush();
          }
          catch ( Exception e ) {
             e.printStackTrace();
@@ -1723,6 +1796,7 @@ public class AntelopePanel extends JPanel implements Constants {
     * the backing store. Always call this on exit.
     */
    public void close() {
+      saveConfigurationSettings();
       removeAllLogHandlers();
       try {
          PREFS.flush();

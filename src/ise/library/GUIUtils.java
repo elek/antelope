@@ -162,42 +162,58 @@ public class GUIUtils {
    /**
     * Calculates the best location to show the component based on the given (x, y)
     * coordinates. The returned point will be as close as possible to the original
-    * point while allowing the entire component to be displayed on screen.
+    * point while allowing the entire component to be displayed on screen. This is 
+    * useful for showing dialogs and popups.
+    * @param comp the component that will be shown.
+    * @param x the original x-coordinate of the component or of the desired location.
+    * @param y the original y-coordinate of the component or of the desired location.
+    * @return a point as close to the given (x, y) that will allow the entire
+    * component to be shown on the screen.
     */
    public static Point getBestAnchorPoint( Component comp, int x, int y ) {
-      Point p = new Point( x, y );
+      int new_x = x;
+      int new_y = y;
+      Point p = new Point( new_x, new_y );
       javax.swing.SwingUtilities.convertPointToScreen( p, comp );
 
       Dimension size = comp.getSize();
       Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
-      boolean horiz = false;
-      boolean vert = false;
+      boolean move_horizontally = false;
+      boolean move_vertically = false;
 
-      // might need later
-      int origX = x;
-
+      // calculate new x coordinate. If the component width is less than the
+      // screen width and the right side of the component is off the screen,
+      // move it left.
       if ( p.x + size.width > screen.width
               && size.width < screen.width ) {
-         x += ( screen.width - p.x - size.width );
-         horiz = true;
+         new_x += ( screen.width - p.x - size.width );
+         move_horizontally = true;
       }
 
+      // calculate new y coordinate. If the component height is less than the
+      // screen height and the bottom of the component is off the screen, move
+      // it up.
       if ( p.y + size.height > screen.height
               && size.height < screen.height ) {
-         y += ( screen.height - p.y - size.height );
-         vert = true;
+         new_y += ( screen.height - p.y - size.height );
+         move_vertically = true;
       }
 
-      // If popup needed to be moved both horizontally and
-      // vertically, the mouse pointer might end up over a
-      // menu item, which will be invoked when the mouse is
-      // released. This is bad, so move popup to a different
-      // location.
-      if ( horiz && vert ) {
-         x = origX - size.width - 2;
+      // If the component is a popup and it needed to be moved both horizontally 
+      // and vertically, the mouse pointer might end up over a menu item, which 
+      // will be invoked when the mouse is released. In this case, move the
+      // component to a location that is not under the point.
+      if ( move_horizontally && move_vertically && (comp instanceof javax.swing.JPopupMenu) ) {
+         // first try to move it more left
+         if (x - size.width - 2 > 0)
+            new_x = x - size.width - 2;
+         else if (y - size.height - 2 > 0){
+            // try to move it up some more
+            new_y = y - size.height - 2;
+         }
       }
-      return new Point( x, y );
+      return new Point( new_x, new_y );
    }
 
    /**
@@ -206,9 +222,8 @@ public class GUIUtils {
     *
     * @param popup  The popup menu
     * @param comp   The component to show it for
-    * @param x      The x co-ordinate
-    * @param y      The y co-ordinate
-    * @since        jEdit 4.0pre1
+    * @param x      The x coordinate
+    * @param y      The y coordinate
     */
    public static void showPopupMenu( javax.swing.JPopupMenu popup, Component comp,
          int x, int y ) {

@@ -964,6 +964,197 @@ Messages for certain build events are sent at a particular log Level. See java.u
 
 <chapter id="for-developers">
 @@style@@
+
+<title>For Developers</title>
+
+<section id="embedding-antelope">
+   <title>Embedding Antelope in Other Applications</title>
+   
+<para>
+Antelope has an open API that allows developers to easily embed Antelope into other applications.  
+</para>
+
+<para>
+The main object to embed is AntelopePanel. AntelopePanel has three constructors:
+<programlisting>
+<![CDATA[
+   public AntelopePanel()
+   
+   public AntelopePanel( CommonHelper helper )
+   
+   public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu ) 
+]]>
+</programlisting>
+</para>
+
+<para>
+The first no-argument constructor is identical to:
+<programlisting>
+<![CDATA[
+   public AntelopePanel( null, null, true ) 
+]]>
+</programlisting>
+
+And the second constructor is identical to:
+<programlisting>
+<![CDATA[
+   public AntelopePanel( null, helper, true ) 
+]]>
+</programlisting>
+</para>
+
+<para>
+The third constructor allows the most flexibility:
+<programlisting>
+<![CDATA[
+   public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu ) 
+]]>
+</programlisting>
+
+</para>
+
+<para>
+<itemizedlist>
+   <listitem>
+   <emphasis role="bold">build_file</emphasis> If supplied a build file, the AntelopePanel will open the build file and construct it's button panel from it.
+   </listitem>
+   <listitem>
+   <emphasis role="bold">helper</emphasis> CommonHelper is an interface and has a number of methods that may be provided by applications wishing to interact with the AntelopePanel. The CommonHelper interface will be covered in more detail below.
+   </listitem>
+   <listitem>
+   <emphasis role="bold">use_internal_menu</emphasis> This boolean setting tells AntelopePanel whether or not to use it's internal menu. Applications may provide their own, or the default menu provided by AntelopePanel can be used. When Antelope is running as a jEdit plugin, the internal menu is used, when running as a stand-alone application, it is not.
+   </listitem>
+</itemizedlist>
+</para>
+
+<para>
+The proper way to have your application interact with AntelopePanel is by writing a class that implements the CommonHelper interface.
+</para>
+<para>
+<programlisting>
+<![CDATA[
+
+
+package ise.antelope.common;
+
+import java.awt.event.ActionListener;
+
+/**
+ * Objects that want to manipulate AntelopePanel must implement this
+ * interface.
+ */
+public interface CommonHelper extends ActionListener {
+
+   /**
+    * Event ID for trace event.
+    */
+   public final static int TRACE_EVENT = 550927;
+
+   /**
+    * Event ID for edit event.
+    */
+   public final static int EDIT_EVENT = 470226;
+
+   /**
+    * AntelopePanel will pass the target execution thread to the helper. 
+    * Implementors of this interface may interrupt the thread to cause
+    * AntelopePanel to stop running a target.
+    *
+    * @param thread  the execution thread
+    */
+   public void setTargetExecutionThread( Thread thread );
+
+   /**
+    * Check if the helper can save before running a target.
+    *
+    * @return   true if the helper can save files.
+    */
+   public boolean canSaveBeforeRun();
+
+   /**
+    * Tell the helper to save now.
+    */
+   public void saveBeforeRun();
+
+   /**
+    * Tell the helper to clear its error source. This was implemented to 
+    * support the ErrorList plugin for jEdit, other editors may hava a similar
+    * need.
+    */
+   public void clearErrorSource();
+
+   /**
+    * Should the AntelopePanel show its Edit button? Clicking the Edit button
+    * should cause AntelopePanel to show the build file in an editor.
+    *
+    * @return  true if the AntelopePanel should show an edit button.
+    */
+   public boolean canShowEditButton();
+
+   /**
+    * An action that the helper would like to have happen when the
+    * Edit button is clicked.
+    *
+    * @return   The edit button action
+    */
+   public ActionListener getEditButtonAction();
+
+
+   /**
+    * The action that the helper would like to have happen when the
+    * Run button is clicked.
+    *
+    * @return   The run button action
+    */
+   public ActionListener getRunButtonAction();
+
+   /**
+    * Opens the given file in an editor.
+    * @param the file to open.
+    */
+   public void openFile( java.io.File f );
+
+   /**
+    * Generally, the classloader returned by the helper will probably be null, 
+    * but some apps, like jEdit, use special classloaders. As AntProject needs
+    * direct access to the classloader that loads Ant, the helper should pass
+    * the classloader via this method.
+    *
+    * @return   The classloader that loaded Ant.
+    */
+   public ClassLoader getAntClassLoader();
+
+   /**
+    * The Ant installation that the helper uses may not be in the application classpath.
+    * AntelopePanel needs to know where the Ant jars are located so it can run Ant
+    * properly. Implementers may return null, meaning that the Ant jars are already 
+    * in the classpath.
+    * <p>
+    * <strong>WARNING:</strong> this method is likely to change. The helper should
+    * not need to provide a list of jars, rather, it should provide an ANT_HOME
+    * directory. Antelope should be smart enough to find the jars given the
+    * directory, plus should automatically look in the standard Ant library 
+    * locations.
+    * @return a list of the jars used by Ant. The individual list items must be Strings
+    * representing the file names of the jar files. Note that other jars may be included,
+    * such as custom Ant task libraries. 
+    */
+   public java.util.List getAntJarList();
+
+}
+]]>
+</programlisting>
+
+</para>
+
+<para>
+At a minimum, you'll need to include all classes in the ise.antelope.common and ise.library packages.
+</para>
+
+   
+</section>
+
+<section id="jedit">
    <title>API for jEdit Plugin Developers</title>
    
 <para>
@@ -1116,7 +1307,7 @@ This method will cause Antelope to load the given build file.
    }
 </programlisting>
 </para>
-
+</section>
    
 </chapter>
 

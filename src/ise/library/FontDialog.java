@@ -12,7 +12,14 @@ import ise.library.*;
 import java.util.*;
 
 /**
- * A font chooser dialog.
+ * A font chooser dialog. Typical usage:
+ * <p>
+ * <code>
+ * Font f = FontDialog.showFontDialog(parentFrame, defaultFont);    
+ * </code>    
+ *
+ * Internally, this class creates a single dialog and reuses it on each call to
+ * <code>showFontDialog</code>. This minimizes the number of objects created.
  *
  * @author    Dale Anson
  * @version   $Revision$
@@ -66,7 +73,7 @@ public class FontDialog extends JDialog {
    private static FontDialog _fd = null;
 
    /**
-    *Constructor for FontDialog
+    * Constructor for FontDialog
     *
     * @param parent
     */
@@ -152,7 +159,8 @@ public class FontDialog extends JDialog {
                bold_on = bold_style.isSelected();
                setSample();
             }
-         } );
+         }
+      );
       final JCheckBox italic_style = new JCheckBox( "Italic" );
       italic_style.addActionListener(
          new ActionListener() {
@@ -160,7 +168,8 @@ public class FontDialog extends JDialog {
                italic_on = italic_style.isSelected();
                setSample();
             }
-         } );
+         }
+      );
       style_panel.add( bold_style, "0, 0, 1, 1, W, wh, 5" );
       style_panel.add( italic_style, "0, 1, 1, 1, W, wh, 5" );
 
@@ -183,14 +192,16 @@ public class FontDialog extends JDialog {
                didCancel = false;
                setVisible( false );
             }
-         } );
+         }
+      );
       cancel_btn.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                didCancel = true;
                setVisible( false );
             }
-         } );
+         }
+      );
       btn_panel.add( "0,0,1,1,0,w", ok_btn );
       btn_panel.add( "1,0", KappaLayout.createHorizontalStrut( 5, true ) );
       btn_panel.add( "2,0,1,1,0,w", cancel_btn );
@@ -251,10 +262,10 @@ public class FontDialog extends JDialog {
                   int size = Integer.valueOf( font_size ).intValue();
                   sample.setFont( new Font( font_name, style, size ) );
                }
-               catch ( Exception e ) {
-               }
+            catch ( Exception e ) {}
             }
-         } );
+         }
+      );
    }
 
    /**
@@ -274,10 +285,18 @@ public class FontDialog extends JDialog {
    }
 
    /**
+    * Convenience method to show a FontDialog.   
+    * @return the selected font or <code>null</code> if the user cancelled.
+    */
+   public static Font showFontDialog() {
+      return showFontDialog( null );
+   }
+
+   /**
     * Convenience method to show a FontDialog.
     *
-    * @param parent
-    * @return        the selected font or <code>null</code> if the user cancelled.
+    * @param parent The parent JFrame for the dialog
+    * @return the selected font or <code>null</code> if the user cancelled.
     */
    public static Font showFontDialog( JFrame parent ) {
       return showFontDialog( parent, null );

@@ -18,7 +18,7 @@ import java.lang.reflect.*;
  * System.out.println(
  *      PrivilegedAccessor.invokeMethod( c,
  *                                       "resolveName",
- *                                       "/net/iss/common/PrivilegeAccessor" ) );
+ *                                       "/ise/library/PrivilegedAccessor" ) );
  * </pre>
  *
  * @author Charlie Hubbard (chubbard@iss.net)
@@ -81,6 +81,39 @@ public class PrivilegedAccessor {
     */
    public static Object invokeMethod( Object instance, String methodName, Object[] args ) throws NoSuchMethodException,
       IllegalAccessException, InvocationTargetException {
+      //Class[] classTypes = getClassArray( args );
+      //return getMethod( instance, methodName, classTypes ).invoke( instance, args );
+      if ( args == null )
+         args = new Object[] {};
+      Class[] classTypes = getClassArray( args );
+      Method[] methods = instance.getClass().getMethods();
+      boolean found = false;
+      for ( int i = 0; i < methods.length; i++ ) {
+         Method method = methods[ i ];
+         Class[] paramTypes = method.getParameterTypes();
+         if ( compare( paramTypes, args ) ) {
+            return method.invoke( instance, args );
+         }
+      }
+      StringBuffer sb = new StringBuffer();
+      sb.append( "No method named " ).append( methodName ).append( " found in " ).append( instance.getClass().getName() ).append( " with parameters (" );
+      for ( int x = 0; x < classTypes.length; x++ ) {
+         sb.append( classTypes[ x ].getName() );
+         if ( x < classTypes.length - 1 )
+            sb.append( ", " );
+      }
+      sb.append( ")" );
+      throw new NoSuchMethodException( sb.toString() );
+
+
+   }
+
+   /**
+    * Converts the object array to an array of Classes.
+    * @param args the object array to convert
+    * @return a Class array
+    */
+   private static Class[] getClassArray( Object[] args ) {
       Class[] classTypes = null;
       if ( args != null ) {
          classTypes = new Class[ args.length ];
@@ -89,7 +122,7 @@ public class PrivilegedAccessor {
                classTypes[ i ] = args[ i ].getClass();
          }
       }
-      return getMethod( instance, methodName, classTypes ).invoke( instance, args );
+      return classTypes;
    }
 
    /**
@@ -121,7 +154,7 @@ public class PrivilegedAccessor {
     * Return the named method with a method signature matching classTypes
     * from the given class.
     */
-   public  static Method getMethod( Class thisClass, String methodName, Class[] classTypes ) throws NoSuchMethodException {
+   public static Method getMethod( Class thisClass, String methodName, Class[] classTypes ) throws NoSuchMethodException {
       if ( thisClass == null )
          throw new NoSuchMethodException( "Invalid method : " + methodName );
       try {
@@ -130,5 +163,53 @@ public class PrivilegedAccessor {
       catch ( NoSuchMethodException e ) {
          return getMethod( thisClass.getSuperclass(), methodName, classTypes );
       }
+   }
+
+   private static boolean compare( Class[] c, Object[] args ) {
+      if ( c.length != args.length ) {
+         return false;
+      }
+      for ( int i = 0; i < c.length; i++ ) {
+         if ( !c[ i ].isInstance( args[ i ] ) ) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+
+   /**
+    * Creates a new instance of the named class initialized with the given 
+    * arguments.
+    * @param classname the name of the class to instantiate.
+    * @param args the arguments to pass as parameters to the constructor of the class.
+    * @return the instantiated object
+    */
+   public static Object getNewInstance( String classname, Object[] args )
+   throws ClassNotFoundException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+      if ( classname == null )
+         throw new ClassNotFoundException();
+      if ( args == null )
+         args = new Object[] {};
+      Class[] classTypes = getClassArray( args );
+      Class c = Class.forName( classname );
+      Constructor[] constructors = c.getConstructors();
+      boolean found = false;
+      for ( int i = 0; i < constructors.length; i++ ) {
+         Constructor constructor = constructors[ i ];
+         Class[] paramTypes = constructor.getParameterTypes();
+         if ( compare( paramTypes, args ) ) {
+            return constructor.newInstance( args );
+         }
+      }
+      StringBuffer sb = new StringBuffer();
+      sb.append( "No constructor found for " ).append( classname ).append( " with parameters (" );
+      for ( int x = 0; x < classTypes.length; x++ ) {
+         sb.append( classTypes[ x ].getName() );
+         if ( x < classTypes.length - 1 )
+            sb.append( ", " );
+      }
+      sb.append( ")" );
+      throw new NoSuchMethodException( sb.toString() );
    }
 }

@@ -2,7 +2,7 @@ package ise.antelope.common;
 
 import java.io.File;
 import java.util.prefs.Preferences;
-
+import java.util.*;
 import org.apache.tools.ant.Project;
 
 /**
@@ -26,6 +26,8 @@ public class OptionSettings implements Constants {
    private boolean _auto_reload = true;
    private boolean _show_button_text = false;
    private boolean _show_button_icon = true;
+   private boolean _multiple_targets = false;
+   private String _target_list = "";
 
 
    /**
@@ -58,6 +60,8 @@ public class OptionSettings implements Constants {
          _use_error_parsing = _prefs.getBoolean( USE_ERROR_PARSING, true );
          _show_performance_output = _prefs.getBoolean( SHOW_PERFORMANCE_OUTPUT, false );
          _auto_reload = _prefs.getBoolean( AUTO_RELOAD, true );
+         _multiple_targets = _prefs.getBoolean( MULTIPLE_TARGETS, false );
+         _target_list = _prefs.get( TARGET_LIST, "" );
       }
    }
 
@@ -82,6 +86,9 @@ public class OptionSettings implements Constants {
       _prefs.putBoolean( SHOW_TASK_EVENTS, _show_task_events );
       _prefs.putBoolean( USE_ERROR_PARSING, _use_error_parsing );
       _prefs.putBoolean( AUTO_RELOAD, _auto_reload );
+      _prefs.putBoolean( MULTIPLE_TARGETS, _multiple_targets );
+      _prefs.put( TARGET_LIST, _target_list );
+      
    }
 
    /**
@@ -211,5 +218,41 @@ public class OptionSettings implements Constants {
 
    public boolean getShowButtonIcon() {
       return _show_button_icon;
+   }
+
+   public void setMultipleTargets( boolean b ) {
+      _multiple_targets = b;
+   }
+
+   public boolean getMultipleTargets() {
+      return _multiple_targets;
+   }
+
+   /**
+    * @param a list of target names as Strings.   
+    */
+   public void setMultipleTargetList( ArrayList list ) {
+      if ( list == null ) {
+         _target_list = "";
+         return ;
+      }
+      StringBuffer sb = new StringBuffer();
+      Iterator it = list.iterator();
+      while ( it.hasNext() ) {
+         sb.append( ( String ) it.next() );
+         if ( it.hasNext() )
+            sb.append( "," );
+      }
+      _target_list = sb.toString();
+   }
+
+   /**
+    * @return a list of target names (as Strings), the returned ArrayList may be
+    * empty, but will not be null.
+    */
+   public ArrayList getMultipleTargetList() {
+      if ( _target_list == null || _target_list.equals("") )
+         return new ArrayList();
+      return new ArrayList( Arrays.asList( _target_list.split( "," ) ) );
    }
 }
