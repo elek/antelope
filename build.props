@@ -1,11 +1,11 @@
 # required settings
-jedit.install.dir=${user.home}/apps/jedit/4.2pre8
-#jedit.install.dir=c:/jEdit
+#jedit.install.dir=${user.home}/apps/jedit/4.2pre8
+jedit.install.dir=c:/jEdit
 install.dir=${user.home}/.jedit/jars
-build.num=3.0.1
+build.num=3.0.2
 
-docbook.xsl=/usr/share/sgml/docbook/xsl-stylesheets-1.60.1
-#docbook.xsl=C:\\cygwin\\usr\\share\\docbook-xsl
+#docbook.xsl=/usr/share/sgml/docbook/xsl-stylesheets-1.60.1
+docbook.xsl=file:///C:/cygwin/usr/share/docbook-xsl
 
 # optional settings, remove if you don't use jikes
 build.compiler=jikes

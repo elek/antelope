@@ -20,6 +20,15 @@ public class DTDDecl implements DTDOutput {
       type = aType;
       name = aName;
    }
+   
+   public String toString() {
+      switch(type) {
+         case 0: return "FIXED";
+         case 1: return "REQUIRED";
+         case 2: return "IMPLIED";
+      }
+      return "";
+   }
 
    public boolean equals( Object ob ) {
       if ( ob == this )

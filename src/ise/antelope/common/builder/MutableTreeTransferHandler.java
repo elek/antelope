@@ -64,7 +64,6 @@ public class MutableTreeTransferHandler extends TransferHandler {
          DroppableTreeNode src_leaf = (DroppableTreeNode)src_tp.getLastPathComponent();
          Object o = src_leaf.getUserObject();
          ElementPanel src_ep = o instanceof ElementPanel ? (ElementPanel)o : new ElementPanel(src_tp);
-         src_leaf.setUserObject(src_ep);
          
          // get the destination
          TreePath dest_tp = tree.getSelectionPath();
@@ -72,7 +71,9 @@ public class MutableTreeTransferHandler extends TransferHandler {
          ElementPanel dest_ep = (ElementPanel)dest_node.getUserObject();
          if (!dest_ep.canAccept(dest_tp))
             return false;
-         dest_node.add((DroppableTreeNode)src_leaf.clone());
+         ElementPanel new_ep = new ElementPanel(new TreePath(src_ep.getName()));
+         System.out.println("new_ep = " + new_ep);
+         dest_node.add(new DroppableTreeNode(new_ep, true));
          
          // nodeStructureChanged may collapse expanded rows, so expand rows
          // that were expanded before the drop

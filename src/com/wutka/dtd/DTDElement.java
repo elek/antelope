@@ -12,7 +12,7 @@ public class DTDElement implements DTDOutput {
    /** The name of the element */
    public String name;
 
-   /** The element's attributes */
+   /** The element's attributes <String> -> <DTDAttribute> */
    public Hashtable attributes;
 
    /** The element's content */

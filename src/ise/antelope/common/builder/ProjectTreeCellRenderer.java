@@ -45,8 +45,8 @@ public class ProjectTreeCellRenderer extends DefaultTreeCellRenderer {
 
          Map attrs = ep.getAttributes();
          if ( ep.getName().equals( DNDConstants.TARGET ) ) {
-            DTDAttribute da = (DTDAttribute)attrs.get("name");
-            String value = da.getDefaultValue();
+            NodeAttribute na = (NodeAttribute)attrs.get("name");
+            String value = na.getValue();
             name.append( "<html>" );
             if ( attrs != null ) {
                name.append( "<b>" );
@@ -58,8 +58,8 @@ public class ProjectTreeCellRenderer extends DefaultTreeCellRenderer {
                while ( it.hasNext() ) {
                   String attr_name = ( String ) it.next();
                   if ( !attr_name.equals( "name" ) ) {
-                     da = ( DTDAttribute ) attrs.get( attr_name );
-                     value = da.getDefaultValue();
+                     na = (NodeAttribute)attrs.get(attr_name);
+                     value = na.getValue();
                      if ( value != null && value.length() > 0 ) {
                         name.append( " " );
                         name.append( attr_name );
@@ -77,8 +77,8 @@ public class ProjectTreeCellRenderer extends DefaultTreeCellRenderer {
             while ( it.hasNext() ) {
                String attr_name = ( String ) it.next();
                if ( !attr_name.equals( "name" ) ) {
-                  DTDAttribute da = ( DTDAttribute ) attrs.get( attr_name );
-                  String value = da.getDefaultValue();
+                  NodeAttribute na = (NodeAttribute)attrs.get(attr_name);
+                  String value = na.getValue();
                   if ( value != null && value.length() > 0 ) {
                      name.append( " " );
                      name.append( attr_name );

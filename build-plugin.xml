@@ -105,7 +105,7 @@
    ========================================================================= -->
    <target name="dist"
          description="Compiles, jars, puts the jar in the jEdit jars directory."
-         depends="init,clean,compile,prep_files,copy_resources">
+         depends="clean,compile,prep_files,copy_resources">
         
         <!-- make the jar file. jEdit standards require just the name of the
         plugin, e.g. Antelope.jar. put it in $prep.dir -->

@@ -9,13 +9,17 @@ import ise.library.*;
 import com.wutka.dtd.*;
 
 
-public class ElementPanel extends JPanel implements java.io.Serializable {
+public class ElementPanel extends JPanel implements java.io.Serializable, java.lang.Cloneable {
 
    private JList list = null;
    private TreePath tree_path = null;
+   // element_name is the dtd name, e.g. target, bunzip, etc
    private String element_name = null;
+   // display name is the string to show, e.g. the name for a target rather
+   // than "target".
+   private String display_name = "";
    private String xml = null;
-   private boolean isTask = false;
+   private boolean isTaskOrType = false;
    private DTDElement element = null;
 
    private TreeMap attributes = null;
@@ -23,23 +27,44 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
    public ElementPanel( TreePath tp ) {
       tree_path = tp;
       element_name = tree_path.getLastPathComponent().toString();
-      isTask = tp.getPathCount() == 3;
+      display_name = element_name;
+      isTaskOrType = tp.getPathCount() == 3;
 
       element = ( DTDElement ) DNDConstants.ANT_DTD.elements.get( element_name );
       if ( element != null ) {
-         attributes = new TreeMap( element.attributes );
+         attributes = new TreeMap();
+         Iterator it = element.attributes.keySet().iterator();
+         while(it.hasNext()) {
+            String name = (String)it.next();
+            DTDAttribute attr = (DTDAttribute)element.attributes.get(name);
+            NodeAttribute na = new NodeAttribute(attr);
+            attributes.put(name, na);
+         }
+         
+         // get display name if target
+         NodeAttribute na = (NodeAttribute)attributes.get("name");
+         System.out.println(na);
+         if ((na == null || na.getName().equals("")) && element.getName().equals(DNDConstants.TARGET)) {
+            String rtn = JOptionPane.showInputDialog(null, "Enter name for target:");
+            if (rtn != null){
+               display_name = rtn;
+               na = new NodeAttribute();
+               na.setName("name");
+               na.setValue(display_name);
+               attributes.put("name", na);
+            }
+         }
       }
 
 
       setLayout( new BorderLayout() );
       setBorder( new DropShadowBorder() );
       setTransferHandler( new ElementTransferHandler() );
-      add( new JLabel( element_name ), BorderLayout.NORTH );
+      add( new JLabel( display_name ), BorderLayout.NORTH );
       list = new JList( new DefaultListModel() );
       add( list, BorderLayout.CENTER );
       list.setTransferHandler( new ElementTransferHandler() );
       list.setDragEnabled( true );
-      //list.addMouseListener( new AttributeViewer( list ) );
       addMouseListener( new MenuPopup() );
 
    }
@@ -80,9 +105,13 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
    public String getName() {
       return element_name;
    }
+   
+   public String getDisplayName() {
+      return display_name;  
+   }
 
-   public boolean isTask() {
-      return isTask;
+   public boolean isTaskOrType() {
+      return isTaskOrType;
    }
 
    public TreePath getTreePath() {
@@ -112,19 +141,18 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
          return element_name;
 
       StringBuffer sb = new StringBuffer();
-      sb.append( "<html><b>" + element_name + "</b><br>" );
+      sb.append( "<html><b>" + display_name + "</b><br>" );
       Iterator it = attributes.keySet().iterator();
       while ( it.hasNext() ) {
          String name = it.next().toString();
-         if ( name.equals( "taskname" ) && isTask() )
+         if ( name.equals( "taskname" ) && isTaskOrType() )
             continue;
-         DTDAttribute attribute = ( DTDAttribute ) attributes.get( name );
-         DTDDecl decl = attribute.getDecl();
-         boolean required = decl.equals( DTDDecl.REQUIRED );
+         NodeAttribute attribute = (NodeAttribute)attributes.get(name);
+         boolean required = attribute.isRequired();;
          sb.append( "<span>&nbsp;&nbsp;" );
          if ( required ) {
             //sb.append( "<font color=red>*</font>" );
-            String value = attribute.getDefaultValue();
+            String value = attribute.getValue();
             sb.append( name ).append( ":&nbsp&nbsp;</span><span>" ).append( value == null ? "" : value ).append( "</span><br>" );
          }
       }

@@ -48,28 +48,25 @@ public class AttributeViewer extends JDialog {
          ++ c.y;
          c.a = KappaLayout.E;
          String name = it.next().toString();
-         if ( name.equals( "taskname" ) && ep.isTask() )
+         if ( name.equals( "taskname" ) && ep.isTaskOrType() )
             continue;
 
-         DTDAttribute attribute = ( DTDAttribute ) attributes.get( name );
-         DTDDecl decl = attribute.getDecl();
-         boolean required = decl.equals( DTDDecl.REQUIRED );
-         Object type = attribute.getType();
-
+         NodeAttribute attribute = (NodeAttribute)attributes.get(name);
+         boolean required = attribute.isRequired();
+         
          JLabel label = new JLabel( "<html>" + ( required ? "<font color=red>*</font>" : "" ) + name + ":" );
 
          JComponent comp = null;
-         if ( type instanceof DTDEnumeration || type instanceof DTDNotationList ) {
-            String[] items = ( ( DTDEnumeration ) type ).getItem();
+         String[] items = attribute.getItems();
+         if (items != null) {
             comp = new JComboBox( items );
             ( ( JComboBox ) comp ).setEditable( false );
-            ( ( JComboBox ) comp ).setSelectedItem( attribute.getDefaultValue() );
+            ( ( JComboBox ) comp ).setSelectedItem( attribute.getValue() );
               
          }
          else {
-            // assume String type
             comp = new JTextField( 25 );
-            ( ( JTextField ) comp ).setText( attribute.getDefaultValue() );
+            ( ( JTextField ) comp ).setText( attribute.getValue() );
          }
          comp.setName( name );
 
@@ -104,13 +101,13 @@ public class AttributeViewer extends JDialog {
                      Component c = top.getComponent( i );
                      if ( c instanceof JTextField ) {
                         JTextField tf = ( JTextField ) c;
-                        DTDAttribute attr = ( DTDAttribute ) attributes.get( tf.getName() );
-                        attr.setDefaultValue( tf.getText() );
+                        NodeAttribute attr = (NodeAttribute)attributes.get(tf.getName());
+                        attr.setValue( tf.getText() );
                      }
                      if (c instanceof JComboBox) {
                         JComboBox cb = (JComboBox)c;
-                        DTDAttribute attr = ( DTDAttribute ) attributes.get( cb.getName() );
-                        attr.setDefaultValue( cb.getSelectedItem().toString() );
+                        NodeAttribute attr = (NodeAttribute)attributes.get(cb.getName());
+                        attr.setValue( cb.getSelectedItem().toString() );
                      }
                   }
                   ep.setAttributes( attributes );

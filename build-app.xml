@@ -88,7 +88,7 @@
    ========================================================================= -->
     <target name="dist"
             description="Compiles, jars, and puts a zip file in the dist directory."
-            depends="init,clean,compile,copy_resources,prep_files">
+            depends="clean,compile,prep_files">
         
         <!-- make the jar file, put it in $prep.dir -->
         <tstamp/>
@@ -145,7 +145,7 @@
    <target name="run" 
            description="Runs Antelope as a standalone app."
            depends="setClasspath, copy_resources">
-      <java classname="ise.antelope.common.builder.ProjectBuilder" fork="true">
+      <java classname="ise.antelope.app.Antelope" fork="true">
          <classpath refid="classpathref"/>
       </java>
    </target>
