@@ -110,7 +110,7 @@ public class JEditTextArea extends JComponent {
         // We don't seem to get the initial focus event?
         focusedComponent = this;
     }
-
+    
     /**
      * Returns if this component can be traversed by pressing
      * the Tab key. This returns true.
@@ -601,7 +601,7 @@ public class JEditTextArea extends JComponent {
     /**
      * Returns the document this text area is editing.
      */
-    public final SyntaxDocument getDocument() {
+    public final Document getDocument() {
         return document;
     }
 

@@ -380,8 +380,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 
 		try
 		{
-			TokenMarker tokenMarker = textArea.getDocument()
-				.getTokenMarker();
+			TokenMarker tokenMarker = ((SyntaxDocument)textArea.getDocument()).getTokenMarker();
 			int x = textArea.getHorizontalOffset();
 
 			for(int line = firstInvalid; line <= lastInvalid; line++)

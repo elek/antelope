@@ -322,10 +322,9 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
         final AntelopeGUILogHandler logger = new AntelopeGUILogHandler( false );
         logger.setFont( _font );
-
-        final JTextComponent ta = logger.getTextComponent();
         _antelope_panel.addLogHandler( logger );
 
+        final JTextComponent ta = logger.getTextComponent();
         find_mi.addActionListener(
             new ActionListener() {
                 public void actionPerformed( ActionEvent ae ) {
@@ -396,7 +395,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             }
         );
 
-        _tabs.add( "Output", new JScrollPane( ta ) );
+        _tabs.add( "Output", logger.getPanel() );
         output_mi.addActionListener(
             new ActionListener() {
                 public void actionPerformed( ActionEvent ae ) {
@@ -539,6 +538,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         redo_mi.setEnabled( _editor.canRedo() );
 
         // look and feel
+        /*
         try {
             if (Constants.PREFS.getBoolean( USE_NATIVE_LF, true )) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -549,8 +549,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             SwingUtilities.updateComponentTreeUI(this);
             validate();
         }
-        catch (Exception e) {}
-
+        catch (Throwable e) {}
+        */
         pack();
         ta.requestFocus();
         GUIUtils.fillScreen( this );
