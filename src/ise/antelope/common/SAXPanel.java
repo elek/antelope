@@ -50,13 +50,12 @@ public class SAXPanel extends JPanel implements Navable {
                   }
                }
                                        );
-
+          
          _nav = new Nav( this );
          JPanel bottom_panel = new JPanel( new LambdaLayout() );
          add( bottom_panel, BorderLayout.SOUTH );
          bottom_panel.add( show_attr_mi, "0,0" );
          bottom_panel.add( _nav, "1, 0" );
-
 
          MouseAdapter ma = new MouseAdapter() {
                   public void mouseClicked( MouseEvent evt ) {
@@ -80,11 +79,15 @@ public class SAXPanel extends JPanel implements Navable {
                      }
                   }
                   public void mousePressed( MouseEvent me ) {
+                      System.out.println("mousePressed");
+                      System.out.println("me.isPopupTrigger = " + me.isPopupTrigger());
                      if ( me.isPopupTrigger() ) {
                         showPopup( me );
                      }
                   }
                   public void mouseReleased( MouseEvent me ) {
+                      System.out.println("mouseReleased");
+                      System.out.println("me.isPopupTrigger = " + me.isPopupTrigger());
                      if ( me.isPopupTrigger() ) {
                         showPopup( me );
                      }
@@ -174,7 +177,9 @@ public class SAXPanel extends JPanel implements Navable {
                   }
                }
                ;
+               
          tree.addMouseListener( ma );
+         System.out.println("added mouse listener");
       }
       catch ( Exception e ) {
          e.printStackTrace();

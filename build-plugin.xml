@@ -1,5 +1,5 @@
 
-<project name="Antelope" default="dist" basedir=".">
+<project name="Antelope" default="dist" basedir="." xmlns:antelope="antlib:ise.antelope.tasks">
    <description>
        This build file creates Antelope as a jEdit plugin.
     </description>
@@ -42,8 +42,7 @@
     
     <!-- where to put the finished distribution file -->
    <property name="dist.dir" location="dist"/>
-    
-
+   
     
    <!-- ========================================================================
       Target: set classpath

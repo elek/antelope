@@ -10,7 +10,7 @@ import java.util.prefs.*;
  * about file permissions, this implementation does not have those problems. 
  * <p>
  * Nodes are named using a / separated naming convention. The preferences are
- * stored in a tree-like structure, with the root node names "" per the
+ * stored in a tree-like structure, with the root node named "" per the
  * preferences specification. A node directly below the root node would be 
  * referenced by a / followed by the node name, for example "/node0". Node below
  * the initial child nodes follow the same convention, so "/node0/child0/kid2"

@@ -484,7 +484,8 @@ public class AntelopePlugin extends EBPlugin implements Constants {
             return null;
          }
       }
-      // got Ant home
+      // got Ant home, store it in a system property
+      System.setProperty("ant.home", ant_home);
 
       // put all jars from ANT_HOME into line-separated string
       File lib_dir = new File( ant_home, "lib" );

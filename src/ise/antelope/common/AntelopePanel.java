@@ -1,10 +1,10 @@
 // $Id$
 /*
-* Based on the Apache Software License, Version 1.1
-*
-* Copyright (c) 2002 Dale Anson.  All rights reserved.
+ * Based on the Apache Software License, Version 1.1
  *
-* Redistribution and use in source and binary forms, with or without
+ * Copyright (c) 2002 Dale Anson.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
 *
@@ -59,6 +59,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import ise.library.*;
+import ise.antelope.tasks.*;
 
 import org.apache.tools.ant.*;
 
@@ -1072,6 +1073,8 @@ public class AntelopePanel extends JPanel implements Constants {
 
 
                   Target target = ( Target ) targets.get( target_name );
+                  if (target == null)
+                      continue;
                   String description = target.getDescription();
                   if ( _settings.getShowAllTargets() ) {
                      _targets.put( target_name, target );
@@ -1229,18 +1232,19 @@ public class AntelopePanel extends JPanel implements Constants {
       AntProject p = new AntProject();
       try {
          ClassLoader cl = _helper.getAntClassLoader();
+         p.setCoreLoader(cl);
          p.init( cl );   // this takes as much as 9 seconds the first time, less than 1/2 second later
-
+         
          // add the antelope build logger now so that any output produced by the
          // ProjectHelper is captured
          p.addBuildListener( _build_logger );
 
-         /// this is the "recommended" way, but throws an NPE
-         //ProjectHelper ph = ProjectHelper.getProjectHelper();
-         //ph.parse(p, build_file);
-         ProjectHelper.configureProject( p, build_file );
-         p.setProperty( "ant.file", build_file.getAbsolutePath() );
+         p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
          p.setProperty( "ant.version", Main.getAntVersion() );
+         String ant_home = System.getProperty("ant.home");
+         if (ant_home != null)
+             p.setProperty("ant.home", ant_home);
+         ProjectHelper.configureProject( p, build_file );
 
          // add ant.jar to the classpath
          // for Ant 1.6, does ant-launcher.jar need to be added also? --
