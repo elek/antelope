@@ -937,7 +937,6 @@ public class AntelopePanel extends JPanel implements Constants {
 
                // Ant 1.6 has an un-named target to hold project-level tasks, so
                // find it and save it for later.
-
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
                   Iterator iter = targets.keySet().iterator();
@@ -1078,6 +1077,11 @@ public class AntelopePanel extends JPanel implements Constants {
       try {
          ClassLoader cl = _helper.getAntClassLoader();
          p.init( cl );   // this takes as much as 9 seconds the first time, less than 1/2 second later
+
+         // add the antelope build logger now so that any output produced by the 
+         // ProjectHelper is captured
+         p.addBuildListener( _build_logger );
+
          ProjectHelper.configureProject( p, build_file );
          p.setProperty( "ant.file", build_file.getAbsolutePath() );
          p.setProperty( "ant.version", Main.getAntVersion() );
@@ -1126,9 +1130,6 @@ public class AntelopePanel extends JPanel implements Constants {
 
          // add the gui input handler
          p.setInputHandler( new AntInputHandler( this ) );
-
-         // add the antelope build logger
-         p.addBuildListener( _build_logger );
 
          // optionally add the antelope performance listener
          if ( _settings.getShowPerformanceOutput() ) {

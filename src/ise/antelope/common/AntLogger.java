@@ -319,6 +319,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
    public void buildStarted( BuildEvent event ) {
       handleProperties( event );
       log( " " );
+      // note: ConsolePluginHandler uses the ===== to show the Console plugin
       log( Level.CONFIG, "===== BUILD STARTED =====" + lSep );
       startTime = System.currentTimeMillis();
    }
@@ -365,6 +366,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       message.append( "Total time: " );
       message.append( formatTime( System.currentTimeMillis() - startTime ) );
       message.append( lSep );
+      // note: ConsolePluginHandler uses the ===== to show the Console plugin
       message.append( "===== BUILD FINISHED =====" ).append( lSep );
 
       String msg = message.toString();

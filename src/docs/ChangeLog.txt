@@ -1,6 +1,13 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.0.3:
+15 Mar 2004:
+o showing 'private' targets in italics in all modes modes. Targets are considered 'private' if:
+   1. the target name starts with -
+   2. the target does not have a description
+   3. there is a . anywhere in the target name
+
 3.0.2:
 23 Feb 2004
 o changed default for showing targets to "Show all targets".

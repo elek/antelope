@@ -68,9 +68,9 @@ public class ConsolePluginHandler extends Handler {
       // the error parser work correctly.
       String parseline = record.getMessage().trim();
 
-      // bring the console to the front -- maybe not, this seems to cause
-      // problems with other plugins.
-      //showConsole( );
+      // bring the console to the front, but only at the start and end of a build.
+      if (parseline.startsWith("====="))
+         showConsole( );
 
       if ( _panel.useErrorParsing() ) {
          int type = ConsolePlugin.parseLine( _view, parseline, dir, _error_source );
