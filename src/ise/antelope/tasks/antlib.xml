@@ -1,0 +1,24 @@
+<antlib>
+   <taskdef name="antcallback" classname="ise.antelope.tasks.AntCallBack"/>
+   <taskdef name="antfetch" classname="ise.antelope.tasks.AntFetch"/>
+   <taskdef name="assert" classname="ise.antelope.tasks.Assert"/>
+   <taskdef name="antcallback" classname="ise.antelope.tasks.AntCallBack"/>
+   <taskdef name="antfetch" classname="ise.antelope.tasks.AntFetch"/>
+   <taskdef name="assert" classname="ise.antelope.tasks.Assert"/>
+   <taskdef name="bool" classname="ise.antelope.tasks.BooleanConditionTask"/>
+   <taskdef name="break" classname="ise.antelope.tasks.Break"/>
+   <taskdef name="call" classname="ise.antelope.tasks.Call"/>
+   <taskdef name="case" classname="ise.antelope.tasks.Case"/>
+   <taskdef name="catch" classname="ise.antelope.tasks.CatchTask"/>
+   <taskdef name="default" classname="ise.antelope.tasks.DefaultCase"/>
+   <taskdef name="else" classname="ise.antelope.tasks.ElseTask"/>
+   <taskdef name="finally" classname="ise.antelope.tasks.FinallyTask"/>
+   <taskdef name="if" classname="ise.antelope.tasks.IfTask"/>
+   <taskdef name="limit" classname="ise.antelope.tasks.Limit"/>
+   <taskdef name="math" classname="ise.antelope.tasks.MathTask"/>
+   <taskdef name="post" classname="ise.antelope.tasks.PostTask"/>
+   <taskdef name="stopwatch" classname="ise.antelope.tasks.StopWatchTask"/>
+   <taskdef name="switch" classname="ise.antelope.tasks.SwitchTask"/>
+   <taskdef name="try" classname="ise.antelope.tasks.TryTask"/>
+   <taskdef name="var" classname="ise.antelope.tasks.Variable"/>
+</antlib>

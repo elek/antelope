@@ -1,0 +1,72 @@
+#--------------------------------
+# Properties for Antelope Plugin 
+#--------------------------------
+
+
+#--------------------------------------------
+# the basic required properties for a plugin
+#--------------------------------------------
+
+# the name of the plugin
+plugin.ise.antelope.plugin.AntelopePlugin.name=Antelope
+
+# the author of the plugin
+plugin.ise.antelope.plugin.AntelopePlugin.author=Dale Anson
+
+# the version of the plugin
+plugin.ise.antelope.plugin.AntelopePlugin.version=@@build.num@@
+
+# dependencies
+plugin.ise.antelope.plugin.AntelopePlugin.depend.0=jdk 1.4
+plugin.ise.antelope.plugin.AntelopePlugin.depend.1=jedit 04.02.01.00
+plugin.ise.antelope.plugin.AntelopePlugin.depend.2=plugin console.ConsolePlugin 3.3
+plugin.ise.antelope.plugin.AntelopePlugin.depend.3=plugin errorlist.ErrorListPlugin 1.2.2
+
+# title for DockableWindowManager
+Antelope.title=Antelope
+
+# new setting for jEdit 4.2
+plugin.ise.antelope.plugin.AntelopePlugin.activate=defer
+
+
+#-----------------------------------
+# optional settings for the plugin
+#-----------------------------------
+
+# first page for the plugin documentation
+plugin.ise.antelope.plugin.AntelopePlugin.docs=manual/index.html
+
+
+#----------------
+# menu settings
+#----------------
+
+# this is the text that will be shown on the jEdit plugin
+# menu. It is read by jEdit via the createMenuItems method in
+# plugin class. This line must start with the string passed to
+# the GUIUtilities.loadMenu method in createMenuItems.
+Antelope.menu.label=Antelope
+
+# this setting describes the submenu. Each menu item is listed in the
+# order it is shown. The dash is a special character and will cause a
+# menu separator to be inserted. This line also must start with the string 
+# passed to the GUIUtilities.loadMenu method in createMenuItems. The items
+# are the action names as set in the actions.xml file.
+plugin.ise.antelope.plugin.AntelopePlugin.menu=antelope.show - antelope.hide - antelope.toggle
+
+# the next three items are the labels to add to a submenu on
+# the plugins menu for the AntelopePlugin. The plugins menu will have
+# a menu item labeled "Antelope" that has a submenu with "Show", "Hide",
+# and "Toggle". These lines start with the action names set in the
+# actions.xml file.
+antelope.show.label=Show
+antelope.hide.label=Hide
+antelope.toggle.label=Toggle
+
+#-----------------------
+# option pane settings
+#-----------------------
+plugin.ise.antelope.plugin.AntelopePlugin.option-pane=antelope
+options.antelope.label=Antelope
+options.antelope.code=new ise.antelope.plugin.AntelopeOptions(view);
+

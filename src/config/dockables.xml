@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE DOCKABLES SYSTEM "dockables.dtd">
+
+<!-- This code is executed when the plugin is "docked" or first made visible in
+jEdit. This loads the Ant jars into the same classloader as Antelope. -->
+
+<DOCKABLES>
+    <DOCKABLE NAME="Antelope">
+        jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
+        return new ise.antelope.plugin.AntelopePluginPanel(view, position);;
+    </DOCKABLE>
+</DOCKABLES>
