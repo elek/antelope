@@ -160,10 +160,9 @@ public class SAXTreeModel extends DefaultTreeModel {
          if ( child.isTarget() )
             list.put( child.getAttributeValue( "name" ), child );
          // add subproject targets
-         if ( child.isProject() )
+         else if ( child.isProject() )
             addSubProjectTargets( child, list );
       }
-      
       return list;
    }
 
@@ -175,10 +174,12 @@ public class SAXTreeModel extends DefaultTreeModel {
       while ( en.hasMoreElements() ) {
          SAXTreeNode child = ( SAXTreeNode ) en.nextElement();
          // add target directly
-         if ( child.isTarget() )
+         if ( child.isTarget() ) {
+            String name = getPQName(child);
             list.put( getPQName(child), child );
+         }
          // add subproject targets
-         if ( child.isProject() )
+         else if ( child.isProject() )
             addSubProjectTargets( child, list );
       }
    }

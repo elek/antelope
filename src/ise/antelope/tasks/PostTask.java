@@ -65,6 +65,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.HttpURLConnection;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -331,6 +332,12 @@ public class PostTask extends Task {
                      FileWriter fw = null;
                      BufferedReader in = null;
                      try {
+                         if (connection instanceof HttpURLConnection) {
+                             if(verbose) {
+                                 log(String.valueOf(((HttpURLConnection)connection).getResponseCode()));
+                                 log(((HttpURLConnection)connection).getResponseMessage());
+                             }
+                         }
                         in = new BufferedReader(
                               new InputStreamReader( connection.getInputStream() ) );
                         if ( log != null ) {
@@ -341,7 +348,7 @@ public class PostTask extends Task {
                            if ( currentRunner != this ) {
                               break;
                            }
-                           line = URLDecoder.decode( line, "UTF-8" );
+                           //line = URLDecoder.decode( line, "UTF-8" );
                            if ( verbose ) {
                               log( line );
                            }

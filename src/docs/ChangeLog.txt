@@ -1,6 +1,10 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.1.9:
+29 July 2004
+o fix for issue #20, imported targets now have buttons.
+
 3.1.8:
 23 May 2004
 o Completed issue #12, added 'tail' to output window in app.

@@ -320,7 +320,6 @@ public class SAXNodeHandler extends DefaultHandler {
                         InputSource is = new InputSource( new java.net.URL( systemId ).openStream() );
                         is.setPublicId( publicId );
                         is.setSystemId( systemId );
-                        System.out.println("is is " + is.toString());
                         return is;
                     }
                     catch ( Exception e ) {
