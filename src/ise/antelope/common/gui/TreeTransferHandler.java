@@ -8,11 +8,32 @@ import javax.swing.tree.*;
 /**
  * Modeled after code from Sun's java tutorial.
  */
-public class TreeTransferHandler extends StringTransferHandler {
-   private int[] indices = null;
-   private int addIndex = -1; //Location where items were added
-   private int addCount = 0;  //Number of items added.
+public class TreeTransferHandler extends TransferHandler {
    
+   protected Transferable createTransferable(JComponent c) {
+      TreePath tp = ((JTree)c).getSelectionPath();
+      System.out.println(tp);
+      Object[] steps = tp.getPath();
+      if (steps.length == 0 || steps.length == 1)
+         return null;
+      if (!steps[0].toString().equals("project"))
+         return null;
+      if (steps[1].toString().equals("target")) {
+         return new AntTransferable(DNDConstants.TARGET_ELEMENT);
+      }
+      if (steps[1].toString().equals("tasks")) {
+         return new AntTransferable(DNDConstants.TASK_ELEMENT);
+      }
+      if (steps[1].toString().equals("types")) {
+         return new AntTransferable(DNDConstants.TYPE_ELEMENT);
+      }
+      return null;
+   }
+   
+   public int getSourceActions( JComponent c ) {
+      return COPY_OR_MOVE;
+   }
+
    public boolean canImport(JComponent c, DataFlavor[] df) {
       return false;  
    }

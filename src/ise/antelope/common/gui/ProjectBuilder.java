@@ -1,6 +1,7 @@
 package ise.antelope.common.gui;
 
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -110,14 +111,7 @@ public class ProjectBuilder extends JPanel {
          //project_tree.addMouseListener( new AttributeViewer( project_tree ) );
          project_tree.setDragEnabled( true );
 
-         JPanel project_panel = new JPanel(new LambdaLayout());
-         // need to use a DefaultListModel or dnd won't work
-         JList list = new JList( new DefaultListModel() );
-         list.setSelectionMode( ListSelectionModel.SINGLE_INTERVAL_SELECTION );
-         list.setDragEnabled( true );
-         list.setTransferHandler( new ListTransferHandler() );
-         project_panel.add( new JScrollPane( list ), "0, 0, 1, 1, 0, wh, 3" );
-         project_panel.setBorder( new DropShadowBorder() );
+         ProjectPanel project_panel = new ProjectPanel();
          JSplitPane splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
                true,
                new JScrollPane( project_tree ),
@@ -296,7 +290,7 @@ public class ProjectBuilder extends JPanel {
                   ProjectBuilder pb = new ProjectBuilder();
                   pb.setOpaque( true );
                   frame.setContentPane( pb );
-                  frame.setSize( 400, 600 );
+                  frame.setSize( 600, 600 );
                   frame.setVisible( true );
                   frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
                }

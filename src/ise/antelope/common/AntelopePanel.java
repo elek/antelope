@@ -228,6 +228,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
 
 
+
       LambdaLayout lal = new LambdaLayout();
       _control_panel = new JPanel( lal );
       Insets ins = new Insets( 1, 1, 1, 1 );
@@ -938,6 +939,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
 
 
+
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
                   Iterator iter = targets.keySet().iterator();
@@ -1089,29 +1091,29 @@ public class AntelopePanel extends JPanel implements Constants {
          // option where the user can specify additional locations. Should
          // Antelope support this? Need a gui in the properties panel if so.
          java.util.List ant_jars = _helper.getAntJarList();
-         if (ant_jars != null ){
+         if ( ant_jars != null ) {
             java.util.List cp_list = new ArrayList();
-            String classpath = p.getProperty("java.class.path");
-            StringTokenizer st = new StringTokenizer(classpath, File.pathSeparator);
-            while(st.hasMoreTokens()) {
-               cp_list.add(new File(st.nextToken()));  
+            String classpath = p.getProperty( "java.class.path" );
+            StringTokenizer st = new StringTokenizer( classpath, File.pathSeparator );
+            while ( st.hasMoreTokens() ) {
+               cp_list.add( new File( st.nextToken() ) );
             }
             Iterator it = ant_jars.iterator();
-            while(it.hasNext()) {
-               File f = new File((String)it.next());
-               if (!cp_list.contains(f)) {
-                  cp_list.add(f);  
+            while ( it.hasNext() ) {
+               File f = new File( ( String ) it.next() );
+               if ( !cp_list.contains( f ) ) {
+                  cp_list.add( f );
                }
             }
             StringBuffer sb = new StringBuffer();
             it = cp_list.iterator();
-            while(it.hasNext()) {
-               sb.append(((File)it.next()).getAbsolutePath()).append(File.pathSeparator);  
+            while ( it.hasNext() ) {
+               sb.append( ( ( File ) it.next() ).getAbsolutePath() ).append( File.pathSeparator );
             }
             classpath = sb.toString();
-            p.setProperty("java.class.path", classpath);
+            p.setProperty( "java.class.path", classpath );
          }
-         
+
          // load any saved user properties for this build file. These are properties
          // that the user has set using the properties dialog and in command-line
          // Ant would have been passed on the command line.

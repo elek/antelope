@@ -96,14 +96,17 @@ public class AntelopePlugin extends EBPlugin implements Constants {
 
    private static ArrayList _listeners = new ArrayList();
 
-   // load our preferences handler -- this one doesn't give any problems on
-   /// Linux like the default preferences handler does. ??? could this possibly
-   /// cause problems with a system preferences factory? Shouldn't there be
-   /// delegates?
    static {
+      // load our preferences handler -- this one doesn't give any problems on
+      /// Linux like the default preferences handler does. ??? could this possibly
+      /// cause problems with a system preferences factory? Shouldn't there be
+      /// delegates?
       String prefs = System.getProperty( "java.util.prefs.PreferencesFactory" );
       if ( prefs == null || !prefs.equals( "ise.library.UserPreferencesFactory" ) )
          System.setProperty( "java.util.prefs.PreferencesFactory", "ise.library.UserPreferencesFactory" );
+
+      // also reset the ant jars property
+      jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
    }
 
    /**
@@ -137,6 +140,8 @@ public class AntelopePlugin extends EBPlugin implements Constants {
       MiscUtilities.isToolsJarAvailable();
 
       Shell.registerShell( SHELL );
+      //Log.log( Log.DEBUG, AntelopePlugin.class, ">>>>>>>>>> AntelopePlugin.start()" );
+
    }
 
    /**
@@ -145,6 +150,7 @@ public class AntelopePlugin extends EBPlugin implements Constants {
     * jars when it stops so reloading the plugin works correctly.
     */
    public void stop() {
+      //Log.log( Log.DEBUG, AntelopePlugin.class, ">>>>>>>>>> AntelopePlugin.stop()" );
       // jEdit keeps a list in a properties, reset it as we'll want to reload it
       // when/if the plugin restarts
       jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
@@ -159,10 +165,23 @@ public class AntelopePlugin extends EBPlugin implements Constants {
          jEdit.removePluginJAR( pj, false );
       }
 
+      if ( panelList != null ) {
+         Iterator it = panelList.values().iterator();
+         while ( it.hasNext() ) {
+            AntelopePluginPanel panel = ( AntelopePluginPanel ) it.next();
+            panel.close();
+         }
+      }
+
       antJars = null;
       panelList = null;
+      Shell.unregisterShell( SHELL );
       SHELL = null;
       _listeners = null;
+   }
+
+   protected void finalize() {
+      jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
    }
 
    public static void reload() {
@@ -190,20 +209,24 @@ public class AntelopePlugin extends EBPlugin implements Constants {
          BufferUpdate msg = ( BufferUpdate ) message;
          if ( msg.getWhat().equals( BufferUpdate.SAVING ) ) {
             String filename = msg.getBuffer().getPath();
-            File f = new File( filename );
-            Iterator it = panelList.keySet().iterator();
-            while ( it.hasNext() ) {
-               View view = ( View ) it.next();
-               AntelopePluginPanel panel = ( AntelopePluginPanel ) panelList.get( view );
-               if ( f.equals( panel.getBuildFile() ) ) {
-                  panel.reload();
+            if ( filename != null ) {
+               File f = new File( filename );
+               Iterator it = panelList.keySet().iterator();
+               while ( it.hasNext() ) {
+                  View view = ( View ) it.next();
+                  AntelopePluginPanel panel = ( AntelopePluginPanel ) panelList.get( view );
+                  if ( f.equals( panel.getBuildFile() ) ) {
+                     panel.reload();
+                  }
+                  ActionEvent ae = new ActionEvent( view, 0, f.getAbsolutePath() );
+                  fireActionEvent( ae );
                }
-               ActionEvent ae = new ActionEvent( view, 0, f.getAbsolutePath() );
-               fireActionEvent( ae );
             }
          }
       }
       else if ( message instanceof EditorExiting ) {
+         if ( panelList == null )
+            return ;
          Iterator it = panelList.values().iterator();
          while ( it.hasNext() ) {
             AntelopePluginPanel panel = ( AntelopePluginPanel ) it.next();

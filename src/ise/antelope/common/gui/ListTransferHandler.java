@@ -7,7 +7,7 @@ import java.awt.datatransfer.*;
 /**
  * Borrowed from Sun's java tutorial.
  */
-public class ListTransferHandler extends StringTransferHandler {
+public class ListTransferHandler /*extends StringTransferHandler*/ {
    private int[] indices = null;
    private int addIndex = -1; //Location where items were added
    private int addCount = 0;  //Number of items added.

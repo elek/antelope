@@ -10,8 +10,15 @@ import ise.library.*;
 public class TargetBuilder extends JPanel {
    private String name = null;
    
+   public TargetBuilder() {
+      
+   }
+   
    public TargetBuilder(String name) {
       this.name = name;
+   }
+   
+   private void init() {
       setLayout(new LambdaLayout());
       setBackground(Color.WHITE);
       setBorder(new DropShadowBorder());
@@ -24,6 +31,14 @@ public class TargetBuilder extends JPanel {
       
       add(title_panel, "0, 0, 1, 1, 0, wh, 3");
       add(tasks,  "0, 1, 1, 1, 0, wh, 3");
+   }
+   
+   public void addNotify() {
+      super.addNotify();
+      if (name == null) {
+         name = JOptionPane.showInputDialog( this, "Enter target name:", "Target Name", JOptionPane.QUESTION_MESSAGE );
+      }
+      init();  
    }
    
    public String toString() {

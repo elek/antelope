@@ -15,7 +15,7 @@
    <property name="install.dir" value=".." />
     
     <!-- version number, override in build.props if necessary -->
-   <property name="build.num" value="2.88.2"/>
+   <property name="build.num" value="3.0.1"/>
     
     <!-- shouldn't need to override the following properties -->
     
@@ -89,6 +89,9 @@
          <classpath refid="classpathref" />
          <exclude name="testcases/**/*"/>
          <exclude name="**/app/**/*"/>
+         <!-- this next bit is excluded until it is good -->
+         <exclude name="**/common/gui/*"/>
+         <exclude name="**/common/builder/*"/>
       </javac>
    </target>
     
@@ -102,7 +105,7 @@
    ========================================================================= -->
    <target name="dist"
          description="Compiles, jars, puts the jar in the jEdit jars directory."
-         depends="init,compile,prep_files,copy_resources">
+         depends="init,clean,compile,prep_files,copy_resources">
         
         <!-- make the jar file. jEdit standards require just the name of the
         plugin, e.g. Antelope.jar. put it in $prep.dir -->
