@@ -1,5 +1,11 @@
 Antelope Change Log
 Version: @@build.num@@
+3.2.0:
+Looks like I missed a few updates to this file...
+23 Dec 2004
+o added ability to call the "implicit" target explicitly.  The implicit target is the anonymous target that Ant uses to hold top-level tasks like <property> and <import>. Previously, the only way to run the implicit target was to run an explicit target, so Antelope was unable to rerun the implicit target for build files that did not have an explicit target. The button labeled "_implicit_" will run the implicit target.  Note that in multi-target mode, the "_implicit_" button does not show, the implicit target will (as usual) be ran before other targets are executed.
+o Updated the launcher so the run.xml file to start Antelope is no longer required. Just "java -jar Antelope.jar" will start Antelope.
+o Fixed several other minor bugs, but exactly what they were escapes me at the moment.
 
 3.1.10:
 29 Aug 2004

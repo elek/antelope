@@ -100,19 +100,38 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
     private File _build_file = null;
 
     private StatusBar status = null;
+    
+    private String[] args = null;
 
-    /** Constructor for the Antelope object  */
     public Antelope() {
-        this( null );
+        super( );
+        init(null);
     }
-
+    
+    public Antelope(String[] args) {
+        super( );
+        init(args);
+    }
+    
     /**
      * Constructor for the Antelope object
      *
      * @param build_file  the build file to use
      */
-    public Antelope( File build_file ) {
-        super( "Antelope" );
+    public void init( String[] params ) {
+        this.args = params;
+        
+        setTitle("Antelope");
+        
+        File build_file = null;
+        if (args.length > 0) {
+            build_file = new File(args[0]);
+            if (!build_file.exists()) { 
+                JOptionPane.showMessageDialog(Antelope.this, "Build file " + args[0] + " does not exist.", "Build File Not Found", JOptionPane.WARNING_MESSAGE);
+                build_file = null;
+            }
+        }
+        
         _tabs = new JTabbedPane();
 
         final AntelopePanel panel;
@@ -136,6 +155,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                                          );
 
 
+        setIconImage(new ImageIcon(getClass().getClassLoader().getResource("images/red_ant.gif")).getImage());                                         
+                                         
         JPanel contents = new JPanel(new BorderLayout());
         JSplitPane split_pane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, _antelope_panel, _tabs );
         contents.add(split_pane, BorderLayout.CENTER);
@@ -166,39 +187,40 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         help_menu.setMnemonic( KeyEvent.VK_H );
 
         JMenuItem new_mi = new JMenuItem( "New Build File",
-                new ImageIcon( ClassLoader.getSystemResource( "images/New16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/New16.gif" ) ) );
         JMenuItem open_mi = new JMenuItem( "Open Build File",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Open16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Open16.gif" ) ) );
         JMenuItem save_mi = new JMenuItem( "Save Build File",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Save16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Save16.gif" ) ) );
         JMenuItem exit_mi = new JMenuItem( "Exit",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Stop16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Stop16.gif" ) ) );
         final JMenuItem undo_mi = new JMenuItem( "Undo",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Undo16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Undo16.gif" ) ) );
         final JMenuItem redo_mi = new JMenuItem( "Redo",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Redo16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Redo16.gif" ) ) );
         final JMenuItem cut_mi = new JMenuItem( "Cut",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Cut16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Cut16.gif" ) ) );
         final JMenuItem copy_mi = new JMenuItem( "Copy",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Copy16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Copy16.gif" ) ) );
         final JMenuItem paste_mi = new JMenuItem( "Paste",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Paste16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Paste16.gif" ) ) );
         final JMenuItem find_mi = new JMenuItem( "Find",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Find16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Find16.gif" ) ) );
         final JMenuItem replace_mi = new JMenuItem( "Replace",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Replace16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Replace16.gif" ) ) );
         JMenuItem output_mi = new JMenuItem( "Save Output",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Save16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Save16.gif" ) ) );
         JMenuItem clear_mi = new JMenuItem( "Clear Output",
-                new ImageIcon( ClassLoader.getSystemResource( "images/New16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/New16.gif" ) ) );
         JMenuItem font_mi = new JMenuItem( "Font..." );
         JMenuItem options_mi = new JMenuItem( "Editor..." );
         JMenuItem syntax_mi = new JMenuItem( "Syntax..." );
+        JMenuItem ant_mi = new JMenuItem("Ant...");
         JMenuItem build_options_mi = new JMenuItem("Build File Options...");
         JMenuItem help_mi = new JMenuItem( "Help",
-                new ImageIcon( ClassLoader.getSystemResource( "images/Help16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/Help16.gif" ) ) );
         JMenuItem about_mi = new JMenuItem( "About",
-                new ImageIcon( ClassLoader.getSystemResource( "images/About16.gif" ) ) );
+                new ImageIcon( getClass().getClassLoader().getResource( "images/About16.gif" ) ) );
 
         new_mi.setMnemonic( KeyEvent.VK_N );
         open_mi.setMnemonic( KeyEvent.VK_O );
@@ -249,7 +271,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         format_menu.add( font_mi );
         format_menu.add( syntax_mi );
         format_menu.add( options_mi );
-        format_menu.add( build_options_mi);
+        format_menu.add( build_options_mi );
+        format_menu.add( ant_mi );
         help_menu.add( help_mi );
         help_menu.add( about_mi );
         bar.add( _file_menu );
@@ -289,7 +312,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             new ActionListener() {
                 public void actionPerformed( ActionEvent ae ) {
                     try {
-                        java.net.URL url = ClassLoader.getSystemResource(
+                        java.net.URL url = getClass().getClassLoader().getResource(
                                     "manual/index.html" );
                         AboutDialog help_dialog = new AboutDialog( Antelope.this,
                                 "Help", url, true );
@@ -306,7 +329,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             new ActionListener() {
                 public void actionPerformed( ActionEvent ae ) {
                     try {
-                        java.net.URL url = ClassLoader.getSystemResource(
+                        java.net.URL url = getClass().getClassLoader().getResource(
                                     "about.html" );
                         AboutDialog about_dialog = new AboutDialog( Antelope.this,
                                 "About", url, true );
@@ -394,6 +417,18 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                 }
             }
         );
+        ant_mi.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae) {
+                ise.antelope.launcher.WhereIsAntDialog d = new ise.antelope.launcher.WhereIsAntDialog();
+                ActionListener al = new ActionListener(){
+                    public void actionPerformed(ActionEvent ae) {
+                        JOptionPane.showMessageDialog(Antelope.this, "Antelope must be restarted before this change takes effect.\nRestart now?", "Ant Changed", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                };
+                d.addActionListener(al);
+                d.setVisible(true);
+            }
+        });
 
         _tabs.add( "Output", logger.getPanel() );
         output_mi.addActionListener(
@@ -809,6 +844,10 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             }
             ;
     }
+    
+    public ActionListener getTraceButtonAction() {
+        return null;   
+    }
 
      /**
      * Gets the traceButtonAction attribute of the Antelope object
@@ -892,7 +931,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
      * @param args  The command line arguments
      */
     public static void main( String[] args ) {
-        // load our preferences handler -- this one doesn't give any problems on
+        /// load our preferences handler -- this one doesn't give any problems on
         /// Linux like the default preferences handler does. ??? could this possibly
         /// cause problems with a system preferences factory? Shouldn't there be
         /// delegates?
@@ -903,23 +942,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             e.printStackTrace();
         }
 
-        try {
-            if ( args.length == 1 ) {
-
-                File f = new File( args[ 0 ] );
-
-                if ( !f.exists() )
-                    throw new IllegalArgumentException( usage );
-
-                new Antelope( f );
-            }
-            else {
-                new Antelope();
-            }
-        }
-        catch ( Exception e ) {
-            e.printStackTrace();
-        }
+        Antelope antelope = new Antelope();
+        antelope.init(args);
     }
 }
 

@@ -69,6 +69,8 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import java.rmi.server.UID;
+
 import java.util.*;
 
 import org.apache.tools.ant.BuildException;
@@ -109,7 +111,7 @@ public class PostTask extends Task {
     private boolean verbose = true;
     /** want to keep the server response? */
     private boolean wantResponse = true;
-    /** store output in a property */
+    /** store output in this property */
     private String property = null;
 
     /** how long to wait for a response from the server */
@@ -117,11 +119,14 @@ public class PostTask extends Task {
     /** fail on error? */
     private boolean failOnError = false;
 
-    // storage for cookies
+    // storage for cookies, static so that cookies are shared between instances
+    // of Post. This allows a <post> to follow a previous <post> and use the
+    // cookies that may have been set in the first post.
     private static Hashtable cookieStorage = new Hashtable();
 
     /** connection to the server */
     private URLConnection connection = null;
+    
     /** for thread handling */
     private Thread currentRunner = null;
 
@@ -190,6 +195,11 @@ public class PostTask extends Task {
         wantResponse = b;
     }
 
+    /**
+     * Set the name of a property to save the response to. Optional. Ignored if
+     * "wantResponse" is false.
+     * @param name the name to use for the property
+     */
     public void setProperty( String name ) {
         property = name;
     }
@@ -301,6 +311,8 @@ public class PostTask extends Task {
                                     Cookie cookie = ( Cookie ) cookieStorage.get( name );
                                     if ( to.getPath().startsWith( cookie.getPath() ) ) {
                                         connection.addRequestProperty( "Cookie", cookie.toString() );
+                                        if (verbose)
+                                            log("Added cookie: " + cookie.toString());
                                     }
                                 }
                             }
@@ -372,6 +384,8 @@ public class PostTask extends Task {
                                             }
                                         }
                                     }
+
+                                    // maybe log response headers
                                     if ( verbose ) {
                                         log( String.valueOf( ( ( HttpURLConnection ) connection ).getResponseCode() ) );
                                         log( ( ( HttpURLConnection ) connection ).getResponseMessage() );
@@ -400,9 +414,11 @@ public class PostTask extends Task {
                                 in = new BufferedReader(
                                          new InputStreamReader( connection.getInputStream() ) );
                                 if ( log != null ) {
+                                    // user wants output stored to a file
                                     fw = new PrintWriter( new FileWriter( log, append ) );
                                 }
                                 if ( property != null ) {
+                                    // user wants output stored in a property
                                     sw = new StringWriter();
                                     pw = new PrintWriter( sw );
                                 }
@@ -411,20 +427,21 @@ public class PostTask extends Task {
                                     if ( currentRunner != this ) {
                                         break;
                                     }
-                                    //line = URLDecoder.decode( line, "UTF-8" );
                                     if ( verbose ) {
                                         log( line );
                                     }
                                     if ( fw != null ) {
+                                        // write response to a file
                                         fw.println( line );
                                     }
                                     if ( pw != null ) {
+                                        // write response to a property
                                         pw.println( line );
                                     }
                                 }
                             }
                             catch ( Exception e ) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
                                 if ( failOnError ) {
                                     throw new BuildException( e, getLocation() );
                                 }
@@ -447,6 +464,7 @@ public class PostTask extends Task {
                                 }
                             }
                             if ( property != null && sw != null ) {
+                                // save property
                                 getProject().setProperty( property, sw.toString() );
                             }
                         }
@@ -509,9 +527,10 @@ public class PostTask extends Task {
 
 
     /**
-     * Builds and formats the message to send to the server.
+     * Builds and formats the message to send to the server. Message is UTF-8
+     * encoded unless encoding has been explicitly set.
      *
-     * @return   the message to send to the server, UTF-8 encoded.
+     * @return   the message to send to the server.
      */
     private String getContent() {
         if ( propsFile != null ) {
@@ -641,13 +660,20 @@ public class PostTask extends Task {
         }
     }
 
+    /**
+     * Represents a cookie.  See RFC 2109 and 2965.
+     */
     public class Cookie {
         private String name;
         private String value;
         private String domain;
-        private String path;
-        private long id = new Date().getTime();
+        private String path = "/";
+        private String id;
 
+        /**
+         * @param raw the raw string abstracted from the header of an http response
+         * for a single cookie.
+         */
         public Cookie( String raw ) {
             String[] args = raw.split( "[;]" );
             for ( int i = 0; i < args.length; i++ ) {
@@ -663,41 +689,92 @@ public class PostTask extends Task {
                 else if ( parts[ 0 ].equalsIgnoreCase( "Domain" ) )
                     domain = parts[ 1 ];
             }
+            if (name == null)
+                throw new IllegalArgumentException("Raw cookie does not contain a cookie name.");
+            if (path == null)
+                path = "/";
+            setId(path, name);
         }
 
+        /**
+         * @param name name of the cookie
+         * @param value the value of the cookie
+         */
         public Cookie( String name, String value ) {
+            if (name == null)
+                throw new IllegalArgumentException("Cookie name may not be null.");
+            
             this.name = name;
             this.value = value;
+            setId(name);
         }
 
+        /**
+         * @return the id of the cookie, used internally by Post to store the cookie
+         * in a hashtable.
+         */
         public String getId() {
-            return String.valueOf( id );
+            if (id == null)
+                setId(path, name);
+            return id.toString();
+        }
+        
+        private void setId(String name) {
+            setId(path, name);    
+        }
+        
+        private void setId(String path, String name) {
+            if (name == null)
+                name = "";
+            id = path + name;   
         }
 
+        /**
+         * @return the name of the cookie        
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * @return the value of the cookie
+         */
         public String getValue() {
             return value;
         }
 
+        /**
+         * @param the domain of the cookie        
+         */
         public void setDomain( String domain ) {
             this.domain = domain;
         }
 
+        /**
+         * @return the domain of the cookie        
+         */
         public String getDomain() {
             return domain;
         }
 
+        /**
+         * @param path the path of the cookie        
+         */
         public void setPath( String path ) {
             this.path = path;
         }
 
+        /**
+         * @return the path of the cookie        
+         */
         public String getPath() {
             return path;
         }
 
+        /**
+         * @return a Cookie formatted as a Cookie Version 1 string.  The returned
+         * string is suitable for including with an http request.
+         */
         public String toString() {
             StringBuffer sb = new StringBuffer();
             sb.append( name ).append( "=" ).append( value ).append( ";" );

@@ -1,6 +1,6 @@
 package ise.antelope.common;
 
-import ise.library.Nav2;
+import ise.library.Nav;
 import ise.library.Navable;
 import ise.library.LambdaLayout;
 import ise.library.GUIUtils;
@@ -26,7 +26,7 @@ public class SAXPanel extends JPanel implements Navable {
 
    private JTree tree = null;
    private CommonHelper _helper;
-   private Nav2 _nav;
+   private Nav _nav;
 
    public SAXPanel( CommonHelper ch ) {
       _helper = ch;
@@ -170,7 +170,7 @@ public class SAXPanel extends JPanel implements Navable {
                
          tree.addMouseListener( ma );
 
-         _nav = new Nav2( this );
+         _nav = new Nav( this );
          JPanel bottom_panel = new JPanel( new LambdaLayout() );
          add( bottom_panel, BorderLayout.SOUTH );
          bottom_panel.add( show_attr_mi, "0,0" );

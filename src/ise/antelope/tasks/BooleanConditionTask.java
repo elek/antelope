@@ -51,102 +51,125 @@
 * information on the Apache Software Foundation, please see
 * <http://www.apache.org/>.
 */
-
 package ise.antelope.tasks;
+import java.util.Enumeration;
 
 import java.util.Vector;
-import java.util.Enumeration;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.ProjectComponent;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.TaskAdapter;
-import org.apache.tools.ant.taskdefs.condition.*;
-import org.apache.tools.ant.ProjectComponent;
-import org.apache.tools.ant.taskdefs.condition.Condition;
 import org.apache.tools.ant.taskdefs.ConditionTask;
+import org.apache.tools.ant.taskdefs.condition.*;
+import org.apache.tools.ant.taskdefs.condition.Condition;
 
 /**
  * Wraps a ConditionBase so that the If task can use standard Ant Conditions as
- * its evaluated boolean expression. Wrapping like this means that future additions
- * to ConditionBase will automatically be picked up without modifying this class.
+ * its evaluated boolean expression. Wrapping like this means that future
+ * additions to ConditionBase will automatically be picked up without modifying
+ * this class.
  *
- * @author Dale Anson
- *
- * @ant.task category="control"
+ * @author     Dale Anson
+ * @version    $Revision$
+ * @ant.task   category="control"
  */
-public class BooleanConditionTask extends TaskAdapter implements Condition {
+public class BooleanConditionTask extends TaskAdapter {
 
-    private BooleanConditionBase cb = new BooleanConditionBase();
+    private BooleanConditionBase cb;
 
     private String property = null;
     private String value = "true";
 
+    /** Constructor for BooleanConditionTask  */
+    public BooleanConditionTask() {
+        cb  = new BooleanConditionBase();
+        super.setProxy(cb);
+    }
 
+    /**
+     * Gets the proxy attribute of the BooleanConditionTask object
+     *
+     * @return   The proxy value
+     */
     public Object getProxy() {
-      return cb;  
+        return cb;
     }
-    
+
+    /**
+     * Sets the proxy attribute of the BooleanConditionTask object
+     *
+     * @param proxy  The new proxy value
+     */
     public void setProxy(Object proxy) {
-      if (proxy instanceof BooleanConditionBase)
-         cb = (BooleanConditionBase)proxy;
+        super.setProxy(cb);
     }
-    
+
     /**
      * The name of the property to set. Optional.
+     *
+     * @param p  The new property value
      */
-    public void setProperty( String p ) {
+    public void setProperty(String p) {
         property = p;
     }
 
     /**
      * The value for the property to set, if condition evaluates to true.
      * Defaults to "true".
+     *
+     * @param v  The new value value
      */
-    public void setValue( String v ) {
+    public void setValue(String v) {
         value = v;
     }
 
     /**
-     * Override {@link org.apache.tools.ant.Task#maybeConfigure
-     * maybeConfigure} in a way that leaves the nested tasks
-     * unconfigured until they get executed.
+     * Override {@link org.apache.tools.ant.Task#maybeConfigure maybeConfigure}
+     * in a way that leaves the nested tasks unconfigured until they get
+     * executed.
      *
-     * @since Ant 1.5
+     * @exception BuildException  Description of Exception
+     * @since                     Ant 1.5
      */
     public void maybeConfigure() throws BuildException {
-        if ( isInvalid() ) {
+        if (isInvalid()) {
             super.maybeConfigure();
         }
         else {
-            getRuntimeConfigurableWrapper().maybeConfigure( getProject(), true );
+            getRuntimeConfigurableWrapper().maybeConfigure(getProject(), true);
         }
     }
-    
+
     /**
      * Forwards to eval().
+     *
+     * @exception BuildException  Description of Exception
      */
     public void execute() throws BuildException {
         eval();
     }
-    
+
     /**
      * Evaluates the condition object.
-     * @return true or false, depending on the evaluation of the condition. 
+     *
+     * @return   true or false, depending on the evaluation of the condition.
      */
     public boolean eval() {
         maybeConfigure();
-        if ( cb.getConditionCount() > 1 ) {
-            throw new BuildException( "You must not nest more than one condition.");
+        if (cb.getConditionCount() > 1) {
+            throw new BuildException("You must not nest more than one condition.");
         }
-        if ( cb.getConditionCount() < 1 ) {
-            throw new BuildException( "You must nest one condition.");
+        if (cb.getConditionCount() < 1) {
+            throw new BuildException("You must nest one condition.");
         }
 
         boolean b = cb.getFirstCondition().eval();
-        if ( b && property != null )
-            getProject().setNewProperty( property, value );
+        if (b && property != null)
+            getProject().setNewProperty(property, value);
         return b;
     }
 
 }
+

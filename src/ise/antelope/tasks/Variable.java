@@ -1,56 +1,18 @@
 /*
-*  The Apache Software License, Version 1.1
-*
-*  Copyright (c) 2001-2002 The Apache Software Foundation.  All rights
-*  reserved.
-*
-*  Redistribution and use in source and binary forms, with or without
-*  modification, are permitted provided that the following conditions
-*  are met:
-*
-*  1. Redistributions of source code must retain the above copyright
-*  notice, this list of conditions and the following disclaimer.
-*
-*  2. Redistributions in binary form must reproduce the above copyright
-*  notice, this list of conditions and the following disclaimer in
-*  the documentation and/or other materials provided with the
-*  distribution.
-*
-*  3. The end-user documentation included with the redistribution, if
-*  any, must include the following acknowlegement:
-*  "This product includes software developed by the
-*  Apache Software Foundation (http://www.apache.org/)."
-*  Alternately, this acknowlegement may appear in the software itself,
-*  if and wherever such third-party acknowlegements normally appear.
-*
-*  4. The names "The Jakarta Project", "Ant", and "Apache Software
-*  Foundation" must not be used to endorse or promote products derived
-*  from this software without prior written permission. For written
-*  permission, please contact apache@apache.org.
-*
-*  5. Products derived from this software may not be called "Apache"
-*  nor may "Apache" appear in their names without prior written
-*  permission of the Apache Group.
-*
-*  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-*  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-*  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-*  DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-*  ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-*  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-*  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-*  USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-*  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-*  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-*  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-*  SUCH DAMAGE.
-*  ====================================================================
-*
-*  This software consists of voluntary contributions made by many
-*  individuals on behalf of the Apache Software Foundation.  For more
-*  information on the Apache Software Foundation, please see
-*  <http://www.apache.org/>.
-*/
+ * Copyright (c) 2001-2004 Ant-Contrib project.  All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ise.antelope.tasks;
 
 import java.io.File;
@@ -61,12 +23,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
-import org.apache.tools.ant.BuildException;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.TaskContainer;
 
 /**
  * Similar to Property, but this property is mutable. In fact, much of the code
@@ -77,11 +38,13 @@ import org.apache.tools.ant.TaskContainer;
  * This used to be a nice little task that took advantage of what is probably
  * a flaw in the Ant Project API -- setting a "user" property programatically
  * causes the project to overwrite a previously set property. Now this task
- * has become more violent and employs a technique knows as "object rape" to
+ * has become more violent and employs a technique known as "object rape" to
  * directly access the Project's private property hashtable.
+ * <p>Developed for use with Antelope, migrated to ant-contrib Oct 2003.
  *
  * @author   Dale Anson, danson@germane-software.com
  * @since    Ant 1.5
+ * @version  $Revision$
  */
 public class Variable extends Task {
 
@@ -122,13 +85,13 @@ public class Variable extends Task {
    }
 
    /**
-    * Should the property be removed from the project? Default is false. Once 
-    * removed, conditions that check for property existence will find this 
-    * property does not exist.
+    * Determines whether the property should be removed from the project.
+    * Default is false. Once  removed, conditions that check for property
+    * existence will find this property does not exist.
     *
     * @param b set to true to remove the property from the project. 
     */
-   public void setRemove( boolean b ) {
+   public void setUnset( boolean b ) {
       remove = b;
    }
 
@@ -139,6 +102,13 @@ public class Variable extends Task {
     * @exception BuildException  Description of the Exception
     */
    public void execute() throws BuildException {
+      if ( remove ) {
+         if ( name == null || name.equals( "" ) ) {
+            throw new BuildException( "The 'name' attribute is required with 'unset'." );
+         }
+         removeProperty( name );
+         return ;
+      }
       if ( file == null ) {
          // check for the required name attribute
          if ( name == null || name.equals( "" ) ) {
@@ -165,6 +135,61 @@ public class Variable extends Task {
       }
    }
 
+   /**
+    * Remove a property from the project's property table and the userProperty table.
+    * Note that Ant 1.6 uses a helper for this.
+    */
+   private void removeProperty( String name ) {
+      Hashtable properties = null;
+      // Ant 1.5 stores properties in Project
+      try {
+         properties = ( Hashtable ) getValue( getProject(), "properties" );
+         if ( properties != null ) {
+            properties.remove( name );
+         }
+      }
+      catch ( Exception e ) {
+         // ignore, could be Ant 1.6
+      }
+      try {
+         properties = ( Hashtable ) getValue( getProject(), "userProperties" );
+         if ( properties != null ) {
+            properties.remove( name );
+         }
+      }
+      catch ( Exception e ) {
+         // ignore, could be Ant 1.6
+      }
+
+      // Ant 1.6 uses a PropertyHelper, can check for it by checking for a
+      // reference to "ant.PropertyHelper"
+      try {
+         Object property_helper = getProject().getReference( "ant.PropertyHelper" );
+         if ( property_helper != null ) {
+            try {
+               properties = ( Hashtable ) getValue( property_helper, "properties" );
+               if ( properties != null ) {
+                  properties.remove( name );
+               }
+            }
+            catch ( Exception e ) {
+               // ignore
+            }
+            try {
+               properties = ( Hashtable ) getValue( property_helper, "userProperties" );
+               if ( properties != null ) {
+                  properties.remove( name );
+               }
+            }
+            catch ( Exception e ) {
+               // ignore
+            }
+         }
+      }
+      catch ( Exception e ) {
+         // ignore, could be Ant 1.5
+      }
+   }
 
    private void forceProperty( String name, String value ) {
       try {
@@ -189,7 +214,7 @@ public class Variable extends Task {
     * @param thisClass                 The class to rape.
     * @param fieldName                 The field to fondle
     * @return                          The field value
-    * @exception NoSuchFieldException  Darn, othing to fondle.
+    * @exception NoSuchFieldException  Darn, nothing to fondle.
     */
    private Field getField( Class thisClass, String fieldName ) throws NoSuchFieldException {
       if ( thisClass == null ) {
@@ -212,8 +237,8 @@ public class Variable extends Task {
     * @param fieldName                   the name of the field
     * @return                            an object representing the value of the
     *      field
-    * @exception IllegalAccessException  Description of the Exception
-    * @exception NoSuchFieldException    Description of the Exception
+    * @exception IllegalAccessException  foiled by the security manager
+    * @exception NoSuchFieldException    Darn, nothing to fondle
     */
    private Object getValue( Object instance, String fieldName )
    throws IllegalAccessException, NoSuchFieldException {
@@ -250,7 +275,7 @@ public class Variable extends Task {
          }
       }
       catch ( IOException ex ) {
-         throw new BuildException( ex, getLocation() );
+         throw new BuildException( ex, location );
       }
    }
 
@@ -286,8 +311,6 @@ public class Variable extends Task {
          while ( !resolved ) {
             Vector fragments = new Vector();
             Vector propertyRefs = new Vector();
-            /// this is the Ant 1.5 way of doing it. The Ant 1.6 PropertyHelper
-            /// should be used -- eventually. 
             ProjectHelper.parsePropertyString( value, fragments,
                   propertyRefs );
 
@@ -326,4 +349,5 @@ public class Variable extends Task {
    }
 
 }
+
 

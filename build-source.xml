@@ -47,7 +47,9 @@
         the $dist directory -->
         <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${basedir}">
-              <include name="src/**/*"/>
+              <include name="src/ise/**/*"/>
+              <exclude name="**/builder/**/*"/>
+              <exclude name="**/dependency/**/*"/>
            </zipfileset>
            <!--
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${lib.dir}">

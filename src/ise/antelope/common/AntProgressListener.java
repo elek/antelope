@@ -208,7 +208,9 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
     public int countTasks( Target target ) {
         if ( target == null )
             throw new IllegalArgumentException( "target is null" );
-        return doCountTasks( target );
+        int cnt = doCountTasks(target);
+        System.out.println("Target: " + target.getName() + ", task count: " + cnt);
+        return cnt;
     }
 
     /**
@@ -243,7 +245,9 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
             Project project = target.getProject();
             Hashtable targets = project.getTargets();
             Target t = ( Target ) targets.get( depend.toString() );
-            task_count += doCountTasks( t ) ;
+            int cnt = doCountTasks(t);
+            System.out.println("Target " + target.getName() + ", dependent target " + t.getName() + " has " + cnt + " tasks.");
+            task_count += cnt ;
         }
         return task_count;
     }

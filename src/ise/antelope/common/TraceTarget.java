@@ -195,16 +195,18 @@ public class TraceTarget {
                 String antfile = "build.xml";
                 String dir = "";
                 String subtarget = "";
-                Iterator it = attrs.keySet().iterator();
-                while ( it.hasNext() ) {
-                    String name = ( String ) it.next();
-                    String value = ( String ) attrs.get( name );
-                    if ( name.equals( "antfile" ) )
-                        antfile = value;
-                    if ( name.equals( "dir" ) )
-                        dir = value;
-                    if ( name.equals( "target" ) )
-                        subtarget = value;
+                if (attrs != null) {
+                    Iterator it = attrs.keySet().iterator();
+                    while ( it.hasNext() ) {
+                        String name = ( String ) it.next();
+                        String value = ( String ) attrs.get( name );
+                        if ( name.equals( "antfile" ) )
+                            antfile = value;
+                        if ( name.equals( "dir" ) )
+                            dir = value;
+                        if ( name.equals( "target" ) )
+                            subtarget = value;
+                    }
                 }
                 sb.append( "<" ).append( target.getName() ).append( ">" );
                 sb.append( "[" ).append( task_name ).append( " antfile=" ).append( quote( antfile ) );
@@ -242,14 +244,16 @@ public class TraceTarget {
                 catch ( Exception e ) {
                     // ignored
                 }
-                Iterator it = attrs.keySet().iterator();
-                while ( it.hasNext() ) {
-                    String name = ( String ) it.next();
-                    String value = ( String ) attrs.get( name );
-                    if ( name.equals( "name" ) )
-                        property_name = value;
-                    if ( name.equals( "value" ) )
-                        property_value = parseValue( value, target.getProject() );
+                if (attrs != null) {
+                    Iterator it = attrs.keySet().iterator();
+                    while ( it.hasNext() ) {
+                        String name = ( String ) it.next();
+                        String value = ( String ) attrs.get( name );
+                        if ( name.equals( "name" ) )
+                            property_name = value;
+                        if ( name.equals( "value" ) )
+                            property_value = parseValue( value, target.getProject() );
+                    }
                 }
                 target.getProject().setProperty( property_name, property_value );
                 sb.append( "<" ).append( target.getName() ).append( ">" );
@@ -273,12 +277,14 @@ public class TraceTarget {
                 catch ( Exception e ) {
                     // ignored
                 }
-                Iterator it = attrs.keySet().iterator();
-                while ( it.hasNext() ) {
-                    String name = ( String ) it.next();
-                    String value = ( String ) attrs.get( name );
-                    value = parseValue( value, target.getProject() );
-                    sb.append( " " ).append( name ).append( "=" ).append( quote( value ) );
+                if (attrs != null) {
+                    Iterator it = attrs.keySet().iterator();
+                    while ( it.hasNext() ) {
+                        String name = ( String ) it.next();
+                        String value = ( String ) attrs.get( name );
+                        value = parseValue( value, target.getProject() );
+                        sb.append( " " ).append( name ).append( "=" ).append( quote( value ) );
+                    }
                 }
                 sb.append( "]" ).append( NL );
             }

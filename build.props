@@ -10,7 +10,7 @@ docbookx.dtd=file:///usr/share/sgml/docbook/xml-dtd-4.1.2/docbookx.dtd
 #docbookx.dtd=file:///C:/cygwin/usr/share/docbook-xml42/docbookx.dtd
 
 install.dir=${user.home}/.jedit/jars
-build.num=3.1.11
+build.num=3.2.0
 
 # optional settings, remove if you don't use jikes
 build.compiler=jikes

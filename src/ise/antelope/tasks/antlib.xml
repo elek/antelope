@@ -13,11 +13,13 @@
    <taskdef name="default" classname="ise.antelope.tasks.DefaultCase"/>
    <taskdef name="else" classname="ise.antelope.tasks.ElseTask"/>
    <taskdef name="finally" classname="ise.antelope.tasks.FinallyTask"/>
+   <taskdef name="find" classname="ise.antelope.tasks.Find"/>
    <taskdef name="if" classname="ise.antelope.tasks.IfTask"/>
    <taskdef name="limit" classname="ise.antelope.tasks.Limit"/>
    <taskdef name="math" classname="ise.antelope.tasks.MathTask"/>
    <taskdef name="post" classname="ise.antelope.tasks.PostTask"/>
    <taskdef name="stopwatch" classname="ise.antelope.tasks.StopWatchTask"/>
+   <taskdef name="suite" classname="ise.antelope.tasks.Suite"/>
    <taskdef name="switch" classname="ise.antelope.tasks.SwitchTask"/>
    <taskdef name="try" classname="ise.antelope.tasks.TryTask"/>
    <taskdef name="var" classname="ise.antelope.tasks.Variable"/>

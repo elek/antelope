@@ -81,11 +81,10 @@
             debug="on"
             nowarn="on"
             destdir="${classes.dir}"
-            srcdir="${src.dir}"
             source="1.4">
          <classpath refid="classpathref" />
-         <include name="**/tasks/**/*"/>
-         <include name="**/library/**/*"/>
+         <src path="${src.dir}/ise/antelope/tasks"/>
+         <src path="${src.dir}/ise/library"/>
       </javac>
    </target>
     
@@ -147,6 +146,10 @@
             <include name="**/library/**/*"/>
          </fileset>
       </jar>
+      <copy todir="c:/apache-ant-1.6.2/lib">
+         <fileset dir="${prep.dir}" includes="**/AntelopeTasks*.jar" />
+      </copy>
+      
    </target>
     
    <!-- ========================================================================

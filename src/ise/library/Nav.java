@@ -51,23 +51,17 @@ public class Nav extends JToolBar implements ActionListener {
     public Nav( Navable client ) {
         if ( client == null )
             throw new IllegalArgumentException( "client cannot be null" );
-        System.out.println(">>>>>>>>>> 1");
         this.client = client;
         setFloatable( false );
         putClientProperty( "JToolBar.isRollover", Boolean.TRUE );
-        System.out.println(">>>>>>>>>> 2");
 
         // set up the buttons
         try {
         back = new JButton();
-        System.out.println(">>>>>>>>>> 3");
-        System.out.println("made the back button");
         java.net.URL url = getClass().getClassLoader().getResource( "images/Back16.gif" );
-        System.out.println("the back icon url is " + url);
         Icon icon = null;
         if ( url != null )
             icon = new ImageIcon( url );
-        System.out.println("the back icon is " + icon);
         if (icon != null)
             back.setIcon( icon );
         else

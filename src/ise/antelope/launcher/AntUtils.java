@@ -1,8 +1,7 @@
-package ise.antelope.common;
+package ise.antelope.launcher;
 
 import java.io.*;
 import java.util.regex.*;
-import ise.library.Os;
 
 public class AntUtils implements Constants {
    private static double ant_version = 0;

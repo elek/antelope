@@ -82,7 +82,7 @@ public class AboutDialog
     private JScrollPane scrollpane;
 
     /** Description of the Field */
-    private Nav2 nav;
+    private Nav nav;
     private URL initialURL = null;
 
     /**
@@ -155,7 +155,7 @@ public class AboutDialog
         JPanel btn_panel = new JPanel();
         if ( use_nav ) {
             btn_panel.setLayout( new LambdaLayout() );
-            nav = new Nav2( this );
+            nav = new Nav( this );
             btn_panel.add( nav, "0, 0, 1, 1, W, , 5" );
             btn_panel.add( ok_btn, "1, 0, 1, 1, E, , 5" );
 

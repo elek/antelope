@@ -105,8 +105,8 @@
    ========================================================================= -->
     <target name="dist"
             description="Compiles, jars, and puts a zip file in the dist directory."
-            depends="clean,compile,prep_files">
-        
+            depends="clean,compile,prep_files,jar,zip"/>
+    <target name="jar" description="make jar file">     
         <!-- make the jar file, put it in $prep.dir -->
         <tstamp/>
         <jar jarfile="${prep.dir}/${ant.project.name}_${build.num}.jar">
@@ -116,12 +116,13 @@
                 <attribute name="Author" value="Dale Anson" />
                 <attribute name="Created-By" value="${user.name}"/>
                 <attribute name="Created-On" value="${TODAY}"/>
-                <attribute name="Main-Class" value="ise.antelope.app.Antelope"/>
             </manifest>
 
             <!-- include everything in the build directory -->
             <fileset dir="${classes.dir}">
                 <include name="**/*" />
+                <exclude name="**/ise/launcher/**/*"/>
+                <exclude name="**/com/**/*"/>
                 <exclude name="**/testcases/**/*"/>
             </fileset>
 
@@ -135,7 +136,23 @@
                 <include name="**/*" />
             </fileset>
         </jar>
-        
+        <jar jarfile="${prep.dir}/${ant.project.name}_Launcher_${build.num}.jar">
+            <manifest>
+                <attribute name="AppName" value="${ant.project.name}" />
+                <attribute name="AppVersion" value="${build.num}" />
+                <attribute name="Author" value="Dale Anson" />
+                <attribute name="Created-By" value="${user.name}"/>
+                <attribute name="Created-On" value="${TODAY}"/>
+                <attribute name="Main-Class" value="ise.launcher.Launcher"/>
+            </manifest>
+
+            <!-- include just the Launcher files -->
+            <fileset dir="${classes.dir}">
+                <include name="**/ise/launcher/**/*"/>
+            </fileset>
+        </jar>
+    </target>
+    <target name="zip" description="make zip file">
         <!-- zip the jar and installation instructions and put the zip file in
         the $dist directory -->
         <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
@@ -292,5 +309,9 @@
         <mkdir dir="${config.dir}" />
         <mkdir dir="${dist.dir}"/>
         <property name="init.done" value="true"/>
+    </target>
+    
+    <target name="temp">
+    
     </target>
 </project>
