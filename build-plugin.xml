@@ -1,0 +1,265 @@
+
+<project name="Antelope" default="dist" basedir=".">
+   <description>
+       This build file creates Antelope as a jEdit plugin.
+    </description>
+    
+    <!-- read build.props to override properties set below -->
+   <property file="build.props"/>
+
+    <!-- default location of jedit.jar, override in build.props if necessary -->
+   <property name="jedit.install.dir" value="../.."/> 
+    
+    <!-- default location of the finished plugin, override in build.props
+    if necessary -->
+   <property name="install.dir" value=".." />
+    
+    <!-- version number, override in build.props if necessary -->
+   <property name="build.num" value="2.88.2"/>
+    
+    <!-- shouldn't need to override the following properties -->
+    
+    <!-- source code directory, this is where the .java files live -->
+   <property name="src.dir" location="src" />
+    
+    <!-- build directory, all files contained in the src directory are copied
+    to this directory for processing (tag substitution, mostly) -->
+   <property name="prep.dir" location="prep"/>
+
+    <!-- configuration directory, this is where the configuration files for the
+    plugin are placed for pre-processing prior to getting jarred. -->
+   <property name="config.dir" location="${prep.dir}/config" />
+
+    <!-- documentation directory, this is where the plugin documentation
+    files live. Files in this directory will be distributed with the plugin -->
+   <property name="doc.dir" location="${prep.dir}/docs" />
+
+    <!-- the directory for the compiled classes. Files in this directory will be
+    included in the finished jar file. -->
+   <property name="classes.dir" location="classes" />
+    
+    <!-- where to put the finished distribution file -->
+   <property name="dist.dir" location="dist"/>
+    
+
+    
+   <!-- ========================================================================
+      Target: set classpath
+   ========================================================================= -->
+   <target name="setClasspath">
+      <path id="classpathref">
+         <!-- include classes directory -->
+         <pathelement location="${classes.dir}" />
+         <pathelement path="${java.class.path}"/>
+         
+         <!-- include jedit.jar and dependent plugins -->
+         <pathelement location="${jedit.install.dir}/jedit.jar" />
+         <fileset dir="${install.dir}">
+            <include name="**/Console*.jar"/>
+            <include name="**/ErrorList*.jar"/>
+         </fileset>
+      </path>
+   </target>
+
+   <!-- ========================================================================
+      Target: clean
+      deletes all files from the build directory
+   ========================================================================= -->
+   <target name="clean" description="Delete all files from the classes directory.">
+      <delete>
+         <fileset dir="${classes.dir}" includes="**" />
+         <fileset dir="${prep.dir}">
+            <include name="**/*"/>
+            <exclude name="docs/**/*"/>
+         </fileset>
+      </delete>
+   </target>
+    
+   <!-- ========================================================================
+      Target: compile
+   ========================================================================= -->
+   <target name="compile"
+         description="Compile"
+         depends="init,setClasspath">
+      <javac deprecation="on"
+            debug="on"
+            nowarn="on"
+            destdir="${classes.dir}"
+            srcdir="${src.dir}">
+         <classpath refid="classpathref" />
+         <exclude name="testcases/**/*"/>
+         <exclude name="**/app/**/*"/>
+      </javac>
+   </target>
+    
+   <!-- ========================================================================
+      Target: dist
+      this target does several things:
+      first, it creates a jar file in the prep directory. This is a finished
+      jar file suitable for dropping into jEdit.
+      second, it copies the jar file to $install.dir
+      third, it zips the jar file and installation docs into $dist.dir
+   ========================================================================= -->
+   <target name="dist"
+         description="Compiles, jars, puts the jar in the jEdit jars directory."
+         depends="init,compile,prep_files,copy_resources">
+        
+        <!-- make the jar file. jEdit standards require just the name of the
+        plugin, e.g. Antelope.jar. put it in $prep.dir -->
+      <tstamp/>
+      <jar jarfile="${prep.dir}/${ant.project.name}.jar">
+         <manifest>
+            <attribute name="AppName" value="${ant.project.name}" />
+            <attribute name="AppVersion" value="${build.num}" />
+            <attribute name="Author" value="Dale Anson" />
+            <attribute name="Created-By" value="${user.name}"/>
+            <attribute name="Created-On" value="${TODAY}"/>
+         </manifest>
+
+            <!-- include everything in the build directory -->
+         <fileset dir="${classes.dir}">
+            <include name="**/*" />
+            <exclude name="**/testcases/**/*"/>
+         </fileset>
+
+            <!-- include everything in the config directory -->
+         <fileset dir="${config.dir}">
+            <include name="**/*" />
+         </fileset>
+
+            <!-- include everything in the doc directory -->
+         <fileset dir="${doc.dir}">
+            <include name="**/*" />
+         </fileset>
+      </jar>
+        
+        <!-- copy the jar to the right place per jEdit standards -->
+      <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
+        
+        <!-- zip the jar and installation instructions and put the zip file in
+        the $dist directory -->
+      <zip destfile="${dist.dir}/${ant.project.name}Plugin_${build.num}.zip">
+         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}">
+            <include name="${ant.project.name}.jar"/>
+         </zipfileset>
+         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}/docs">
+            <include name="license.txt"/>
+            <include name="plugin_readme.txt"/>
+            <include name="ChangeLog.txt"/>
+         </zipfileset>
+      </zip>
+
+   </target>
+    
+   <!-- ========================================================================
+      Target: docs-xalan
+      Generate docs from docbook format xml files with Xalan. This uses the 
+      files in ${src.dir}/docs and puts the finished files in ${prep.dir}/docs.
+      The files are NOT ready for distribution until after prep_files is ran.
+   ========================================================================= -->
+   <target name="docs-xalan"
+         description="Generate user documentation in hmtl format with xalan"
+         depends="init,setClasspath,prep_files">
+
+      <fail unless="docbook.xsl" message="Please set docbook.xsl property."/>
+
+      <delete>
+         <fileset dir="${doc.dir}" includes="manual/**/*" />
+      </delete>
+
+      <copy todir="${doc.dir}/manual">
+         <fileset dir="${src.dir}/docs/manual" includes="**/*.gif" />
+         <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
+      </copy>
+
+      <property name="docbook-wrapper" location="${doc.dir}/docbook-wrapper.xsl"/>
+      <delete file="${docbook-wrapper}" />
+      <echo file="${docbook-wrapper}"
+            message="&lt;xsl:stylesheet"/>
+      <echo file="${docbook-wrapper}" append="true"
+            message=" xmlns:xsl='http://www.w3.org/1999/XSL/Transform'"/>
+      <echo file="${docbook-wrapper}" append="true"
+            message=" xsl:version='1.0'&gt;"/>
+      <echo file="${docbook-wrapper}" append="true"
+            message="&lt;xsl:import href='${docbook.xsl}/html/chunk.xsl'/&gt;"/>
+      <echo file="${docbook-wrapper}" append="true"
+            message="&lt;/xsl:stylesheet&gt;"/>
+
+      <style basedir="${src.dir}/docs/manual"
+            style="${docbook-wrapper}"
+            destdir="${doc.dir}/manual"
+            includes="userguide.xml">
+         <param name="html.stylesheet" expression="./style.css"/>
+      </style>
+   </target>
+    
+   <!-- ========================================================================
+      Target: copy_resources
+   ========================================================================= -->
+   <target name="copy_resources">
+      <copy todir="${classes.dir}/images">
+         <fileset dir="${src.dir}/images" includes="**/*" />
+      </copy>
+      <copy todir="${classes.dir}/ise/antelope/tasks">
+         <fileset dir="${src.dir}/ise/antelope/tasks" includes="antelope.taskdefs"/>
+         <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
+      </copy>
+      <copy todir="${classes.dir}/ise/antelope/common" file="${src.dir}/ise/antelope/common/version.txt"/>
+   </target>
+    
+   <!-- ========================================================================
+      Target: prep_files
+      prepares certain files for distribution by doing string replacement. 
+      Assumes that the configuration files and documentation files are ready.
+   ========================================================================= -->
+   <target name="prep_files"
+         description="Prepare files for distribution.">
+      <echo>preparing files ${config.dir} ${build.num}</echo>
+        <!-- clean out the config directory -->
+      <delete>
+         <fileset dir="${config.dir}" includes="**/*"/>
+      </delete>
+
+        <!-- copy the src files to deployment directory -->
+      <copy todir="${prep.dir}" overwrite="yes">
+         <fileset dir="${src.dir}">
+            <include name="config/**/*"/>
+            <include name="docs/*.txt"/>
+            <include name="docs/about.html"/>
+         </fileset>
+      </copy>
+
+
+        <!-- insert the build number into the documentation and configuration
+        files -->
+      <replace dir="${prep.dir}" token="@@build.num@@"
+            value="${build.num}" />
+      <tstamp/>
+      <replace dir="${prep.dir}" token="@@tstamp@@"
+            value="${TODAY}" />
+
+      <!-- insert the build number into the version file -->
+      <property name="version.txt" location="${src.dir}/ise/antelope/common/version.txt"/>
+      <delete file="${version.txt}"/>
+      <echo file="${version.txt}" message="VERSION=${build.num}${line.separator}"/>
+      <echo file="${version.txt}" message="DATE=${TODAY}" append="true"/>
+   </target>
+   
+   <!-- ========================================================================
+      Target: init
+      this target creates the directories needed for this project and
+      only needs to be done once.
+   ========================================================================= -->
+   <target name="init"
+         description="Create directory structure."
+         unless="init.done">
+      <fail unless="jedit.install.dir" message="Please set jedit.install.dir property."/>
+      <mkdir dir="${src.dir}" />
+      <mkdir dir="${classes.dir}" />
+      <mkdir dir="${prep.dir}"/>
+      <mkdir dir="${doc.dir}" />
+      <mkdir dir="${config.dir}" />
+      <mkdir dir="${dist.dir}"/>
+      <property name="init.done" value="true"/>
+   </target>
+</project>
