@@ -42,6 +42,7 @@
    <target name="setClasspath">         
       <path id="classpathref">
          <pathelement location="${classes.dir}" />
+         <pathelement path="${java.class.path}"/>
       </path>
    </target>
 
@@ -85,7 +86,7 @@
       third, it zips the jar file and installation docs into $dist.dir
    ========================================================================= -->
     <target name="dist"
-            description="Compiles, jars, puts the jar in the jEdit jars directory."
+            description="Compiles, jars, and puts a zip file in the dist directory."
             depends="init,clean,compile,copy_resources,prep_files">
         
         <!-- make the jar file, put it in $prep.dir -->
