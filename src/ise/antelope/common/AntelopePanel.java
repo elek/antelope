@@ -231,9 +231,8 @@ public class AntelopePanel extends JPanel implements Constants {
             }
         );
         if ( _helper != null ) {
-            ActionListener al = _helper.getRunButtonAction();
-            if ( al != null )
-                _run_btn.addActionListener( al );
+            if ( _helper.getRunButtonAction() != null )
+                _run_btn.addActionListener( _helper.getRunButtonAction() );
         }
         _run_btn.setSelected( true );
 
@@ -251,6 +250,10 @@ public class AntelopePanel extends JPanel implements Constants {
                 }
             }
         );
+        if ( _helper != null ) {
+            if (_helper.getTraceButtonAction() != null)
+               _trace_btn.addActionListener(_helper.getTraceButtonAction());
+        }
 
         _edit_btn = new JToggleButton();
         _edit_btn.setMargin( ins );

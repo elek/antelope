@@ -74,6 +74,14 @@ public interface CommonHelper extends ActionListener {
    public ActionListener getRunButtonAction();
 
    /**
+    * The action that the helper would like to have happen when the
+    * Trace button is clicked.
+    *
+    * @return   The trace button action
+    */
+   public ActionListener getTraceButtonAction();
+
+   /**
     * Opens the given file in an editor.
     * @param the file to open.
     */
