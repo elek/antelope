@@ -12,26 +12,31 @@
  <title>Project Overview</title>
 </head>
 <body>
-
-<p>This is the initial web content for your project.  Please customize
-this to fit your project.  You dont need to anwser all these questions
-or follow this exact format, but we do like to see this kind of
-information before we approve projects for public viewing.
+<p>
+Antelope is a graphical user interface for running <a href="ant.apache.org" target="_blank">Ant</a>. While new to tigris.org, Antelope is a mature application that is in wide use as a front end to Apache Ant. Antelope provides a set of buttons, one per target, which makes it easy to start a specific Ant operation. Basically, an Ant build file is opened with Antelope and the targets defined in the build file can be executed by clicking a button. Antelope is much more than a thin wrapper around Ant, however. 
 </p>
 
-<p>Until your project is approved, only you can view it and work on
-it.
+<p>
+Antelope can run in two different environments. It can run as a stand-alone GUI application and as a plugin to jEdit (<a href="http://www.jedit.org" target="_blank">www.jedit.org</a>), an excellent open source editor for programmers. 
 </p>
 
-<ul>
-<li>This index.html will be used if and only if you have the "Use
-Project Home Page" option checked on the "Adminster Project" page
-(click the "Admin" tab).</li>
+<p>
+As a stand-alone application, Antelope provides the ability to create and edit Ant build files, the ability to run build file targets, and can trace target and task execution in a quasi-debug mode. Output from the build process can be captured to a file and/or to screen and performance statistics can be gathered to guide optimization efforts. Several very useful tasks to extend Ant are included. 
+</p>
 
-<li>To edit this file, check out your project via CVS and edit www/index.html.
+<p>
+As a jEdit plugin, Antelope expands the features of the stand-alone application to nicely integrate with the text editor and with the Console and ErrorList plugins. Antelope has an open API that allows other plugins to utilize Antelope's capabilities. 
+</p>
 
-<li>You can 'cvs add' and commit other files under the project's "www"
-directory and they will published to your project web site.</li>
+<p>
+In either mode, Antelope provides property and reference inspection and the ability to set properties that would be passed as parameters to Ant on the command line.
+</p>
+
+<p>
+The Antelope Project also provides a set of additional tasks that provide functionality not found in the standard tasks distributed with Ant. Work is underway to merge the Antelope tasks with the <a href="http://ant-contrib.sourceforge.net" target="_blank">AntContrib project</a>.
+</p>
+
+
 
 <li>Also, consider starting a thread in the "dev" mailing list to get
 thes discussion started.  A good one is an "introduction" thread where
@@ -44,62 +49,52 @@ project.</li>
 
 <h3>Mission</h3>
 
-<p>What is the goal of this project?
+<p>To develop an intuitive and easy to use graphical user interface to Ant.
 </p>
 
-<p>What is the scope of this project?
+<p>The scope of the Antelope project is to make creating, testing, and running builds as simple as possible. The goal is to be able to do "one click" operations to perform repetative tasks such as compile source code, run unit tests, generate documentation, and package applications for deployment. Ant is well suited for these tasks, Antelope aims to create a GUI to make it easier to run Ant and to integrate into popular Integrated Development Environments such as jEdit and Eclipse. 
 </p>
 
-<p>For example:</p>
-
+<h3>Antelope Features</h3>
 <ul>
-<li>Develop just enough functionality to scratch a particular itch</li>
-<li>Build a tool just like XYZ, but less broken</li>
-<li>Build the best XYZ-tool ever!</li>
-</ul>
+<li>Stand-alone application or tight integration with jEdit.</li>
+<li>Compatible with Ant 1.5 and Ant 1.6, including full support for XML entity includes and the new &lt;import&gt; task.</li>
+<li>Run single or multiple targets with one click.<li>
+<li>Build progress indicator shows both the progress of the build and the currently executing target.</li>
+<li>Edit mode uses JTree for rapid location of targets and tasks, click on a target in the tree and have the editor automatically scroll to that point in the build file. Works on any XML file, not just build files.</li>
+<li>Web-browser-like "back" and "forward" buttons in Edit mode make moving around in the build file easy.
+<li>Ability to set user defined properties via a graphical interface.</li>
+<li>Full access to properties and references.</li>
+<li>"Trace" mode provides the ability to run a build without actually doing anything, making it possible to check property values and execution flow prior to running a live build.</li>
+<li>Adjustable message level and build progress verbosity for build output, plus the ability to save build output to a file.</li>
+<li>Show or hide targets based on several popular target naming schemes.</li>
+<li>All settings are stored per build file.</li>
+<li>Built-in GUI support for the &lt;input&gt; task.<li>
+<li>Special performance listener provides performance profiling to help pinpoint bottlenecks in the build process.</li>
+<li>While not intended to be a full-featured text editor, Antelope is a very usable XML file editor. It provides several features found in more advanced editors such as font control and syntax highlighting.
+</ul
 
 
-<p>What are high-level features you are sure to build?
-</p>
+<h3>Proposed Enhancements</h3>
 <ul>
 
-<li>What would you write on a billboard about your project? Users
-might only look for a few seconds.</li>
+<li>Ability to print both build files and build output.</li>
 
-<li>Use the issue tracker to track features and enhancement
-requests. It is not just for bugs, pre-populate it with feature
-descriptions so that potential contributors know what you would like them
-to work on.</li>
-</ul>
+<li>Integration with Eclipse.</li>
 
-<p>What are the high-level assumptions or ground rules for the project?
-</p>
-
-<p>For example:
-</p>
-
-<ul>
-<li> we will use programming language X on operating system Y for now.
-
-<li>We will, or will not, consider certain functional areas like
-internationalization, high security, concurrency, etc.  The list of
-functional areas will depend on what you are trying to do.
-
-<li>Try to keep this part short.
+<li>Drag and drop editing of build files. In the early 90's, Wise made an installation program for Windows. On the left side was a list of items that were dragged to the right side, properties for those items were set, and an installation script was built. Ant targets and tasks could be built in a similar fashion.</li>
 </ul>
 
 
 <h3>Related resources</h3>
 
 <ul>
-<li>Link to other stuff that you know about.  It will help you
-research requirements and provide a useful resource to potential
-contributors.</li>
+<li><a href="ant.apache.org" target="_blank">Apache Ant</a> is a Java-based build tool. In theory, it is kind of like Make, but without Make's wrinkles. It has become the standard application for building Java applications.</li>
 
-<li>Why reinvent the wheel? What is better about this wheel?  Is there
-any existing project that you can partner with or reuse?</li>
+<li><a href="www.jedit.org" target="_blank">jEdit</a> is a mature and well-designed programmer's text editor that has been in development for over 5 years.</li>
 
-<li>Where would you go to try to find potential contibutors?</li>
+<li>The <a hef="ant-contrib.sourceforge.net" target="_blank">Ant-Contrib project</a> is a collection of tasks (and at one point maybe types and other tools) for Apache Ant. The Antelope tasks are now part of that project.</li>
+
 </ul>
 
 </body>
