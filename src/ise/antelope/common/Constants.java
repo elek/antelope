@@ -60,7 +60,6 @@ import java.util.prefs.Preferences;
 public interface Constants {
    
    // preferences node
-   public static String old_pref = System.setProperty( "java.util.prefs.PreferencesFactory", "ise.library.UserPreferencesFactory" );
    public final static String PREFS_NODE = "/ise/antelope";
    public static Preferences PREFS = Preferences.userRoot().node(PREFS_NODE);
    

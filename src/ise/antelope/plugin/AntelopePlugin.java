@@ -101,9 +101,22 @@ public class AntelopePlugin extends EBPlugin implements Constants {
       /// Linux like the default preferences handler does. ??? could this possibly
       /// cause problems with a system preferences factory? Shouldn't there be
       /// delegates?
-      String prefs = System.getProperty( "java.util.prefs.PreferencesFactory" );
-      if ( prefs == null || !prefs.equals( "ise.library.UserPreferencesFactory" ) )
-         System.setProperty( "java.util.prefs.PreferencesFactory", "ise.library.UserPreferencesFactory" );
+      // modified to only load custom factory if java version is 1.4 or earlier
+      // AND os is not Windows.
+      String java_version = System.getProperty( "java.version" );
+      if ( java_version != null ) {
+         java_version = java_version.substring( 0, 3 );
+         double jv = Double.parseDouble( java_version );
+         if ( jv <= 1.4 ) {
+            String os = System.getProperty( "os.name" );
+            if ( os.toLowerCase().indexOf( "windows" ) == -1 ) {
+               String prefs = System.getProperty( "java.util.prefs.PreferencesFactory" );
+               if ( prefs == null || !prefs.equals( "ise.library.UserPreferencesFactory" ) ) {
+                  System.setProperty( "java.util.prefs.PreferencesFactory", "ise.library.UserPreferencesFactory" );
+               }
+            }
+         }
+      }
 
       // also reset the ant jars property
       jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
@@ -204,8 +217,8 @@ public class AntelopePlugin extends EBPlugin implements Constants {
    public void handleMessage( EBMessage message ) {
       //org.gjt.sp.util.Log.log(org.gjt.sp.util.Log.DEBUG, this, message);
       if ( message instanceof BufferUpdate ) {
-         if (panelList == null)
-            return;
+         if ( panelList == null )
+            return ;
          // check if the updated buffer is our build file, if it is and it's being
          // saved, reload this panel
          BufferUpdate msg = ( BufferUpdate ) message;

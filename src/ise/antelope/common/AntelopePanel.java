@@ -225,11 +225,6 @@ public class AntelopePanel extends JPanel implements Constants {
       }
 
       // set up the control panel
-
-
-
-
-
       LambdaLayout lal = new LambdaLayout();
       _control_panel = new JPanel( lal );
       Insets ins = new Insets( 1, 1, 1, 1 );

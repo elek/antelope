@@ -1,10 +1,15 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.0.5:
+o Updates to the dependency tree code. 
+o Fixed a bug with included xml (using xml entity includes). The targets of included xml would show up as buttons in "Run" mode, but not in the tree in "Edit" mode. The targets are now in the Edit tree, and the dependency tree works with these targets also.
+o Added some nice icons to the edit tree to make it easier to pick out imported targets and projects.
+
 3.0.4:
 21 Mar 2004:
 o Fixed a bunch of compiler warnings about deprecated methods. Several deprecated methods were not fixed as they would break Ant 1.5 compatibility.
-o Adjusted the "Please wait loading Ant" code as it would occasionally hang.
+o Adjusted the "Please wait loading Ant" code as it would occasionally hang in jEdit. It still hangs occassionally, it appears to be due to a classloader issue with other plugins loading an xml parser ahead of Ant's parser. Jane might be the culprit.
 o Right click on a target in "Edit" mode will show a popup of the dependency tree for that target. Clicking a target in the dependency tree moves the cursor to that target.
 
 3.0.3:

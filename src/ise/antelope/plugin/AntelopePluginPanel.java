@@ -166,6 +166,10 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                   }
                   catch ( Throwable t ) {
                      t.printStackTrace();
+                     JOptionPane.showMessageDialog(null, "<html>Error starting Antelope:<p>" +
+                        t.getMessage() + "<p>Usually this can be fixed by restarting jEdit.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                     return;
                   }
                   System.out.println( "antelope panel created" );
                   removeAll();
