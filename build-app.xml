@@ -65,7 +65,7 @@
    ========================================================================= -->
     <target name="compile"
             description="Compile"
-            depends="init,setClasspath">
+            depends="init,setClasspath,copy_resources">
         <javac deprecation="on" 
                debug="on" 
                nowarn="on" 
@@ -144,7 +144,7 @@
    <target name="run" 
            description="Runs Antelope as a standalone app."
            depends="setClasspath, compile, copy_resources">
-      <java classname="ise.antelope.common.gui.Project" fork="true">
+      <java classname="ise.antelope.common.gui.ProjectBuilder" fork="true">
          <classpath refid="classpathref"/>
       </java>
    </target>
@@ -201,6 +201,9 @@
         <copy todir="${classes.dir}/ise/antelope/tasks">
             <fileset dir="${src.dir}/ise/antelope/tasks" includes="antelope.taskdefs"/>
             <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
+        </copy>
+        <copy todir="${classes.dir}/ise/antelope/common/gui">
+            <fileset dir="${src.dir}" includes="ant.dtd" />
         </copy>
     </target>
     
