@@ -66,9 +66,7 @@ SMALL, SUB, SUP {font-size: 10px}
 
 TEXTAREA {cursor: text}
 
-TD {padding: 3;
-    background: lightgray;
-}
+TD {padding: 3}
 
 TH {
    font-weight: bold;
