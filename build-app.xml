@@ -98,6 +98,7 @@
                 <attribute name="Author" value="Dale Anson" />
                 <attribute name="Created-By" value="${user.name}"/>
                 <attribute name="Created-On" value="${TODAY}"/>
+                <attribute name="Main-Class" value="ise.antelope.app.Antelope"/>
             </manifest>
 
             <!-- include everything in the build directory -->
