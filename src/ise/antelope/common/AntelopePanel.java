@@ -1241,9 +1241,14 @@ public class AntelopePanel extends JPanel implements Constants {
 
          p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
          p.setProperty( "ant.version", Main.getAntVersion() );
-         String ant_home = System.getProperty("ant.home");
-         if (ant_home != null)
+         //String ant_home = System.getProperty("ant.home");
+         String ant_home = AntUtils.getAntHome();
+         if (ant_home != null){
              p.setProperty("ant.home", ant_home);
+         }
+         String ant_lib_dirs = AntUtils.getAntLibDirs();
+         if (ant_lib_dirs != null)
+            p.setProperty("ant.library.dir", ant_lib_dirs);
          ProjectHelper.configureProject( p, build_file );
 
          // add ant.jar to the classpath

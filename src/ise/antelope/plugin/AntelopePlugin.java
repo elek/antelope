@@ -57,6 +57,7 @@ import javax.swing.*;
 import console.*;
 import errorlist.*;
 import ise.antelope.common.AntelopePanel;
+import ise.antelope.common.AntUtils;
 import ise.antelope.common.Constants;
 import ise.library.Os;
 import org.gjt.sp.jedit.*;
@@ -460,7 +461,7 @@ public class AntelopePlugin extends EBPlugin implements Constants {
       }
 
       // next check stored settings, System and environment
-      String ant_home = getAntHome();
+      String ant_home = AntUtils.getAntHome();
       if ( ant_home == null ) {
          // check if ant.jar was loaded by jEdit
          String ant_jar = getAntJarLocation();
@@ -486,6 +487,7 @@ public class AntelopePlugin extends EBPlugin implements Constants {
       }
       // got Ant home, store it in a system property
       System.setProperty("ant.home", ant_home);
+      System.setProperty("ant.library.dir", ant_home + File.separator + "lib");
 
       // put all jars from ANT_HOME into line-separated string
       File lib_dir = new File( ant_home, "lib" );
@@ -633,54 +635,6 @@ public class AntelopePlugin extends EBPlugin implements Constants {
          }
       }
       return cl;
-   }
-
-
-   /**
-    * Returns ANT_HOME as defined by an OS environment variable or System
-    * property. System property is checked first, so it takes precedence, that is,
-    * it can be added on the command line to override an environment setting. 
-    * <p>
-    * Changed to for ANT_HOME first in Antelope's preferences, then System,
-    * then environment.
-    *
-    * @return ANT_HOME or null if not found in preferences, System, or environment.
-    */
-   protected static String getAntHome() {
-      String ant_home = null;
-      try {
-         // third, check stored settings
-         ant_home = PREFS.get( ANT_HOME, null );
-         if ( ant_home != null ) {
-            File ant_dir = new File( ant_home );
-            if ( ant_dir.exists() ) {
-               return ant_home;
-            }
-         }
-         // first, check System properties
-         ant_home = System.getProperty( "ANT_HOME" );
-         if ( ant_home != null ) {
-            File ant_dir = new File( ant_home );
-            if ( ant_dir.exists() ) {
-               PREFS.put( ANT_HOME, ant_home );
-               return ant_home;
-            }
-         }
-
-         // second, check environment
-         ant_home = Os.getEnvironmentValue( "ANT_HOME" );
-         if ( ant_home != null ) {
-            File ant_dir = new File( ant_home );
-            if ( ant_dir.exists() ) {
-               PREFS.put( ANT_HOME, ant_home );
-               return ant_home;
-            }
-         }
-      }
-      catch ( Exception e ) {
-         e.printStackTrace();
-      }
-      return null;
    }
 
    /**

@@ -9,6 +9,7 @@ import org.gjt.sp.jedit.OptionPane;
 import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.View;
 import ise.library.KappaLayout;
+import ise.antelope.common.AntUtils;
 import ise.antelope.common.Constants;
 import ise.antelope.common.OptionSettings;
 
@@ -34,7 +35,7 @@ public class AntelopeOptions implements OptionPane, Constants {
 
       final JTextField ant_home_field = new JTextField( 25 );
       ant_home_field.setEditable( false );
-      ant_home_field.setText( getAntHome() );
+      ant_home_field.setText( AntUtils.getAntHome() );
 
       JButton choose_btn = new JButton( "Choose..." );
 
@@ -45,7 +46,7 @@ public class AntelopeOptions implements OptionPane, Constants {
 
       choose_btn.addActionListener( new ActionListener() {
                public void actionPerformed( ActionEvent ae ) {
-                  String ant_home = getAntHome();
+                  String ant_home = AntUtils.getAntHome();
                   if ( ant_home.equals( "" ) ) {
                      ant_home = System.getProperty( "user.home" );
                   }
@@ -85,17 +86,6 @@ public class AntelopeOptions implements OptionPane, Constants {
                }
             }
                                   );
-   }
-
-   private String getAntHome() {
-      String ant_home = PREFS.get( ANT_HOME, null );
-      if ( ant_home != null ) {
-         File ant_dir = new File( ant_home );
-         if ( ant_dir.exists() ) {
-            return ant_home;
-         }
-      }
-      return "";
    }
 
    public void save() {}
