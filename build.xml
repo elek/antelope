@@ -34,6 +34,9 @@
    copied here for pre-processing -->
    <property name="doc.dir" location="${prep.dir}/docs" />
    
+   <!-- override with a local path to docbookx.dtd if disconnected -->
+   <property name="docbookx.dtd" value="http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd"/>
+   
    <!-- directory for the compiled classes -->
    <property name="classes.dir" location="classes" />
    
@@ -46,8 +49,16 @@
    ========================================================================= -->
    <target name="all" 
            description="Build complete set of distribution files."
-           depends="plugin,app,source,tasks"/>
+           depends="clean,plugin,app,source,tasks"/>
       
+   <!-- ========================================================================
+      Target: clean
+      deletes all files from the dist directory
+   ========================================================================= -->
+    <target name="clean" description="Delete all files from the dist directory.">
+        <delete dir="${dist.dir}"/>
+    </target>
+    
    <!-- ========================================================================
       Target: plugin
       this target creates the distribution file for the jEdit plugin

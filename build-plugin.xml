@@ -230,6 +230,9 @@
             <include name="docs/*.txt"/>
             <include name="docs/about.html"/>
          </fileset>
+         <fileset dir="${src.dir}/images">
+            <include name="antelope.jpg"/>
+         </fileset>
       </copy>
 
 

@@ -102,6 +102,8 @@ public class AntelopeProperties {
    private final String USER = "User";
 
    private final String DESC = "Description";
+   
+   private final String ABOUT = "About";
 
    private final String ANTHOME = "Ant Home";
 
@@ -201,6 +203,21 @@ public class AntelopeProperties {
       desc.setBackground( Color.white );
       desc.setEditable( false );
 
+      // about Antelope
+      JEditorPane about = new JEditorPane( );
+      try {
+         java.net.URL url = getClass().getClassLoader().getResource("about.html" );
+         about.setPage(url);  
+      }
+      catch(IOException ioe) {
+         ioe.printStackTrace();
+         about.setContentType("text/html");
+         about.setText(getAntelopeVersion());
+      }
+      about.setBackground( Color.white );
+      about.setEditable( false );
+
+      
       // show the dialog
       String project_name = project.getName();
       if ( project_name == null )
@@ -230,6 +247,7 @@ public class AntelopeProperties {
       tabs.add( REFS, new JScrollPane( ref_table ) );
       tabs.add( USER, new JScrollPane( user_table ) );
       tabs.add( DESC, new JScrollPane( desc ) );
+      tabs.add( ABOUT, new JScrollPane(about));
 
       KappaLayout kl = new KappaLayout();
       JPanel btn_panel = new JPanel( kl );

@@ -51,6 +51,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.*;
 import java.util.prefs.*;
@@ -106,6 +107,7 @@ public class AntelopePanel extends JPanel implements Constants {
    private JToggleButton _edit_btn = null;
    private JButton _props_btn = null;
    private JButton _options_btn = null;
+   private JButton _reload_btn = null;
    private JCheckBox _multi = new JCheckBox( "Multiple targets" );
 
    /** Description of the Field */
@@ -221,15 +223,21 @@ public class AntelopePanel extends JPanel implements Constants {
       catch ( Exception e ) {
          JOptionPane.showMessageDialog( GUIUtils.getRootJFrame( this ), "<html>Error:<br>" + e.getMessage(),
                "Ant Error", JOptionPane.ERROR_MESSAGE );
-         //throw e;
       }
 
       // set up the control panel
-      LambdaLayout lal = new LambdaLayout();
-      _control_panel = new JPanel( lal );
+      _control_panel = new JPanel( );
       Insets ins = new Insets( 1, 1, 1, 1 );
 
-      _run_btn = new JToggleButton( "Run" );
+      URL url = getClass().getClassLoader().getResource( "images/Play16.gif" );
+      Icon icon = null;
+      if ( url != null )
+         icon = new ImageIcon( url );
+      if (icon == null)
+         _run_btn = new JToggleButton("Run");
+      else
+         _run_btn = new JToggleButton(icon);
+      _run_btn.setToolTipText("Run targets");
       _run_btn.setMargin( ins );
       _run_btn.addActionListener(
          new ActionListener() {
@@ -248,7 +256,14 @@ public class AntelopePanel extends JPanel implements Constants {
       }
       _run_btn.setSelected( true );
 
-      _trace_btn = new JToggleButton( "Trace" );
+      url = getClass().getClassLoader().getResource( "images/Zoom16.gif" );
+      icon = null;
+      if ( url != null )
+         icon = new ImageIcon( url );
+      if (icon == null)
+         _trace_btn = new JToggleButton("Trace");
+      else
+         _trace_btn = new JToggleButton(icon);
       _trace_btn.setMargin( ins );
       _trace_btn.setToolTipText( "Show target trace" );
       _trace_btn.setSelected( _trace );
@@ -264,7 +279,14 @@ public class AntelopePanel extends JPanel implements Constants {
          }
       );
 
-      _edit_btn = new JToggleButton( "Edit" );
+      url = getClass().getClassLoader().getResource( "images/Edit16.gif" );
+      icon = null;
+      if ( url != null )
+         icon = new ImageIcon( url );
+      if (icon == null)
+         _edit_btn = new JToggleButton("Edit");
+      else
+         _edit_btn = new JToggleButton(icon);
       _edit_btn.setMargin( ins );
       _edit_btn.setToolTipText( "Edit the build file." );
       _edit_btn.setSelected( _edit );
@@ -283,7 +305,19 @@ public class AntelopePanel extends JPanel implements Constants {
          }
       );
 
-      _props_btn = new JButton( "Properties" );
+      ButtonGroup bg = new ButtonGroup();
+      bg.add( _run_btn );
+      bg.add( _trace_btn );
+      bg.add( _edit_btn );
+
+      url = getClass().getClassLoader().getResource( "images/Information16.gif" );
+      icon = null;
+      if ( url != null )
+         icon = new ImageIcon( url );
+      if (icon == null)
+         _props_btn = new JButton("Properties");
+      else
+         _props_btn = new JButton(icon);
       _props_btn.setMargin( ins );
       _props_btn.setToolTipText( "Show current build properties for Ant" );
       _props_btn.addActionListener(
@@ -294,12 +328,14 @@ public class AntelopePanel extends JPanel implements Constants {
          }
       );
 
-      ButtonGroup bg = new ButtonGroup();
-      bg.add( _run_btn );
-      bg.add( _trace_btn );
-      bg.add( _edit_btn );
-
-      _options_btn = new JButton( "Options" );
+      url = getClass().getClassLoader().getResource( "images/Properties16.gif" );
+      icon = null;
+      if ( url != null )
+         icon = new ImageIcon( url );
+      if (icon == null)
+         _options_btn = new JButton("Options");
+      else
+         _options_btn = new JButton(icon);
       _options_btn.setMargin( ins );
       _options_btn.setToolTipText( "Show output display options" );
       _options_btn.addActionListener(
@@ -309,12 +345,31 @@ public class AntelopePanel extends JPanel implements Constants {
             }
          }
       );
-      _control_panel.add( _run_btn, "0, 0, 2, 1, 0, w, 1" );
-      _control_panel.add( _trace_btn, "2, 0, 2, 1, 0, w, 1" );
-      _control_panel.add( _edit_btn, "4, 0, 2, 1, 0, w, 1" );
-      _control_panel.add( _props_btn, "0, 1, 3, 1, 0, w, 1" );
-      _control_panel.add( _options_btn, "3, 1, 3, 1, 0, w, 1" );
-      lal.makeColumnsSameWidth();
+
+      url = getClass().getClassLoader().getResource( "images/Refresh16.gif" );
+      icon = null;
+      if ( url != null )
+         icon = new ImageIcon( url );
+      if (icon == null)
+         _reload_btn = new JButton("Reload");
+      else
+         _reload_btn = new JButton(icon);
+      _reload_btn.setMargin( ins );
+      _reload_btn.setToolTipText( "Reload current build file" );
+      _reload_btn.addActionListener( new ActionListener() {
+               public void actionPerformed( ActionEvent ae ) {
+                  reload();
+               }
+            }
+                                   );
+
+      _control_panel.setLayout( new GridLayout( 2, 3, 1, 1 ) );
+      _control_panel.add( _run_btn );
+      _control_panel.add( _trace_btn );
+      _control_panel.add( _edit_btn );
+      _control_panel.add( _props_btn );
+      _control_panel.add( _options_btn );
+      _control_panel.add( _reload_btn );
 
       _project_name =
          new JTextField() {
@@ -450,7 +505,7 @@ public class AntelopePanel extends JPanel implements Constants {
                      }
 
                      // reload the project if need be
-                     if ( _settings.getAutoReload() || _sax_panel.shouldReload()) {
+                     if ( _settings.getAutoReload() || _sax_panel.shouldReload() ) {
                         try {
                            reload();
                         }
@@ -577,7 +632,7 @@ public class AntelopePanel extends JPanel implements Constants {
             }
 
             // execute a target, but first reload the project if need be
-            if ( _settings.getAutoReload() || _sax_panel.shouldReload()) {
+            if ( _settings.getAutoReload() || _sax_panel.shouldReload() ) {
                reload();
                // find the button again, the reload replaces the buttons
                // on the button panel, so the button that caused this action event
@@ -932,6 +987,8 @@ public class AntelopePanel extends JPanel implements Constants {
 
                // Ant 1.6 has an un-named target to hold project-level tasks, so
                // find it and save it for later.
+
+
 
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {

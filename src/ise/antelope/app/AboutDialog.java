@@ -169,7 +169,7 @@ public class AboutDialog
         panel.add( btn_panel, BorderLayout.SOUTH );
         setContentPane( panel );
         pack();
-        setSize( new Dimension( 300, 250 ) );
+        setSize( new Dimension( 500, 400 ) );
     }
 
     /**
