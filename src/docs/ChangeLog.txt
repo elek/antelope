@@ -1,6 +1,19 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.1.8:
+23 May 2004
+o Completed issue #12, added 'tail' to output window in app.
+o Completed issue #9, fixed NPE on trace target with non-existant target in antcall.
+
+3.1.7:
+19 May 2004
+o Completed issue #13, added line number display to app.
+o Completed issue #14, added option to not sort the target buttons alphabetically.
+o Completed issue #15, added support for native look and feel to app.
+o Completed issue #16, added support for wheel mouse in edit window.
+o Completed issue #9, backward compatibility with Ant 1.5.x.
+
 3.1.6:
 5 May 2004
 o Fixed a bug in the run.xml file, it was looking for a non-existant 'lib' directory in the classpath.

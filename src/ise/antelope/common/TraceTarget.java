@@ -143,14 +143,15 @@ public class TraceTarget {
                 RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
                 try {
                     if ( AntUtils.getAntVersion() >= 1.60 ) {
-                        attrs = ( Hashtable ) PrivilegedAccessor.getValue( rc, "getAttributeMap" );
+                        attrs = rc.getAttributeMap();
                     }
                     else {
-                        attrs = makeMap( ( AttributeList ) PrivilegedAccessor.getValue( rc, "getAttributes" ) );
+                        attrs = makeMap( ( AttributeList ) PrivilegedAccessor.invokeMethod( rc, "getAttributes", null ) );
                     }
                 }
                 catch ( Exception e ) {
-                    // ignored
+                   e.printStackTrace();
+                    continue;
                 }
                 Iterator it = attrs.keySet().iterator();
                 while ( it.hasNext() ) {
