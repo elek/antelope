@@ -367,6 +367,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                         Constants.PREFS.putInt( FONT_STYLE, _font.getStyle() );
                         Constants.PREFS.putInt( FONT_SIZE, _font.getSize() );
                         _editor.getPainter().setFont( font );
+                        logger.setFont(font);
                     }
                 }
             }
@@ -536,6 +537,19 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
         undo_mi.setEnabled( _editor.canUndo() );
         redo_mi.setEnabled( _editor.canRedo() );
+
+        // look and feel
+        try {
+            if (Constants.PREFS.getBoolean( USE_NATIVE_LF, true )) {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }
+            else {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            }
+            SwingUtilities.updateComponentTreeUI(this);
+            validate();
+        }
+        catch (Exception e) {}
 
         pack();
         ta.requestFocus();

@@ -24,6 +24,7 @@ public class OptionSettings implements Constants {
    private boolean showBracketHighlight = false;
    private Color eolMarkerColor = new Color( 0x009999 ) ;
    private boolean showEolMarker = false;
+   private boolean useNativeLF = false;
 
    public boolean getCaretBlinks() {
       return caretBlinks;
@@ -120,6 +121,14 @@ public class OptionSettings implements Constants {
    public void setShowEolMarker( boolean b ) {
       showEolMarker = b;
    }
+   
+   public void setUseNativeLookAndFeel(boolean b) {
+        useNativeLF = b;   
+   }
+   
+   public boolean getUseNativeLookAndFeel() {
+        return useNativeLF;   
+   }
 
    /**
     * load default settings from preferences    
@@ -142,6 +151,8 @@ public class OptionSettings implements Constants {
 
       eolMarkerColor = new Color( PREFS.getInt( EOL_MARKER_COLOR, 0x009999 ) );
       showEolMarker = PREFS.getBoolean( SHOW_EOL_MARKER, false );
+      
+      useNativeLF = PREFS.getBoolean(USE_NATIVE_LF, false);
    }
 
    /**
@@ -165,6 +176,8 @@ public class OptionSettings implements Constants {
 
       PREFS.putInt( EOL_MARKER_COLOR, getEolMarkerColor().getRGB() );
       PREFS.putBoolean( SHOW_EOL_MARKER, showEolMarker() );
+      
+      PREFS.putBoolean( USE_NATIVE_LF, getUseNativeLookAndFeel());
    }
 
    /**

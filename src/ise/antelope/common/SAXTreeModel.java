@@ -163,6 +163,7 @@ public class SAXTreeModel extends DefaultTreeModel {
          if ( child.isProject() )
             addSubProjectTargets( child, list );
       }
+      
       return list;
    }
 

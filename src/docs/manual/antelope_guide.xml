@@ -392,6 +392,11 @@ The available options on the "Targets" tab are:
 By default, none of these options are selected. Antelope displays all private targets in italics.   
 </para>
 </listitem>
+<listitem>
+<para>
+<emphasis role="bold">Sort target buttons</emphasis> By default, the target buttons are sorted alphabetically by target name. Unchecking this box will cause the target buttons to be displayed in the order that they appear in the build file.
+</para>
+</listitem>
 </itemizedlist>
 
 <para>
@@ -538,7 +543,37 @@ Antelope as a stand-alone application provides a few features not found in the p
 <listitem><para>The "File" menu deals with the build file, providing the ability to create a new build file, open a build file and to save changes to the build file. Antelope provides some basic editing capabilities, but is not intended to be a full-featured editor. You may find other editors more suited to editing build files. </para></listitem>
 <listitem><para>Also on the "File" menu is the list of recently opened files. This is handy for choosing a file that was previously opened without using the file chooser.</para></listitem>
 <listitem><para>The "Output" menu provides the ability to save the Ant output to a file and to clear the 'Output' window.</para></listitem>
-<listitem><para>The "Format" menu provides the ability to set the font for the output and edit windows. The same font is used for both windows. The color coding of the edit and output windows is not adjustable in this version.</para></listitem>
+<listitem><para>The "Options" menu provides the ability to set a number of options for the application:</para>
+<para>
+<figure>
+<title>Font chooser</title>
+<imageobject>
+    <imagedata fileref="font_dialog.gif" format="GIF"/>
+</imageobject>
+</figure>
+The same font will be used for both the editor and output window.
+</para>
+
+<para>
+<figure>
+<title>Editor options</title>
+<imageobject>
+    <imagedata fileref="editor_options_dialog.gif" format="GIF"/>
+</imageobject>
+</figure>
+</para>
+
+<para>
+<figure>
+<title>Syntax highlighting options</title>
+<imageobject>
+    <imagedata fileref="syntax_dialog.gif" format="GIF"/>
+</imageobject>
+</figure>
+Syntax hightlighting only applies to the editor window, not the output window.
+</para>
+
+</listitem>
 </itemizedlist>
 </para>
 

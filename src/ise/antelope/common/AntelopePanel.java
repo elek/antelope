@@ -1051,18 +1051,18 @@ public class AntelopePanel extends JPanel implements Constants {
                   }
                }
 
-               // make buttons by sorting the targets by name
+               // make buttons by sorting the targets by name or by leaving
+               // them in the order they appear in the build file
                if ( _settings.getSortTargets() )
                   _targets = new TreeMap( java.text.Collator.getInstance() );
-               else{
+               else
                   _targets = new LinkedHashMap();
-               }
                Map sax_targets = _sax_panel.getTargets();
-               Iterator it = targets.keySet().iterator();
+               Iterator it = sax_targets.keySet().iterator();
                while ( it.hasNext() ) {
                   // adjust which targets are showing --
                   String target_name = ( String ) it.next();
-
+                  
                   // Ant 1.6 has an un-named target to hold project-level tasks.
                   // It has no name and shouldn't be executed by itself, so
                   // don't make a button for it.

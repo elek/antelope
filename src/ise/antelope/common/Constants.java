@@ -117,6 +117,7 @@ public interface Constants {
    public final static String ELECTRIC_SCROLL_HEIGHT = "electric_scroll_height";
    public final static String SMART_HOME             = "smart_home";
    public final static String SELECTION_COLOR        = "selection_color";
+   public final static String USE_NATIVE_LF          = "use_native_look_and_feel";
                                                        
   
    // keys for individual option settings --

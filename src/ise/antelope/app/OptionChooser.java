@@ -8,6 +8,7 @@ import ise.library.KappaLayout;
 import ise.library.GUIUtils;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
@@ -28,13 +29,17 @@ import javax.swing.border.EmptyBorder;
  * Color eolMarkerColor = new Color( 0x009999 ) ;
  * boolean showEolMarker = false;
  * textArea.setClientProperty(InputHandler.SMART_HOME_END_PROPERTY, true)
+ *
+ * Also supports switching to native look and feel.
  */
 public class OptionChooser extends JDialog implements Constants {
 
+    private JFrame parent = null;
     private JEditTextArea editor;
 
     private OptionChooser( JFrame parent, JEditTextArea t ) {
         super( parent );
+        this.parent = parent;
         editor = t;
         setModal( true );
         setResizable( false );
@@ -60,6 +65,7 @@ public class OptionChooser extends JDialog implements Constants {
         final JCheckBox showBracketHighlight_cb = new JCheckBox( "Highlight matching brackets" );
         final JButton eolMarkerColor_btn = new JButton();
         final JCheckBox showEolMarker_cb = new JCheckBox( "Show end of line marker" );
+        final JCheckBox useNativeLF_cb = new JCheckBox("Use native look and feel");
 
         caretBlinks_cb.setSelected( settings.getCaretBlinks() );
         caretColor_btn.setBackground( settings.getCaretColor() );
@@ -74,6 +80,7 @@ public class OptionChooser extends JDialog implements Constants {
         showEolMarker_cb.setSelected( settings.showEolMarker() );
         eolMarkerColor_btn.setBackground( settings.getEolMarkerColor() );
         eolMarkerColor_btn.setEnabled( showEolMarker_cb.isSelected() );
+        useNativeLF_cb.setSelected(settings.getUseNativeLookAndFeel());
 
         pane.add( caretBlinks_cb, "0, 0, 1, 1, W, 0,  3" );
         pane.add( new JLabel( "Caret color" ), "0, 1, 1, 1, W, 0,  3" );
@@ -91,6 +98,7 @@ public class OptionChooser extends JDialog implements Constants {
         pane.add( bracketHighlightColor_btn, "1, 7, 1, 1, 0, wh, 3" );
         pane.add( showEolMarker_cb, "0, 8, 1, 1, W, 0,  3" );
         pane.add( eolMarkerColor_btn, "1, 8, 1, 1, 0, wh, 3" );
+        pane.add( useNativeLF_cb, "0, 9, 1, 1, 0, wh, 3" );
         layout.makeRowsSameHeight();
 
         KappaLayout kl = new KappaLayout();
@@ -102,8 +110,8 @@ public class OptionChooser extends JDialog implements Constants {
         btn_panel.add( apply_btn, "1, 0, 1, 1, 0, wh, 3" );
         btn_panel.add( cancel_btn, "2, 0, 1, 1, 0, wh, 3" );
         kl.makeColumnsSameWidth();
-        pane.add( KappaLayout.createVerticalStrut( 17 ), "0, 9" );
-        pane.add( btn_panel, "0, 10, 2, 1, 0, 0, 6" );
+        pane.add( KappaLayout.createVerticalStrut( 17 ), "0, 10" );
+        pane.add( btn_panel, "0, 11, 2, 1, 0, 0, 6" );
 
         ActionListener al = new ActionListener() {
                     public void actionPerformed( ActionEvent ae ) {
@@ -142,6 +150,7 @@ public class OptionChooser extends JDialog implements Constants {
 
         final ActionListener apply_action = new ActionListener() {
                     public void actionPerformed( ActionEvent ae ) {
+                        // text area settings
                         TextAreaPainter tap = editor.getPainter();
                         tap.setCaretColor( caretColor_btn.getBackground() );
                         editor.setElectricScroll( ( ( Integer ) electricScroll_sp.getValue() ).intValue() );
@@ -155,6 +164,26 @@ public class OptionChooser extends JDialog implements Constants {
                         tap.setEOLMarkersPainted( showEolMarker_cb.isSelected() );
                         tap.setEOLMarkerColor( eolMarkerColor_btn.getBackground() );
 
+                        // look and feel
+                        try {
+                            if (useNativeLF_cb.isSelected()) {
+                                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                            }
+                            else {
+                                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                            }
+                            OptionChooser.this.parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                            SwingUtilities.updateComponentTreeUI(OptionChooser.this.parent);
+                            SwingUtilities.updateComponentTreeUI(OptionChooser.this);
+                            OptionChooser.this.parent.validate();
+                            OptionChooser.this.validate();
+                        }
+                        catch (Exception e) {}
+                        finally {
+                            OptionChooser.this.parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                        }
+
+                        // save settings
                         settings.setCaretColor( caretColor_btn.getBackground( ) );
                         settings.setUseSmartHome( useSmartHome_cb.isSelected( ) );
                         settings.setElectricScroll( ( ( Integer ) electricScroll_sp.getValue() ).intValue() );
@@ -166,6 +195,7 @@ public class OptionChooser extends JDialog implements Constants {
                         settings.setShowBracketHighlight( showBracketHighlight_cb.isSelected( ) );
                         settings.setEolMarkerColor( eolMarkerColor_btn.getBackground( ) );
                         settings.setShowEolMarker( showEolMarker_cb.isSelected( ) );
+                        settings.setUseNativeLookAndFeel(useNativeLF_cb.isSelected());
                         settings.save();
                     }
                 };
