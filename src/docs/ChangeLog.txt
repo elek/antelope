@@ -2,6 +2,12 @@ Antelope Change Log
 Version: @@build.num@@
 
 3.0.7:
+o Changed the preferences again. The custom preferences are now used on all platforms and all jvm versions, but the custom preferences no longer are the system default preferences. This means if you ran version 3.0.6, you will loose any stored settings, but all settings from any previous version of Antelope are available and will be use. I never felt comfortable about doing that anyway. The point of implementing the custom preferences was to get around an annoying bug in the Unix/Linux implementation of java.util.prefs. If you are still running with a jvm that has that bug (see bugs 4868444 and 4751177 at java.sun.com) and want to get rid of all the annoying messages, add this to your command line when starting Antelope:
+
+-Djava.util.prefs.PreferencesFactory=ise.library.UserPreferences
+
+This will install Antelope's custom preferences handler as the default system preferences handler.
+
 
 
 3.0.6:

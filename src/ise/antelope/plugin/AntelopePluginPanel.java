@@ -114,7 +114,6 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
    public void init() {
       SwingUtilities.invokeLater( new Runnable() {
                public void run() {
-                  System.out.println( "loading ant" );
                   try {
                      // load ant
                      jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
@@ -133,9 +132,12 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                   catch ( Exception e ) {
                      // start Antelope anyway
                      /// really? what good is antelope without ant???
-                     e.printStackTrace();
+                     jEdit.resetProperty("plugin.ise.antelope.plugin.AntelopePlugin.jars");
+                     int rtn = JOptionPane.showConfirmDialog(AntelopePluginPanel.this, "<html>Error loading Ant:<p>" + e.getMessage() + "<p>Do you want to try again?", "Error Loading Ant", JOptionPane.YES_NO_OPTION);
+                     if (rtn == JOptionPane.YES_OPTION) {
+                        run();
+                     }
                   }
-                  System.out.println( "ant loaded" );
 
                   // set up Antelope's menu
                   System.out.println( "load antelope" );
@@ -160,7 +162,6 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                   }
 
                   // create and add Antelope
-                  System.out.println( "create antelope panel" );
                   try {
                      antelopePanel = new AntelopePanel( file, AntelopePluginPanel.this, true, menu_items );
                   }
@@ -171,7 +172,6 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                         "Error", JOptionPane.ERROR_MESSAGE);
                      return;
                   }
-                  System.out.println( "antelope panel created" );
                   removeAll();
                   setBackground( java.awt.Color.WHITE );
                   add( antelopePanel );

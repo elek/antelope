@@ -845,21 +845,11 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       /// Linux like the default preferences handler does. ??? could this possibly
       /// cause problems with a system preferences factory? Shouldn't there be
       /// delegates?
-      // modified to only load custom factory if java version is 1.4 or earlier
-      // AND os is not Windows.
-      String java_version = System.getProperty( "java.version" );
-      if ( java_version != null ) {
-         java_version = java_version.substring( 0, 3 );
-         double jv = Double.parseDouble( java_version );
-         if ( jv <= 1.4 ) {
-            String os = System.getProperty( "os.name" );
-            if ( os.toLowerCase().indexOf( "windows" ) == -1 ) {
-               String prefs = System.getProperty( "java.util.prefs.PreferencesFactory" );
-               if ( prefs == null || !prefs.equals( "ise.library.UserPreferencesFactory" ) ) {
-                  System.setProperty( "java.util.prefs.PreferencesFactory", "ise.library.UserPreferencesFactory" );
-               }
-            }
-         }
+      try {
+         Class.forName("ise.antelope.common.Constants");
+      }
+      catch(Exception e) {
+         e.printStackTrace();
       }
       
       try {

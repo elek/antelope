@@ -100,36 +100,93 @@ public class SAXPanel extends JPanel implements Navable {
                            Object object = path.getLastPathComponent();
                            if ( object instanceof SAXTreeNode ) {
                               SAXTreeNode node = ( SAXTreeNode ) object;
-                              if (!node.isTarget())
-                                 return;
-                              TreeModel tm = SAXPanel.this.getDependencyModel( node, (SAXTreeNode)node.getRoot() );
-                              if ( tm != null ) {
-                                 JPanel panel = new JPanel( new BorderLayout() );
-                                 JTree dt = new JTree( tm );
-                                 dt.addMouseListener( this );
-                                 dt.setCellRenderer( new SAXTreeCellRenderer() );
-                                 for ( int i = 0; i < dt.getRowCount(); i++ ) {
-                                    dt.expandRow( i );
-                                 }
-                                 panel.add( new JScrollPane( dt ) );
-                                 final JDialog dialog = new JDialog(GUIUtils.getRootJFrame(SAXPanel.this), "Dependency Tree", true);
-                                 dialog.getContentPane().add(new JScrollPane(panel), BorderLayout.CENTER);
-                                 JButton close_btn = new JButton("Close");
-                                 JPanel btn_panel = new JPanel();
-                                 btn_panel.add(close_btn);
-                                 dialog.getContentPane().add(btn_panel, BorderLayout.SOUTH);
-                                 close_btn.addActionListener(new ActionListener(){
-                                    public void actionPerformed(ActionEvent ae) {
-                                       dialog.hide();
-                                       dialog.dispose();
+                              if ( node.isTarget() ) {
+                                 TreeModel tm = SAXPanel.this.getDependencyModel( node, ( SAXTreeNode ) node.getRoot() );
+                                 if ( tm != null ) {
+                                    JPanel panel = new JPanel( new BorderLayout() );
+                                    JTree dt = new JTree( tm );
+                                    dt.addMouseListener( this );
+                                    dt.setCellRenderer( new SAXTreeCellRenderer() );
+                                    for ( int i = 0; i < dt.getRowCount(); i++ ) {
+                                       dt.expandRow( i );
                                     }
-                                 });
-                                 dialog.pack();
-                                 dialog.setSize(300, 300);
-                                 java.awt.Point p = SAXPanel.this.getLocation();
-                                 SwingUtilities.convertPointToScreen(p, SAXPanel.this);
-                                 dialog.setLocation(GUIUtils.getBestAnchorPoint(dialog, p.x + me.getX(), p.y + me.getY()));
-                                 dialog.setVisible(true);
+                                    panel.add( new JScrollPane( dt ) );
+                                    final JDialog dialog = new JDialog( GUIUtils.getRootJFrame( SAXPanel.this ), "Dependency Tree", true );
+                                    dialog.getContentPane().add( new JScrollPane( panel ), BorderLayout.CENTER );
+                                    JButton close_btn = new JButton( "Close" );
+                                    JPanel btn_panel = new JPanel();
+                                    btn_panel.add( close_btn );
+                                    dialog.getContentPane().add( btn_panel, BorderLayout.SOUTH );
+                                    close_btn.addActionListener( new ActionListener() {
+                                             public void actionPerformed( ActionEvent ae ) {
+                                                dialog.hide();
+                                                dialog.dispose();
+                                             }
+                                          }
+                                                               );
+                                    dialog.pack();
+                                    dialog.setSize( 300, 300 );
+                                    java.awt.Point p = SAXPanel.this.getLocation();
+                                    SwingUtilities.convertPointToScreen( p, SAXPanel.this );
+                                    dialog.setLocation( GUIUtils.getBestAnchorPoint( dialog, p.x + me.getX(), p.y + me.getY() ) );
+                                    dialog.setVisible( true );
+                                 }
+                              }
+                              else if ( node.getName().equals( "property" ) ) {
+                                 String filename = node.getAttributeValue( "file" );
+                                 File ft = null;
+                                 if ( filename != null ) {
+                                    ft = new File( filename );
+                                    if ( !ft.exists() ) {
+                                       File dir = node.getFile();
+                                       if ( dir == null )
+                                          return ;
+                                       ft = new File( dir.getParentFile(), filename );
+                                    }
+                                 }
+                                 else {
+                                    return ;
+                                 }
+                                 final File f = ft;
+
+                                 try {
+                                    FileReader fr = new FileReader( f );
+                                    StringWriter sw = new StringWriter();
+                                    ise.library.FileUtilities.copyToWriter( fr, sw );
+
+                                    JPanel panel = new JPanel( new BorderLayout() );
+                                    JTextArea tp = new JTextArea( sw.toString() );
+                                    tp.setEditable( false );
+                                    panel.add( new JScrollPane( tp ) );
+
+                                    MouseAdapter m2 = new MouseAdapter() {
+                                             public void mouseClicked( MouseEvent me ) {
+                                                _helper.openFile( f );
+                                             }
+                                          };
+                                    tp.addMouseListener(m2);
+
+                                    final JDialog dialog = new JDialog( GUIUtils.getRootJFrame( SAXPanel.this ), "Properties: " + f.toString(), true );
+                                    dialog.getContentPane().add( panel, BorderLayout.CENTER );
+                                    JButton close_btn = new JButton( "Close" );
+                                    JPanel btn_panel = new JPanel();
+                                    btn_panel.add( close_btn );
+                                    dialog.getContentPane().add( btn_panel, BorderLayout.SOUTH );
+                                    close_btn.addActionListener( new ActionListener() {
+                                             public void actionPerformed( ActionEvent ae ) {
+                                                dialog.hide();
+                                                dialog.dispose();
+                                             }
+                                          }
+                                                               );
+                                    dialog.pack();
+                                    dialog.setSize( 300, 300 );
+                                    java.awt.Point p = SAXPanel.this.getLocation();
+                                    SwingUtilities.convertPointToScreen( p, SAXPanel.this );
+                                    dialog.setLocation( GUIUtils.getBestAnchorPoint( dialog, p.x + me.getX(), p.y + me.getY() ) );
+                                    dialog.setVisible( true );
+                                 }
+                                 catch ( Exception e ) {}
                               }
                            }
                         }
@@ -208,7 +265,7 @@ public class SAXPanel extends JPanel implements Navable {
                children.add( called_node );
             }
          }
-         if ( child_name.equals( "ant" ) ) {
+         else if ( child_name.equals( "ant" ) ) {
             // get the build file name, default is build.xml
             String antfile = "build.xml";
             int index = attrs.getIndex( "antfile" );
@@ -363,6 +420,8 @@ public class SAXPanel extends JPanel implements Navable {
       }
       return nodes;
    }
+
+
 
    /**
     * @return true if the file is an Ant build file, false if not.   

@@ -6,7 +6,7 @@ import javax.swing.border.*;
 /**
  * A drop shadow border. Draws a 1 pixel line completely around the component,
  * and a drop shadow effect on the right and bottom sides.
- * @author Dale Anson, danson@germane-software.com, 25 Feb 2004
+ * @author Dale Anson, 25 Feb 2004
  * @version $Revision$
  */
 public class DropShadowBorder extends AbstractBorder {
@@ -40,7 +40,6 @@ public class DropShadowBorder extends AbstractBorder {
    }
 
    public Insets getBorderInsets( Component c ) {
-      // Insets(top, left, bottom, right)
       return new Insets( 1, 1, _width + 1, _width + 1 );
    }
 

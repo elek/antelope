@@ -25,6 +25,14 @@ public class UserPreferencesFactory implements PreferencesFactory {
 
 
    public Preferences systemRoot() {
+      return getSystemRoot();
+   }
+
+   public Preferences userRoot() {
+      return getSystemRoot();
+   }
+   
+   public static Preferences getSystemRoot() {
       if ( systemRoot == null ) {
          PREFS_ROOT = new File( System.getProperty( "user.home" ) + File.separator + ".ise_prefs" );
          try {
@@ -35,9 +43,9 @@ public class UserPreferencesFactory implements PreferencesFactory {
       }
       return systemRoot;
    }
-
-   public Preferences userRoot() {
-      return systemRoot();
+   
+   public static Preferences getUserRoot() {
+      return getSystemRoot();
    }
 }
 

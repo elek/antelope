@@ -61,7 +61,7 @@ public interface Constants {
    
    // preferences node
    public final static String PREFS_NODE = "/ise/antelope";
-   public static Preferences PREFS = Preferences.userRoot().node(PREFS_NODE);
+   public static Preferences PREFS = ise.library.UserPreferencesFactory.getUserRoot().node(PREFS_NODE);
    
    // key for last build file open by Antelope
    public final static String LAST_OPEN_FILE = "lastOpenFile";

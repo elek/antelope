@@ -15,6 +15,7 @@ import ise.antelope.common.OptionSettings;
 /**
  * That's right, three classes with the same name in three different packages!
  * Talk about being unoriginal!
+ * @author Dale Anson
  */
 public class AntelopeOptions implements OptionPane, Constants {
    private JPanel panel = null;
@@ -29,7 +30,7 @@ public class AntelopeOptions implements OptionPane, Constants {
          return;
       panel = new JPanel( new KappaLayout() );
 
-      JLabel label = new JLabel( "<html><b>Ant Home</b><br><i>You may change the location of Ant here. jEdit will need<br>to be restarted for the change to take effect.</i>" );
+      JLabel label = new JLabel( "<html><b>Ant Home</b><br>You may change the location of Ant here. jEdit will need<br>to be restarted for the change to take effect." );
 
       final JTextField ant_home_field = new JTextField( 25 );
       ant_home_field.setEditable( false );
@@ -40,7 +41,7 @@ public class AntelopeOptions implements OptionPane, Constants {
 
       panel.add( label, "0, 0, 4, 1, W, , 5" );
       panel.add( ant_home_field, "0, 1, 3, 1, 0, wh, 5" );
-      panel.add( choose_btn, "4, 1, 1, 1, 0, wh, 5" );
+      panel.add( choose_btn, "3, 1, 1, 1, 0, wh, 5" );
 
       choose_btn.addActionListener( new ActionListener() {
                public void actionPerformed( ActionEvent ae ) {

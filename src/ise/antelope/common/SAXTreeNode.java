@@ -42,6 +42,13 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable {
    public Attributes getAttributes() {
       return attributes;
    }
+   
+   public String getAttributeValue(String name) {
+      if (attributes == null)
+         return null;
+      int index = attributes.getIndex( name );
+      return index > -1 ? attributes.getValue(index) : null;
+   }
 
    public Point getLocation() {
       return location;
