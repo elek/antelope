@@ -95,7 +95,10 @@ public class SAXNodeHandler extends DefaultHandler {
       child.setImported(isImported);
       if ( infile != null )
          child.setFile( infile );
+      
+      // for the <import> task, load the imported file
       if ( qName.equals( "import" ) ) {
+         // verify the imported file exists
          int index = attributes.getIndex( "file" );
          if ( index > -1 ) {
             String filename = attributes.getValue( index );
@@ -105,19 +108,23 @@ public class SAXNodeHandler extends DefaultHandler {
             }
             if ( f.exists() ) {
                try {
+                  // stash the current settings
                   SAXTreeNode old_root = getRoot();
                   Locator old_locator = locator;
                   Locator old_doc_locator = docLocator;
                   File old_infile = infile;
                   boolean old_is_imported = isImported;
                   
+                  // adjust the settings for the imported file
                   infile = f;
                   isImported = true;
                   
+                  // do the import
                   InputSource source = new InputSource( new FileReader( f ) );
                   SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
                   parser.parse( source, this );
 
+                  // restore the previous settings
                   rootNode = old_root;
                   locator = old_locator;
                   docLocator = old_doc_locator;
@@ -130,6 +137,7 @@ public class SAXNodeHandler extends DefaultHandler {
             }
          }
       }
+      
       if ( stack.empty() ) {
          rootNode = child;
       }

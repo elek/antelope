@@ -71,14 +71,9 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
             if ( attr != null ) {
                name.append( "<b>" );
                boolean p = isPrivate( node );
-               boolean i = node.isImported();
                if ( p )
                   name.append( "<i>" );
-               if (i)
-                  name.append("<u>");
                name.append( attr.getValue( attr.getIndex( "name" ) ) );
-               if (i)
-                  name.append("</u>");
                if ( p )
                   name.append( "</i>" );
                name.append( "</b>" );
@@ -95,8 +90,7 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
                }
             }
             if (showAttributes && node.isImported()) {
-               name.append( " imported from=" );
-               name.append( node.getFile());
+               name.append( " (imported from " ).append( node.getFile()).append(")");
             }
          }
          else {

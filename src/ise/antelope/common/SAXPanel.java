@@ -144,10 +144,15 @@ public class SAXPanel extends JPanel implements Navable {
       return getDependencyModel( initial_target );
    }
 
+   /**
+    * @return a TreeModel representing the dependency tree of the given
+    * target. Returns null if the target is not found.
+    */
    public TreeModel getDependencyModel( SAXTreeNode node ) {
       if ( node == null )
          return null;
       SAXTreeNode root = new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes() );
+      root.setFile(node.getFile());
       addDependentTargetNodes( root );
       return new DefaultTreeModel( root );
    }
@@ -174,11 +179,12 @@ public class SAXPanel extends JPanel implements Navable {
          DefaultTreeModel model = ( DefaultTreeModel ) tree.getModel();
          SAXTreeNode root = ( SAXTreeNode ) model.getRoot();
          int child_count = model.getChildCount( root );
+         SAXTreeNode candidate = null;
          for ( int i = 0; i < child_count; i++ ) {
             SAXTreeNode node = ( SAXTreeNode ) model.getChild( root, i );
 
             // check targets in imported projects
-            if ( node.getName().equals( "project" ) ) {
+            if ( node.getName().equals( "project" ) && candidate == null ) {
                int sub_child_count = model.getChildCount( node );
                for ( int j = 0; j < sub_child_count; j++ ) {
                   SAXTreeNode sub_node = ( SAXTreeNode ) model.getChild( node, j );
@@ -190,14 +196,13 @@ public class SAXPanel extends JPanel implements Navable {
                      continue;
                   String name = attrs.getValue( index );
                   if ( target_name.equals( name ) ){
-                     SAXTreeNode stn = new SAXTreeNode( sub_node.getName(), sub_node.getLocation(), sub_node.getAttributes(), sub_node.getFile() );
-                     stn.setImported(sub_node.isImported());
-                     return stn;
+                     candidate = new SAXTreeNode( sub_node.getName(), sub_node.getLocation(), sub_node.getAttributes(), sub_node.getFile() );
+                     candidate.setImported(sub_node.isImported());
                   }
                }
             }
 
-            // check targets in top-level build file
+            // check targets in top-level build file, targets here have priority
             if ( !node.getName().equals( "target" ) )
                continue;
             Attributes attrs = node.getAttributes();
@@ -206,11 +211,12 @@ public class SAXPanel extends JPanel implements Navable {
                continue;
             String name = attrs.getValue( index );
             if ( target_name.equals( name ) ){
-               SAXTreeNode stn = new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes(), node.getFile() );
-               stn.setImported(node.isImported());
-               return stn;
+               candidate = new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes(), node.getFile() );
+               candidate.setImported(node.isImported());
+               return candidate;
             }
          }
+         return candidate;
       }
       catch ( Exception e ) {
          // ignored
