@@ -1,0 +1,316 @@
+<html>
+<head>
+<title>Ant Tasks</title>
+</head>
+
+<body>
+<a name="top">
+<center>
+<h1>Extra Ant Tasks</h1>
+</center>
+</a>
+
+<a name="assert">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">The Assert Task</font></h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Antelope includes a special Ant task for adding an assertion capability to Ant projects. This task works in a manner very similar to the Java 'assert' keyword, and provides a limited "design by contract" facility to Ant. This is very useful for testing build scripts prior to putting them into production.
+<p>
+The Assert task verifies that a given property has a 
+given value and throws a BuildException if the property value is not as expected 
+or the property does not exist.
+<p>
+Also like Java's 'assert' keyword, the Assert task must be 'turned on' using 
+the property "ant.enable.asserts". If not set, or is set to false, the Assert task works exactly like the Sequential task.
+<p>
+This task can hold other tasks including Assert.
+<p>
+To use this task in your build files, include a task definition like this:
+<p>
+<pre>
+    &lt;taskdef name="assert" classname="ise.antelope.common.Assert"/&gt;
+    &lt;property name="ant.enable.asserts" value="true"/&gt;
+</pre>
+<p>
+<p>
+<strong>Attributes:</strong>
+ 
+<table border="1">
+<tr>
+<td>Attribute</td><td>Description</td><td>Default</td><td>Required</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>The name of the property to test for.</td>
+<td>none</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>exists</td>
+<td>Test for existence or non-existence of the property.</td>
+<td>True</td>
+<td>No</td>
+</tr>
+
+<tr>
+<td>value</td>
+<td>The value to test for, implies 'exists=true'. If the value in the project is different than this value, a BuildException will be thrown and the build will stop.</td>
+<td>none</td>
+<td>No</td>
+</tr>
+
+<tr>
+<td>execute</td>
+<td>Should the tasks contained in this task be executed? It may be useful to set this to false when testing build files.</td>
+<td>True</td>
+<td>No</td>
+</tr>
+
+<tr>
+<td>failonerror</td>
+<td>Should the build halt if the assertion fails? Setting this to false is contrary to the intented use of assertions, but may be useful in certain situations. </td>
+<td>True</td>
+<td>No</td>
+</table>
+
+<p>
+The assert task does not support any nested 
+elements apart from Ant tasks. Any valid Ant task may be embedded within the 
+assert task.</p>
+
+<p>
+In the following example, the first 'assert' task checks that the "wait" property exists and does not execute the 'echo' and 'sleep' tasks. The second 'assert' task checks that the "wait" property exists, has a value of 2, and executes the 'echo' task.
+<p>
+<pre>
+     &lt;property name="wait" value="2"/&gt;
+     &lt;assert name="wait" execute="false"&gt;
+        &lt;echo&gt;
+            Waiting ${wait} seconds...
+            Click the red button to stop waiting.
+        &lt;/echo&gt;
+        &lt;sleep seconds="${wait}"/&gt;
+     &lt;/assert&gt;
+     &lt;assert name="wait" value="2" execute="true"&gt;
+        &lt;echo&gt;done waiting!&lt;/echo&gt;
+     &lt;/assert&gt;
+</pre>
+<p>
+If the "ant.enable.asserts" property is set to false, then in the above example, the 'echo', 'sleep', and 'echo' tasks will all execute.
+<p>
+<a href="#top">Top</a>
+<p>
+
+<p>
+<hr>
+<p>
+
+<a name="iftask">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">The If Task</font></h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Antelope includes a special Ant task for adding an "if" capability to Ant projects. This task works in a manner very similar to the Java 'if' keyword. This is useful for performing certain tasks only if a property has a specific value.
+<p>
+This task can hold other tasks including the If task.
+<p>
+To use this task in your build files, include a task definition like this:
+<p>
+<pre>
+    &lt;taskdef name="if" classname="ise.antelope.common.IfTask"/&gt;
+</pre>
+<p>
+<p>
+<strong>Attributes:</strong>
+ 
+<table border="1" width="100%">
+<tr>
+<td>Attribute</td><td>Description</td><td>Default</td><td>Required</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>The name of the property to test for.</td>
+<td>none</td>
+<td>Yes</td>
+</tr>
+
+<tr>
+<td>exists</td>
+<td>Test for existence or non-existence of the property.</td>
+<td>True</td>
+<td>No</td>
+</tr>
+
+<tr>
+<td>value</td>
+<td>The value to test for, implies 'exists=true'. If the value for the property in the project is the same as this value, embedded tasks will be executed.</td>
+<td>none</td>
+<td>No</td>
+</tr>
+
+</table>
+
+<p>
+The If task does not support any nested 
+elements apart from Ant tasks. Any valid Ant task may be embedded within the 
+If task.</p>
+
+<p>
+In the following example, the 'antcall' task will execute only if the project has a property named "test" with a value of "true".
+<p>
+<pre>
+   &lt;if name="test" value="true"&gt;
+      &lt;antcall target="doUnitTests"/&gt;
+   &lt;/if&gt;
+</pre>
+
+<p>
+
+In the next example, the 'antcall' task will execute only if the project has a property named "test". In this example, it does not matter what value is assigned to the "test" property.
+<p>
+
+<pre>
+   &lt;if name="test"&gt;
+      &lt;antcall target="doUnitTests"/&gt;
+   &lt;/if&gt;
+</pre>
+<p>
+
+Of course, the same thing could have been done by:
+<pre>
+   &lt;antcall target="doUnitTests"/&gt;
+   &lt;target name="doUnitTests" if="test"&gt;
+   &lt;/target&gt;
+</pre>
+
+In the next example, the 'antcall' task will execute only if the project does not have a property named test. This is the opposite situation of the previous example.
+<p>
+
+<pre>
+   &lt;if name="test" exists="false"&gt;
+      &lt;antcall target="doUnitTests"/&gt;
+   &lt;/if&gt;
+</pre>
+
+<p>
+The next example demonstrates nested 'if' tasks. This example will run the unit tests, and if it is Monday, will run the weekly unit tests.
+<p>
+<pre>
+   &lt;tstamp&gt;
+      &lt;format property="day" pattern="E" /&gt;
+   &lt;/tstamp&gt;
+   &lt;if name="test" value="true"&gt;
+      &lt;antcall target="doUnitTests"/&gt;
+      &lt;if name="day" value="Mon"&gt;
+         &lt;antcall target="doWeeklyUnitTests"/&gt;
+      &lt;/if&gt;
+   &lt;/if&gt;
+</pre>
+
+<p>
+The next example shows the "if" and "assert" tasks working together to validate a property before use, and also shows an example of where the "assert" 'failonerror' attribute might be useful. In this example, if the e-mail address is invalid, the e-mail won't be sent and the build won't fail.
+<p>
+<pre>
+   &lt;if name="email_from" value="buildteam@mycompany.com"&gt;
+      &lt;property name="valid_email" value="true"/&gt;
+   &lt;/if&gt;
+   &lt;if name="email_from" value="buildsite@mycompany.com"&gt;
+      &lt;property name="valid_email" value="true"/&gt;
+   &lt;/if&gt;
+   &lt;assert name="valid_email" value="true" failonerror="false"&gt;
+      &lt;mail from="${email_from}" tolist="${email_to}" message="New release available"/&gt;
+   &lt;/assert&gt;
+</pre>
+
+
+<p>
+<a href="#top">Top</a>
+<p>
+
+<a name="trytask">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">The Try Task</font></h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+The "Try" task works similarly to the try/catch construct in Java. This task is useful when a particular task might fail, but the build should not fail if it does. An example is the "mail" task will fail if the mail server is not available, but the build should not fail if the mail message cannot be delivered.
+<p>
+To use this task in your build files, include a task definition like this:
+<p>
+<pre>
+    &lt;taskdef name="try" classname="com.crossgain.antext.TryTask"/&gt;
+</pre>
+<p>
+<strong>Attributes:</strong>
+ 
+<table border="1" width="100%">
+<tr>
+<td>Attribute</td><td>Description</td><td>Default</td><td>Required</td>
+</tr>
+
+<tr>
+<td>catch</td>
+<td>The name of a target to execute if a task fails. This is optional. The target must be in the same project.</td>
+<td>None</td>
+<td>No</td>
+</tr>
+
+</table>
+<p>
+In the following example, the "fail" task will not cause the build to fail because it is contained by a "try". The "testfail" target will execute.
+<pre>
+    &lt;target name="test" description="This exercises the Try task."&gt;
+        &lt;try catch="testfail"&gt;
+            &lt;echo&gt;I am trying...&lt;/echo&gt;
+            &lt;fail message=" and I failed..."/&gt;
+            &lt;echo&gt; but I did not die!&lt;/echo&gt;
+        &lt;/try&gt;
+    &lt;/target&gt;
+  
+    &lt;target name="testfail"&gt;
+        &lt;echo&gt;Did testfail&lt;/echo&gt;
+    &lt;/target&gt;
+</pre>
+<p>
+<a href="#top">Top</a>
+<p>
+
+<a name="userproperty">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">The UserProperty Task</font></h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Another task provided by Antelope is the UserProperty task. This works exactly like the standard Ant Property task, except that THESE PROPERTIES ARE MUTABLE. While this goes against the standard Ant use of properties, occasionally it is useful to be able to change a property value with the build. <strong>In general, use of this task is DISCOURAGED, and the standard Ant Property should be used if possible.</strong>
+<p>
+To use this task in your build files, include a task definition like this:
+<p>
+<pre>
+    &lt;taskdef name="userproperty" classname="ise.antelope.common.UserProperty"/&gt;
+</pre>
+<p>
+For usage information, see the Ant 1.5 documentation for the Property task. 
+
+<p>
+<a href="#top">Top</a>
+<p>
+
+</body>
+</html>

@@ -1,0 +1,546 @@
+<html>
+<head>
+<title>
+Ant Coding Style Guidelines
+</title>
+
+<body>
+<center>
+<h1>
+Ant Coding Style Guidelines
+</h1>
+</center>
+
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">Contents</font>
+</h2>
+</td></tr>
+</table>
+
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#filenames">File Names</a></li>
+<li><a href="#filestructure">Build File Structure and Formatting</a></li>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#targets">Targets</a></li>
+<li><a href="#tasks">Tasks</a></li>
+<li><a href="#comments">Comments</a></li>
+<li><a href="#example">Example Build File</a></a></li>
+</ol>
+
+<p>
+<hr>
+<p>
+<!-- ===================================================== -->
+<p>
+<a name="introduction">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">1. Introduction</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+<h3>
+Why Have Code Conventions
+</h3>
+
+Code conventions are important to software developers for a number of reasons: 
+<br>
+
+<ul>
+<li>80% of the lifetime cost of a piece of software goes to maintenance. 
+<li>Hardly any software is maintained for its whole life by the original author. 
+<li>Code conventions improve the readability of the software, allowing engineers to understand new code more quickly and thoroughly. 
+<li>If you ship your source code as a product, you need to make sure it is as well packaged and clean as any other product you create.
+</ul>
+<br>
+These same reasons apply to build engineers maintaining Ant build files. 
+
+<p>
+Keep in mind that these are guidelines, not hard and fast rules. The ultimate goal is readability and maintainability.
+<p>
+These guidelines have been compiled from the Ant user guide, Sun's Java coding style guidelines, example build files from various Jakarta applications, and e-mail messages on the Ant mailing lists.
+<p>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+<p>
+<a name="filenames">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">2. File Names</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+The default Ant build file is named "build.xml". Any build system beyond the most basic will have multiple build files for various modules of the application. Having them all named "build.xml" quickly leads to confusion of which does what.
+
+<p>
+
+Build file names should indicate the main purpose of the file, and should be in the Java style of mixed upper and lower case letters, with the first letter always capitalized. Words should be spelled out rather than abbreviated, unless the abbreviation is the more common reference. Using the main target name might work well.
+<p>
+Examples:
+<ul>
+<li>MasterBuild.xml
+<li>CreateApplicationJar.xml
+<li>CreateInstaller.xml
+</ul>
+
+<p>
+Build files may load properties from a properties file. These property files should be named the same as the build file name, but with a ".properties" extension. 
+<p>
+
+Examples:
+<ul>
+<li>MasterBuild.properties
+<li>CreateApplicationJar.properties
+<li>CreateInstaller.properties
+</ul>
+
+
+<p>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+<p>
+<a name="filestructure">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">3. Build File Structure and Formatting</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+<h3>Structure</h3>
+
+Ant build files will be arranged with the project description first, followed by "global" properties, followed by targets. Properties and targets do not need to be sorted, however, the default target specified by the project must be the first target listed.
+
+<p>
+
+<h3>Formatting</h3>
+
+Four spaces should be used as the unit of indentation. 
+
+<p>
+
+Do not use tabs instead, use 4 spaces in place of a single tab. Many editors can do this automatically.
+
+<p>
+
+Vertically align start and end tags for an element. Indent child elements.
+
+<p>
+
+Avoid lines longer than 80 characters, since they're not handled well by many terminals and tools.
+
+<p>
+
+Use a single space after a comma.
+
+<p>
+
+Group properties by use, for example, group directory definitions together. Insert a single blank line between groups.
+
+<p>
+
+Insert two blank lines between targets.
+
+<p>
+
+Insert one blank line between tasks within a target.
+
+<p> 
+
+When an expression will not fit on a single line, break it according to these general principles: 
+<ul>
+<li>Break before an attribute. 
+<li>Break after a space or comma. 
+<li>Prefer higher-level breaks to lower-level breaks. 
+<li>Align the new line with the beginning of the expression at the same level on the previous line. 
+<li>If the above rules lead to confusing code or to code that's squished up against the right margin, just indent 8 spaces instead. 
+</ul>
+
+Examples:
+
+<pre>
+    &lt;property name="modules"
+        value="libs, junit_tests, images, docs, api_docs, external_libs,
+              sources" /&gt;
+        
+    &lt;copy todir="${unit_test_deploy}" overwrite="true"&gt;
+        &lt;fileset dir="${unit_test_home}"&gt;
+            &lt;exclude name="**/CVS" /&gt;
+        &lt;/fileset&gt;
+    &lt;/copy&gt;
+</pre>
+
+<p>
+This is wrong:
+<pre>
+  &lt;target name="test_all" depends="clean,setupApp,
+                                    setupTests,setupLogger,
+                    startReportServlet,runTests"/&gt;
+</pre>
+
+<p>
+This is right:
+<pre>                    
+    &lt;target name="test_all" 
+        depends="clean, setupApp, setupTests, setupLogger, 
+                startReportServlet, runTests"/&gt;
+</pre>                    
+
+<p>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+<p>
+<a name="projects">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">4. Projects</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+To be acceptable to Ant, each build file must have a "project" element as its root element. 
+
+<p>
+
+A <i>project</i> has three attributes. This standard deviates slightly from the Ant standard in that the "name" attribute is required and will be the same as the file name without the ".xml" extension.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">the name of the project. This attribute should be the same as the file name without the .xml extension.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">default</td>
+    <td valign="top">the default target to use when no target is supplied.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">basedir</td>
+    <td valign="top">the base directory from which all path calculations are
+      done. This attribute might be overridden by setting
+      the &quot;basedir&quot;
+      property beforehand. When this is done, it must be omitted in the
+      project tag. If neither the attribute nor the property have
+      been set, the parent directory of the buildfile will be used.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+<p>Ant allows that a description for the project can be provided as a top-level <code>&lt;description&gt;</code> element. This description 
+will be included in the output of the <code>ant -projecthelp</code>
+command. While this is optional for Ant, the description element is required by this standard.</p>
+
+<p>
+Example description:
+
+<pre>  
+&lt;description&gt;
+This build file is used to build the Foo subproject within 
+the large and complex Bar project.
+&lt;/description&gt;
+</pre>
+
+<p>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+<p>
+<a name="properties">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">5. Properties</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+Property names should be short yet meaningful. The choice of a property name should be mnemonic -- that is, designed to indicate to the casual observer the intent of its use. One-character property names should be avoided. Property names will be all lowercase with underscore separating individual words. 
+
+<p>
+Examples:
+
+
+<pre>
+&lt;property name="build_dir" value="build"/&gt;
+&lt;property name="jar_dir" value="${build_dir}/jars"/&gt;
+&lt;property name="lib_home" value="lib"/&gt;
+</pre>
+
+
+<p>
+
+Properties may be defined in a properties file. These property files should be named the same as the build file name, but with a ".properties" extension.
+
+<p>
+
+Properties may be "grouped" using the "dot" notation. For example, suppose the documentation for a project is divided into several manuals: the user manual, the installation manual, a technical support manual, and a examples manual, with the source for each manual residing in a separate directory. Then properties might look like this:
+
+<p>
+<pre>
+&lt;property name="docs_dir" value="docs"/&gt;
+&lt;property name="docs.user_manual" value="${docs_dir}/user_manual"/&gt;  
+&lt;property name="docs.install_manual" value="${docs_dir}/installation"/&gt;  
+&lt;property name="docs.tech_manual" value="${docs_dir}/techman"/&gt;  
+&lt;property name="docs.examples_manual" value="${docs_dir}/examples"/&gt;
+</pre>  
+<p>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+<p>
+<a name="targets">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">6. Targets</font>
+</h2>
+</td></tr>
+</table>
+</a>
+ 
+Like property names, target names should be short and meaningful. A target name should descript the overall intent of the target function. Target names should start with a verb, in mixed case with the first letter lowercase and with the first letter of each internal word capitalized.
+
+<p>
+Examples: 
+
+<ul>
+<li>initialize
+<li>notifyOnFailed
+<li>runTests
+</ul>
+
+All targets that are likely to be called directly, that is, from the Ant command line, should have the description attribute filled in. This description will be included in the output of the <code>ant -projecthelp</code>
+command. 
+
+<p>
+
+Targets that should not be called directly from the command line should start with a hyphen, for example, 
+<p>
+<code>-cleanDocDir</code>. 
+ 
+<p>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+<p>
+<a name="tasks">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">7. Tasks</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+Avoid use of the "exec" task if possible as this reduces portability.
+<p>
+This is bad as it assumes that the 'tar' utility is installed on the current path:
+<pre>
+    &lt;exec executable="tar" dir="${java.tmp.dir}/libraries"&gt;
+        &lt;arg line="-xzf ${build_dir}/${libraries_tar}"/&gt;
+    &lt;/exec&gt;
+</pre>
+
+This is good:
+<pre>
+    &lt;untar src="${build_dir}/${libraries_tar}" compression="gzip"
+        dest="${java.tmp.dir}/libraries"/&gt;
+</pre>
+
+<p>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+<p>
+<a name="comments">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">8. Comments</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+More is better! In particular, write comments for the intended use of properties and targets. The build file itself will tell what is happening, the comments should explain why.
+
+<p>
+For target comments, use a block comment similar to this example:
+<p>
+<pre>
+&lt;!-- ==================== Dist Target ================================ 
+
+    The "dist" target creates a binary distribution of the application
+    in a directory structure ready to be archived in a tar.gz or zip file.
+    This target depends on two others:
+
+    * "compile" so that the entire web application (including external
+      dependencies) will have been assembled
+
+    * "javadoc" so that the application Javadocs will have been created
+
+--&gt;
+</pre>
+
+Place target comments immediately above the target element, with a single blank line between the end of the comment and the start of the target.
+
+
+<p>
+
+For other comments, such as for properties or within a target, use the standard xml single line comment like this:
+
+<pre>
+&lt;!-- this is a comment --&gt;
+</pre>
+
+<p>
+
+If a comment is longer than a single line, wrap it and indent the second and subsequent lines 4 spaces, for example:
+
+<pre>
+&lt;!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file,
+    then copy it and the source jar to the ${dist} directory so 
+    everything will be ready for moving to the ftp server. --&gt;
+</pre>
+
+<p>
+
+Do not put a blank line between a single line comment and the element it is describing, for example:
+
+<pre>
+    &lt;!-- this is where the api documents live --&gt;
+    &lt;property name="api_docs" value="${docs_home}/api"/&gt;
+</pre>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+<p>
+<a name="example">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">9. Example Build File</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+The following example build file follows these guidelines. This build file would be stored on disk as "MyProject.xml".
+
+<pre>
+
+&lt;project name="MyProject" default="dist" basedir="."&gt;
+    &lt;description&gt;
+        simple example build file
+    &lt;/description&gt;
+    
+    &lt;!-- set global properties for this build --&gt;
+    
+    &lt;!-- where the source files are --&gt;
+    &lt;property name="src" location="src"/&gt;
+    
+    &lt;!-- where the compiled classes go --&gt;
+    &lt;property name="build" location="build"/&gt;
+    
+    &lt;!-- where to place the finished jar file --&gt;
+    &lt;property name="dist"  location="dist"/&gt;
+
+    &lt;!-- ========== Dist Target ===================================
+        The dist target compiles all the source code and creates
+        a jar file for distribution.
+    --&gt;
+    &lt;target name="dist" depends="clean, compile"
+        description="generate the distribution" &gt;
+        &lt;!-- Create the distribution directory --&gt;
+        &lt;mkdir dir="${dist}/lib"/&gt;
+
+        &lt;!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar
+            file --&gt;
+        &lt;jar jarfile="${dist}/lib/MyProject-${DSTAMP}.jar"
+            basedir="${build}"/&gt;
+    &lt;/target&gt;
+
+    &lt;!-- ========== Init Target ====================================
+        This target initializes the build by creating a time stamp
+        for use in the jar file name and creating the directory
+        to hold the compiled classes.
+    --&gt;
+    &lt;target name="-init"&gt;
+        &lt;!-- Create the time stamp --&gt;
+        &lt;tstamp/&gt;
+      
+        &lt;!-- Create the build directory structure used by compile --&gt;
+        &lt;mkdir dir="${build}"/&gt;
+    &lt;/target&gt;
+
+    &lt;!-- ========== Compile Target =================================
+        The compile target compiles all files in the source directory
+        into the build directory.
+    --&gt;
+    &lt;target name="compile" depends="-init" 
+        description="compile the source " &gt;
+        
+        &lt;!-- Compile the java code from ${src} into ${build} --&gt;
+        &lt;javac srcdir="${src}" destdir="${build}"/&gt;
+        
+    &lt;/target&gt;
+
+    &lt;!-- ========== Clean Target ====================================
+        The clean target deletes all files from the build directory
+        and the dist directory. 
+    --&gt;
+    &lt;target name="clean" description="clean up" &gt;
+        &lt;!-- Delete the ${build} and ${dist} directory trees --&gt;
+        &lt;delete dir="${build}"/&gt;
+        &lt;delete dir="${dist}"/&gt;
+    &lt;/target&gt;
+&lt;/project&gt;
+</pre>
+
+<a href="#top">Top</a>
+<p>
+<hr>
+<!-- ===================================================== -->
+
+</body>
+</html>

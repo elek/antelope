@@ -1,0 +1,538 @@
+<!-- Ant Coding Style Guidelines for Antelope -->
+<!-- (C) 2002 Dale Anson -->
+
+<book>
+<bookinfo>
+    <title>Ant Coding Style Guidelines</title>
+
+    <authorgroup>
+        <author><firstname>Dale</firstname><surname>Anson</surname></author>
+    </authorgroup>
+
+</bookinfo>
+
+<chapter id="introduction">
+    <title>Introduction</title>
+    <bridgehead renderas='sect3'>Why Have Code Conventions</bridgehead>
+
+<para>
+Code conventions are important to software developers for a number of reasons: 
+
+<itemizedlist>
+    <listitem>
+    <para>
+        80% of the lifetime cost of a piece of software goes to maintenance.    
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+        Hardly any software is maintained for its whole life by the original author.    
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+        Code conventions improve the readability of the software, allowing engineers to understand new code more quickly and thoroughly.    
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+        If you ship your source code as a product, you need to make sure it is as well packaged and clean as any other product you create.    
+    </para>
+    </listitem>
+</itemizedlist>
+</para>
+
+<para>
+These same reasons apply to build engineers maintaining Ant build files. 
+</para>
+
+<para>
+Keep in mind that these are guidelines, not hard and fast rules. The ultimate goal is readability and maintainability.
+</para>
+
+<para>
+These guidelines have been compiled from the Ant user guide, Sun's Java coding style guidelines, example build files from various Jakarta applications, and e-mail messages on the Ant mailing lists.
+</para>
+
+</chapter>
+
+<chapter>
+<title>File Names</title>
+
+<para>
+The default Ant build file is named "build.xml". Any build system beyond the most basic will have multiple build files for various modules of the application. Having them all named "build.xml" quickly leads to confusion of which does what.
+</para>
+
+<para>
+Build file names should indicate the main purpose of the file, and should be in the Java style of mixed upper and lower case letters, with the first letter always capitalized. Words should be spelled out rather than abbreviated, unless the abbreviation is the more common reference. Using the main target name works well.
+</para>
+
+<para>
+Examples:
+<itemizedlist>
+<listitem><para><computeroutput>MasterBuild.xml</computeroutput></para></listitem>
+<listitem><para><computeroutput>CreateApplicationJar.xml</computeroutput></para></listitem>
+<listitem><para><computeroutput>CreateInstaller.xml</computeroutput></para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+Build files may load properties from a properties file. These property files should be named the same as the build file name, but with a ".properties" extension. 
+</para>
+
+<para>
+Examples:
+<itemizedlist>
+<listitem><para>MasterBuild.properties</para></listitem>
+<listitem><para>CreateApplicationJar.properties</para></listitem>
+<listitem><para>CreateInstaller.properties</para></listitem>
+</itemizedlist>
+</para>
+
+</chapter>
+
+<chapter>
+<title>Build File Structure and Formatting</title>
+
+<section>
+<title>Build File Structure</title>
+<para>
+Ant build files will be arranged with the project description first, followed by "global" properties, followed by targets. Properties and targets do not need to be sorted, however, the default target specified by the project must be the first target listed.
+</para>
+</section>
+
+<section>
+<title>Formatting</title>
+
+<para>
+Four spaces should be used as the unit of indentation. 
+</para>
+
+<para>
+Do not use tabs instead, use 4 spaces in place of a single tab. Many editors can do this automatically.
+</para>
+
+<para>
+Vertically align start and end tags for an element. Indent child elements.
+</para>
+
+<para>
+Avoid lines longer than 80 characters, since they're not handled well by many terminals and tools.
+</para>
+
+<para>
+Use a single space after a comma.
+</para>
+
+<para>
+Group properties by use, for example, group directory definitions together. Insert a single blank line between groups.
+</para>
+
+<para>
+Insert two blank lines between targets.
+</para>
+
+<para>
+Insert one blank line between tasks within a target.
+</para>
+
+<para>
+When an expression will not fit on a single line, break it according to these general principles:
+<itemizedlist>
+<listitem><para>Break before an attribute.</para></listitem>
+<listitem><para>Break after a space or comma.</para></listitem>
+<listitem><para>Prefer higher-level breaks to lower-level breaks.</para></listitem>
+<listitem><para>Align the new line with the beginning of the expression at the same level on the previous line.</para></listitem>
+<listitem><para>If the above rules lead to confusing code or to code that's squished up against the right margin, just indent 8 spaces instead.</para></listitem>
+</itemizedlist> 
+</para>
+
+<para>
+Examples:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <property name="modules"
+        value="libs, junit_tests, images, docs, api_docs, external_libs,
+              sources" />
+        
+    <copy todir="${unit_test_deploy}" overwrite="true">
+        <fileset dir="${unit_test_home}">
+            <exclude name="**/CVS" />
+        </fileset>
+    </copy>
+]]>
+</programlisting>
+</para>
+
+<para>
+This is wrong:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+  <target name="test_all" depends="clean,setupApp,
+                                    setupTests,setupLogger,
+                    startReportServlet,runTests"/>
+]]>
+</programlisting>
+</para>
+
+<para>
+This is right:
+</para>
+<para>
+<programlisting>
+<![CDATA[
+    <target name="test_all" 
+        depends="clean, setupApp, setupTests, setupLogger, 
+                startReportServlet, runTests"/>
+]]>
+</programlisting>
+</para>   
+              
+</section>
+
+</chapter>
+
+
+<chapter>
+<title>Projects</title>
+
+<para>
+To be acceptable to Ant, each build file must have a <computeroutput>&lt;project&gt;</computeroutput> element as its root element. 
+</para>
+
+<para>
+A <computeroutput>&lt;project&gt;</computeroutput> has three attributes. This standard deviates slightly from the Ant standard in that the "name" attribute is required and will be the same as the file name without the ".xml" extension.
+</para>
+
+<para>
+<table frame="all">
+<title>Project Attributes</title>
+<tgroup cols="3">
+<thead>
+  <row>
+    <entry>Attribute</entry>
+    <entry>Description</entry>
+    <entry>Required</entry>
+  </row>
+</thead>
+<tbody>
+  <row>
+    <entry>name</entry>
+    <entry>the name of the project. This attribute should be the same as the file name without the .xml extension.</entry>
+    <entry>Yes</entry>
+  </row>
+  <row>
+    <entry>default</entry>
+    <entry>the default target to use when no target is supplied.</entry>
+    <entry>Yes</entry>
+  </row>
+  <row>
+    <entry>basedir</entry>
+    <entry>the base directory from which all path calculations are
+      done. This attribute might be overridden by setting
+      the &quot;basedir&quot;
+      property beforehand. When this is done, it must be omitted in the
+      project tag. If neither the attribute nor the property have
+      been set, the parent directory of the buildfile will be used.</entry>
+    <entry>No</entry>
+  </row>
+</tbody>  
+</tgroup>
+</table>
+</para>
+
+<para>
+Ant allows that a description for the project can be provided as a top-level <computeroutput>&lt;description&gt;</computeroutput> element. This description 
+will be included in the output of the <computeroutput>ant -projecthelp</computeroutput>
+command. While this is optional for Ant, the description element is required by this standard.
+</para>
+
+<para>
+Example description:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[  
+    <description>
+    This build file is used to build the Foo subproject within 
+    the large and complex Bar project.
+    </description>
+]]>
+</programlisting>
+</para>
+
+</chapter>
+
+<chapter>
+<title>Properties</title>
+
+<para>
+Property names should be short yet meaningful. The choice of a property name should be mnemonic -- that is, designed to indicate to the casual observer the intent of its use. One-character property names should be avoided. Property names will be all lowercase with underscore separating individual words. 
+</para>
+
+<para>
+Examples:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <property name="build_dir" value="build"/>
+    <property name="jar_dir" value="${build_dir}/jars"/>
+    <property name="lib_home" value="lib"/>
+]]>
+</programlisting>
+</para>
+
+<para>
+Properties may be defined in a properties file. These property files should be named the same as the build file name, but with a ".properties" extension.
+</para>
+
+<para>
+Properties may be "grouped" using the "dot" notation. For example, suppose the documentation for a project is divided into several manuals: the user manual, the installation manual, a technical support manual, and a examples manual, with the source for each manual residing in a separate directory. Then properties might look like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <property name="docs_dir" value="docs"/>
+    <property name="docs.user_manual" value="${docs_dir}/user_manual"/>  
+    <property name="docs.install_manual" value="${docs_dir}/installation"/>  
+    <property name="docs.tech_manual" value="${docs_dir}/techman"/>  
+    <property name="docs.examples_manual" value="${docs_dir}/examples"/>
+]]>
+</programlisting>  
+</para>
+</chapter>
+
+<chapter>
+<title>Targets</title>
+
+<para> 
+Like property names, target names should be short and meaningful. A target name should descript the overall intent of the target function. Target names should start with a verb, in mixed case with the first letter lowercase and with the first letter of each internal word capitalized.
+</para>
+
+<para>
+Examples: 
+</para>
+
+<para>
+<itemizedlist>
+<listitem><para><computeroutput>initialize</computeroutput></para></listitem>
+<listitem><para><computeroutput>notifyOnFailed</computeroutput></para></listitem>
+<listitem><para><computeroutput>runTests</computeroutput></para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+All targets that are likely to be called directly, that is, from the Ant command line, should have the description attribute filled in. This description will be included in the output of the <computeroutput>ant -projecthelp</computeroutput> command. 
+</para>
+
+<para>
+Targets that should not be called directly from the command line should start with a hyphen, for example, 
+</para>
+
+<para>-cleanDocDir</para>
+
+</chapter> 
+ 
+<chapter>
+<title>Tasks</title>
+
+<para>
+Avoid use of the "exec" task if possible as this reduces portability.
+</para>
+
+<para>
+This is bad as it assumes that the 'tar' utility is installed on the current path:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <exec executable="tar" dir="${java.tmp.dir}/libraries">
+        <arg line="-xzf ${build_dir}/${libraries_tar}"/>
+    </exec>
+]]>
+</programlisting>
+</para>
+
+<para>
+This is good:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <untar src="${build_dir}/${libraries_tar}" compression="gzip"
+        dest="${java.tmp.dir}/libraries"/>
+]]>
+</programlisting>
+</para>
+</chapter>
+
+<chapter>
+
+<title>Comments</title>
+
+<para>
+More is better! In particular, write comments for the intended use of properties and targets. The build file itself will tell what is happening, the comments should explain why.
+</para>
+<para>
+For target comments, use a block comment similar to this example:
+</para>
+<para>
+<programlisting>
+<![CDATA[
+<!-- ==================== Dist Target ================================ 
+
+    The "dist" target creates a binary distribution of the application
+    in a directory structure ready to be archived in a tar.gz or zip file.
+    This target depends on two others:
+
+    * "compile" so that the entire web application (including external
+      dependencies) will have been assembled
+
+    * "javadoc" so that the application Javadocs will have been created
+
+    ================================================================== -->
+]]>
+</programlisting>
+</para>
+
+<para>
+Place target comments immediately above the target element, with a single blank line between the end of the comment and the start of the target.
+</para>
+
+<para>
+For other comments, such as for properties or within a target, use the standard xml single line comment like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<!-- this is a comment -->
+]]>
+</programlisting>
+</para>
+
+<para>
+If a comment is longer than a single line, wrap it and indent the second and subsequent lines 4 spaces, for example:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file,
+    then copy it and the source jar to the ${dist} directory so 
+    everything will be ready for moving to the ftp server. -->
+]]>
+</programlisting>
+</para>
+
+<para>
+Do not put a blank line between a single line comment and the element it is describing, for example:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <!-- this is where the api documents live -->
+    <property name="api_docs" value="${docs_home}/api"/>
+]]>
+</programlisting>
+</para>
+
+</chapter>
+
+<chapter>
+<title>Example Build File</title>
+
+<para>
+The following example build file follows these guidelines. This build file would be stored on disk as "MyProject.xml".
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+
+<project name="MyProject" default="dist" basedir=".">
+    <description>
+        simple example build file
+    </description>
+    
+    <!-- set global properties for this build -->
+    
+    <!-- where the source files are -->
+    <property name="src" location="src"/>
+    
+    <!-- where the compiled classes go -->
+    <property name="build" location="build"/>
+    
+    <!-- where to place the finished jar file -->
+    <property name="dist"  location="dist"/>
+
+    <!-- ========== Dist Target ===================================
+        The dist target compiles all the source code and creates
+        a jar file for distribution.
+    -->
+    <target name="dist" depends="clean, compile"
+        description="generate the distribution" >
+        <!-- Create the distribution directory -->
+        <mkdir dir="${dist}/lib"/>
+
+        <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar
+            file -->
+        <jar jarfile="${dist}/lib/MyProject-${DSTAMP}.jar"
+            basedir="${build}"/>
+    </target>
+
+    <!-- ========== Init Target ====================================
+        This target initializes the build by creating a time stamp
+        for use in the jar file name and creating the directory
+        to hold the compiled classes.
+    -->
+    <target name="-init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+      
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${build}"/>
+    </target>
+
+    <!-- ========== Compile Target =================================
+        The compile target compiles all files in the source directory
+        into the build directory.
+    -->
+    <target name="compile" depends="-init" 
+        description="compile the source " >
+        
+        <!-- Compile the java code from ${src} into ${build} -->
+        <javac srcdir="${src}" destdir="${build}"/>
+        
+    </target>
+
+    <!-- ========== Clean Target ====================================
+        The clean target deletes all files from the build directory
+        and the dist directory. 
+    -->
+    <target name="clean" description="clean up" >
+        <!-- Delete the ${build} and ${dist} directory trees -->
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+</project>
+
+]]>
+</programlisting>
+</para>
+</chapter>
+
+</book>

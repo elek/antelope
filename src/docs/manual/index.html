@@ -1,0 +1,402 @@
+<html>
+<head>
+<title>Antelope</title>
+</head>
+
+<body>
+
+<a name="top">
+<center>
+<h1>Antelope</h1>
+</center>
+</a>
+
+<p>
+<table border="1">
+<tr><td>Author: Dale Anson</td></tr>
+<tr><td>Version: 1.98</td></tr>
+</table>
+
+<p>
+
+<i>
+"This product includes software developed by the 
+Apache Software Foundation (http://www.apache.org/)."
+</i>
+
+<p>
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">Contents</font></h2>
+</td></tr>
+</table>
+
+<p>
+
+<a href="#introduction">Introduction</a><br>
+<a href="#requirements">Requirements</a><br>
+<a href="#support">Support</a><br>
+<a href="#running_antelope">Running Antelope</a>
+<ul>
+<li><a href="#standalone">As a stand-alone application</a>
+<li><a href="#plugin">As a jEdit plugin</a> 
+</ul>
+<a href="#targets">Running Ant Targets</a><br>
+<a href="#properties">Displaying Ant Properties</a><br>
+<a href="#edit">Editing the Build File</a><br>
+<a href="#tracing">Tracing Ant Targets</a><br>
+<a href="#logger">The Built-in AntLogger</a><br>
+<a href="tasks.html#assert">The 'Assert' Task</a><br>
+<a href="tasks.html#iftask">The 'If' Task</a><br>
+<a href="AntCodingStyle.html">Ant Coding Style</a><br>
+<p>
+
+<hr>
+
+<a name="introduction">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">
+Introduction
+</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Antelope is a graphical user interface for running Ant. It provides a set of buttons, one per target, which makes it easy to start a specific Ant operation.
+<p>
+<a href="#top">Top</a>
+<hr></h2>
+
+<a name="requirements">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">Requirements</font></h2>
+</td></tr>
+</table>
+</a>
+
+
+<p>
+See the installation instructions below for the specific requirements for Antelope. Antelope does require Java 1.4 or later as it makes use of both java.util.logging and java.util.prefs APIs which were introduced in that version.
+<p>
+<a href="#top">Top</a>
+<hr>
+
+<a name="support">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">Support</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Please visit the project web pages at <a href="http://antelope.sourceforge.net">http://antelope.sourceforge.net</a> for reporting bugs, user mailing lists, and other technical resources.
+<p>
+<a href="#top">Top</a>
+<hr>
+
+<a name="running_antelope">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">Running Antelope</font></h2>
+</td></tr>
+</table>
+</a>
+<p>
+Antelope can be ran in two ways. Follow these links for installation and starting instructions for each mode.
+<p>
+<ul>
+<li><a href="#standalone">As a stand-alone application</a>
+<li><a href="#plugin">As a jEdit plugin</a> 
+</ul>
+(Also see the <a href="#logger">section</a> about running Antelope's AntLogger.)
+<p>
+Either way, Antelope is operated almost identically. To set up Antelope, click on the "Options" button. This will display the following:
+<p>
+<img src="options.gif">
+<p>
+When running Antelope as a stand-alone application, the options "Save all files before running targets" and "Use error parsing" are not available. This is the only difference between the stand-alone and the plugin.
+<p>
+The available options are as follows:
+<p>
+<ol>
+<li>
+<b>Ant build file</b> The current build file name is displayed along with an option to choose a new build file. Antelope is basically useless without a build file, so this is the first step.
+<li>
+<b>Save all files before running targets</b> <i>This is only available when running as a jEdit plugin.</i> If checked, all files that are currently open for editing in jEdit will be saved before running the selected target.
+<li>
+<b>Use error parsing</b> <i>This is only available when running as a jEdit plugin.</i> If checked, output from the target will be passes through the Console plugin error parser and errors will be displayed in the ErrorList plugin. This is useful for tasks such as javac that produce standard error messages. Other tasks may not produce output suitable for error parsing, in which case, the output might be cleaner if this options is turned off.
+<li>
+<b>Show subtargets</b> There are two common methods of designating "primary" targets and "subtargets". Primary targets are those that are invoked directly, while subtargets are generally "helper" targets that are invoked from other targets. One method of distinguishing between primary and subtargets is only giving descriptions to primary targets. Unchecking the "Show targets without descriptions" will cause Antelope to display buttons only for targets that have a description. Another common method to designate subtargets is to use "dot" notation, for example, a "clean" target may have two helper targets, "clean.docs" and "clean.api.docs". Unchecking the "Show targets with dots" will cause Antelope to display a button for the "clean" target but not the "clean.docs" nor the "clean.api.docs" targets.
+<li>
+<b>Set message level</b> There are five message levels available and are in order of verbosity, "Error" being the lease verbose and "Debug" being the most. For general use, "Information" is about right.
+<li>
+<b>Show message events</b> Ant produces messages on various events as it runs a target. Generally, all Ant messages are useful, but these can be adjusted as necessary. Turning off 'Target events' and 'Task events' will generally show all the important information without too much excess output.
+</ol>
+<p>
+<a href="#top">Top</a>
+<hr>
+
+<a name="targets">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">Running Ant Targets</font>
+</h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Ant targets are ran by simply clicking the associated button. The button for a running target will show red text. Long running targets can be stopped by clicking any of the target buttons. If Antelope is being ran as a jEdit plugin, execution can also be stopped by clicking the "Stop" button on the Console plugin.
+<p>
+<a href="#top">Top</a>
+<hr>
+
+<a name="properties">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2>
+<font color="white">Displaying Ant Properties</font>
+</h2>
+</td></tr>
+</table>
+</a>
+<p>
+The "Properties" button displays the current properties and references known to Ant from the current build file and the system environment. This is handy for determining exactly what Ant thinks a specific property value is. "Properties" and "References" are for viewing only, not for editing. The "Properties" shows all properties known to the Ant project: system properties, user properties, and global properties set in the build file. The "References" tab shows all global references known to the Ant project. 
+<p>
+<img src="properties.gif">
+<p>
+The "User" tab is for setting user properties. These are properties that would be passed to Ant on the command line. These properties are persistent for the build file, so each time the build file is opened, the user properties will be restored. To enter a new property, click the "New" button to create a blank row in the table. Be sure to "enter" the name and value, that is press the 'Tab' or 'Enter' key or click out of the cell to make sure the name and/or value are stored. To remove a property, empty the corresponding value.
+<p>
+<img src="user_properties.gif">
+<p>
+<a href="#top">Top</a>
+<hr>
+
+<a name="edit">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">Editing the Build File</font></h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Clicking the "Edit" button puts Antelope in 'edit' mode. Antelope will turn green to indicate edit mode. In this mode, the target buttons don't execute Ant targets, instead, they cause the edit area to scroll to the start of the target. To turn off 'edit' mode, click the "Edit" button again.
+<p>
+As a jEdit plugin, clicking the "Edit" button will open the build file in a jEdit buffer.
+<p>
+As a stand-alone application, clicking the "Edit" button opens the "Edit" tab to edit the build file.
+<p>
+When the file is saved (either by saving the buffer in jEdit or by using the File - Save Build File menu item in stand-alone mode), Antelope will immediately pick up any changes in the build file and recreate the button panel to reflect those changes.
+<p>
+Here is Antelope in edit mode:
+<p>
+<img src="editmode.gif">
+<p>
+<a href="#top">Top</a>
+<hr>
+
+<a name="tracing">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">Tracing Target Execution</font></h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Antelope is put into 'tracing mode' when the "Trace" button is clicked. When in tracing mode, the background of the button panel will be blue. When in tracing mode, the target buttons do not actually execute the target. Instead, the output will show the specific order of execution of tasks performed by the target and targets that the selected target depends on. This is useful for figuring out exactly what a specific target does and the order of operations. To turn off tracing mode, click the "Trace" button a second time.
+<p>
+In general, targets are not parsed below task level, that is, nested task attributes are not displayed. However, two tasks are treated specially as they have a direct bearing on how a target executes. These two tasks are <code>ant</code> and <code>antcall</code>. If the trace encounters the <code>ant</code> task, the <code>buildfile</code> and <code>target</code> attributes will be displayed, the build file loaded, and the target traced in that build file. If the trace encounters an <code>antcall</code> task, the <code>target</code> attribute will be parsed and the target will be traced.
+<p>
+Here is a sample trace:
+<p>
+<code>
+Tracing target: deploy-all<br>
+Legend: &lt;target&gt;[task]<br>
+<br>
+&lt;deploy-all&gt;<br>
+&lt;clean&gt;[delete]<br>
+&lt;deploy-all&gt;[javac deprecation=on debug=on destdir=build srcdir=src includes=ise/ excludes=ise/antelope/plugin/ includejavaruntime=yes source=1.4]<br>
+&lt;deploy-all&gt;[copy todir=build]<br>
+&lt;deploy-all&gt;[jar jarfile=/usr/local/java/antelope/Antelope]<br>
+&lt;/deploy-all&gt;<br>
+<br>
+Done tracing target: deploy-all<br>
+</code>
+<p>
+And a line by line explanation:<p>
+<table border="1">
+<tr><td>Tracing target: deploy-all</td><td>The trace is going to trace the deploy-all target.</td></tr>
+<tr><td>Legend: &lt;target&gt;[task]</td><td>Targets shown with angle brackets, tasks with square brackets.</td></tr>
+<tr><td>&lt;deploy-all&gt;</td><td>The trace is starting on the deploy-all target.</td></tr>
+<tr><td>&lt;clean&gt;[delete]</td><td>The deploy-all target depends on the clean target, which performs a 'delete' task.</td></tr>
+<tr><td>&lt;deploy-all&gt;[javac deprecation=on debug=on destdir=build srcdir=src includes=ise/ excludes=ise/antelope/plugin/ includejavaruntime=yes source=1.4]</td><td>The deploy-all target executes a 'javac' task. The parameters for the task are shown.</td></tr>
+<tr><td>&lt;deploy-all&gt;[copy todir=build]</td><td>The deploy-all target executes a 'copy' tasks. Most likely, this tasks has nested includes and/or excludes, which are not shown in the trace.</td></tr>
+<tr><td>&lt;deploy-all&gt;[jar jarfile=/usr/local/java/antelope/Antelope]</td><td>The deploy-all target executes the 'jar' task.</td></tr>
+<tr><td>&lt;/deploy-all&gt;</td><td>The trace has reached the end of the deploy-all target.</td></tr>
+<tr><td>Done tracing target: deploy-all</td><td>Obviously, the trace is done.</td></tr>
+</table>
+<p>
+So the 'deploy_all' target first causes the 'clean' target to execute a 'delete' task, then causes the 'compile' target to execute a 'javac' task, and finally causes the 'deploy' target to create a jar file.
+<p>
+<img src="tracemode.gif">
+<p>
+<a href="#top">Top</a>
+<hr>
+<p>
+
+<a name="standalone">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">Antelope as a Stand-Alone Application</font></h2>
+</td></tr>
+</table>
+</a>
+<p>
+Antelope is packaged as a single jar file, Antelope.jar. Several other jar files may be necessary:
+<p>
+<ul>
+<li><b>kappalayout.jar</b> This is required for Antelope to run. KappaLayout is a layout manager. This jar file is bundled with the Antelope distribution. Put it in your classpath.
+<li><b>ant.jar</b> Antelope requires Ant to do anything useful. Ant is available at http://jakarta.apache.org/ant. Put it in your classpath.
+<li><b>optional.jar</b> This is an optional library that is distributed with Ant. It has additional Ant tasks that may be useful. Put it in your classpath as required.
+<li><b>tools.jar</b> This is distributed with the Java Software Development Kit. If your build file makes use of any of the JDK tools (such as javac or javadoc), put this in your classpath.
+<li><b>An XML parser</b> This can be one of several publicly available XML parsers. Ant is shipped with the Xerces parser. To use the Xerces parser shipped with Ant, add xercesImpl.jar and xml-api.jar from the ${ant.home}/lib directory to your classpath.
+</ul>
+<p>
+The manifest file for Antelope.jar specifies kappaylayout.jar and ant.jar on the classpath, so all that should be necessary to start Antelope is:
+<p>
+<code>java -jar Antelope.jar</code>
+<p>
+If using the optional.jar and/or tools.jar:
+<p>
+<code>java -cp optional.jar:tools.jar -jar Antelope.jar</code>
+<p>
+Here is Antelope running as a stand-alone application:
+<p>
+<img src="standalone.gif">
+<p>
+Antelope as a stand-alone application provides a few features not found in the plugin version. In the plugin version, these features are provided by jEdit, so are not duplicated. The additional features are:
+<ul>
+<li>The "File" menu deals with the build file, providing the ability to open a build file and to save changes to the build file. Antelope is not intended to be a full-featured editor, so it is assumed that the build file already exists. The editing facilities provided by Antelope are for convenience, and were not designed to create build files from scratch, however, the ability to create a new file is on the feature list for implementation in a future version.
+<li>Also on the "File" menu is the list of recently opened files. This is handy for choosing a file that was previously opened without using the file chooser.
+<li>The "Output" menu provides the ability to save the Ant output to a file and to clear the 'Output' window.
+<li>The "Format" menu provides the ability to set the font for the output and edit windows. The same font is used for both windows. The color coding of the edit and output windows is not adjustable in this version. 
+</ul>
+Printing is not available in this version, but is also on the feature list for implementation.
+<a href="#top">Top</a>
+
+<p>
+<hr>
+<p>
+
+<a name="plugin">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">Antelope as a jEdit Plugin</font></h2>
+</td></tr>
+</table>
+</a>
+
+<p>
+Antelope is packaged as a single jar file, Antelope.jar. To install Antelope, copy Antelope.jar to ${user.home}/.jedit/jars. Several other jar files are required:
+<p>
+<ul>
+<li><b>kappalayout.jar</b> This is required for Antelope to run. KappaLayout is a layout manager. This jar file is bundled with the Antelope distribution. Copy or link this file to ${user.home}/.jedit/jars.
+<li><b>ant.jar</b> Antelope requires Ant to do anything useful. Ant is available at http://jakarta.apache.org/ant. Copy or link this file to ${user.home}/.jedit/jars.
+<li><b>optional.jar</b> This is an optional library that is distributed with Ant. It has additional Ant tasks that may be useful. Copy or link this file to ${user.home}/.jedit/jars as required.
+<li><b>tools.jar</b> This is distributed with the Java Software Development Kit. If your build file makes use of any of the JDK tools (such as javac or javadoc), you need this in the classpath. The AntelopePlugin asks jEdit to load tools.jar automatically, but depending on your environment (jEdit is running in a plain JRE, for example), this may fail. Copy or link this file to ${user.home}/.jedit/jars if you need it and jEdit can't load it. Antelope will tell you when it can't find a tool from this jar the first time you try to use the tool.
+<li><b>Console.jar</b> This is a jEdit plugin and is required. Output from Antelope will be displayed in the Console. Make sure jEdit has this plugin installed.
+<li><b>ErrorList.jar</b> This is another jEdit plugin and is required. Errors produced by Ant are displayed by Antelope in the ErrorList plugin. Make sure jEdit has this plugin installed.
+<li><b>An XML parser</b> This can be one of several publicly available XML parsers. Ant is shipped with the Xerces parser. To use the Xerces parser shipped with Ant, add xercesImpl.jar and xml-api.jar from the ${ant.home}/lib directory to your classpath. If you have the XML plugin installed, then you already have a version of Xerces installed. <b>Note:</b> There is sometimes a problem with various jEdit plugins and xml parsers. Generally, this is due to a conflict with several similar parsers being in the class path. The simplest way to resolve this issue is to remove ALL xml parsers (xerces, crimson, xml4j, etc) from the ${user.home}/.jedit/jar directory and copy ONE of them to your ${jedit.home}/jars directory. This will ensure that a good parser is in your classpath, that it is loaded before any plugins, and that there will be no conflicts from having multiple parsers. My recommendation is that the latest Xerces jars from http://xml.apache.org/xerces2-j/index.html be used as this is the industry standard Java XML parser.
+
+</ul>
+<p>
+Here is Antelope running in jEdit:
+<p>
+<img src="jedit.gif">
+<p>
+<a href="#top">Top</a>
+<hr>
+<p>
+<a name="logger">
+<table border="0" bgcolor="blue" width="100%">
+<tr><td align="left">
+<h2><font color="white">AntLogger</font></h2>
+</td></tr>
+</table>
+</a>
+One of the classes distributed with Antelope is AntLogger, which is useful outside of Antelope. This is a special Ant logger and can be attached to Ant as the default logger on the command line. All Ant log messages are sent to a java.util.logging.Logger, so any number of handlers can be associated for controlling output. Make sure ise.antelope.AntLogger is in the classpath, then run Ant:
+<p>
+<code>ant -logger ise.antelope.AntLogger [other standard Ant options]</code>
+<p>
+<b>Properties</b>
+<br>
+Properties can be set either on the command line or in the build file. All are optional. These properties are read and set at the start of each call to <code>buildStarted</code>
+
+<p>
+<table border="1">
+<tr>
+<td>Property</td>
+<td>Description</td>
+<td>Default</td>
+</tr>
+<tr>
+<td>antlogger.echo</td>
+<td>If set to true, output from this logger will be echoed to the original
+System.out and System.err print streams.</td>
+<td>false</td>
+</tr>
+<tr>
+<td>antlogger.namespace</td>
+<td>The namespace for the logger. See the java.util.logging.Logger API documentation for a discussion of logger namespaces. This should be a dot separated name and should normally be based on the package name or class name of the subsystem, such as org.apache.tools.ant.</td>
+<td>ise.antelope.Antelope</td>
+</tr>
+<tr>
+<td>antlogger.file</td>
+<td>If used, will add a java.util.logging.FileHandler to the current logger. See the java.util.logging.FileHandler API for a discussion of the value pattern. Basically, this is the name of a file, but other things can be done.</td>
+<td>none</td>
+</tr>
+<tr>
+<td>antlogger.file.append</td>
+<td>If set to true and antlogger.file is being used, then output will be appended to an existing file. If false, any existing file will be overwritten.</td>
+<td>false</td>
+</tr>
+</table>
+<p>
+<b>Examples:</b>
+<p>
+&lt;property name="antlogger.echo" value="true"/&gt;<br>
+- or - <br>
+ant -logger ise.antelope.AntLogger -Dantlogger.echo=true [other options]<p>
+&lt;property name="antlogger.namespace" value="com.mycompany.package"/&gt;<br>
+- or - <br>
+ant -logger ise.antelope.AntLogger -Dantlogger.namespace=com.mycompany.package [other options]<p>
+&lt;property name="antlogger.file" value="/tmp/output.log"/&gt;<br>
+&lt;property name="antlogger.file.append" value="true"/&gt;<br>
+- or - <br>
+ant -logger ise.antelope.AntLogger -Dantlogger.file=/tmp/output.log -Dantlogger.file.append=true [other options]<br>
+<p>
+<b>Output</b>
+<p>
+Messages for certain build events are sent at a particular log Level. See java.util.logging.Level for a discussion of the various levels. AntLogger associates build events with log Levels as follows:
+<p>
+<table border="1">
+<tr><td>Level.ERROR</td><td>Build failed</td></tr>
+<tr><td>Level.WARNING</td><td>Build succeeded</td></tr>
+<tr><td>Level.CONFIG</td><td>Build started, task started/ended, target started/ended</td></tr>
+<tr><td>Level.INFO</td><td>All other messages</td></tr>
+</table>
+<a href="#top">Top</a>
+
+</body>
+</html>

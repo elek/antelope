@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd" 
+[
+<!ENTITY guide SYSTEM "antelope_guide.xml">
+<!ENTITY tasks SYSTEM "AntCodingStyle.xml">
+<!ENTITY codingstyle SYSTEM "tasks.xml">
+]>
+<set>
+<setinfo>
+    <title>Antelope Users Guide</title>
+    <authorgroup>
+        <author><firstname>Dale</firstname><surname>Anson</surname></author>
+    </authorgroup>
+</setinfo>
+
+&guide;
+&tasks;
+&codingstyle;
+
+
+</set>
+

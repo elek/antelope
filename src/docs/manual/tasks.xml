@@ -1,0 +1,2440 @@
+
+<!-- Antelope plugin user's guide -->
+<!-- (C) 2002 Dale Anson -->
+
+<book>
+<bookinfo>
+    <title>Additional Ant Tasks</title>
+
+    <authorgroup>
+        <author><firstname>Dale</firstname><surname>Anson</surname></author>
+    </authorgroup>
+
+</bookinfo>
+
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>
+The Antelope tasks are now part of the Ant-Contrib project, http://ant-contrib.sourceforge.net. In this version, @@build_num@@, the tasks contained in the Antelope distribution are identical to those in Ant-Contrib other than the package name. The Antelope tasks will continue to be distributed as part of the Antelope distribution, but eventually, the package and code base will reside entirely with Ant-Contrib. Additionally, it is likely that the Ant-Contrib tasks that are not part of Antelope will be included in this distribution as well. The intent is to make Ant-Contrib the central location for additional Ant tasks.
+</para>
+
+<para>
+Ant was not designed to be a scripting language. It was meant to replace 'make' and has done an outstanding job in doing so. However, in day to day use in building even small-scale applications, Ant is being used in ways never foreseen by its creators. Complete applications are being build using Ant as the coding language. Build files call other build files, which in turn call other build files. Regardless of the original intent, Ant has become a replacement for batch files, shell scripts, perl scripts, and make files.
+</para>
+
+<para>
+Ant is also extensible. The API is nicely defined to allow any number of new tasks to be added, and each new release of Ant includes new and useful tasks. The tasks described here help developers to create more robust build files, and to assist in structuring build files more like a programming or scripting language than is possible with the standard issue tasks.
+</para>
+
+<para>
+Several of the tasks described in this manual are based on Java language counterparts:
+</para>
+<para>
+The Assert task is modeled after the Java <computeroutput>assert</computeroutput>keyword.
+</para>
+<para>
+The If task is modeled after the Java <computeroutput>if/else</computeroutput> construct.
+</para>
+<para>
+The Try task is modeled after the Java <computeroutput>try/catch</computeroutput> construct.
+</para>
+<para>
+The Variable task is modeled after Java variable declaration and assignment.
+</para>
+<para>
+These tasks have become indispensible for me in daily use. I think you will find that your Ant build files are more robust and better structured through the use of these tasks.
+</para>
+
+
+</chapter>
+
+<chapter id="license">
+    <title>License</title>
+    
+    <para>
+        These Ant tasks are licensed under the same Apache license as Ant:
+    </para>
+
+    <para>
+    <programlisting>
+    <![CDATA[
+The Apache Software License, Version 1.1
+
+Copyright (c) 2001-2002 The Apache Software Foundation.  All rights
+reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the
+   distribution.
+
+3. The end-user documentation included with the redistribution, if
+   any, must include the following acknowlegement:
+      "This product includes software developed by the
+       Apache Software Foundation (http://www.apache.org/)."
+   Alternately, this acknowlegement may appear in the software itself,
+   if and wherever such third-party acknowlegements normally appear.
+
+4. The names "The Jakarta Project", "Ant", and "Apache Software
+   Foundation" must not be used to endorse or promote products derived
+   from this software without prior written permission. For written
+   permission, please contact apache@apache.org.
+
+5. Products derived from this software may not be called "Apache"
+   nor may "Apache" appear in their names without prior written
+   permission of the Apache Group.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+====================================================================
+
+This software consists of voluntary contributions made by many
+individuals on behalf of the Apache Software Foundation.  For more
+information on the Apache Software Foundation, please see
+<http://www.apache.org/>.
+    ]]>
+    </programlisting>
+    </para>
+    
+</chapter>
+
+<chapter id="installation">
+    <title>Installation</title>
+    <para>
+        If you are running your build files from Antelope, these tasks are already installed and nothing more needs to be done. The following discusses installing the tasks by hand for use outside of Antelope.
+    </para>
+    
+    <para>
+        These Ant tasks are packaged as a part of Antelope, which is an application for running Ant build files. They may also be obtained as a separate package. Depending on the distribution you have on hand, copy either antelope.jar or antelope_tasks.jar into your ${ant.home}/lib directory or add it to your classpath. This is the directory where ant.jar and optional.jar are installed for your Ant distribution.
+    </para>
+    
+    <para>
+        Once installed, each task that you want to use in a build file must be defined in that build file. Since several of the Antelope tasks are dependent on each other, the preferred way to define them is like this:
+       <programlisting>
+       <![CDATA[
+         <taskdef resource="ise.antelope.tasks.antelope.taskdefs
+                  classpath="path/to/AntelopeTasks_@@build.num@@.jar"/>
+       ]]>
+       </programlisting>
+       This will load all Antelope tasks without further hassle, and will only load the tasks once. It is not good to load the tasks multiple times, this can cause problems with 'ant' and 'antcall' in particular.
+    </para>    
+    <para>
+        If you don't want to load all of the tasks, the documentation for each task explains in detail what you will need to add to your build file to use the individual task. For example, the Assert tasks says:
+    </para>
+    
+    <para>
+        <programlisting>
+        To use this task in your build files, include a task definition like this:
+        <![CDATA[
+        <taskdef name="assert" classname="ise.antelope.tasks.Assert"/>
+        <property name="ant.enable.asserts" value="true"/>
+        ]]>    
+        </programlisting>
+    </para>
+    
+    <para>
+        Notice that you may name the tasks whatever you want via 'taskdef'. The names listed in the individual task descriptions are those that are set via the preferred method mentioned above. 
+    </para>
+    
+    <para>
+        As of Antelope version 2.64, the 'AntLib' feature of Ant 1.6 is supported, which provides an alternate way of loading optional tasks. If AntelopeTasks_@@build.num@@.jar is in the core classpath (in ${ant.home}/lib for example) one can use the namespace short-cut to load them:
+        <programlisting>
+        <![CDATA[
+        <project xmlns:antelope="antlib:ise.antelope.tasks">
+          <antelope:try messageproperty="failed">
+            <fail>This should fail</fail>
+            <echo>This will not be reached</echo>
+            <antelope:catch>
+              <echo>failed is ${failed}</echo>
+            </antelope:catch>
+          </antelope:try>
+        </project>
+        ]]>
+        </programlisting>
+        <emphasis role="italic">Thanks to Peter Reilly of the Ant development team for this pointer and example.</emphasis>
+    </para>
+    
+</chapter>
+
+<chapter id="Assert">
+    <title>Assert Task</title>
+    
+<para>
+The Assert task adds an assertion capability to Ant projects. This task works in a manner very similar to the Java <computeroutput>assert</computeroutput> keyword, and provides a limited "design by contract" facility to Ant. This is very useful for testing build scripts prior to putting them into production.
+</para>
+
+<para>
+The Assert task verifies that a given property has a 
+given value and throws a BuildException if the property value is not as expected 
+or the property does not exist.
+</para>
+
+<para>
+Also like Java's <computeroutput>assert</computeroutput> keyword, the Assert task must be 'turned on' using the property <computeroutput>ant.enable.asserts</computeroutput>. If not set, or is set to <computeroutput>false</computeroutput>, the Assert task works exactly like the Sequential task. If the <link linkend="Variable">Variable task</link> is used to define this property, then it can be turned on and off as needed throughout a build. 
+</para>
+
+<para>
+This task can hold other tasks including Assert.
+</para>
+
+<para>
+The Assert task may contain one 'bool' element. The 'bool' element is identical to the ConditionTask, but unlike the ConditionTask, is actually a Task. The 'bool' element can contain all the conditions permitted by the ConditionTask, plus the <link linkend="conditionals">IsPropertyTrue</link>, <link linkend="conditionals">IsPropertyFalse</link>,
+<link linkend="conditionals">StartsWith</link>,
+<link linkend="conditionals">EndsWith</link>,
+<link linkend="conditionals">IsGreaterThan</link>,
+<link linkend="conditionals">IsLessThan</link> and conditions.
+See the If task for examples of using these conditionals.
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="assert" classname="ise.antelope.tasks.Assert"/>
+    <property name="ant.enable.asserts" value="true"/>
+]]>    
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Assert Task Attributes</title>
+<tgroup cols="4">
+<thead>
+
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+<row>
+<entry>name</entry>
+<entry>The name of the property to test for.</entry>
+<entry>none</entry>
+<entry>Yes</entry>
+</row>
+
+<row>
+<entry>exists</entry>
+<entry>Test for existence or non-existence of the property.</entry>
+<entry>True</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>value</entry>
+<entry>The value to test for, implies 'exists=true'. If the value in the project is different than this value, a BuildException will be thrown and the build will stop.</entry>
+<entry>none</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>execute</entry>
+<entry>Should the tasks contained in this task be executed? It may be useful to set this to false when testing build files.</entry>
+<entry>True</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>failonerror</entry>
+<entry>Should the build halt if the assertion fails? Setting this to false is contrary to the intented use of assertions, but may be useful in certain situations. </entry>
+<entry>True</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>message</entry>
+<entry>A message to include with the output in the event of this assert failing.</entry>
+<entry>none</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+</para>
+
+<para>
+As stated above, the Assert task may contain a nested "bool" task, otherwise,
+the Assert task does not support any nested 
+elements apart from Ant tasks. Any valid Ant task may be embedded within the 
+assert task.
+</para>
+
+<para>
+In the following example, the first <computeroutput>assert</computeroutput> task checks that the <computeroutput>wait</computeroutput> property exists and does not execute the <computeroutput>echo</computeroutput> and <computeroutput>sleep</computeroutput> tasks. The second <computeroutput>assert</computeroutput> task checks that the <computeroutput>wait</computeroutput> property exists, has a value of 2, and executes the <computeroutput>echo</computeroutput> task.
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+     <property name="wait" value="2"/>
+     <assert name="wait" execute="false">
+        <echo>
+            Waiting ${wait} seconds...
+            Click the red button to stop waiting.
+        </echo>
+        <sleep seconds="${wait}"/>
+     </assert>
+     <assert name="wait" value="2" execute="true">
+        <echo>done waiting!</echo>
+     </assert>
+]]>     
+</programlisting>
+</para>
+
+<para>
+The next example shows Assert being used in a unit test for the "limit" task:
+<programlisting>
+<![CDATA[
+  <property name="ant.enable.asserts" value="true"/> 
+  <target name="test2">
+    <!-- should not stop 'sleep' task, should print out '_passed_' -->
+    <stopwatch name="timer"/>
+    <limit maxwait="5">
+        <sleep seconds="1"/>
+        <echo>_passed_</echo>
+    </limit>
+    <stopwatch name="timer" action="total"/>
+    <assert message="Too much time.">
+        <bool>
+            <islessthan arg1="${timer}" arg2="2"/>
+        </bool>
+    </assert>
+  </target>
+]]>     
+</programlisting>
+</para>
+
+<para>
+If the <computeroutput>ant.enable.asserts</computeroutput> property is set to false, then in the above example, the <computeroutput>echo</computeroutput>, <computeroutput>sleep</computeroutput>, and <computeroutput>echo</computeroutput> tasks will all execute.
+</para>
+    
+</chapter>
+
+<chapter id="IfTask">
+    <title>If Task</title>
+
+<section>
+<title>If</title>    
+<para>
+The If task provides a greatly improved "if" capability to Ant projects. This task works in a manner very similar to the Java <computeroutput>if</computeroutput> keyword. This is useful for performing certain tasks only if a property has a specific value or certain conditions are met.
+</para>
+
+<para>
+This task can hold other tasks including the If task. In particular, it can also have a single "else", which gives Ant a Java-like if/else construct, and a single "bool", which can be used for the "if" boolean expression.
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="if" classname="ise.antelope.tasks.IfTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+An If task may contain only one 'bool' and one 'else' and may contain a 'break'. The 'bool' element is identical to the ConditionTask, but unlike the ConditionTask, is actually a Task. The 'bool' element can contain all the conditions permitted by the ConditionTask, plus the <link linkend="conditionals">IsPropertyTrue</link>, <link linkend="conditionals">IsPropertyFalse</link>,
+<link linkend="conditionals">StartsWith</link>,
+<link linkend="conditionals">EndsWith</link>,
+<link linkend="conditionals">IsGreaterThan</link>,
+<link linkend="conditionals">IsLessThan</link> and conditions.
+</para>
+
+<para>
+Here is a general outline of the If task:
+<programlisting>
+<![CDATA[
+<if>
+    <bool>
+        <some condition(s)/>
+    </bool>
+    
+    some tasks...
+    
+    <!-- a break is allowed
+    <break/>
+    -->
+    
+    <else>
+        some other tasks...
+        
+        <!-- a break is allowed
+        <break/>
+        -->
+    </else>
+</if>
+]]>
+</programlisting>
+</para>
+
+<para>
+ 
+<table frame="all">
+<title>If Task Attributes</title>
+<tgroup cols="4">
+<thead>
+
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>name</entry>
+<entry>The name of the property to test for.</entry>
+<entry>none</entry>
+<entry>Yes, unless nested bool is used.</entry>
+</row>
+
+<row>
+<entry>exists</entry>
+<entry>Test for existence or non-existence of the property.</entry>
+<entry>True</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>value</entry>
+<entry>The value to test for, implies 'exists=true'. If the value for the property in the project is the same as this value, embedded tasks will be executed.</entry>
+<entry>none</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+</para>
+
+<para>
+The If task can hold any number of Ant tasks. If the property value is correct or the "bool" element evaluates to true, these tasks will be executed.
+</para>
+
+<para> 
+In addition, the If task supports three special nested elements:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="bold">bool</emphasis> This is very similar to the standard Ant Condition task. All conditions supported by the Condition task are supported by the bool element. This is an optional element and if used, is used to decide if the "if" tasks or the "else" tasks should be executed. If the bool element is not used, then the "name" attribute must be used.
+</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">else</emphasis> This is very similar to the standard Ant Sequential task. The "else" can hold any number of Ant tasks. These tasks are executed if the "bool" element evaluates to false.
+</para> 
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">break</emphasis> This is very similar to the Java "break" keyword. This is only useful if the If task is nested in another task that understands "break", such as the <link linkend="switch">Switch</link> task. Like the Java "break", when this element is encountered, no subsequent tasks will be executed and control passes outside the If.
+</para> 
+</listitem>
+</itemizedlist>
+
+<para>
+In the following example, the <computeroutput>antcall</computeroutput> task will execute only if the project has a property named <computeroutput>test</computeroutput> with a value of <computeroutput>true</computeroutput>.
+</para>
+
+<para>
+<programlisting>
+   <![CDATA[
+   <if name="test" value="true">
+      <antcall target="doUnitTests"/>
+   </if>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+In the next example, the <computeroutput>antcall</computeroutput> task will execute only if the project has a property named <computeroutput>test</computeroutput>. In this example, it does not matter what value is assigned to the <computeroutput>test</computeroutput> property.
+</para>
+
+<para>
+<programlisting>
+    <![CDATA[
+   <if name="test">
+      <antcall target="doUnitTests"/>
+   </if>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+Of course, the same thing could have been done as follows, but the "if" is generally much cleaner.
+<programlisting>
+   <![CDATA[
+   <antcall target="doUnitTests"/>
+   <target name="doUnitTests" if="test">
+      ...
+   </target>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+In the next example, the <computeroutput>antcall</computeroutput> task will execute only if the project does not have a property named <computeroutput>test</computeroutput>. This is the opposite situation of the previous example.
+</para>
+
+<para>
+<programlisting>
+   <![CDATA[
+   <if name="test" exists="false">
+      <antcall target="doUnitTests"/>
+   </if>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+The next example demonstrates nested 'if' tasks. This example will run the unit tests, and if it is Monday, will publish the accumulated test results.
+</para>
+
+<para>
+<programlisting>
+    <![CDATA[
+   <tstamp>
+      <format property="day" pattern="E" />
+   </tstamp>
+   <if name="test" value="true">
+      <antcall target="doUnitTests"/>
+      <if name="day" value="Mon">
+         <antcall target="publishTestResults"/>
+      </if>
+   </if>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+The next example shows how to use If with Else. Notice that it doesn't matter where the Else is placed inside the If. All tasks in the If that are not in the Else will execute if the property value is correct, otherwise, only those tasks inside the else will execute. The "var" task is discussed <link linkend="Variable">here</link>.
+</para>
+
+<para>
+<programlisting>
+    <![CDATA[
+    <var name="foo" value="bar"/>
+    <if name="foo" value="bar">
+        <echo>this will happen</echo>
+        <else>
+            <echo>this won't happen</echo>
+        </else>
+        <echo>this will happen also</echo>
+    </if>
+    
+    <if name="foo" value="snarf">
+        <echo>this won't happen</echo>
+        <else>
+            <echo>this 'else' will happen</echo>
+            <echo>and so will this</echo>
+        </else>
+        <echo>this won't happen either</echo>
+    </if>
+    ]]>
+</programlisting>
+</para>
+
+<para>
+The next example shows the "if" and "assert" tasks working together to validate a property before use, and also shows an example of where the "assert" 'failonerror' attribute might be useful. In this example, if the e-mail address is invalid, the e-mail won't be sent and the build won't fail. The "try" task is discussed <link linkend="TryTask">here</link>.
+</para>
+
+<para>
+<programlisting>
+    <![CDATA[
+   <if name="email_from" value="buildteam@mycompany.com">
+      <property name="valid_email" value="true"/>
+   </if>
+   <if name="email_from" value="buildsite@mycompany.com">
+      <property name="valid_email" value="true"/>
+   </if>
+   <assert name="valid_email" value="true" failonerror="false">
+      <try>
+          <mail from="${email_from}" tolist="${email_to}" 
+              message="New release available"/>
+      </try>
+   </assert>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+Here is the same thing, but using only If and Else:
+</para>
+<para>
+<programlisting>
+    <![CDATA[
+   <try> 
+       <if name="email_from" value="buildteam@mycompany.com">
+          <mail from="${email_from}" tolist="${email_to}" 
+              message="New release available"/>
+          <else>
+             <if name="email_from" value="buildsite@mycompany.com">
+                 <mail from="${email_from}" tolist="${email_to}" 
+                      message="New release available"/>
+             </if>
+          </else>
+       </if>
+   </try>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+The next example shows how to use the "bool" element:
+</para>
+
+<para>
+<programlisting>
+    <![CDATA[
+    <if>
+        <!-- "if" evaluates this element -->
+        <bool>
+            <and>
+                <available file="build.xml"/>
+                <available file="run.xml"/>
+            </and>
+        </bool>
+        
+        <!-- if true, then tasks listed here will execute -->
+        <echo>build.xml and run.xml are available</echo>
+        
+        <!-- if false, then tasks inside the "else" will execute -->
+        <else>
+            <echo>didn't find one or both of build.xml and run.xml</echo>
+        </else>
+    </if>
+    ]]>
+</programlisting>
+</para>
+
+<para>
+The following example shows the "bool" element again:
+</para>
+<para>
+<programlisting>
+    <![CDATA[
+    <if>
+        <bool>
+            <equals arg1="${download.dir}" arg2="test.dir"/>
+        </bool>
+        
+        <fail message="Download and test directories cannot be 
+            the same! You need to reset to use the production 
+            property set."/>
+            
+        <else>
+            <copy file="installer.zip" todir="${download.dir}"/>
+        </else>
+    </if>
+    ]]>
+</programlisting>
+</para>
+
+<para>
+The following example is from the unit test for the "Limit" task. It shows the Stopwatch task, the Limit task, and the If task with boolean conditions:
+</para>
+<para>
+<programlisting>
+    <![CDATA[
+  <target name="test2">
+    <!-- should not stop 'sleep' task, should print out '_passed_' -->
+    <stopwatch name="timer"/>
+    <limit maxwait="5">
+        <sleep seconds="1"/>
+        <echo>_passed_</echo>
+    </limit>
+    <stopwatch name="timer" action="total"/>
+    <if>
+        <bool>
+            <isgreaterthan arg1="${timer}" arg2="2"/>
+        </bool>
+        <fail message="Too much time"/>
+    </if>
+  </target>
+    ]]>
+</programlisting>
+</para>
+
+
+</section>
+
+<section id="conditionals">
+<title>More Conditions</title>
+
+<para>
+These conditions are suitable for use in the &lt;bool&gt; element. Unfortunately, they cannot be used in the &lt;condition&gt; task, although all conditions for the &lt;condition&gt; task can be used with the bool and the bool can be used anywhere that &lt;condition&gt; can be used.
+</para>
+
+<bridgehead renderas='sect3'>IfPropertyTrue</bridgehead>
+<para>
+Given a property name, tests whether the value for that property equals "true" (or "yes" or "on").
+</para>
+
+<para>
+<table frame="all">
+<title>IfPropertyTrue Attributes</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>property</entry>
+<entry>The name of a property to test the value of.</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<ispropertytrue property="myprop"/>
+<ispropertytrue property="${someprop}"/>
+]]>
+</programlisting>
+</para>
+
+
+
+<bridgehead renderas='sect3'>IfPropertyFalse</bridgehead>
+<para>
+Given a property name, tests whether the value for that property equals "false" (or "no" or "off").
+</para>
+<para>
+<table frame="all">
+<title>IfPropertyFalse Attributes</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>property</entry>
+<entry>The name of a property to test the value of.</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<ispropertyfalse property="myprop"/>
+<ispropertyfalse property="${someprop}"/>
+]]>
+</programlisting>
+</para>
+
+<bridgehead renderas='sect3'>StartsWith</bridgehead>
+<para>
+Given a property name, tests whether the value for that property starts with a specified string.
+</para>
+<para>
+<table frame="all">
+<title>StartsWith Attributes</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>string</entry>
+<entry>The string to test.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>with</entry>
+<entry>Check if 'string' starts with this value.</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<startswith string="abcdefg" with="abc"/>
+<startswith string="${myprop}" with="foo"/>
+]]>
+</programlisting>
+</para>
+<bridgehead renderas='sect3'>EndsWith</bridgehead>
+<para>
+Given a property name, tests whether the value for that ends with with a specified string.
+</para>
+<para>
+<table frame="all">
+<title>EndsWith Attributes</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>string</entry>
+<entry>The string to test.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>with</entry>
+<entry>Check if 'string' ends with this value.</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<endswith string="abcdefg" with="efg"/>
+<endswith string="${myprop}" with="bar"/>
+]]>
+</programlisting>
+</para>
+
+<bridgehead renderas='sect3'>IsGreaterThan</bridgehead>
+<para>
+Tests whether the first argument is greater than the second argument. Will
+automatically treat the arguments as numbers if both arguments consists of only the characters 0 through 9 and optionally a decimal point. Otherwise, a String
+comparison is used. 
+</para>
+<para>
+<table frame="all">
+<title>IsGreaterThan Attributes</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>arg1</entry>
+<entry>The first argument.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>arg2</entry>
+<entry>The second argument.</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<!-- evaluates to true -->
+<isgreaterthan arg1="6.02" arg2="4"/>
+
+<!-- evaluates to false -->
+<isgreaterthan arg1="bar" arg2="foo"/>
+]]>
+</programlisting>
+</para>
+
+
+<bridgehead renderas='sect3'>IsLessThan</bridgehead>
+<para>
+Tests whether the first argument is less than the second argument. Will
+automatically treat the arguments as numbers if both arguments consists of only the characters 0 through 9 and optionally a decimal point. Otherwise, a String
+comparison is used. 
+</para>
+<para>
+<table frame="all">
+<title>IsLessThan Attributes</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>arg1</entry>
+<entry>The first argument.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>arg2</entry>
+<entry>The second argument.</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<!-- evaluates to false -->
+<islessthan arg1="6.02" arg2="4"/>
+
+<!-- evaluates to true -->
+<islessthan arg1="bar" arg2="foo"/>
+]]>
+</programlisting>
+</para>
+
+
+</section>
+
+</chapter>
+
+<chapter id="switch">
+    <title>SwitchTask</title>
+<para>
+The "Switch" task works much like the Java "switch" construct. It supports nested "case" elements, which in turn, support nested "break" elements. There is also a "default" case element, so this should be very natural for Java developers to use.
+</para>    
+
+<para>
+<table frame="all">
+<title>Switch Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>name</entry>
+<entry>The name of a property whose value will be used for the switch.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+<table frame="all">
+<title>"case" and "default" Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>value</entry>
+<entry>The value of of the property used for the switch. If this value equals the property value, then all tasks in this 'case' will be executed.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<property name="foo" value="bar"/>
+<switch name="foo">
+    <case value="baz">
+        <echo>Executing case baz</echo>
+        <break/>
+    </case>
+    <case value="bar">
+        <echo>Executing case bar</echo>
+        <if name="foo" value="bar">
+            <echo>breaking from the if</echo>
+            <break/>
+        </if>
+        <echo>Falling through to case "bat"</echo>
+    </case>
+    <case value="bat">
+        <echo>Executing case bat</echo>
+        <break/>
+    </case>
+    <default>
+        <echo>Executing default case</echo>
+        <break/>
+    </default>
+</switch>
+]]>
+</programlisting>
+</para>
+
+</chapter>
+
+<chapter id="TryTask">
+    <title>Try Task</title>
+    
+<para>
+The "Try" task works similarly to the try/catch/finally construct in Java. This task is useful when a particular task might fail, but the build should not fail if it does. An example is the "mail" task will fail if the mail server is not available, but the build should not fail if the mail message cannot be delivered.
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<taskdef name="try" classname="ise.antelope.tasks.TryTask"/>
+]]>
+</programlisting>
+</para>
+
+<para>
+A quick example is probably all that is necessary:
+<programlisting>
+<![CDATA[
+ <tempfile property="temp.file" destdir="${java.io.tmpdir}" 
+     prefix="delete" suffix=".tmp"/>
+ <try>
+     <!-- use 'get' task to post to the unit test status servlet. It
+         would be better to use a post for this, but this shows a good
+         use of 'finally'. -->
+     <get
+         src="http://mycompany.com/servlet/junit?testnum=${test.num}&status="${status}"
+         dest="${temp.file}"/>
+     
+     <catch>
+         <echo>Unit test servlet update failed.</echo>
+     </catch>
+     
+     <finally>
+         <delete file="${temp.file}"/>
+     </finally>
+ </try>
+]]>
+</programlisting>
+</para>
+
+<para>
+Unlike the Java "try", neither the "catch" block nor the "finally" block are required. Also, the order does not matter, the "catch" block may be listed first, followed by the "finally", followed by the tasks that may fail. 
+</para>
+
+<para>
+<table frame="all">
+<title>Try Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>break</entry>
+<entry>If true and a nested task fails, no other nested tasks will execute. If false, all nested tasks will execute regardless of whether a previous task failed. Note that for each failed task, the 'catch' block (if defined) will execute.</entry>
+<entry>true</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>printstacktrace</entry>
+<entry>If true, the exception stack trace from a failed task will be logged. </entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>stacktraceproperty</entry>
+<entry>Specify a property to store the stack trace of any exception. </entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>printmessage</entry>
+<entry>If true, the exception message from a failed task will be logged. If printstacktrace is set to true, this attribute is ignored as the exception message is printed as part of the stack trace.</entry>
+<entry>true</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>messageproperty</entry>
+<entry>Specify a property to store the message line of any exception.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+The next example shows the "break" attribute set to "no". In this case, the second echo task will execute.
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <target name="test" description="This exercises the Try task.">
+        <try break="no">
+            <echo>I am trying...</echo>
+            <fail message=" and I failed..."/>
+            <echo> but I did not die!</echo> <!-- this WILL print -->
+        </try>
+    </target>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+This slightly more practical example uses the <link linkend="Variable">Variable</link> task coupled with "try" to run a series of tests. All tests will run even if a preceding test fails. The "catch" block logs a message of each failed test.
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <target name="runTests" messageproperty="msg">
+        <try catch="testFailed" break="no">
+            <var name="testname" value="fileUtilTests"/>
+            <antcall target="runFileUtilTests"/>
+            <var name="testname" value="imageUtilTests"/>
+            <antcall target="runImageUtilTests"/>
+            <var name="testname" value="imageConversionTests"/>
+            <antcall target="runImageConversionTests"/>
+            
+            <catch>
+              <!-- log a test failure -->
+              <echo file="test.log" append="yes">
+                  Test suite ${testname} failed: ${msg}
+              </echo>
+            </catch>
+        </try>
+    </target>
+    </target>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+The following example uses a nested Finally to clean up resources:
+<programlisting>
+<![CDATA[
+    <tempfile property="temp.file" destdir="${java.io.tmpdir}" 
+        prefix="delete" suffix=".tmp"/>
+    <try>
+        <!-- use 'get' task to post to the unit test status servlet. It
+            would be better use use a post for this, but this shows a good
+            use of 'finally'. -->
+        <get
+            src="http://mycompany.com/servlet/junit?testnum=${test.num}&status="${status}"
+            dest="${temp.file}"/>
+        
+        <catch>
+            <echo>Unit test servlet update failed.</echo>
+        </catch>
+        
+        <finally>
+            <delete file="${temp.file}"/>
+        </finally>
+    </try>
+]]>
+</programlisting>
+See the <link linkend="post">post</link> task for a better way to do a post.
+</para>
+
+</chapter>
+
+<chapter id="Variable">
+    <title>Variable Task</title>
+    
+<para>
+The Variable task provides a mutable property to Ant and works much like variable assignment in Java. This task is similar to the standard Ant Property task, except that THESE PROPERTIES ARE MUTABLE. While this goes against the standard Ant use of properties, occasionally it is useful to be able to change a property value within the build. <emphasis role="bold">In general, use of this task is DISCOURAGED, and the standard Ant Property should be used if possible.</emphasis> Having said that, in real life I use this a lot.
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="var" classname="ise.antelope.tasks.Variable"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+Variables can be set individually or loaded from a standard properties file. A 'feature' of variables is that they can override properties, but properties cannot override variables. So if an already established property exists, its value can be reassigned by use of this task.
+</para>
+
+<para>
+<table frame="all">
+<title>Variable Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>name</entry>
+<entry>The name of the property to set.</entry>
+<entry>None</entry>
+<entry>Yes, unless 'file' is used.</entry>
+</row>
+
+<row>
+<entry>value</entry>
+<entry>The value of the property.</entry>
+<entry>""</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>file</entry>
+<entry>The name of a standard properties file to load variables from.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+In the following example, the property <computeroutput>x</computeroutput> is first set to "6", then evaluated by the <computeroutput>if</computeroutput>, and reassigned the value "12". The <computeroutput>echo</computeroutput> task will print out 12.
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <var name="x" value="6"/>
+    <if name="x" value="6">
+        <var name="x" value="12"/>
+    </if>
+    <echo>${x}</echo>   <!-- will print 12 -->
+]]>
+</programlisting>
+</para>
+
+<para>
+The following shows some more uses of the Variable task. It is especially handy for property appending. Notice a couple of things: the property task can't override a var value, however, if the var value is set to "", then it can as in the case of the format example.
+</para>    
+
+<para>
+<programlisting>
+<![CDATA[
+    <var name="x" value="6"/>
+    <echo>x = ${x}</echo>   <!-- print: 6 -->
+    
+    <var name="x" value="12"/>
+    <echo>x = ${x}</echo>   <!-- print: 12 -->
+    
+    <var name="x" value="6 + ${x}"/>
+    <echo>x = ${x}</echo>   <!-- print: 6 + 12 -->
+    
+    <var name="str" value="I "/>
+    <var name="str" value="${str} am "/>
+    <var name="str" value="${str} a "/>
+    <var name="str" value="${str} string."/>
+    <echo>${str}</echo>     <!-- print: I am a string. -->
+        
+    <var name="x" value="6"/>
+    <echo>x = ${x}</echo>   <!-- print: 6 -->
+    
+    <property name="x" value="12"/>
+    <echo>x = ${x}</echo>   <!-- print: 6 (property can't override) -->
+        
+    <var name="x" value="blue"/>
+    <tstamp>
+        <format property="x" pattern="EEEE"/>
+    </tstamp>
+    <echo>Today is ${x}.</echo> <!-- print: Today is blue. -->
+    
+    <var name="x" value=""/>
+    <tstamp>
+        <format property="x" pattern="EEEE"/>
+    </tstamp>
+    <echo>Today is ${x}.</echo> <!-- print: Today is Friday. -->
+    
+]]>
+</programlisting>
+</para>
+    
+<para>
+The next example shows Variable, If, Assert, and Try working together to make sure e-mail is sent from the right address and that if the mail fails to be sent for any reason, the build will not fail.
+</para>
+<para>
+<programlisting>
+    <![CDATA[
+   <var name="valid_email" value="false"/>
+   <if name="email_from" value="buildteam@mycompany.com">
+      <var name="valid_email" value="true"/>
+   </if>
+   <if name="email_from" value="buildsite@mycompany.com">
+      <var name="valid_email" value="true"/>
+   </if>
+   <assert name="valid_email" value="true" failonerror="false">
+      <try>
+         <mail from="${email_from}" tolist="${email_to}" 
+            message="New release available"/>
+      </try>
+   </assert>
+   ]]>
+</programlisting>
+</para>
+</chapter>
+
+<chapter id="stopwatch">
+    <title>Stopwatch</title>
+<para>
+The Stopwatch task makes it easy to add performance timing to Ant targets. Stopwatches are named so that multiple watches can run simultaneously.
+</para>   
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="stopwatch" classname="ise.antelope.tasks.StopWatchTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Stopwatch Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>name</entry>
+<entry>The name for the stopwatch. The elapsed time or total time will be stored as an Ant property with this name.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+<row>
+<entry>action</entry>
+<entry>Valid values are "start", "stop", "elapsed", and "total".</entry>
+<entry>"start"</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+The stopwatch is started with the "start" action. When the action is "elapsed" or "total", the running time of the stopwatch is printed out. Both "stop" and "total" stop the stopwatch and reset it to zero. "elapsed" prints out the current running time of the stopwatch without stopping it.
+</para>
+
+<para>
+Example:
+<programlisting>
+<![CDATA[
+<stopwatch name="timer1"/>
+<!-- do some tasks here... -->
+<stopwatch name="timer1" action="elapsed"/> <!-- print the elapsed time -->
+<!-- do some more tasks here... -->
+<stopwatch name="timer1" action="total"/> <!-- print out the total time -->
+]]>
+</programlisting>
+</para>
+
+</chapter>
+
+
+<chapter id="Limit">
+   <title>Limit</title>
+   
+<para>
+The Limit task is a task container (that is, it holds other tasks) and sets a time limit on how long the nested tasks are allowed to run. This is useful for unit tests that go awry, hung socket connections, or other potentially long running tasks that need to be shut off without stopping the build.
+</para>   
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="limit" classname="ise.antelope.tasks.Limit"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Limit Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>maxwait</entry>
+<entry>How long to wait for nested tasks to finish, this is in seconds.</entry>
+<entry>180 seconds (3 minutes)</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>failonerror</entry>
+<entry>Should the build fail if the time limit has been exceeded?</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Examples:
+</para>
+
+<para>
+Neither the echo nor the fail will happen in this example. The build will continue once the time has expired.
+<programlisting>
+<![CDATA[
+<limit maxwait="3">
+   <sleep seconds="10"/>
+   <echo>This won't happen...</echo>
+   <fail>This won't happen either...</fail>
+</limit>
+]]>
+</programlisting>
+</para>
+
+<para>
+Neither the echo nore the fail will happen in this example. The build will not continue once the time has expired.
+<programlisting>
+<![CDATA[
+<limit maxwait="3" failonerror="true">
+   <sleep seconds="10"/>
+   <echo>This won't happen...</echo>
+   <fail>This won't happen either...</fail>
+</limit>
+]]>
+</programlisting>
+</para>
+</chapter>
+
+
+<chapter id="math">
+    <title>Math</title>
+    
+<para>
+The Math task provides support for all the basic mathematical operations 
+provided by the java.lang.Math and java.lang.StrictMath classed. It supports int, long, float and double data types. Nesting of operations is supported to allow computation of formulas like (6 + (7.25 * 3.9))/(2 * 3 * 3) or calculating the area of a circle given a radius (I'm sure this comes up often in builds controlled by Ant!).  
+</para>
+
+<para>
+In addition to the operations provided by the java.lang.Math and java.lang.StrictMath classes, the Math task provides several additional operations: "add", "subtract", "multiply", "divide", and "mod", which duplicate the basic Java mathematical operations "+", "-", "*", "/", and "%", respectively. In fact, either notation can be used, that is, the operation can be set to "add" or "+", depending only on which you feel is more convenient.
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="math" classname="ise.antelope.tasks.MathTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Math Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>result</entry>
+<entry>The name of the property to hold the result of the operation.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+<row>
+<entry>datatype</entry>
+<entry>Sets the datatype of the calculation. Allowed values are
+"int", "long", "float", or "double". Optional, if
+used, will be applied to all numbers in this math operation.</entry>
+<entry>double</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>strict</entry>
+<entry>If true, use the methods in the java.lang.StrictMath class.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>operation</entry>
+<entry>If used, any nested Ops will be ignored. This is for convenience for simple calculations.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>operand1</entry>
+<entry>A number to use with the operation specified in the 'operation' attribute.</entry>
+<entry>None</entry>
+<entry>Depends on the specific operation.</entry>
+</row>
+
+<row>
+<entry>operand2</entry>
+<entry>A number to use with the operation specified in the 'operation' attribute.</entry>
+<entry>None</entry>
+<entry>Depends on the specific operation.</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+The 'result' property is reusable.
+</para>
+
+The Math task supports nested "Op" elements. An Op element represents single mathematical operation, such as "min" or "add".
+
+<para>
+<table frame="all">
+<title>Op Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>op</entry>
+<entry>Set the name of this operation. Allowed values are
+one of the method names from java.lang.Math or java.lang.StrictMath, or one of "add", "subtract", "multiply", "divide", or "mod" (or "+", "-", "*", "/", or "%", respectively)</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+<row>
+<entry>datatype</entry>
+<entry>Sets the datatype of this calculation. Allowed values are
+"int", "long", "float", or "double". Optional, default
+is "double". If the parent Math task has a datatype set, this value will be ignored and the datatype specifed in the task will be used.</entry>
+<entry>"int"</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+The Op element supports nested "Op" elements and nested "Num" elements. A Num represents a number. When an Op is nested in another Op, the nested Op is treated as a Num. The nested elements can be any combination of Op or Num as appropriate for the formula being calculated. Most of the operations provided by java.lang.Math and java.lang.StrictMath operate on one or two numbers. The "+", "-", "*", "/", and "%" operations can task any number of nested numbers.
+</para>
+
+<para>
+<table frame="all">
+<title>Num Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>value</entry>
+<entry>Set the value for this number. Must be able to parse to the datatype set by the parent element or the default datatype set by the task. Two special numbers, pi and e, can be represented by PI and E respectively. ("PI" is the ratio of the diameter of a circle to its radius, "E" is Euler's e, the base for natural logrithms.)</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+<row>
+<entry>datatype</entry>
+<entry>Sets the datatype of this number. Allowed values are
+"int", "long", "float", or "double". Optional, default
+is "double". If the parent Math task has a datatype set, this value will be ignored and the datatype specifed in the task will be used.</entry>
+<entry>double</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Some examples:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <var name="op1" value="12"/>
+    <var name="op2" value="6"/>
+    <var name="op" value="+"/>
+    
+    <!-- demo plus -->
+    <math result="result" operand1="${op1}" operation="${op}" operand2="${op2}" datatype="int"/>
+    <echo>${op1} ${op} ${op2} = ${result}</echo>
+    <assert name="result" value="18"/>
+
+    <!-- demo reusing result -->
+    <math result="result" operand1="${result}" operation="${op}" operand2="${op2}" datatype="int"/>
+    <echo>${op1} ${op} ${op2} = ${result}</echo>
+    <assert name="result" value="24"/>
+
+    <!-- demo minus -->
+    <var name="op" value="-"/>
+    <math result="result" operand1="${op1}" operation="${op}" operand2="${op2}" datatype="int"/>
+    <echo>${op1} ${op} ${op2} = ${result}</echo>
+    <assert name="result" value="6"/>
+
+    <!-- demo multiply -->
+    <var name="op" value="*"/>
+    <math result="result" operand1="${op1}" operation="${op}" operand2="${op2}" datatype="int"/>
+    <echo>${op1} ${op} ${op2} = ${result}</echo>
+    <assert name="result" value="72"/>
+
+    <!-- demo divide -->
+    <var name="op" value="/"/>
+    <math result="result" operand1="${op1}" operation="${op}" operand2="${op2}" datatype="int"/>
+    <echo>${op1} ${op} ${op2} = ${result}</echo>
+    <assert name="result" value="2"/>
+    
+    <!-- demo modulo -->
+    <var name="op" value="%"/>
+    <math result="result" operand1="${op1}" operation="${op}" operand2="${op2}" datatype="int"/>
+    <echo>${op1} ${op} ${op2} = ${result}</echo>
+    <assert name="result" value="0"/>
+
+    <!-- demo calculating the area of a circle -->
+    <!-- first, calculate the radius -->
+    <math result="radius">  <!-- defaults to double datatype -->
+        <op type="*">
+            <num value="1"/>
+            <num value="2"/>
+            <num value="3"/>
+            <num value="4"/>
+            <num value="5"/>
+        </op>
+    </math>
+    <echo> 1 * 2 * 3 * 4 * 5 = ${radius}</echo>
+    
+    <!-- now calculate the area -->
+    <math result="area" precision="float">
+        <op type="*">
+            <num value="PI"/>
+            <op type="pow">
+                <num value="${radius}"/>
+                <num value="2"/>
+            </op>
+        </op>
+    </math>
+    <echo>area = PI * radius ^ 2 = ${area}</echo>
+    
+    <!-- demo calculating a random number between 0 and 100 -->
+    <math result="result">
+        <op op="rint">
+            <op op="*">
+                <num value="100"/>
+                <op op="random"/>
+            </op>
+        </op>
+    </math>
+    <echo>a random number between 0 and 100: ${result}</echo>
+    
+    <!-- demo another multiplication -->
+    <math result="result" operation="multiply" operand1="17" operand2="13"/>
+    <echo>${result}</echo>
+]]>
+</programlisting>
+</para>
+
+</chapter>
+<chapter id="post">
+    <title>HTTP Post</title>
+    
+<para>
+The Post task is a companion to the standard Ant "Get" task. This task does a post and does not necessarily expect anything in return. Almost always, there will be some sort of returned data, this can be logged or written to a file if needed.
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="post" classname="ise.antelope.tasks.PostTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+Basically, an HTTP POST sends name/value pairs to a web server. A very common usage is for html forms for submitting data. A typical use of this task is to send data to a servlet for updating a web page with the status of a build. 
+</para>
+
+<para>
+The Post task has three ways of specifying the data to be posted. Nested "prop" elements can be used. A "prop" element represents a single name/value pair. The second way is to specify a property file as an attribute to the Post. All properties from the file will be sent as part of the Post data. The third way is to just type in some defined Ant properties. Is it allowed to use all three ways at once, that is, read some properties from a file, specify others via "prop" elements, and just type in some Ant properties.
+</para>
+
+<para>
+<table frame="all">
+<title>Post Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>to</entry>
+<entry>The URL of the remote server to send the post.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+<row>
+<entry>encoding</entry>
+<entry>Character encoding for the name/value pairs.</entry>
+<entry>UTF-8</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>logfile</entry>
+<entry>The name of a file to write any response to. Ignored if wantresponse is set to false.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>append</entry>
+<entry>Should an existing log file be appended to or overwritten?</entry>
+<entry>True, append to an existing file.</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>file</entry>
+<entry>A file to read POST data from. All Ant properties contained in this file will be resolved (that is, ${} syntax will be expanded to their values) prior to sending the file contents.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>maxwait</entry>
+<entry>The maximum amount of time in seconds to wait for the data to be sent or for a response from the remote server. Setting this to zero means wait forever.</entry>
+<entry>180 (3 minutes)</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>wantresponse</entry>
+<entry>Whether to wait for a response from the remote server or not. In many cases this can greatly improve the performance of the build script as the server response may be large and useless to the script. Use this with caution - while the response from the server may not be required for the client, the server may require that the client accept the response prior to processing the post data.</entry>
+<entry>true</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>failonerror</entry>
+<entry>Whether the build should fail if the post fails.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Post supports nested "prop" elements. As an HTTP POST basically sends a list of names and values, the "prop" element represents one name/value pair. A Post may contain any number of "prop" elements.
+</para>
+
+<para>
+<table frame="all">
+<title>Prop Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>name</entry>
+<entry>The name of a property to post.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+<row>
+<entry>value</entry>
+<entry>The value associated with the name.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+The "value" attribute is not strictly required. This provides a short-cut method in cases where the property data is an already-defined Ant property. Suppose the build file has this property defined:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <property name="src.dir" value="/home/user/project/src"/>
+]]>
+</programlisting>
+</para>
+
+<para>
+Then the following are equivalent:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <prop name="src.dir"/>
+    <prop name="src.dir" value="${src.dir}"/>
+    <prop name="src.dir" value="/home/user/project/src"/>
+]]>
+</programlisting>
+</para>
+
+<para>
+Defined Ant properties can be entered directly into the post element. Again, suppose the build file has this property defined:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <property name="src.dir" value="/home/user/project/src"/>
+]]>
+</programlisting>
+</para>
+
+<para>
+Then the following are equivalent:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    ${src.dir}
+    <prop name="src.dir"/>
+    <prop name="src.dir" value="${src.dir}"/>
+    <prop name="src.dir" value="/home/user/project/src"/>
+]]>
+</programlisting>
+</para>
+
+
+<para>
+I googled for the URL in the following example. 
+</para>
+<para>
+<programlisting>
+<![CDATA[
+    <property name="test.val" value="here's my test value"/>
+    <property name="test.val2" value="second test value"/>
+    <post to="http://wwwj.cs.unc.edu:8888/tang/servlet/tangGetPostServlet"
+        verbose="true">
+        <prop name="prop1" value="val1 ${test.val}"/>
+        <prop name="prop2" value="val1 value 2"/>
+        <prop name="prop3" value="val got some spaces %funky ^$* chars"/>
+        <prop name="prop4" value="&amp; do an ampersand like this &amp;amp; or
+        Ant will whine"/>
+        <prop name="thanks" value="dude, thanks for the echo server!"/>
+        <prop name="test.val"/>
+        ${test.val2}
+    </post>
+]]>
+</programlisting>
+</para>
+</chapter>
+
+
+<chapter id="ssh">
+
+<title>SSH and SCP</title>
+
+<para>
+The ssh and scp tasks are no longer included in the main Antelope distribution as they are scheduled to be released as part of Ant 1.6.
+</para>
+</chapter>
+
+<chapter id="antfetch">
+    <title>AntFetch</title>
+    
+<para>
+AntFetch is identical to the standard 'Ant' task, except that it allows properties from the new project to be set in the original project. 
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="antfetch" classname="ise.antelope.tasks.AntFetch"/>
+   ]]>
+</programlisting>
+</para>
+
+
+<para>
+Some background may be in order: When the &lt;ant&gt; task is used, in actuality, a new Ant project is created, and depending on the inheritAll property, it is populated with properties from the original project. Then the target in this new project is executed. Any properties set in the new project remain with that project, they do not get "passed back" to the original project. So, for example, if the target in the new project sets a property named "image.directory", there is no reference to that property in the original. Here's an example of what I mean:
+</para>    
+
+<para>
+Suppose that the "fillImageDirectory" target sets a property named "image.directory" and I call the following:
+<programlisting>
+<![CDATA[
+    <ant dir="${image.project} target="fillImageDirectory"/>
+    <echo>${image.directory}</echo>
+]]>
+</programlisting>
+The output of the echo task will be ${image.directory}, not whatever was set in the "fillImageDirectory" target.
+</para>
+
+<para>
+The AntFetch task allows that image.directory property to be set in the original project. The attributes for AntFetch are identical to the 'Ant' task, with one additional, optional attibute. This attribute is named "return" and can be either a single property name or a comma separated list of property names.
+</para>
+
+<para>
+Assuming that "fillImageDirectory" actually sets a property named "image.directory", the following example will print out the directory name:
+<programlisting>
+<![CDATA[
+    <antfetch dir="${image.project} target="fillImageDirectory" return="image.directory"/>
+    <echo>${image.directory}</echo>
+]]>
+</programlisting>
+</para>
+
+<para>
+And this one will also print out the thumbnail directory:
+<programlisting>
+<![CDATA[
+    <antfetch dir="${image.project} target="fillImageDirectory" return="image.directory, thumbnail.directory"/>
+    <echo>${image.directory}</echo>
+    <echo>${thumbnail.directory}</echo>
+]]>
+</programlisting>
+</para>
+
+<para>
+The attributes for AntFetch are identical to the 'ant' task, with one additional, optional attibute. This attribute is named "return" and can be either a single property name or a comma separated list of property names.
+<table frame="all">
+<title>AntFetch Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>return</entry>
+<entry>A comma separated list of property names. Whitespace is allowed, so either "a,b" or "a, b" are acceptable.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+For other attribute and nested element information and more examples, see the documentation for the "ant" task in the Ant documentation.
+</para>
+
+
+</chapter>
+
+
+<chapter id="antcallback">
+    <title>AntCallBack</title>
+    
+<para>
+AntCallBack is identical to the standard 'antcall' task, except that it allows properties set in the called target to be available in the calling target. 
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="antcallback" classname="ise.antelope.tasks.AntCallBack"/>
+   ]]>
+</programlisting>
+</para>
+
+
+<para>
+Some background may be in order: When the &lt;antcall&gt; task is used, in actuality, a new Ant project is created, and depending on the inheritAll property, it is populated with properties from the original project. Then the requested target in this new project is executed. Any properties set in the new project remain with that project, they do not get "passed back" to the original project. So, for example, if the target in the new project sets a property named "image.directory", there is no reference to that property in the original. Here's an example of what I mean:
+</para>    
+
+<para>
+<programlisting>
+<![CDATA[
+    <target name="testCallback" description="Test CallBack">
+        <taskdef name="antcallback" classname="ise.antelope.tasks.AntCallBack" classpath="${antelope.home}/build" />
+        <antcallback target="-testcb" return="a, b"/>
+        <echo>a = ${a}</echo>
+        <echo>b = ${b}</echo>
+    </target>
+    
+    <target name="-testcb">
+        <property name="a" value="A"/> 
+        <property name="b" value="B"/> 
+    </target>
+]]>    
+</programlisting>
+The output from executing "testCallback" looks like this:
+<programlisting>
+a = A
+b = B
+</programlisting>
+Contrast with this output from "antcall":
+<programlisting>
+a = ${a}
+b = ${b}
+</programlisting>
+</para>
+
+<para>
+This is an often requested feature for Ant, at least judging from the Ant mailing lists. I assume this is because it allows a more functional programming style than Ant natively supports. The proper Ant way of doing the above is like this:
+<programlisting>
+<![CDATA[
+    <target name="testCallback" description="Test CallBack" depends="-testcb">
+        <echo>a = ${a}</echo>
+        <echo>b = ${b}</echo>
+    </target>
+    
+    <target name="-testcb">
+        <property name="a" value="A"/> 
+        <property name="b" value="B"/> 
+    </target>
+]]>    
+</programlisting>
+This is actually looks cleaner in this situation, and is faster, too. There is significant overhead in using both "antcall" and "antcallback" in that they both require a lot of object instantiation and property copying. That said, many people prefer to use "antcall" and "antcallback" as it better fits their logic and style.
+</para>
+
+<para>
+The attributes for AntCallBack are identical to the 'antcall' task, with one additional, optional attibute. This attribute is named "return" and can be either a single property name or a comma separated list of property names.
+<table frame="all">
+<title>AntCallBack Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>return</entry>
+<entry>A comma separated list of property names. Whitespace is allowed, so either "a,b" or "a, b" are acceptable.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+
+<para>
+For other attribute and nested element information and more examples, see the documentation for the "antcall" task in the Ant documentation.
+</para>
+
+</chapter>
+
+<chapter id="calltask">
+    <title>Call Task</title>
+<para>
+This is the simplest and possibly the most obvious of the "call" type of tasks. It simply calls a target in the current build file and provides exactly the functionality expected by many users of "antcall".
+</para> 
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="call" classname="ise.antelope.tasks.Call"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+There is only one attribute, that is the name of the target to call. 
+
+<table frame="all">
+<title>Call Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>target</entry>
+<entry>The name of a target to execute.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+There is none of the weird property manipulation done by "ant", "antcall", "antfetch", or "antcallback", and none of the overhead. When you call a target, any properties set in that target are immediately available in the calling target. A simple example should be all that is necessary:
+<programlisting>
+<![CDATA[
+ <target name="test" description="Test Call">
+     <call target="called"/>
+     <echo>a = ${a}</echo>
+     <echo>b = ${b}</echo>
+ </target>
+ 
+ <target name="called">
+     <property name="a" value="A"/> 
+     <property name="b" value="B"/> 
+ </target>
+]]>    
+</programlisting>
+</para>   
+</chapter>
+
+<chapter id="performance">
+    <title>Performance Monitoring</title>
+    
+<para>
+In addition to the tasks described in this manual, Antelope also ships with a special Ant listener than can keep track of the amount of time that each target and task takes to execute. At the end of the build, these times will be sorted from fastest to slowest and displayed following the build output. This can be useful to pinpoint slow and/or inefficient spots in the build process and identify those areas that could benefit from optimization.
+</para> 
+
+<para>
+The performance listener can be used outside of Antelope by passing a parameter to the command line for Ant:
+</para>   
+
+<para>
+<programlisting>
+<![CDATA[
+    ant -listener ise.antelope.common.AntPerformanceListener target
+]]>
+</programlisting>
+</para>
+
+<para>
+Following is an example of the results from using the listener. The result format is projectname.targetname for targets and projectname.targetname.taskname for tasks. All times are shown to the nearest millisecond. 
+<programlisting>
+<![CDATA[
+[danson@blackdog antelope]$ ant -listener ise.antelope.common.AntPerformanceListener dist
+Buildfile: build.xml
+
+init:
+
+clean:
+   [delete] Deleting 170 files from /home/danson/apps/antelope/build
+
+compile:
+    [javac] Compiling 61 source files to /home/danson/apps/antelope/build
+
+all:
+
+-build_number:
+
+prep_files:
+   [delete] Deleting 3 files from /home/danson/apps/antelope/config
+     [copy] Copying 3 files to /home/danson/apps/antelope/config
+
+combined:
+     [echo] basedir = /home/danson/apps/antelope
+      [jar] Building jar: /home/danson/apps/antelope/Antelope_1.208.jar
+
+dist:
+   [delete] Deleting 4 files from /home/danson/apps/antelope/dist
+      [zip] Building zip: /home/danson/apps/antelope/dist/Antelope_1.208.zip
+     [echo] Created zip file.
+
+-zip_docs:
+      [zip] Building zip: /home/danson/apps/antelope/dist/Antelope_docs_1.208.zip
+     [echo] Zipped docs to Antelope_docs_1.208.zip.
+
+-zip_tasks:
+      [jar] Building jar: /tmp/Antelope_tasks_1.208.jar
+      [zip] Building zip: /home/danson/apps/antelope/dist/Antelope_tasks_1.208.zip
+   [delete] Deleting: /tmp/Antelope_tasks_1.208.jar
+     [echo] Zipped tasks to Antelope_tasks_1.208.zip.
+     [copy] Copying 1 file to /home/danson/apps/antelope/dist
+
+BUILD SUCCESSFUL
+Total time: 8 seconds
+
+-------------- Target Results -----------------------
+Antelope.all: 0.000 sec
+Antelope.init: 0.011 sec
+Antelope.-build_number: 0.014 sec
+Antelope.clean: 0.233 sec
+Antelope.-zip_tasks: 0.297 sec
+Antelope.prep_files: 0.311 sec
+Antelope.-zip_docs: 0.546 sec
+Antelope.combined: 1.290 sec
+Antelope.compile: 1.724 sec
+Antelope.dist: 2.162 sec
+
+-------------- Task Results -----------------------
+Antelope.init.mkdir: 0.000 sec
+Antelope.init.mkdir: 0.001 sec
+Antelope.dist.echo: 0.002 sec
+Antelope.prep_files.delete: 0.004 sec
+Antelope.combined.echo: 0.005 sec
+Antelope.dist.delete: 0.006 sec
+Antelope.-zip_tasks.echo: 0.007 sec
+Antelope.dist.copy: 0.011 sec
+Antelope.-build_number.buildnumber: 0.014 sec
+Antelope.compile.copy: 0.016 sec
+Antelope.prep_files.copy: 0.020 sec
+Antelope.prep_files.replace: 0.071 sec
+Antelope.-zip_tasks.zip: 0.122 sec
+Antelope.-zip_tasks.jar: 0.161 sec
+Antelope.prep_files.replace: 0.216 sec
+Antelope.clean.delete: 0.233 sec
+Antelope.dist.antcall: 0.421 sec
+Antelope.-zip_docs.zip: 0.540 sec
+Antelope.dist.antcall: 0.685 sec
+Antelope.dist.zip: 1.036 sec
+Antelope.combined.jar: 1.284 sec
+Antelope.compile.javac: 1.708 sec
+
+-------------- Totals -----------------------
+Start time: Thu, 5 Dec 2002 17:18:30
+Stop time: Thu, 5 Dec 2002 17:18:39
+Total time: 8.476 sec
+]]>
+</programlisting>
+</para>
+
+</chapter>
+
+<chapter id="feedback">
+    <title>Feedback</title>
+
+<para>
+The preferred way to send bug reports is to use the
+Sourceforge Bug Tracker at
+<ulink url="http://sourceforge.net/projects/antelope">
+http://sourceforge.net/projects/antelope
+</ulink>.
+</para>
+
+<para>You can also write to me directly at:</para>
+<itemizedlist>
+    <listitem>
+    <para>
+        Dale Anson <email>danson@germane-software.com</email>
+    </para>
+    </listitem>
+</itemizedlist>
+</chapter>
+
+
+</book>
