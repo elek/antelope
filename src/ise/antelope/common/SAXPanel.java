@@ -131,68 +131,47 @@ public class SAXPanel extends JPanel implements Navable {
                                     dialog.setLocation( GUIUtils.getBestAnchorPoint( dialog, p.x + me.getX(), p.y + me.getY() ) );
                                     dialog.setVisible( true );
                                  }
+                                 return ;
                               }
-                              else if ( node.getName().equals( "property" ) ) {
-                                 String filename = node.getAttributeValue( "file" );
-                                 File ft = null;
-                                 if ( filename != null ) {
-                                    ft = new File( filename );
-                                    if ( !ft.exists() ) {
-                                       File dir = node.getFile();
-                                       if ( dir == null )
-                                          return ;
-                                       ft = new File( dir.getParentFile(), filename );
-                                    }
-                                 }
-                                 else {
-                                    return ;
+
+                              // show an "open" popup for certain tasks that use property files
+                              String filename = null;
+                              if ( node.getName().equals( "property" ) ) {
+                                 filename = node.getAttributeValue( "file" );
+                              }
+                              else if ( node.getName().equals( "loadproperties" ) ) {
+                                 filename = node.getAttributeValue( "srcfile" );
+                              }
+                              if ( filename == null )
+                                 return ;
+                              try {
+                                 File ft = new File( filename );
+                                 if ( !ft.exists() ) {
+                                    File dir = node.getFile();
+                                    if ( dir == null )
+                                       return ;
+                                    ft = new File( dir.getParentFile(), filename );
                                  }
                                  final File f = ft;
 
-                                 try {
-                                    FileReader fr = new FileReader( f );
-                                    StringWriter sw = new StringWriter();
-                                    ise.library.FileUtilities.copyToWriter( fr, sw );
+                                 JPopupMenu popup = new JPopupMenu();
+                                 JMenuItem mi = new JMenuItem( "Open" );
+                                 popup.add( mi );
 
-                                    JPanel panel = new JPanel( new BorderLayout() );
-                                    JTextArea tp = new JTextArea( sw.toString() );
-                                    tp.setEditable( false );
-                                    panel.add( new JScrollPane( tp ) );
-
-                                    MouseAdapter m2 = new MouseAdapter() {
-                                             public void mouseClicked( MouseEvent me ) {
-                                                _helper.openFile( f );
-                                             }
-                                          };
-                                    tp.addMouseListener(m2);
-
-                                    final JDialog dialog = new JDialog( GUIUtils.getRootJFrame( SAXPanel.this ), "Properties: " + f.toString(), true );
-                                    dialog.getContentPane().add( panel, BorderLayout.CENTER );
-                                    JButton close_btn = new JButton( "Close" );
-                                    JPanel btn_panel = new JPanel();
-                                    btn_panel.add( close_btn );
-                                    dialog.getContentPane().add( btn_panel, BorderLayout.SOUTH );
-                                    close_btn.addActionListener( new ActionListener() {
-                                             public void actionPerformed( ActionEvent ae ) {
-                                                dialog.hide();
-                                                dialog.dispose();
-                                             }
+                                 mi.addActionListener( new ActionListener() {
+                                          public void actionPerformed( ActionEvent ae ) {
+                                             _helper.openFile( f );
                                           }
-                                                               );
-                                    dialog.pack();
-                                    dialog.setSize( 300, 300 );
-                                    java.awt.Point p = SAXPanel.this.getLocation();
-                                    SwingUtilities.convertPointToScreen( p, SAXPanel.this );
-                                    dialog.setLocation( GUIUtils.getBestAnchorPoint( dialog, p.x + me.getX(), p.y + me.getY() ) );
-                                    dialog.setVisible( true );
-                                 }
-                                 catch ( Exception e ) {}
+                                       }
+                                                     );
+
+                                 GUIUtils.showPopupMenu( popup, SAXPanel.this, me.getX(), me.getY() );
                               }
+                              catch ( Exception e ) {}
                            }
                         }
                      }
                   }
-
                }
                ;
          tree.addMouseListener( ma );
@@ -284,7 +263,7 @@ public class SAXPanel extends JPanel implements Navable {
                continue;
 
             // load the build file using the SAXNodeHandler, get a project node
-            SAXTreeNode ant_root = SAXTreeModel.load( build_file );
+            SAXTreeNode ant_root = (SAXTreeNode)new SAXTreeModel(build_file).getRoot();
 
             // get the target name, default is the default target in the build file
             String ant_target_name = null;
@@ -421,7 +400,13 @@ public class SAXPanel extends JPanel implements Navable {
       return nodes;
    }
 
-
+   /**
+    * @return true if any file tracked by getPropertyFiles is newer than when it
+    * was first looked at.
+    */
+   public boolean shouldReload() {
+      return ((SAXTreeModel)tree.getModel()).shouldReload();  
+   }
 
    /**
     * @return true if the file is an Ant build file, false if not.   

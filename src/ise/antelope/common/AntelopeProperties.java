@@ -166,7 +166,9 @@ public class AntelopeProperties {
             model.setValueAt( key, i, 0 );
             model.setValueAt( value, i, 1 );
          }
-         catch ( Exception ignored ) {}
+         catch ( Exception ignored ) {
+            // bad key/value mapping will throw NPE, ignore
+         }
       }
       ref_table.addMouseListener( new TableCellViewer( ref_table ) );
 
@@ -185,7 +187,9 @@ public class AntelopeProperties {
             user_model.setValueAt( key, i, 0 );
             user_model.setValueAt( value, i, 1 );
          }
-         catch ( Exception ignored ) {}
+         catch ( Exception ignored ) {
+            // bad key/value mapping will throw NPE, ignore
+         }
       }
       user_table.addMouseListener( new TableCellViewer( user_table ) );
 

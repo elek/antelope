@@ -8,7 +8,9 @@ o Changed the preferences again. The custom preferences are now used on all plat
 
 This will install Antelope's custom preferences handler as the default system preferences handler.
 
+o Added popup in "Edit" mode to property and loadproperties tasks to allow opening of a file designated by the "file" or "srcfile" attributes, respectively, in the editor.
 
+o Added auto-reload if property files changed. Property files are those files loaded either by the <property> task with a "file" attribute or by the <loadproperties> task. If the property files have changed since the build file was loaded, the build file will be reloaded, which in turn causes the property files to be reloaded. Note that this reload does not depend on the auto-reload option being checked, it happens regardless.
 
 3.0.6:
 24 Mar 2004:

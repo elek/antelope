@@ -91,10 +91,12 @@ import org.apache.tools.ant.util.JavaEnvUtils;
  *
  * This class also encapsulates methods which allow files to be referred to
  * using abstract path names which are translated to native system file paths at
- * runtime. danson: Made some modifications to be able to remove properties.
+ * runtime. 
+ *
+ * danson: Made some modifications to be able to remove properties.
  * Much of the following is cut and paste from Project, mostly because Project
  * does not expose enough of its internals to be able to do the property
- * manipulation that I want to do.
+ * manipulation that I want to do. 
  *
  * @author    duncan@x180.com; Dale Anson, danson@germane-software.com
  * @version   $Revision$

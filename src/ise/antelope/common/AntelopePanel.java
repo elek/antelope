@@ -450,7 +450,7 @@ public class AntelopePanel extends JPanel implements Constants {
                      }
 
                      // reload the project if need be
-                     if ( _settings.getAutoReload() ) {
+                     if ( _settings.getAutoReload() || _sax_panel.shouldReload()) {
                         try {
                            reload();
                         }
@@ -577,7 +577,7 @@ public class AntelopePanel extends JPanel implements Constants {
             }
 
             // execute a target, but first reload the project if need be
-            if ( _settings.getAutoReload() ) {
+            if ( _settings.getAutoReload() || _sax_panel.shouldReload()) {
                reload();
                // find the button again, the reload replaces the buttons
                // on the button panel, so the button that caused this action event
@@ -932,6 +932,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
                // Ant 1.6 has an un-named target to hold project-level tasks, so
                // find it and save it for later.
+
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
                   Iterator iter = targets.keySet().iterator();
@@ -1014,12 +1015,12 @@ public class AntelopePanel extends JPanel implements Constants {
                   }
                   AbstractButton button;
                   if ( _multi.isSelected() ) {
-                     button = new JCheckBox( (isPrivate(target) ? "<html><i>" : "") + target_name );
+                     button = new JCheckBox( ( isPrivate( target ) ? "<html><i>" : "" ) + target_name );
                      button.addActionListener( _cb_listener );
                      button.setBackground( _button_panel.getBackground() );
                   }
                   else {
-                     button = new JButton( (isPrivate(target) ? "<html><i>" : "") + target_name );
+                     button = new JButton( ( isPrivate( target ) ? "<html><i>" : "" ) + target_name );
                      button.addActionListener( _button_listener );
                   }
                   button.setActionCommand( target_name );
@@ -1073,14 +1074,14 @@ public class AntelopePanel extends JPanel implements Constants {
          ClassLoader cl = _helper.getAntClassLoader();
          p.init( cl );   // this takes as much as 9 seconds the first time, less than 1/2 second later
 
-         // add the antelope build logger now so that any output produced by the 
+         // add the antelope build logger now so that any output produced by the
          // ProjectHelper is captured
          p.addBuildListener( _build_logger );
 
          /// this is the "recommended" way, but throws an NPE
          //ProjectHelper ph = ProjectHelper.getProjectHelper();
          //ph.parse(p, build_file);
-         ProjectHelper.configureProject(p, build_file);
+         ProjectHelper.configureProject( p, build_file );
          p.setProperty( "ant.file", build_file.getAbsolutePath() );
          p.setProperty( "ant.version", Main.getAntVersion() );
 
@@ -1173,8 +1174,13 @@ public class AntelopePanel extends JPanel implements Constants {
       }
    }
 
+   /**
+    * Determines if a target should be considered a "private" target.
+    * @return true if the target name contains a "." or starts with "-" or has an 
+    * empty description.
+    */
    private boolean isPrivate( Target target ) {
-      if (target == null)
+      if ( target == null )
          return true;
       String target_name = target.getName();
       if ( target_name.indexOf( "." ) > 0 ) {
@@ -1184,7 +1190,7 @@ public class AntelopePanel extends JPanel implements Constants {
          return true;
       }
       String description = target.getDescription();
-      if (  description == null || description.equals( "" ) ) {
+      if ( description == null || description.equals( "" ) ) {
          return true;
       }
       return false;

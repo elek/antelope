@@ -356,7 +356,7 @@ The available options are as follows:
 
 <listitem>
 <para>
-<emphasis role="bold">Automatically reload build file</emphasis> If checked, Antelope will automatically reload the build file before running a target. That means that all properties will be reset to their original values or reloaded from property files as necessary. Keep in mind that properties set via the "Properties" button and dialog are not applied until the build file is reloaded. The default setting is checked, that is, do automatically reload the build file prior to each build.
+<emphasis role="bold">Automatically reload build file</emphasis> If checked, Antelope will automatically reload the build file before running a target. That means that all properties will be reset to their original values or reloaded from property files as necessary. Keep in mind that properties set via the "Properties" button and dialog are not applied until the build file is reloaded. The default setting is checked, that is, do automatically reload the build file prior to each build. On the other hand, if there are properties that are loaded via a &lt;property file="filename.props"/&gt; or &lt;loadproperties srcfile="filename"/&gt;, Antelope will watch those files and reload the build file automatically if they change. Changes to such files cause a reload regardless of this setting.
 </para>
 </listitem>
 

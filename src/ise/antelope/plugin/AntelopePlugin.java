@@ -718,7 +718,6 @@ public class AntelopePlugin extends EBPlugin implements Constants {
          base_dir = bd.getParentFile().getAbsolutePath();
       StringTokenizer st1 = new StringTokenizer( base_dir, File.separator );
       StringTokenizer st2 = new StringTokenizer( destination, File.separator );
-      StringTokenizer shorter = st1.countTokens() <= st2.countTokens() ? st1 : st2;
       String token1, token2 = "";
       while ( st1.hasMoreTokens() ) {
          token1 = st1.nextToken();
