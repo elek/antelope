@@ -659,12 +659,14 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         if ( build_file == null )
             return ;
 
+        int caret_position = _editor.getCaretPosition();
         try {
             StringReader reader = new StringReader( _editor.getText() );
             FileWriter writer = new FileWriter( build_file );
             FileUtilities.copyToWriter( reader, writer );
             _antelope_panel.reload();
             setTitle( "Antelope: " + build_file.getAbsolutePath() );
+            _editor.setCaretPosition(caret_position);
         }
         catch ( Exception e ) {
             e.printStackTrace();
