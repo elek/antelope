@@ -467,6 +467,12 @@ public class AntelopeProperties {
          pm.add( new JScrollPane( ta ) );
       }
       public void mousePressed( MouseEvent me ) {
+         doPopup(me);
+      }
+      public void mouseReleased(MouseEvent me) {
+         doPopup(me);
+      }
+      private void doPopup(MouseEvent me) {
          if ( me.isPopupTrigger() ) {
             Point p = me.getPoint();
             int col = table.columnAtPoint( p );
