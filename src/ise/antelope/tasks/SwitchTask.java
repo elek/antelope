@@ -115,9 +115,9 @@ public class SwitchTask extends Task  {
         if ( value == null )
             throw new BuildException( "Property " + name + " does not exist." );
         boolean disregardValue = false;     // should the case fall through to the next?
-        Enumeration enum = cases.elements();
-        while ( enum.hasMoreElements() ) {
-            Case c = ( Case ) enum.nextElement();
+        Enumeration en = cases.elements();
+        while ( en.hasMoreElements() ) {
+            Case c = ( Case ) en.nextElement();
             if ( disregardValue ) {
                 c.perform();
                 if ( c.doBreak() )

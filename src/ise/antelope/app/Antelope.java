@@ -810,6 +810,15 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             ;
     }
 
+     /**
+     * Gets the traceButtonAction attribute of the Antelope object
+     *
+     * @return   The traceButtonAction value
+     */
+    public ActionListener getTraceButtonAction() {
+        return getRunButtonAction();
+    }
+
     /**
      * Gets the antClassLoader attribute of the Antelope object
      *

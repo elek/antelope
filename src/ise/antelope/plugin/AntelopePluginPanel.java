@@ -343,6 +343,10 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
     public ActionListener getRunButtonAction() {
         return null;
     }
+    
+    public ActionListener getTraceButtonAction() {
+        return null;  
+    }
 
     /**
      * Find the classloader that loaded Ant and return it.

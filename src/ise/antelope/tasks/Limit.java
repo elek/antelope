@@ -133,12 +133,12 @@ public class Limit extends Task implements TaskContainer {
          final Thread runner =
             new Thread() {
                public void run() {
-                  Enumeration enum = tasks.elements();
-                  while ( enum.hasMoreElements() ) {
+                  Enumeration en = tasks.elements();
+                  while ( en.hasMoreElements() ) {
                      if ( taskRunner != this ) {
                         break;
                      }
-                     currentTask = ( Task ) enum.nextElement();
+                     currentTask = ( Task ) en.nextElement();
                      try {
                         currentTask.perform();
                      }

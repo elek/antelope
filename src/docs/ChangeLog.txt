@@ -1,6 +1,21 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.1.10:
+29 Aug 2004
+o Fixed error in StopWatchTask that incorrectly showed total time for
+elapsed time. (Thanks to Wolf Schlegel for pointing this out.)
+o I've used 'enum' as a variable name for an Enumeration for years, but now
+Sun has decided that is a key word, so I've replaced all 'enum' with 'en'.
+(Thanks to Dennis Hofs for pointing this out.)
+o Fixed issue #21, silently ignore property files not found when the build
+file is loaded.
+o Fixed issue #22, caret position is restored properly when build file is
+saved.
+o Fixed issue #24, clicking on "Trace" button automatically selects the
+"Output" tab.
+
+
 3.1.9:
 29 July 2004
 o fix for issue #20, imported targets now have buttons.

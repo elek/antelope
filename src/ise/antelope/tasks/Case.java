@@ -145,9 +145,9 @@ public class Case extends Task implements TaskContainer, Breakable {
     * @exception BuildException  Description of Exception
     */
    public void execute() throws BuildException {
-      Enumeration enum = tasks.elements();
-      while ( enum.hasMoreElements() ) {
-         Task task = (Task)enum.nextElement();
+      Enumeration en = tasks.elements();
+      while ( en.hasMoreElements() ) {
+         Task task = (Task)en.nextElement();
          task.perform();
          if ( task instanceof Breakable ) {
             if ( ( (Breakable)task ).doBreak() ) {

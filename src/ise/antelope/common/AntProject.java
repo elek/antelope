@@ -147,9 +147,9 @@ public class AntProject extends Project {
          props.load( in );
          in.close();
 
-         Enumeration enum = props.propertyNames();
-         while ( enum.hasMoreElements() ) {
-            String key = ( String ) enum.nextElement();
+         Enumeration en = props.propertyNames();
+         while ( en.hasMoreElements() ) {
+            String key = ( String ) en.nextElement();
             String value = props.getProperty( key );
             try {
                Class taskClass = Class.forName( value );
@@ -180,9 +180,9 @@ public class AntProject extends Project {
          props.load( in );
          in.close();
 
-         Enumeration enum = props.propertyNames();
-         while ( enum.hasMoreElements() ) {
-            String key = ( String ) enum.nextElement();
+         Enumeration en = props.propertyNames();
+         while ( en.hasMoreElements() ) {
+            String key = ( String ) en.nextElement();
             String value = props.getProperty( key );
             try {
                Class dataClass = Class.forName( value );
@@ -232,9 +232,9 @@ public class AntProject extends Project {
          props.load( in );
          in.close();
 
-         Enumeration enum = props.propertyNames();
-         while ( enum.hasMoreElements() ) {
-            String key = ( String ) enum.nextElement();
+         Enumeration en = props.propertyNames();
+         while ( en.hasMoreElements() ) {
+            String key = ( String ) en.nextElement();
             String value = props.getProperty( key );
             try {
                Class taskClass = Class.forName( value );
@@ -265,9 +265,9 @@ public class AntProject extends Project {
          props.load( in );
          in.close();
 
-         Enumeration enum = props.propertyNames();
-         while ( enum.hasMoreElements() ) {
-            String key = ( String ) enum.nextElement();
+         Enumeration en = props.propertyNames();
+         while ( en.hasMoreElements() ) {
+            String key = ( String ) en.nextElement();
             String value = props.getProperty( key );
             try {
                Class dataClass = Class.forName( value );

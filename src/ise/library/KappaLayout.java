@@ -247,9 +247,9 @@ public class KappaLayout implements LayoutManager2, Serializable {
       if ( _constraints != null ) {
          sb.append( "\ncomponent count=" + _constraints.size() );
          sb.append( "\ncomponents (no order):\n" );
-         Enumeration enum = _constraints.keys();
-         while ( enum.hasMoreElements() )
-            sb.append( enum.nextElement() + "\n" );
+         Enumeration en = _constraints.keys();
+         while ( en.hasMoreElements() )
+            sb.append( en.nextElement() + "\n" );
       }
       sb.append( "-------------------------------\n" );
       return sb.toString();
@@ -576,11 +576,11 @@ public class KappaLayout implements LayoutManager2, Serializable {
          // turn tokens into a Constraints. Default Constraints values are used
          // for missing or non-specified values
          Constraints q = new Constraints();
-         Enumeration enum = tokens.elements();
+         Enumeration en = tokens.elements();
 
          // get column
-         if ( enum.hasMoreElements() ) {
-            token = enum.nextElement().toString();
+         if ( en.hasMoreElements() ) {
+            token = en.nextElement().toString();
             try {
                q.x = Integer.parseInt( token );
                if ( q.x < 0 )
@@ -592,8 +592,8 @@ public class KappaLayout implements LayoutManager2, Serializable {
          }
 
          // get row
-         if ( enum.hasMoreElements() ) {
-            token = enum.nextElement().toString();
+         if ( en.hasMoreElements() ) {
+            token = en.nextElement().toString();
             try {
                q.y = Integer.parseInt( token );
                if ( q.y < 0 )
@@ -605,8 +605,8 @@ public class KappaLayout implements LayoutManager2, Serializable {
          }
 
          // get column span (width)
-         if ( enum.hasMoreElements() ) {
-            token = enum.nextElement().toString();
+         if ( en.hasMoreElements() ) {
+            token = en.nextElement().toString();
             if ( token.equalsIgnoreCase( "R" ) ) {
                q.w = R;
             }
@@ -623,8 +623,8 @@ public class KappaLayout implements LayoutManager2, Serializable {
          }
 
          // get row span (height)
-         if ( enum.hasMoreElements() ) {
-            token = enum.nextElement().toString();
+         if ( en.hasMoreElements() ) {
+            token = en.nextElement().toString();
             if ( token.equalsIgnoreCase( "R" ) ) {
                q.h = R;
             }
@@ -641,8 +641,8 @@ public class KappaLayout implements LayoutManager2, Serializable {
          }
 
          // get alignment
-         if ( enum.hasMoreElements() ) {
-            token = enum.nextElement().toString().trim();
+         if ( en.hasMoreElements() ) {
+            token = en.nextElement().toString().trim();
             if ( token.equalsIgnoreCase( "N" ) || token.equals( "1" ) )
                q.a = N;
             else if ( token.equalsIgnoreCase( "NE" ) || token.equals( "2" ) )
@@ -664,8 +664,8 @@ public class KappaLayout implements LayoutManager2, Serializable {
          }
 
          // get component stretch
-         if ( enum.hasMoreElements() ) {
-            token = enum.nextElement().toString().trim().toLowerCase();
+         if ( en.hasMoreElements() ) {
+            token = en.nextElement().toString().trim().toLowerCase();
             if ( token.equals( "w" ) || token.equals( "h" ) || token.equals( "wh" ) || token.equals( "hw" ) ) {
                q.s = token;
             }
@@ -674,8 +674,8 @@ public class KappaLayout implements LayoutManager2, Serializable {
          }
 
          // get component padding
-         if ( enum.hasMoreElements() ) {
-            token = enum.nextElement().toString();
+         if ( en.hasMoreElements() ) {
+            token = en.nextElement().toString();
             try {
                q.p = Integer.parseInt( token );
                if ( q.p < 0 )
@@ -795,9 +795,9 @@ public class KappaLayout implements LayoutManager2, Serializable {
       }
 
       // get the constraints
-      Enumeration enum = _constraints.keys();
-      while ( enum.hasMoreElements() ) {
-         Component c = ( Component ) enum.nextElement();
+      Enumeration en = _constraints.keys();
+      while ( en.hasMoreElements() ) {
+         Component c = ( Component ) en.nextElement();
          Constraints q = ( Constraints ) _constraints.get( c );
          if ( q.w == R )
             q.w = _col_count - q.x;
@@ -845,9 +845,9 @@ public class KappaLayout implements LayoutManager2, Serializable {
 
       // adjust for same width columns
       if ( _same_width_cols != null ) {
-         enum = _same_width_cols.elements();
-         while ( enum.hasMoreElements() ) {
-            int[] same = ( int[] ) enum.nextElement();
+         en = _same_width_cols.elements();
+         while ( en.hasMoreElements() ) {
+            int[] same = ( int[] ) en.nextElement();
             // find widest column of this group
             int widest = same[ 0 ];
             for ( int i = 0; i < same.length; i++ ) {
@@ -887,9 +887,9 @@ public class KappaLayout implements LayoutManager2, Serializable {
 
       // adjust for same height rows
       if ( _same_height_rows != null ) {
-         enum = _same_height_rows.elements();
-         while ( enum.hasMoreElements() ) {
-            int[] same = ( int[] ) enum.nextElement();
+         en = _same_height_rows.elements();
+         while ( en.hasMoreElements() ) {
+            int[] same = ( int[] ) en.nextElement();
             // find tallest row of this group
             int tallest = same[ 0 ];
             for ( int i = 0; i < same.length; i++ ) {
@@ -916,9 +916,9 @@ public class KappaLayout implements LayoutManager2, Serializable {
       Hashtable rows = new Hashtable();
 
       // get the constraints
-      Enumeration enum = _constraints.elements();
-      while ( enum.hasMoreElements() ) {
-         Constraints q = ( Constraints ) enum.nextElement();
+      Enumeration en = _constraints.elements();
+      while ( en.hasMoreElements() ) {
+         Constraints q = ( Constraints ) en.nextElement();
 
          // figure out which columns this component spans. The BitSet represents
          // a row, and for each non-empty column in the row, a bit is set. The
@@ -938,9 +938,9 @@ public class KappaLayout implements LayoutManager2, Serializable {
       // calculate the number of columns by going through each BitSet and
       // counting the number of set bits. The highest bit is the number of
       // columns.
-      enum = rows.elements();
-      while ( enum.hasMoreElements() ) {
-         BitSet row = ( BitSet ) enum.nextElement();
+      en = rows.elements();
+      while ( en.hasMoreElements() ) {
+         BitSet row = ( BitSet ) en.nextElement();
          for ( int i = 0; i < row.size(); i++ ) {
             if ( row.get( i ) )
                _col_count = Math.max( _col_count, i + 1 ); // add 1 as column index is 0-based
@@ -957,9 +957,9 @@ public class KappaLayout implements LayoutManager2, Serializable {
       _row_count = 0;
       Hashtable cols = new Hashtable();
 
-      Enumeration enum = _constraints.elements();
-      while ( enum.hasMoreElements() ) {
-         Constraints q = ( Constraints ) enum.nextElement();
+      Enumeration en = _constraints.elements();
+      while ( en.hasMoreElements() ) {
+         Constraints q = ( Constraints ) en.nextElement();
          BitSet col = null;
          String x = String.valueOf( q.x );
          if ( !cols.containsKey( x ) ) {
@@ -972,9 +972,9 @@ public class KappaLayout implements LayoutManager2, Serializable {
             col.set( i );
          }
       }
-      enum = cols.elements();
-      while ( enum.hasMoreElements() ) {
-         BitSet col = ( BitSet ) enum.nextElement();
+      en = cols.elements();
+      while ( en.hasMoreElements() ) {
+         BitSet col = ( BitSet ) en.nextElement();
          for ( int i = 0; i < col.size(); i++ ) {
             if ( col.get( i ) ) {
                _row_count = Math.max( _row_count, i + 1 );

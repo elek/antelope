@@ -418,14 +418,14 @@ public class PostTask extends Task {
 
       StringBuffer content = new StringBuffer();
       try {
-         Enumeration enum = props.keys();
-         while ( enum.hasMoreElements() ) {
-            String name = (String)enum.nextElement();
+         Enumeration en = props.keys();
+         while ( en.hasMoreElements() ) {
+            String name = (String)en.nextElement();
             String value = (String)props.get( name );
             content.append( URLEncoder.encode( name, encoding ) );
             content.append( "=" );
             content.append( URLEncoder.encode( value, encoding ) );
-            if ( enum.hasMoreElements() ) {
+            if ( en.hasMoreElements() ) {
                content.append( "&" );
             }
          }

@@ -139,9 +139,9 @@ public abstract class InputHandler extends KeyAdapter {
     * @param listener The action
     */
    public static String getActionName( ActionListener listener ) {
-      Enumeration enum = getActions();
-      while ( enum.hasMoreElements() ) {
-         String name = ( String ) enum.nextElement();
+      Enumeration en = getActions();
+      while ( en.hasMoreElements() ) {
+         String name = ( String ) en.nextElement();
          ActionListener _listener = getAction( name );
          if ( _listener == listener )
             return name;
