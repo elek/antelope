@@ -298,7 +298,7 @@ See the installation instructions below for the specific requirements for Antelo
 </para>
 
 <para>
-Antelope does require Ant 1.5.x or later, which is a separate download. Ant is available from <ulink url="http://ant.apache.org">http://ant.apache.org</ulink>. Antelope has been tested extensively with Ant 1.5.x, and seems to work with no problems with Ant 1.6.0. If your development environment already runs Ant, you have everything you need to run Antelope.
+Antelope does require Ant 1.5.x or later, which is a separate download. Ant is available from <ulink url="http://ant.apache.org">http://ant.apache.org</ulink>. Antelope has been tested extensively with Ant 1.5.x, and seems to work with no problems with Ant 1.6.x. If your development environment already runs Ant, you have everything you need to run Antelope.
 </para>
 
 <para>
@@ -362,7 +362,7 @@ The available options are as follows:
 
 <listitem>
 <para>
-<emphasis role="bold">Show subtargets</emphasis> There are several common methods of designating "primary" targets and "subtargets", also referred to as "public" and "private" targets. Primary (or public) targets are those that are invoked directly, while subtargets (or private targets) are generally "helper" targets that are invoked from other targets. Antelope supports three of the most common methods:
+<emphasis role="bold">Show subtargets</emphasis> There are several common conventions for designating "primary" targets and "subtargets", also referred to as "public" and "private" targets. Primary (or public) targets are those that are invoked directly, while subtargets (or private targets) are generally "helper" targets that are invoked from other targets. Antelope supports three of the most common conventions:
 
     <itemizedlist>
     <listitem>
@@ -383,7 +383,7 @@ The available options are as follows:
     </para>
     </listitem>
     </itemizedlist>    
-By default, none of these options are selected.    
+By default, none of these options are selected. Antelope displays all private targets in italics.   
 </para>
 </listitem>
     

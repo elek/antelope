@@ -38,6 +38,30 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
       return showAttributes;
    }
 
+   private boolean isPrivate( SAXTreeNode target_node ) {
+      if ( target_node == null )
+         return false;
+      if ( !target_node.getName().equals( "target" ) ) {
+         return false;
+      }
+      Attributes attr = target_node.getAttributes();
+      if ( attr == null )
+         return false;
+
+      String target_name = attr.getValue( attr.getIndex( "name" ) );
+      if ( target_name.indexOf( "." ) > 0 ) {
+         return true;
+      }
+      if ( target_name.startsWith( "-" ) ) {
+         return true;
+      }
+      String description = attr.getValue( attr.getIndex( "description" ) );
+      if ( description == null || description.equals( "" ) ) {
+         return true;
+      }
+      return false;
+   }
+
    private String getLabelText( SAXTreeNode node ) {
       if ( node != null ) {
          StringBuffer name = new StringBuffer();
@@ -46,7 +70,12 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
             name.append( "<html>" );
             if ( attr != null ) {
                name.append( "<b>" );
+               boolean p = isPrivate( node );
+               if ( p )
+                  name.append( "<i>" );
                name.append( attr.getValue( attr.getIndex( "name" ) ) );
+               if ( p )
+                  name.append( "</i>" );
                name.append( "</b>" );
             }
             if ( attr != null && showAttributes ) {
@@ -60,7 +89,8 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
                   }
                }
             }
-         } else {
+         }
+         else {
             name.append( node.getName() );
             if ( attr != null && showAttributes ) {
                for ( int i = 0; i < attr.getLength(); i++ ) {
@@ -95,7 +125,8 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
       if ( treenode != null && treenode instanceof SAXTreeNode ) {
          nodeLabel.setText( getLabelText( ( SAXTreeNode ) treenode ) );
          nodeLabel.setIcon( getImageIcon( ( SAXTreeNode ) treenode ) );
-      } else
+      }
+      else
          nodeLabel.setText( value.toString() );
       return nodeLabel;
    }

@@ -229,6 +229,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
 
 
+
       LambdaLayout lal = new LambdaLayout();
       _control_panel = new JPanel( lal );
       Insets ins = new Insets( 1, 1, 1, 1 );
@@ -937,9 +938,6 @@ public class AntelopePanel extends JPanel implements Constants {
                // Ant 1.6 has an un-named target to hold project-level tasks, so
                // find it and save it for later.
 
-
-
-
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
                   Iterator iter = targets.keySet().iterator();
@@ -1022,12 +1020,12 @@ public class AntelopePanel extends JPanel implements Constants {
                   }
                   AbstractButton button;
                   if ( _multi.isSelected() ) {
-                     button = new JCheckBox( target_name );
+                     button = new JCheckBox( (isPrivate(target) ? "<html><i>" : "") + target_name );
                      button.addActionListener( _cb_listener );
                      button.setBackground( _button_panel.getBackground() );
                   }
                   else {
-                     button = new JButton( target_name );
+                     button = new JButton( (isPrivate(target) ? "<html><i>" : "") + target_name );
                      button.addActionListener( _button_listener );
                   }
                   button.setActionCommand( target_name );
@@ -1174,6 +1172,23 @@ public class AntelopePanel extends JPanel implements Constants {
          AntelopeProperties ap = new AntelopeProperties( this );
          ap.showProperties( _project );
       }
+   }
+
+   private boolean isPrivate( Target target ) {
+      if (target == null)
+         return true;
+      String target_name = target.getName();
+      if ( target_name.indexOf( "." ) > 0 ) {
+         return true;
+      }
+      if ( target_name.startsWith( "-" ) ) {
+         return true;
+      }
+      String description = target.getDescription();
+      if (  description == null || description.equals( "" ) ) {
+         return true;
+      }
+      return false;
    }
 
 
