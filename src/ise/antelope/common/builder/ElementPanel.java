@@ -39,19 +39,61 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
       add( list, BorderLayout.CENTER );
       list.setTransferHandler( new ElementTransferHandler() );
       list.setDragEnabled( true );
-      list.addMouseListener( new AttributeViewer( list ) );
+      //list.addMouseListener( new AttributeViewer( list ) );
+      list.addMouseListener( new MenuPopup() );
+
    }
-   
+
+   class MenuPopup extends MouseAdapter {
+      private JPopupMenu pm = new JPopupMenu();
+      private ElementPanel child = null;
+
+      public MenuPopup() {
+         JMenuItem props_mi = new JMenuItem( "Properties" );
+         JMenuItem delete_mi = new JMenuItem( "Delete" );
+         pm.add( props_mi );
+         pm.add( delete_mi );
+
+         props_mi.addActionListener( new ActionListener() {
+                  public void actionPerformed( ActionEvent ae ) {
+                     if ( child == null )
+                        return ;
+                     new AttributeViewer( child );
+                  }
+               }
+                                   );
+      }
+      public void mousePressed( MouseEvent me ) {
+         doPopup( me );
+      }
+      public void mouseReleased( MouseEvent me ) {
+         doPopup( me );
+      }
+      private void doPopup( MouseEvent me ) {
+         if ( me.isPopupTrigger() ) {
+            JList list = getList();
+            int index = list.locationToIndex( me.getPoint() );
+            if ( index > -1 ) {
+               list.setSelectedIndex( index );
+               child = (ElementPanel)list.getSelectedValue();
+               GUIUtils.showPopupMenu( pm, ElementPanel.this, me.getX(), me.getY() );
+            }
+
+         }
+      }
+
+   }
+
    public String getName() {
-      return element_name;  
+      return element_name;
    }
-   
+
    public boolean isTask() {
-      return isTask;  
+      return isTask;
    }
-   
+
    public TreePath getTreePath() {
-      return tree_path;  
+      return tree_path;
    }
 
    /**
@@ -61,9 +103,9 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
    public Map getAttributes() {
       return attributes;
    }
-   
-   public void setAttributes(Map attrs) {
-      attributes = attrs == null ? null : new TreeMap(attrs);
+
+   public void setAttributes( Map attrs ) {
+      attributes = attrs == null ? null : new TreeMap( attrs );
    }
 
    public void setXML( String xml ) {}
@@ -77,7 +119,7 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
       Iterator it = attributes.keySet().iterator();
       while ( it.hasNext() ) {
          String name = it.next().toString();
-         if (name.equals("taskname") && isTask())
+         if ( name.equals( "taskname" ) && isTask() )
             continue;
          DTDAttribute attribute = ( DTDAttribute ) attributes.get( name );
          DTDDecl decl = attribute.getDecl();
@@ -86,17 +128,9 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
          if ( required )
             sb.append( "<font color=red>*</font>" );
          String value = attribute.getDefaultValue();
-         sb.append( name ).append( ":&nbsp&nbsp;</span><span>").append(value == null ? "" : value).append("</span><br>" );
-         Object type = attribute.getType();
-         if ( type instanceof DTDEnumeration || type instanceof DTDNotationList ) {
-            String[] items = ( ( DTDEnumeration ) type ).getItem();
-            sb.append( "<span><ul>" );
-            for ( int j = 0; j < items.length; j++ )
-               sb.append( "<li>" ).append( items[ j ].toString() );
-            sb.append( "</ul></span>" );
-         }
+         sb.append( name ).append( ":&nbsp&nbsp;</span><span>" ).append( value == null ? "" : value ).append( "</span><br>" );
       }
-      sb.append( "<html>" );
+      sb.append( "</html>" );
       return sb.toString();
    }
 

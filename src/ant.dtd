@@ -2639,12 +2639,12 @@
 <!ATTLIST ant
           id ID #IMPLIED
           output CDATA #IMPLIED
-          taskname CDATA #IMPLIED
-          inheritall %boolean; #IMPLIED
-          dir CDATA #IMPLIED
-          inheritrefs %boolean; #IMPLIED
+          taskname CDATA "ant"
+          inheritall %boolean; "true"
+          dir CDATA "${basedir}"
+          inheritrefs %boolean; "false"
           description CDATA #IMPLIED
-          antfile CDATA #IMPLIED
+          antfile CDATA "build.xml"
           target CDATA #IMPLIED>
 
 <!ELEMENT xmlvalidate (fileset | classpath | attribute | dtd | xmlcatalog)*>
@@ -3144,7 +3144,7 @@
           followsymlinks %boolean; #IMPLIED
           basedir CDATA #IMPLIED
           taskname CDATA #IMPLIED
-          casesensitive %boolean; #IMPLIED
+          casesensitive %boolean; "yes"
           description CDATA #IMPLIED
           excludesfile CDATA #IMPLIED
           excludes CDATA #IMPLIED
@@ -3192,11 +3192,11 @@
 <!ELEMENT antcall (reference | propertyset | param)*>
 <!ATTLIST antcall
           id ID #IMPLIED
-          taskname CDATA #IMPLIED
-          inheritall %boolean; #IMPLIED
-          inheritrefs %boolean; #IMPLIED
+          taskname CDATA "antcall"
+          inheritall %boolean; "true"
+          inheritrefs %boolean; "false"
           description CDATA #IMPLIED
-          target CDATA #IMPLIED>
+          target CDATA #REQUIRED>
 
 <!ELEMENT ccmkbl EMPTY>
 <!ATTLIST ccmkbl
@@ -3356,8 +3356,8 @@
 <!ELEMENT antstructure EMPTY>
 <!ATTLIST antstructure
           id ID #IMPLIED
-          output CDATA #IMPLIED
-          taskname CDATA #IMPLIED
+          output CDATA #REQUIRED
+          taskname CDATA "antstructure"
           description CDATA #IMPLIED>
 
 <!ELEMENT script (#PCDATA)>
@@ -3538,13 +3538,13 @@
           file CDATA #IMPLIED
           classname CDATA #IMPLIED
           resource CDATA #IMPLIED
-          ignoresystemclasses %boolean; #IMPLIED
+          ignoresystemclasses %boolean; "false"
           type (file | dir) #IMPLIED
           classpathref IDREF #IMPLIED
           taskname CDATA #IMPLIED
-          value CDATA #IMPLIED
+          value CDATA "true"
           description CDATA #IMPLIED
-          property CDATA #IMPLIED
+          property CDATA #REQUIRED
           filepath CDATA #IMPLIED>
 
 <!ELEMENT filepath (fileset | dirset | extdirs | filelist | existing | pathelement | path)*>
@@ -4047,9 +4047,9 @@
 <!ATTLIST basename
           id ID #IMPLIED
           taskname CDATA #IMPLIED
-          file CDATA #IMPLIED
+          file CDATA #REQUIRED
           description CDATA #IMPLIED
-          property CDATA #IMPLIED
+          property CDATA #REQUIRED
           suffix CDATA #IMPLIED>
 
 <!ELEMENT javadoc2 (taglet | doclet | package | arg | link | doctitle | bottom | group | packageset | fileset | classpath | sourcepath | footer | source | bootclasspath | header | excludepackage | tag)*>
@@ -4288,36 +4288,36 @@
 <!ATTLIST apply
           id ID #IMPLIED
           resultproperty CDATA #IMPLIED
-          skipemptyfilesets %boolean; #IMPLIED
-          failifexecutionfails %boolean; #IMPLIED
+          skipemptyfilesets %boolean; "false"
+          failifexecutionfails %boolean; "true"
           command CDATA #IMPLIED
           type (file | dir | both) #IMPLIED
           maxparallel CDATA #IMPLIED
-          executable CDATA #IMPLIED
+          executable CDATA #REQUIRED
           os CDATA #IMPLIED
           errorproperty CDATA #IMPLIED
           output CDATA #IMPLIED
           timeout CDATA #IMPLIED
           dest CDATA #IMPLIED
-          spawn %boolean; #IMPLIED
+          spawn %boolean; "no"
           input CDATA #IMPLIED
           inputstring CDATA #IMPLIED
-          addsourcefile %boolean; #IMPLIED
-          verbose %boolean; #IMPLIED
+          addsourcefile %boolean; "true"
+          verbose %boolean; "false"
           logerror %boolean; #IMPLIED
           dir CDATA #IMPLIED
           forwardslash %boolean; #IMPLIED
           error CDATA #IMPLIED
           description CDATA #IMPLIED
           outputproperty CDATA #IMPLIED
-          resolveexecutable %boolean; #IMPLIED
+          resolveexecutable %boolean; "false"
           failonerror %boolean; #IMPLIED
-          append %boolean; #IMPLIED
+          append %boolean; "false"
           taskname CDATA #IMPLIED
-          newenvironment %boolean; #IMPLIED
-          vmlauncher %boolean; #IMPLIED
-          relative %boolean; #IMPLIED
-          parallel %boolean; #IMPLIED>
+          newenvironment %boolean; "false"
+          vmlauncher %boolean; "true"
+          relative %boolean; "false"
+          parallel %boolean; "false">
 
 <!ELEMENT ccuncheckout EMPTY>
 <!ATTLIST ccuncheckout
