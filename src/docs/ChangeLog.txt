@@ -1,7 +1,18 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.0.7:
+
+
+3.0.6:
+24 Mar 2004:
+o More updates to the dependency tree code and the entity includes.
+o Changed the preferences handling (see the entry dated 22 Jan 2004 below) so that the custom preferences factory is only activated on non-Windows platforms with jvm's earlier than version 1.5. This means that your settings may disappear -- they are not gone, just not readable. If you need to continue to use the custom preferences, start Antelope with this setting on the command line:
+-Djava.util.prefs.PreferencesFactory=ise.library.UserPreferencesFactory
+Hopefully this won't change again.
+
 3.0.5:
+22 Mar 2004:
 o Updates to the dependency tree code. 
 o Fixed a bug with included xml (using xml entity includes). The targets of included xml would show up as buttons in "Run" mode, but not in the tree in "Edit" mode. The targets are now in the Edit tree, and the dependency tree works with these targets also.
 o Added some nice icons to the edit tree to make it easier to pick out imported targets and projects.
