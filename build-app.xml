@@ -52,7 +52,7 @@
    ========================================================================= -->
     <target name="clean" description="Delete all files from the classes directory.">
         <delete>
-            <fileset dir="${classes.dir}" includes="**" />
+            <fileset dir="${classes.dir}" includes="**/*" />
             <fileset dir="${prep.dir}">
                <include name="**/*"/>
                <exclude name="docs/**/*"/>
@@ -198,9 +198,6 @@
     <target name="copy_resources">
         <copy todir="${classes.dir}/images">
             <fileset dir="${src.dir}/images" includes="**/*" />
-        </copy>
-        <copy todir="${classes.dir}/ise/antelope/common/gui">
-            <fileset dir="${src.dir}" includes="ant.dtd"/>
         </copy>
         
         <copy todir="${classes.dir}/ise/antelope/tasks">

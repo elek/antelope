@@ -32,28 +32,28 @@
 <!ELEMENT include EMPTY>
 <!ATTLIST include
           id ID #IMPLIED
-          name CDATA #IMPLIED
+          name CDATA #REQUIRED
           unless CDATA #IMPLIED
           if CDATA #IMPLIED>
 
 <!ELEMENT exclude EMPTY>
 <!ATTLIST exclude
           id ID #IMPLIED
-          name CDATA #IMPLIED
+          name CDATA #REQUIRED
           unless CDATA #IMPLIED
           if CDATA #IMPLIED>
 
 <!ELEMENT excludesfile EMPTY>
 <!ATTLIST excludesfile
           id ID #IMPLIED
-          name CDATA #IMPLIED
+          name CDATA #REQUIRED
           unless CDATA #IMPLIED
           if CDATA #IMPLIED>
 
 <!ELEMENT includesfile EMPTY>
 <!ATTLIST includesfile
           id ID #IMPLIED
-          name CDATA #IMPLIED
+          name CDATA #REQUIRED
           unless CDATA #IMPLIED
           if CDATA #IMPLIED>
 
@@ -81,7 +81,7 @@
           id ID #IMPLIED
           refid IDREF #IMPLIED
           description CDATA #IMPLIED
-          dynamic %boolean; #IMPLIED>
+          dynamic %boolean; "true">
 
 <!ELEMENT propertyref EMPTY>
 <!ATTLIST propertyref
@@ -117,9 +117,9 @@
           refid IDREF #IMPLIED
           file CDATA #IMPLIED
           dir CDATA #IMPLIED
-          defaultexcludes %boolean; #IMPLIED
-          followsymlinks %boolean; #IMPLIED
-          casesensitive %boolean; #IMPLIED
+          defaultexcludes %boolean; "true"
+          followsymlinks %boolean; "true"
+          casesensitive %boolean; "true"
           description CDATA #IMPLIED
           excludes CDATA #IMPLIED
           includesfile CDATA #IMPLIED
@@ -321,7 +321,7 @@
 <!ELEMENT filelist EMPTY>
 <!ATTLIST filelist
           id ID #IMPLIED
-          dir CDATA #IMPLIED
+          dir CDATA #REQUIRED
           refid IDREF #IMPLIED
           description CDATA #IMPLIED
           files CDATA #IMPLIED>
@@ -351,8 +351,8 @@
 <!ELEMENT filterset (filterset | filter | filtersfile)*>
 <!ATTLIST filterset
           id ID #IMPLIED
-          begintoken CDATA #IMPLIED
-          endtoken CDATA #IMPLIED
+          begintoken CDATA "@"
+          endtoken CDATA "@"
           refid IDREF #IMPLIED
           description CDATA #IMPLIED
           filtersfile CDATA #IMPLIED>
@@ -360,13 +360,13 @@
 <!ELEMENT filter EMPTY>
 <!ATTLIST filter
           id ID #IMPLIED
-          token CDATA #IMPLIED
-          value CDATA #IMPLIED>
+          token CDATA #REQUIRED
+          value CDATA #REQUIRED>
 
 <!ELEMENT filtersfile EMPTY>
 <!ATTLIST filtersfile
           id ID #IMPLIED
-          file CDATA #IMPLIED>
+          file CDATA #REQUIRED>
 
 <!ELEMENT libfileset (patternset | exclude | include | custom | present | none | not | type | modified | or | contains | depend | different | size | majority | containsregexp | filename | selector | includesfile | date | excludesfile | depth | and)*>
 <!ATTLIST libfileset
@@ -393,7 +393,7 @@
           classpathref IDREF #IMPLIED
           refid IDREF #IMPLIED
           description CDATA #IMPLIED
-          classname CDATA #IMPLIED>
+          classname CDATA #REQUIRED>
 
 <!ELEMENT scriptfilter (#PCDATA)>
 <!ATTLIST scriptfilter
@@ -519,7 +519,7 @@
 <!ELEMENT containsstring EMPTY>
 <!ATTLIST containsstring
           id ID #IMPLIED
-          contains CDATA #IMPLIED>
+          contains CDATA #REQUIRED>
 
 <!ELEMENT linetokenizer EMPTY>
 <!ATTLIST linetokenizer
@@ -572,10 +572,10 @@
           refid IDREF #IMPLIED
           file CDATA #IMPLIED
           dir CDATA #IMPLIED
-          defaultexcludes %boolean; #IMPLIED
-          followsymlinks %boolean; #IMPLIED
+          defaultexcludes %boolean; "true"
+          followsymlinks %boolean; "true"
           rootclass CDATA #IMPLIED
-          casesensitive %boolean; #IMPLIED
+          casesensitive %boolean; "true"
           description CDATA #IMPLIED
           excludes CDATA #IMPLIED
           includesfile CDATA #IMPLIED
@@ -588,9 +588,9 @@
           refid IDREF #IMPLIED
           file CDATA #IMPLIED
           dir CDATA #IMPLIED
-          defaultexcludes %boolean; #IMPLIED
-          followsymlinks %boolean; #IMPLIED
-          casesensitive %boolean; #IMPLIED
+          defaultexcludes %boolean; "true"
+          followsymlinks %boolean; "true"
+          casesensitive %boolean; "true"
           description CDATA #IMPLIED
           excludes CDATA #IMPLIED
           includesfile CDATA #IMPLIED
@@ -614,9 +614,9 @@
 <!ELEMENT entity EMPTY>
 <!ATTLIST entity
           id ID #IMPLIED
-          location CDATA #IMPLIED
+          location CDATA #REQUIRED
           base CDATA #IMPLIED
-          publicid CDATA #IMPLIED>
+          publicid CDATA #REQUIRED>
 
 <!ELEMENT catalogpath (fileset | dirset | extdirs | filelist | existing | pathelement | path)*>
 <!ATTLIST catalogpath
@@ -648,7 +648,7 @@
           dir CDATA #IMPLIED
           defaultexcludes %boolean; #IMPLIED
           followsymlinks %boolean; #IMPLIED
-          filemode CDATA #IMPLIED
+          filemode CDATA "644"
           prefix CDATA #IMPLIED
           casesensitive %boolean; #IMPLIED
           description CDATA #IMPLIED
@@ -657,7 +657,7 @@
           includesfile CDATA #IMPLIED
           excludes CDATA #IMPLIED
           includes CDATA #IMPLIED
-          dirmode CDATA #IMPLIED>
+          dirmode CDATA "755">
 
 <!ELEMENT substitution EMPTY>
 <!ATTLIST substitution
@@ -755,10 +755,10 @@
 <!ATTLIST cvspass
           id ID #IMPLIED
           taskname CDATA #IMPLIED
-          password CDATA #IMPLIED
+          password CDATA #REQUIRED
           description CDATA #IMPLIED
-          cvsroot CDATA #IMPLIED
-          passfile CDATA #IMPLIED>
+          cvsroot CDATA #REQUIRED
+          passfile CDATA "~/.cvspass">
 
 <!ELEMENT p4reopen EMPTY>
 <!ATTLIST p4reopen

@@ -53,7 +53,7 @@ public class ProjectBuilder extends JPanel {
          //       with a subnode for each child
 
          DefaultMutableTreeNode root_node = new DefaultMutableTreeNode( DNDConstants.PROJECT );
-         DefaultMutableTreeNode target_node = new DefaultMutableTreeNode( DNDConstants.TARGET );
+         DroppableTreeNode target_node = new DroppableTreeNode( DNDConstants.TARGET, true );
          DefaultMutableTreeNode task_node = new DefaultMutableTreeNode( DNDConstants.TASK );
          DefaultMutableTreeNode type_node = new DefaultMutableTreeNode( DNDConstants.TYPE );
          root_node.add( target_node );
@@ -78,7 +78,7 @@ public class ProjectBuilder extends JPanel {
          // add the tasks to the task node
          Iterator it = task_list.iterator();
          while ( it.hasNext() ) {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode( it.next() );
+            DroppableTreeNode node = new DroppableTreeNode( it.next(), true );
             task_node.add( node );
             addChildren( node );
          }
@@ -94,7 +94,7 @@ public class ProjectBuilder extends JPanel {
          // add the types to the types node
          it = type_list.iterator();
          while ( it.hasNext() ) {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode( it.next() );
+            DroppableTreeNode node = new DroppableTreeNode( it.next(), true );
             type_node.add( node );
             addChildren( node );
          }
@@ -105,10 +105,11 @@ public class ProjectBuilder extends JPanel {
          project_tree.setDragEnabled( true );
 
          ElementPanel project_panel = new ElementPanel(project_tree.getPathForRow(0));
+         ProjectTreePanel project_tree_panel = new ProjectTreePanel();
          JSplitPane splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
                true,
                new JScrollPane( project_tree ),
-               new JScrollPane( project_panel ) );
+               new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, new JScrollPane(project_tree_panel), new JScrollPane( project_panel )) );
          setLayout( new LambdaLayout() );
          add( splitpane, "0, 0, 1, 1, 0, wh, 3" );
          project_tree.setDragEnabled(true);
@@ -129,7 +130,7 @@ public class ProjectBuilder extends JPanel {
          for ( int i = 0; i < contents.length; i++ ) {
             if ( contents[ i ] instanceof DTDName ) {
                String child_name = ( ( DTDName ) contents[ i ] ).getValue();
-               DefaultMutableTreeNode child = new DefaultMutableTreeNode( child_name );
+               DroppableTreeNode child = new DroppableTreeNode( child_name, true );
                node.add( child );
             }
          }

@@ -40,13 +40,12 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
       list.setTransferHandler( new ElementTransferHandler() );
       list.setDragEnabled( true );
       //list.addMouseListener( new AttributeViewer( list ) );
-      list.addMouseListener( new MenuPopup() );
+      addMouseListener( new MenuPopup() );
 
    }
 
    class MenuPopup extends MouseAdapter {
       private JPopupMenu pm = new JPopupMenu();
-      private ElementPanel child = null;
 
       public MenuPopup() {
          JMenuItem props_mi = new JMenuItem( "Properties" );
@@ -56,9 +55,7 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
 
          props_mi.addActionListener( new ActionListener() {
                   public void actionPerformed( ActionEvent ae ) {
-                     if ( child == null )
-                        return ;
-                     new AttributeViewer( child );
+                     new AttributeViewer( ElementPanel.this );
                   }
                }
                                    );
@@ -70,20 +67,16 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
          doPopup( me );
       }
       private void doPopup( MouseEvent me ) {
-         if ( me.isPopupTrigger() ) {
-            JList list = getList();
-            int index = list.locationToIndex( me.getPoint() );
-            if ( index > -1 ) {
-               list.setSelectedIndex( index );
-               child = (ElementPanel)list.getSelectedValue();
-               GUIUtils.showPopupMenu( pm, ElementPanel.this, me.getX(), me.getY() );
-            }
-
+         if ( me.isPopupTrigger()) {
+            GUIUtils.showPopupMenu( pm, me.getComponent(), me.getX(), me.getY() );
          }
       }
 
    }
 
+   /**
+    * @return the dtd element name, e.g. target, description, javac, etc.   
+    */
    public String getName() {
       return element_name;
    }
@@ -94,6 +87,10 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
 
    public TreePath getTreePath() {
       return tree_path;
+   }
+
+   public boolean canAccept( TreePath tp ) {
+      return true;
    }
 
    /**
@@ -125,10 +122,11 @@ public class ElementPanel extends JPanel implements java.io.Serializable {
          DTDDecl decl = attribute.getDecl();
          boolean required = decl.equals( DTDDecl.REQUIRED );
          sb.append( "<span>&nbsp;&nbsp;" );
-         if ( required )
-            sb.append( "<font color=red>*</font>" );
-         String value = attribute.getDefaultValue();
-         sb.append( name ).append( ":&nbsp&nbsp;</span><span>" ).append( value == null ? "" : value ).append( "</span><br>" );
+         if ( required ) {
+            //sb.append( "<font color=red>*</font>" );
+            String value = attribute.getDefaultValue();
+            sb.append( name ).append( ":&nbsp&nbsp;</span><span>" ).append( value == null ? "" : value ).append( "</span><br>" );
+         }
       }
       sb.append( "</html>" );
       return sb.toString();
