@@ -142,7 +142,7 @@
    ========================================================================= -->
    <target name="run" 
            description="Runs Antelope as a standalone app."
-           depends="setClasspath, compile">
+           depends="setClasspath, compile, copy_resources">
       <java classname="ise.antelope.app.Antelope" fork="true">
          <classpath refid="classpathref"/>
       </java>
@@ -154,26 +154,41 @@
       files in ${src.dir}/docs and puts the finished files in ${prep.dir}/docs.
       The files are NOT ready for distribution until after prep_files is ran.
    ========================================================================= -->
-    <target name="docs-xalan"
-            description="Generate user documentation in hmtl format with xalan"
-            depends="init,setClasspath,prep_files">
+   <target name="docs-xalan"
+         description="Generate user documentation in hmtl format with xalan"
+         depends="init,setClasspath,prep_files">
 
-        <delete>
-            <fileset dir="${doc.dir}" includes="manual/**/*" />
-        </delete>
+      <fail unless="docbook.xsl" message="Please set docbook.xsl property."/>
 
-        <copy todir="${doc.dir}/manual">
-            <fileset dir="${src.dir}/docs/manual" includes="**/*.gif" />
-            <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
-        </copy>
-        
-        <style basedir="${src.dir}/docs/manual"
-               style="${src.dir}/docs/users-guide.xsl"
-               destdir="${doc.dir}/manual" 
-               includes="userguide.xml">
-           <param name="html.stylesheet" expression="./style.css"/>       
-        </style>
-    </target>
+      <delete>
+         <fileset dir="${doc.dir}" includes="manual/**/*" />
+      </delete>
+
+      <copy todir="${doc.dir}/manual">
+         <fileset dir="${src.dir}/docs/manual" includes="**/*.gif" />
+         <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
+      </copy>
+
+      <property name="docbook-wrapper" location="${doc.dir}/docbook-wrapper.xsl"/>
+      <delete file="${docbook-wrapper}" />
+      <echo file="${docbook-wrapper}"
+            message="&lt;xsl:stylesheet"/>
+      <echo file="${docbook-wrapper}" append="true"
+            message=" xmlns:xsl='http://www.w3.org/1999/XSL/Transform'"/>
+      <echo file="${docbook-wrapper}" append="true"
+            message=" version='1.0'&gt;"/>
+      <echo file="${docbook-wrapper}" append="true"
+            message="&lt;xsl:import href='${docbook.xsl}/html/chunk.xsl'/&gt;"/>
+      <echo file="${docbook-wrapper}" append="true"
+            message="&lt;/xsl:stylesheet&gt;"/>
+
+      <style basedir="${src.dir}/docs/manual"
+            style="${docbook-wrapper}"
+            destdir="${doc.dir}/manual"
+            includes="userguide.xml">
+         <param name="html.stylesheet" expression="./style.css"/>
+      </style>
+   </target>
     
    <!-- ========================================================================
       Target: copy_resources

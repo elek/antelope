@@ -758,7 +758,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       return null;
    }
    
-   public List getAntJarList() {
+   public java.util.List getAntJarList() {
       return null;  
    }
    
