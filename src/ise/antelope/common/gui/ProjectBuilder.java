@@ -18,6 +18,8 @@ public class ProjectBuilder extends JPanel {
    private String defaultTarget = "";
    private String basedir = ".";
 
+   protected static String TARGET = "target";
+
    private DTD dtd = null;
 
    public ProjectBuilder() {
@@ -35,7 +37,7 @@ public class ProjectBuilder extends JPanel {
                taskName = "antstructure";
                target = new org.apache.tools.ant.Target();
             }
-         }
+      }
          AntStructurer as = new AntStructurer();
          File tmp = File.createTempFile( "ant", ".dtd" );
          System.out.println( tmp );
@@ -54,7 +56,7 @@ public class ProjectBuilder extends JPanel {
          //       with a subnode for each child
 
          DefaultMutableTreeNode root_node = new DefaultMutableTreeNode( "project" );
-         DefaultMutableTreeNode target_node = new DefaultMutableTreeNode( "target" );
+         DefaultMutableTreeNode target_node = new DefaultMutableTreeNode( TARGET );
          DefaultMutableTreeNode task_node = new DefaultMutableTreeNode( "tasks" );
          DefaultMutableTreeNode type_node = new DefaultMutableTreeNode( "types" );
          root_node.add( target_node );
@@ -62,7 +64,7 @@ public class ProjectBuilder extends JPanel {
          root_node.add( type_node );
 
 
-         DTDParser parser = new DTDParser( getClass().getClassLoader().getResource("ise/antelope/common/gui/ant.dtd") );
+         DTDParser parser = new DTDParser( getClass().getClassLoader().getResource( "ise/antelope/common/gui/ant.dtd" ) );
          dtd = parser.parse();
 
          Hashtable elements = dtd.elements;
@@ -105,11 +107,26 @@ public class ProjectBuilder extends JPanel {
 
          // fill the tree
          JTree project_tree = new JTree( root_node );
-         project_tree.addMouseListener( new AttributeViewer( project_tree ) );
+         //project_tree.addMouseListener( new AttributeViewer( project_tree ) );
+         project_tree.setDragEnabled( true );
 
-         JSplitPane splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, new JScrollPane(project_tree), new TargetBuilder("Test Target"));
-         setLayout(new LambdaLayout());
+         JPanel project_panel = new JPanel(new LambdaLayout());
+         // need to use a DefaultListModel or dnd won't work
+         JList list = new JList( new DefaultListModel() );
+         list.setSelectionMode( ListSelectionModel.SINGLE_INTERVAL_SELECTION );
+         list.setDragEnabled( true );
+         list.setTransferHandler( new ListTransferHandler() );
+         project_panel.add( new JScrollPane( list ), "0, 0, 1, 1, 0, wh, 3" );
+         project_panel.setBorder( new DropShadowBorder() );
+         JSplitPane splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
+               true,
+               new JScrollPane( project_tree ),
+               project_panel );
+         setLayout( new LambdaLayout() );
          add( splitpane, "0, 0, 1, 1, 0, wh, 3" );
+         project_tree.addMouseListener( new TargetPopup( project_tree, project_panel ) );
+         project_tree.setDragEnabled(true);
+         project_tree.setTransferHandler(new TreeTransferHandler());
       }
       catch ( Exception e ) {
          e.printStackTrace();
@@ -151,6 +168,48 @@ public class ProjectBuilder extends JPanel {
       this.basedir = basedir;
    }
 
+   public class TargetPopup extends MouseAdapter {
+      JPopupMenu popup = null;
+      JTree parent;
+      JPanel destination;
+      public TargetPopup( JTree p, JPanel d ) {
+         this.parent = p;
+         this.destination = d;
+         popup = new JPopupMenu();
+         JMenuItem mi = new JMenuItem( "Add Target" );
+         mi.addActionListener( new ActionListener() {
+                  public void actionPerformed( ActionEvent ae ) {
+                     final String target_name = JOptionPane.showInputDialog( parent, "Enter target name:", "Target Name", JOptionPane.QUESTION_MESSAGE );
+                     if ( target_name != null ) {
+                        TargetBuilder target = new TargetBuilder( target_name );
+                        destination.add( target );
+                        destination.doLayout();
+                     }
+                  }
+               }
+                             );
+         popup.add( mi );
+      }
+
+      public void mousePressed( MouseEvent me ) {
+         doPopup( me );
+      }
+      public void mouseReleased( MouseEvent me ) {
+         doPopup( me );
+      }
+      private void doPopup( MouseEvent me ) {
+         if ( me.isPopupTrigger() ) {
+            TreePath tp = parent.getPathForLocation( me.getX(), me.getY() );
+            if ( tp != null ) {
+               Object value = tp.getLastPathComponent();
+               if ( value != null && value.toString().equals( TARGET ) ) {
+                  GUIUtils.showPopupMenu( popup, parent, me.getX(), me.getY() );
+               }
+            }
+         }
+      }
+   }
+
    /**
     * Shows a popup.   
     */
@@ -175,7 +234,6 @@ public class ProjectBuilder extends JPanel {
             TreePath tp = tree.getPathForLocation( me.getX(), me.getY() );
             if ( tp != null ) {
                Object value = tp.getLastPathComponent();
-               System.out.println(value);
                if ( value != null ) {
                   JPanel top = new JPanel( new KappaLayout() );
                   DTDElement el = ( DTDElement ) dtd.elements.get( value.toString() );
@@ -187,7 +245,7 @@ public class ProjectBuilder extends JPanel {
                      c.p = 3;
                      c.a = KappaLayout.W;
                      String item_name = value.toString();
-                     item_name = item_name.substring(0, 1).toUpperCase() + item_name.substring(1);
+                     item_name = item_name.substring( 0, 1 ).toUpperCase() + item_name.substring( 1 );
 
                      top.add( new JLabel( "<html><b>" + item_name + "</b></html>" ), c );
                      c.a = KappaLayout.E;
@@ -196,18 +254,18 @@ public class ProjectBuilder extends JPanel {
                         String name = attr_names[ i ].toString();
                         if ( name.equals( "taskname" ) )
                            continue;
-                        DTDAttribute attribute = (DTDAttribute)attrs.get(name);
+                        DTDAttribute attribute = ( DTDAttribute ) attrs.get( name );
                         Object type = attribute.getType();
                         JComponent comp = null;
-                        if(type instanceof DTDEnumeration || type instanceof DTDNotationList){
-                           String[] items = ((DTDEnumeration)type).getItem();
-                           comp = new JComboBox(items);
-                           ((JComboBox)comp).setEditable(false);
+                        if ( type instanceof DTDEnumeration || type instanceof DTDNotationList ) {
+                           String[] items = ( ( DTDEnumeration ) type ).getItem();
+                           comp = new JComboBox( items );
+                           ( ( JComboBox ) comp ).setEditable( false );
                         }
                         else {
                            // assume String type
-                           comp = new JTextField(25);
-                           ((JTextField)comp).setText(type.toString());
+                           comp = new JTextField( 25 );
+                           ( ( JTextField ) comp ).setText( type.toString() );
                         }
 
                         JLabel label = new JLabel( name + ":" );
@@ -219,7 +277,7 @@ public class ProjectBuilder extends JPanel {
                      }
 
                      pm = new JPopupMenu();
-                     pm.add( new JScrollPane(top) );
+                     pm.add( new JScrollPane( top ) );
                      ta.setText( value.toString() );
                      GUIUtils.showPopupMenu( pm, tree, me.getX(), me.getY() );
                   }
@@ -231,9 +289,18 @@ public class ProjectBuilder extends JPanel {
 
 
    public static void main ( String[] args ) {
-      JFrame frame = new JFrame();
-      frame.setContentPane( new ProjectBuilder() );
-      frame.setSize( 400, 600 );
-      frame.setVisible( true );
+      javax.swing.SwingUtilities.invokeLater( new Runnable() {
+               public void run() {
+                  JFrame.setDefaultLookAndFeelDecorated( true );
+                  JFrame frame = new JFrame();
+                  ProjectBuilder pb = new ProjectBuilder();
+                  pb.setOpaque( true );
+                  frame.setContentPane( pb );
+                  frame.setSize( 400, 600 );
+                  frame.setVisible( true );
+                  frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+               }
+            }
+                                            );
    }
 }

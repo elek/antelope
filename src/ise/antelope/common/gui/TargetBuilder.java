@@ -20,9 +20,13 @@ public class TargetBuilder extends JPanel {
       JLabel label = new JLabel(name);
       title_panel.add(label);
       
-      JPanel task_panel = new JPanel();
+      JList tasks = new JList(new DefaultListModel());
       
       add(title_panel, "0, 0, 1, 1, 0, wh, 3");
-      add(task_panel,  "0, 1, 1, 1, 0, wh, 3");
+      add(tasks,  "0, 1, 1, 1, 0, wh, 3");
+   }
+   
+   public String toString() {
+      return "Target: " + name;  
    }
 }
