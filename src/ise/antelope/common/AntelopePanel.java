@@ -229,15 +229,8 @@ public class AntelopePanel extends JPanel implements Constants {
       _control_panel = new JPanel( );
       Insets ins = new Insets( 1, 1, 1, 1 );
 
-      URL url = getClass().getClassLoader().getResource( "images/Play16.gif" );
-      Icon icon = null;
-      if ( url != null )
-         icon = new ImageIcon( url );
-      if (icon == null)
-         _run_btn = new JToggleButton("Run");
-      else
-         _run_btn = new JToggleButton(icon);
-      _run_btn.setToolTipText("Run targets");
+      _run_btn = new JToggleButton();
+      _run_btn.setToolTipText( "Run target mode" );
       _run_btn.setMargin( ins );
       _run_btn.addActionListener(
          new ActionListener() {
@@ -256,16 +249,9 @@ public class AntelopePanel extends JPanel implements Constants {
       }
       _run_btn.setSelected( true );
 
-      url = getClass().getClassLoader().getResource( "images/Zoom16.gif" );
-      icon = null;
-      if ( url != null )
-         icon = new ImageIcon( url );
-      if (icon == null)
-         _trace_btn = new JToggleButton("Trace");
-      else
-         _trace_btn = new JToggleButton(icon);
+      _trace_btn = new JToggleButton();
       _trace_btn.setMargin( ins );
-      _trace_btn.setToolTipText( "Show target trace" );
+      _trace_btn.setToolTipText( "Trace mode" );
       _trace_btn.setSelected( _trace );
       _trace_btn.addActionListener(
          new ActionListener() {
@@ -273,22 +259,14 @@ public class AntelopePanel extends JPanel implements Constants {
                _trace = true;
                _edit = false;
                _center_panel.show( "panel" );
-               //_helper.actionPerformed( new ActionEvent( AntelopePanel.this, CommonHelper.TRACE_EVENT, "trace" ) );
                _button_panel.setBackground( Color.BLUE );
             }
          }
       );
 
-      url = getClass().getClassLoader().getResource( "images/Edit16.gif" );
-      icon = null;
-      if ( url != null )
-         icon = new ImageIcon( url );
-      if (icon == null)
-         _edit_btn = new JToggleButton("Edit");
-      else
-         _edit_btn = new JToggleButton(icon);
+      _edit_btn = new JToggleButton();
       _edit_btn.setMargin( ins );
-      _edit_btn.setToolTipText( "Edit the build file." );
+      _edit_btn.setToolTipText( "Edit mode" );
       _edit_btn.setSelected( _edit );
       if ( _helper != null ) {
          ActionListener al = _helper.getEditButtonAction();
@@ -310,14 +288,7 @@ public class AntelopePanel extends JPanel implements Constants {
       bg.add( _trace_btn );
       bg.add( _edit_btn );
 
-      url = getClass().getClassLoader().getResource( "images/Information16.gif" );
-      icon = null;
-      if ( url != null )
-         icon = new ImageIcon( url );
-      if (icon == null)
-         _props_btn = new JButton("Properties");
-      else
-         _props_btn = new JButton(icon);
+      _props_btn = new JButton();
       _props_btn.setMargin( ins );
       _props_btn.setToolTipText( "Show current build properties for Ant" );
       _props_btn.addActionListener(
@@ -328,14 +299,7 @@ public class AntelopePanel extends JPanel implements Constants {
          }
       );
 
-      url = getClass().getClassLoader().getResource( "images/Properties16.gif" );
-      icon = null;
-      if ( url != null )
-         icon = new ImageIcon( url );
-      if (icon == null)
-         _options_btn = new JButton("Options");
-      else
-         _options_btn = new JButton(icon);
+      _options_btn = new JButton();
       _options_btn.setMargin( ins );
       _options_btn.setToolTipText( "Show output display options" );
       _options_btn.addActionListener(
@@ -346,14 +310,7 @@ public class AntelopePanel extends JPanel implements Constants {
          }
       );
 
-      url = getClass().getClassLoader().getResource( "images/Refresh16.gif" );
-      icon = null;
-      if ( url != null )
-         icon = new ImageIcon( url );
-      if (icon == null)
-         _reload_btn = new JButton("Reload");
-      else
-         _reload_btn = new JButton(icon);
+      _reload_btn = new JButton();
       _reload_btn.setMargin( ins );
       _reload_btn.setToolTipText( "Reload current build file" );
       _reload_btn.addActionListener( new ActionListener() {
@@ -370,6 +327,8 @@ public class AntelopePanel extends JPanel implements Constants {
       _control_panel.add( _props_btn );
       _control_panel.add( _options_btn );
       _control_panel.add( _reload_btn );
+      showButtonText( _settings.getShowButtonText() );
+      showButtonIcon( _settings.getShowButtonIcon() );
 
       _project_name =
          new JTextField() {
@@ -990,6 +949,10 @@ public class AntelopePanel extends JPanel implements Constants {
 
 
 
+
+
+
+
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
                   Iterator iter = targets.keySet().iterator();
@@ -1454,6 +1417,89 @@ public class AntelopePanel extends JPanel implements Constants {
     */
    public boolean getUseErrorParsing() {
       return _settings.getUseErrorParsing();
+   }
+
+   /**
+    * Alter the control panel buttons to show text as appropriate. This is a
+    * doer, not just a setter and applies to all buttons on the control panel.
+    */
+   public void showButtonText( boolean b ) {
+      if ( b ) {
+         _run_btn.setText( "Run" );
+         _trace_btn.setText("Trace");
+         _edit_btn.setText("Edit");
+         _props_btn.setText("Properties");
+         _options_btn.setText("Options");
+         _reload_btn.setText("Reload");
+      }
+      else {
+         _run_btn.setText( "" );
+         _trace_btn.setText("");
+         _edit_btn.setText("");
+         _props_btn.setText("");
+         _options_btn.setText("");
+         _reload_btn.setText("");
+      }
+   }
+
+   public boolean getShowButtonText() {
+      return _settings.getShowButtonText();
+   }
+
+   /**
+    * Alter the control panel buttons to show icon as appropriate. This is a
+    * doer, not just a setter and applies to all buttons on the control panel.
+    */
+   public void showButtonIcon( boolean b ) {
+      if ( b ) {
+         URL url = getClass().getClassLoader().getResource( "images/Play16.gif" );
+         Icon icon = null;
+         if ( url != null )
+            icon = new ImageIcon( url );
+         _run_btn.setIcon( icon );
+         
+         url = getClass().getClassLoader().getResource( "images/Zoom16.gif" );
+         icon = null;
+         if ( url != null )
+            icon = new ImageIcon( url );
+         _trace_btn.setIcon( icon );
+         
+         url = getClass().getClassLoader().getResource( "images/Edit16.gif" );
+         icon = null;
+         if ( url != null )
+            icon = new ImageIcon( url );
+         _edit_btn.setIcon( icon );
+         
+         url = getClass().getClassLoader().getResource( "images/Information16.gif" );
+         icon = null;
+         if ( url != null )
+            icon = new ImageIcon( url );
+         _props_btn.setIcon( icon );
+         
+         url = getClass().getClassLoader().getResource( "images/Properties16.gif" );
+         icon = null;
+         if ( url != null )
+            icon = new ImageIcon( url );
+         _options_btn.setIcon( icon );
+         
+         url = getClass().getClassLoader().getResource( "images/Refresh16.gif" );
+         icon = null;
+         if ( url != null )
+            icon = new ImageIcon( url );
+         _reload_btn.setIcon( icon );
+      }
+      else {
+         _run_btn.setIcon(null);
+         _trace_btn.setIcon(null);
+         _edit_btn.setIcon(null);
+         _props_btn.setIcon(null);
+         _options_btn.setIcon(null);
+         _reload_btn.setIcon(null);
+      }
+   }
+
+   public boolean getShowButtonIcon() {
+      return _settings.getShowButtonIcon();
    }
 
    //=============================================================

@@ -146,7 +146,7 @@ such jurisdiction.
 </para>
 
 <para>
-Disclaimer: Typically, the documentation is not quite up-to-date with the software. There may be some discrepancies between the text and pictures in this guide from what you see when you run the application. If you see a problem with this documentation, please post a bug at http://antelope.sourceforge.net. Thank you!
+Disclaimer: Typically, the documentation is not quite up-to-date with the software. There may be some discrepancies between the text and pictures in this guide from what you see when you run the application. If you see a problem with this documentation, please post a bug at http://antelope.tigris.org. Thank you!
 </para>
 
 <para>
@@ -194,13 +194,13 @@ Antelope assumes you already have Ant installed. If you don't, you can get it fr
 This section assumes you'll install Antelope as a stand-alone application by hand. It's really quite easy:
 </para>
 <para>
-Make a directory for Antelope.
-</para>
-<para>
-Download the Antelope application zip file to the directory you made.
+Download the Antelope application zip file.
 </para>
 <para>
 Unzip the file.
+</para>
+<para>
+Change to the AntelopeApp_@@build.num@@ directory.
 </para>
 <para>
 Start Antelope by using this command: ant -f run.xml
@@ -210,7 +210,7 @@ Start Antelope by using this command: ant -f run.xml
 <section id="install_plugin">
 <title>Installing Antelope as a jEdit Plugin</title>
 <para>
-This section assumes you'll install Antelope into jEdit by hand. It's really quite easy:
+You can install Antelope in jEdit by using the Plugin Manager. Just follow the instructions for installing any plugin found in the jEdit help system. This section assumes you'll install Antelope into jEdit by hand because Antelope is updated much more frequently than jEdit's Plugin Central. It's really quite easy:
 </para>
 
 <para>
@@ -231,7 +231,7 @@ Start jEdit.
 </para>
 
 <para>
-First, download the plugin file. It's a jar file, don't unzip it. 
+First, download the plugin zip file. Unzip it. The file named Antelope.jar is the plugin jar file. 
 </para>
 <para>
 Second, figure out where to put it. jEdit wants its plugins in one of two places, either $jedit_home/jars or $user_home/.jedit/jars. The best place is $user.home/.jedit/jars.
@@ -289,7 +289,7 @@ Start jEdit.
 <title>Requirements</title>
 
 <para>
-See the installation instructions below for the specific requirements for Antelope. Antelope does require Java 1.4 or later as it makes use of both java.util.logging and java.util.prefs APIs which were introduced in that version.
+See the <link linkend="installation">installation instructions</link> for the specific requirements for Antelope. Antelope does require Java 1.4 or later as it makes use of both java.util.logging and java.util.prefs APIs which were introduced in that version.
 </para>
 
 <para>
@@ -321,7 +321,7 @@ Either way, Antelope is operated almost identically. To set up Antelope, click o
 <figure>
 <title>Options Panel</title>
 <imageobject>
-    <imagedata fileref="options.gif" format="GIF"/>
+    <imagedata fileref="options_general.gif" format="GIF"/>
 </imageobject>
 </figure>
 </para>
@@ -331,7 +331,7 @@ When running Antelope as a stand-alone application, the options "Save all files 
 </para>
 
 <para>
-The available options are as follows:
+The available options on the "General" tab are:
 </para>
 
 <itemizedlist>
@@ -359,7 +359,13 @@ The available options are as follows:
 <emphasis role="bold">Automatically reload build file</emphasis> If checked, Antelope will automatically reload the build file before running a target. That means that all properties will be reset to their original values or reloaded from property files as necessary. Keep in mind that properties set via the "Properties" button and dialog are not applied until the build file is reloaded. The default setting is checked, that is, do automatically reload the build file prior to each build. On the other hand, if there are properties that are loaded via a &lt;property file="filename.props"/&gt; or &lt;loadproperties srcfile="filename"/&gt;, Antelope will watch those files and reload the build file automatically if they change. Changes to such files cause a reload regardless of this setting.
 </para>
 </listitem>
+</itemizedlist>
 
+<para>
+The available options on the "Targets" tab are:
+</para>
+
+<itemizedlist>
 <listitem>
 <para>
 <emphasis role="bold">Show subtargets</emphasis> There are several common conventions for designating "primary" targets and "subtargets", also referred to as "public" and "private" targets. Primary (or public) targets are those that are invoked directly, while subtargets (or private targets) are generally "helper" targets that are invoked from other targets. Antelope supports three of the most common conventions:
@@ -386,14 +392,26 @@ The available options are as follows:
 By default, none of these options are selected. Antelope displays all private targets in italics.   
 </para>
 </listitem>
-    
+</itemizedlist>
+
+<para>
+The available options on the "Messages" tab are:
+</para>
+
+<itemizedlist>
 
 <listitem>
 <para>
 <emphasis role="bold">Set message level</emphasis> There are five message levels available and are in order of verbosity, "Error" being the least verbose and "Debug" being the most. For general use, "Information" is about right and is the default setting.
 </para>
 </listitem>
+</itemizedlist>
 
+<para>
+The available options on the "General" tab are:
+</para>
+
+<itemizedlist>
 <listitem>
 <para>
 <emphasis role="bold">Show message events</emphasis> Ant produces messages on various events as it runs a target. Generally, all Ant messages are useful, but these can be adjusted as necessary. Turning off 'Target events' and 'Task events' will generally show all the important information without too much excess output. The default is that 'Build events' and 'Log events' are checked.
@@ -403,7 +421,25 @@ By default, none of these options are selected. Antelope displays all private ta
 </itemizedlist>
 
 <para>
-All option settings are stored per build file, which means that when you close one file and open another, the option settings for the new file will be retrieved and automatically set. 
+The available options on the "Appearance" tab are:
+</para>
+
+
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="bold">Show button text</emphasis> This will turn on or off the display of the text on the control buttons.
+</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">Show button icon</emphasis> This will turn on or off the display of the icon on the control buttons.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+All option settings are stored per build file (except for the Appearance settings), which means that when you close one file and open another, the option settings for the new file will be retrieved and automatically set. 
 </para>
 </section>
 
@@ -519,75 +555,6 @@ Printing is not available in this version, but is on the feature list for implem
 <emphasis role="bold"><emphasis role="italic">Due to changes in the jEdit API, Antelope plugin versions prior to 2.60 are for jEdit 4.1, versions 2.60 and later require jEdit 4.2 or later.
 </emphasis></emphasis>
 </para>
-
-<para>
-Antelope is packaged as a single jar file, AntelopePlugin_@@build.num@@.jar. To install Antelope in jEdit, there are two options: install using the plugin manager and by hand.
-</para>
-
-<para>
-The easiest way to get the latest version of Antelope installed into jEdit is to use the "install.xml" script:
-</para>
-
-<para>
-<programlisting>
-<![CDATA[
-    cd AntelopePlugin_@@build.num@@
-    ant -f install.xml
-]]>
-</programlisting>
-</para>
-
-<para>
-This will install Antelope into jEdit with a minimum of hassle. This approach assumes that you already have a working Ant installation, which is a requirement for Antelope anyway.
-</para>
-
-<para>
-To install using the plugin manager in jEdit, click the "Plugins" menu, then "Plugin Manager", then "Install Plugins". Pick Antelope from the list of available plugins and follow the instructions.
-</para>
-
-<para>
-You may want to install Antelope by hand to use a version later than that provided by the plugin manager. Almost always, a newer version of Antelope will be available on the Antelope project web site than is available via the plugin manager. To install by hand, copy Antelope.jar to ${user.home}/.jedit/jars. Several other jar files are required:
-</para>
-
-<itemizedlist>
-<listitem>
-<para>
-<emphasis role="bold">ant.jar</emphasis> Antelope requires Ant to do anything useful. Ant is available at http://ant.apache.org. Copy or link this file to ${user.home}/.jedit/jars. If you have installed the "AntFarm" plugin, you already have some version of Ant installed. I recommend getting the latest from Apache and installing it yourself.
-</para>
-</listitem>
-<listitem>
-<para>
-<emphasis role="bold">(Ant 1.5.x) optional.jar</emphasis> This is an optional library that is distributed with Ant. It has additional Ant tasks that may be useful. Copy or link this file to ${user.home}/.jedit/jars as required. 
-</para>
-</listitem>
-<listitem>
-<para><emphasis role="bold">(Ant 1.6.x) ant-launcher.jar</emphasis> Ant 1.6.0 split the main ant.jar into a number of smaller files to improve performance and managability. For Ant 1.6.x, ant-launcher.jar is the file that is used to actually start Ant. Copy or link this file to ${user.home}/.jedit/jars.
-</para>
-</listitem>
-<listitem>
-<para>
-<emphasis role="bold">tools.jar</emphasis> This is distributed with the Java Software Development Kit. If your build file makes use of any of the JDK tools (such as javac or javadoc), you need this in the classpath. The AntelopePlugin asks jEdit to load tools.jar automatically, but depending on your environment (jEdit is running in a plain JRE, for example), this may fail. Copy or link this file to ${user.home}/.jedit/jars if you need it and jEdit can't load it. Antelope will tell you when it can't find a tool from this jar the first time you try to use the tool.
-</para>
-</listitem>
-<listitem>
-<para>
-<emphasis role="bold">Console.jar</emphasis> This is a jEdit plugin and is required. Output from Antelope will be displayed in the Console. Make sure jEdit has this plugin installed.
-</para>
-</listitem>
-<listitem>
-<para>
-<emphasis role="bold">ErrorList.jar</emphasis> This is another jEdit plugin and is required. Errors produced by Ant are displayed by Antelope in the ErrorList plugin. Make sure jEdit has this plugin installed.
-</para>
-</listitem>
-<listitem>
-<para>
-<emphasis role="bold">An XML parser</emphasis> This can be one of several publicly available XML parsers. Ant is shipped with the Xerces parser. To use the Xerces parser shipped with Ant, add xercesImpl.jar and xml-api.jar from the ${ant.home}/lib directory to your classpath. If you have the XML plugin installed, then you already have a version of Xerces installed.
-</para>
-<para>
-<emphasis id="xmlparser" role="bold">Note:</emphasis> There is sometimes a problem with various jEdit plugins and xml parsers. Generally, this is due to a conflict with several similar parsers being in the class path. The simplest way to resolve this issue (and this procedure is recommended by Sun) is to remove ALL xml parsers (xerces, crimson, xml4j, etc) from the ${user.home}/.jedit/jar directory and copy ONE of them to your ${JAVA_HOME}/jre/lib/endorsed directory. If you do not have permission to write to that directory, then copy it to your ${jedit.home}/jars directory. This will ensure that a good parser is in your classpath, that it is loaded before any plugins, and that there will be no conflicts from having multiple parsers. My recommendation is that the Xerces parser packaged with Ant be used as it is generally one of the newer versions and has been tested heavily with Ant. I personally have not had any problem with this procedure, and I use both Antelope and the XML plugin regularly with jEdit.
-</para>
-</listitem>
-</itemizedlist>
 
 <para>
 Here is Antelope running in jEdit:
@@ -1290,8 +1257,8 @@ Antelope version 2.53 and earlier did not support external entities. Upgrade to 
 
 <para>
 Please visit the project web pages at 
-<ulink url="http://antelope.sourceforge.net">
-http://antelope.sourceforge.net
+<ulink url="http://antelope.tigris.org">
+http://antelope.tigris
 </ulink> for reporting bugs, user mailing lists, and other technical resources. This is also the location for finding the latest releases. In particular, if you are using Antelope as a jEdit plugin, you will invariably find newer versions on the Antelope project web site than from jEdit's plugin manager.
 </para>
 

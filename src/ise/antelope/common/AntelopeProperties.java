@@ -102,7 +102,7 @@ public class AntelopeProperties {
    private final String USER = "User";
 
    private final String DESC = "Description";
-   
+
    private final String ABOUT = "About";
 
    private final String ANTHOME = "Ant Home";
@@ -201,23 +201,24 @@ public class AntelopeProperties {
       sb.append( printTargets( project, true ) );
       JEditorPane desc = new JEditorPane( "text/html", "<html><pre>" + sb.toString() );
       desc.setBackground( Color.white );
+      desc.setCaretPosition( 0 );
+      desc.scrollRectToVisible(new Rectangle(0,0,0,0));
       desc.setEditable( false );
 
       // about Antelope
       JEditorPane about = new JEditorPane( );
       try {
-         java.net.URL url = getClass().getClassLoader().getResource("about.html" );
-         about.setPage(url);  
+         java.net.URL url = getClass().getClassLoader().getResource( "about.html" );
+         about.setPage( url );
       }
-      catch(IOException ioe) {
-         ioe.printStackTrace();
-         about.setContentType("text/html");
-         about.setText(getAntelopeVersion());
+      catch ( IOException ioe ) {
+         about.setContentType( "text/html" );
+         about.setText( getAntelopeVersion() );
       }
       about.setBackground( Color.white );
       about.setEditable( false );
 
-      
+
       // show the dialog
       String project_name = project.getName();
       if ( project_name == null )
@@ -247,7 +248,7 @@ public class AntelopeProperties {
       tabs.add( REFS, new JScrollPane( ref_table ) );
       tabs.add( USER, new JScrollPane( user_table ) );
       tabs.add( DESC, new JScrollPane( desc ) );
-      tabs.add( ABOUT, new JScrollPane(about));
+      tabs.add( ABOUT, new JScrollPane( about ) );
 
       KappaLayout kl = new KappaLayout();
       JPanel btn_panel = new JPanel( kl );
@@ -489,12 +490,12 @@ public class AntelopeProperties {
          pm.add( new JScrollPane( ta ) );
       }
       public void mousePressed( MouseEvent me ) {
-         doPopup(me);
+         doPopup( me );
       }
-      public void mouseReleased(MouseEvent me) {
-         doPopup(me);
+      public void mouseReleased( MouseEvent me ) {
+         doPopup( me );
       }
-      private void doPopup(MouseEvent me) {
+      private void doPopup( MouseEvent me ) {
          if ( me.isPopupTrigger() ) {
             Point p = me.getPoint();
             int col = table.columnAtPoint( p );

@@ -81,7 +81,7 @@ public class AntelopeOptions extends JPanel implements Constants {
    /**
     * Description of the Field
     */
-   private JCheckBox cb_auto_reload, cba, cba2, cba3, cb00, cb0, cb1, cb1a, cb2, cb3, cb4, cb5;
+   private JCheckBox cb_auto_reload, cba, cba2, cba3, cb00, cb0, cb1, cb1a, cb2, cb3, cb4, cb5, cb6, cb7;
    /**
     * Description of the Field
     */
@@ -159,20 +159,25 @@ public class AntelopeOptions extends JPanel implements Constants {
     * @param helper
     */
    private AntelopeOptions( AntelopePanel p, CommonHelper helper ) {
-      super( new KappaLayout() );
       final AntelopePanel parent = p;
       _helper = helper;
 
       settings = new OptionSettings( parent.getBuildFile() );
 
-      KappaLayout.Constraints con = KappaLayout.createConstraint();
-
+      setLayout(new BorderLayout());      
       setBorder( new javax.swing.border.EmptyBorder( 6, 6, 6, 6 ) );
+      JTabbedPane tabs = new JTabbedPane();
+      add(tabs, BorderLayout.CENTER);
 
+      KappaLayout.Constraints con = KappaLayout.createConstraint();
       con.a = KappaLayout.W;
       con.s = "w";
-      ++con.y;
 
+      // General tab
+      JPanel general_panel = new JPanel(new KappaLayout());
+      general_panel.setPreferredSize(new Dimension(400, 250));
+      general_panel.setBorder( new javax.swing.border.EmptyBorder( 6, 6, 6, 6 ) );
+      
       // only if being used as a plugin
       /// I'm overusing canSaveBeforeRun, need a better way of telling if
       /// this is a plugin or not
@@ -189,7 +194,7 @@ public class AntelopeOptions extends JPanel implements Constants {
             }
          );
          ++con.y;
-         add( cba, con );
+         general_panel.add( cba, con );
          cba2 = new JCheckBox( "Use error parsing" );
          cba2.setSelected( settings.getUseErrorParsing() );
          cba2.setToolTipText( "<html>If checked, errors generated during target execution\nwill be displayed in the Error List." );
@@ -202,7 +207,7 @@ public class AntelopeOptions extends JPanel implements Constants {
             }
          );
          ++con.y;
-         add( cba2, con );
+         general_panel.add( cba2, con );
       }
 
       cba3 = new JCheckBox( "Show performance statistics" );
@@ -217,7 +222,7 @@ public class AntelopeOptions extends JPanel implements Constants {
          }
       );
       ++con.y;
-      add( cba3, con );
+      general_panel.add( cba3, con );
 
       cb_auto_reload = new JCheckBox( "Automatically reload build file" );
       cb_auto_reload.setSelected( settings.getAutoReload() );
@@ -231,13 +236,12 @@ public class AntelopeOptions extends JPanel implements Constants {
          }
       );
       ++con.y;
-      add( cb_auto_reload, con );
+      general_panel.add( cb_auto_reload, con );
 
-      ++con.y;
-      add( new JSeparator(), con );
-      ++con.y;
-      add( KappaLayout.createVerticalStrut( 11 ), con );
-
+      // Target panel
+      con.y = 0;
+      JPanel target_panel = new JPanel(new KappaLayout());
+      target_panel.setBorder( new javax.swing.border.EmptyBorder( 6, 6, 6, 6 ) );
 
       JLabel label0 = new JLabel( "Show subtargets:" );
       cb00 = new JCheckBox( "Show all targets" );
@@ -292,20 +296,21 @@ public class AntelopeOptions extends JPanel implements Constants {
       );
 
       ++con.y;
-      add( label0, con );
+      target_panel.add( label0, con );
       ++con.y;
-      add( cb00, con );
+      target_panel.add( cb00, con );
       ++con.y;
-      add( cb0, con );
+      target_panel.add( cb0, con );
       ++con.y;
-      add( cb1, con );
+      target_panel.add( cb1, con );
       ++con.y;
-      add( cb1a, con );
+      target_panel.add( cb1a, con );
 
-
-      ++con.y;
-      add( new JSeparator(), con );
-
+      
+      // Message Level panel
+      JPanel msg_panel = new JPanel(new KappaLayout());
+      msg_panel.setBorder( new javax.swing.border.EmptyBorder( 6, 6, 6, 6 ) );
+      
       lrb0 = new LevelRadioButton( "Errors", Project.MSG_ERR );
       lrb1 = new LevelRadioButton( "Warnings", Project.MSG_WARN );
       lrb2 = new LevelRadioButton( "Information", Project.MSG_INFO );
@@ -345,24 +350,23 @@ public class AntelopeOptions extends JPanel implements Constants {
 
       JLabel label1 = new JLabel( "Set message level:" );
 
+      con.y = 0;
+      msg_panel.add( label1, con );
       ++con.y;
-      add( KappaLayout.createVerticalStrut( 11 ), con );
+      msg_panel.add( lrb0, con );
       ++con.y;
-      add( label1, con );
+      msg_panel.add( lrb1, con );
       ++con.y;
-      add( lrb0, con );
+      msg_panel.add( lrb2, con );
       ++con.y;
-      add( lrb1, con );
+      msg_panel.add( lrb3, con );
       ++con.y;
-      add( lrb2, con );
-      ++con.y;
-      add( lrb3, con );
-      ++con.y;
-      add( lrb4, con );
+      msg_panel.add( lrb4, con );
 
-      ++con.y;
-      add( new JSeparator(), con );
-
+      // Event panel
+      JPanel event_panel = new JPanel(new KappaLayout());
+      event_panel.setBorder( new javax.swing.border.EmptyBorder( 6, 6, 6, 6 ) );
+      
       JLabel label2 = new JLabel( "Show message events:" );
       cb2 = new JCheckBox( "Build events" );
       cb3 = new JCheckBox( "Target events" );
@@ -407,18 +411,61 @@ public class AntelopeOptions extends JPanel implements Constants {
          }
       );
 
+      con.y = 0;
+      event_panel.add( label2, con );
       ++con.y;
-      add( KappaLayout.createVerticalStrut( 11 ), con );
+      event_panel.add( cb2, con );
       ++con.y;
-      add( label2, con );
+      event_panel.add( cb3, con );
       ++con.y;
-      add( cb2, con );
+      event_panel.add( cb4, con );
       ++con.y;
-      add( cb3, con );
+      event_panel.add( cb5, con );
+      
+      // Appearance panel
+      JPanel appearance_panel = new JPanel(new KappaLayout());
+      appearance_panel.setBorder( new javax.swing.border.EmptyBorder( 6, 6, 6, 6 ) );
+      
+      JLabel label3 = new JLabel( "Antelope Appearance:" );
+      cb6 = new JCheckBox( "Show button text" );
+      cb7 = new JCheckBox( "Show button icon" );
+
+      cb6.setSelected( settings.getShowButtonText() );
+      cb7.setSelected( settings.getShowButtonIcon() );
+
+      cb6.addActionListener(
+         new ActionListener() {
+            public void actionPerformed( ActionEvent ae ) {
+               JCheckBox cb = ( JCheckBox ) ae.getSource();
+               settings.setShowButtonText( cb.isSelected() );
+               parent.showButtonText(cb.isSelected());
+            }
+         }
+      );
+      cb7.addActionListener(
+         new ActionListener() {
+            public void actionPerformed( ActionEvent ae ) {
+               JCheckBox cb = ( JCheckBox ) ae.getSource();
+               settings.setShowButtonIcon( cb.isSelected() );
+               parent.showButtonIcon(cb.isSelected());
+            }
+         }
+      );
+
+      con.y = 0;
+      appearance_panel.add( label3, con );
       ++con.y;
-      add( cb4, con );
+      appearance_panel.add( cb6, con );
       ++con.y;
-      add( cb5, con );
+      appearance_panel.add( cb7, con );
+      
+      
+      
+      tabs.add("General", general_panel);
+      tabs.add("Targets", target_panel);
+      tabs.add("Messages", msg_panel);
+      tabs.add("Events", event_panel);
+      tabs.add("Appearance", appearance_panel);
 
    }
 

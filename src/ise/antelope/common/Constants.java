@@ -131,6 +131,8 @@ public interface Constants {
    public final static String USE_ERROR_PARSING    = "useErrorParsing";
    public final static String SHOW_PERFORMANCE_OUTPUT = "showPerformanceOutput";
    public final static String AUTO_RELOAD          = "autoReload";
+   public final static String SHOW_BUTTON_TEXT     = "showButtonText";
+   public final static String SHOW_BUTTON_ICON     = "showButtonIcon";
    
    // node name for Ant user properties
    public final static String ANT_USER_PROPS = "ant_user_props";

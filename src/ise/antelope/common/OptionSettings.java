@@ -22,6 +22,8 @@ public class OptionSettings implements Constants {
    private boolean _use_error_parsing = true;
    private boolean _show_performance_output = false;
    private boolean _auto_reload = true;
+   private boolean _show_button_text = false;
+   private boolean _show_button_icon = true;
 
    /**
     * Loads the option settings for the given build file from the persistent
@@ -35,6 +37,7 @@ public class OptionSettings implements Constants {
    }
 
    public void load() {
+      // per build file settings
       int hashCode = _build_file.hashCode();
       _prefs = PREFS.node( String.valueOf( hashCode ) );
       _save_before_run = _prefs.getBoolean( SAVE_BEFORE_RUN, true );
@@ -50,9 +53,18 @@ public class OptionSettings implements Constants {
       _use_error_parsing = _prefs.getBoolean( USE_ERROR_PARSING, true );
       _show_performance_output = _prefs.getBoolean( SHOW_PERFORMANCE_OUTPUT, false );
       _auto_reload = _prefs.getBoolean( AUTO_RELOAD, true );
+      
+      // application settings
+      _show_button_text = PREFS.getBoolean(SHOW_BUTTON_TEXT, false);
+      _show_button_icon = PREFS.getBoolean(SHOW_BUTTON_ICON, true);
    }
 
    public void save() {
+      // application settings
+      PREFS.putBoolean( SHOW_BUTTON_TEXT, _show_button_text);
+      PREFS.putBoolean( SHOW_BUTTON_ICON, _show_button_icon);
+      
+      // per build file settings
       if ( _prefs == null )
          return ;
       _prefs.putBoolean( SAVE_BEFORE_RUN, _save_before_run );
@@ -181,5 +193,21 @@ public class OptionSettings implements Constants {
 
    public boolean getShowLogMessages() {
       return _show_log_messages;
+   }
+   
+   public void setShowButtonText(boolean b) {
+      _show_button_text = b;  
+   }
+   
+   public boolean getShowButtonText() {
+      return _show_button_text;  
+   }
+   
+   public void setShowButtonIcon(boolean b) {
+      _show_button_icon = b;  
+   }
+   
+   public boolean getShowButtonIcon() {
+      return _show_button_icon;  
    }
 }
