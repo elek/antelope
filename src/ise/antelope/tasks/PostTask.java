@@ -658,9 +658,9 @@ public class PostTask extends Task {
                     name = parts[ 0 ];
                     value = parts[ 1 ];
                 }
-                else if ( parts[ 0 ].equals( "Path" ) )
+                else if ( parts[ 0 ].equalsIgnoreCase( "Path" ) )
                     path = parts[ 1 ];
-                else if ( parts[ 0 ].equals( "Domain" ) )
+                else if ( parts[ 0 ].equalsIgnoreCase( "Domain" ) )
                     domain = parts[ 1 ];
             }
         }
