@@ -5,21 +5,29 @@ import java.awt.datatransfer.*;
 /**
  * Package Ant objects for movement.
  */
-public class AntTransferable extends StringSelection {
+public class AntTransferable implements Transferable {
 
    private static DataFlavor[] flavors = null;
-   private String type = null;
+   private ElementPanel data = null;
 
    /**
-    * @param type the type of Ant element being transfered, e.g., target, task,
-    * type, etc.
+    * @param an ElementPanel to drag   
     */
-   public AntTransferable( String type ) {
-      super( type );
-      this.type = type;
+   public AntTransferable( ElementPanel data ) {
+      this.data = data;
+      init();
+   }
+
+
+   /**
+    * Set up the supported flavors: DataFlavor.stringFlavor for a raw string containing
+    * an Ant element name (e.g. task, target, etc), or an ElementFlavor containing
+    * an ElementPanel.
+    */
+   private void init() {
       try {
          flavors = new DataFlavor[ 1 ];
-         flavors[ 0 ] = new ElementFlavor(type);
+         flavors[ 0 ] = new ElementFlavor( );
       }
       catch ( Exception e ) {
          e.printStackTrace();
@@ -27,12 +35,17 @@ public class AntTransferable extends StringSelection {
    }
 
    /**
-    * @param df ignored
-    * @return regardless of the requested DataFlavor, the returned object is
-    * always a string containing the type passed to the constructor.
+    * @param df the flavor type desired for the data. Acceptable values are
+    * DataFlavor.stringFlavor or ElementFlavor.
+    * @return if df is DataFlavor.stringFlavor, returns a raw string containing
+    * an Ant element name, if ElementFlavor, returns an ElementPanel.
     */
    public Object getTransferData( DataFlavor df ) {
-      return type;
+      if ( df == null )
+         return null;
+      if ( df instanceof ElementFlavor  )
+         return data;
+      return null;
    }
 
    /**
@@ -48,7 +61,7 @@ public class AntTransferable extends StringSelection {
     */
    public boolean isDataFlavorSupported( DataFlavor df ) {
       if ( df == null )
-         throw new IllegalArgumentException( "flavor cannot be null" );
+         return false;
       for ( int i = 0; i < flavors.length; i++ ) {
          if ( df.equals( flavors[ i ] ) ) {
             return true;

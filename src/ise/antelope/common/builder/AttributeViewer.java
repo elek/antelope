@@ -32,73 +32,50 @@ public class AttributeViewer extends MouseAdapter {
    }
    private void doPopup( MouseEvent me ) {
       if ( me.isPopupTrigger() ) {
-         // from ElementTransferHandler:
-         // 'data' is one of two things -- 1) it is a single word, which means
-         // it is a raw element name, or 2) it is already formatted as html.
-         // Determine the second case by checking for <html> at the start of the
-         // string, if not, assume the first case. The html has the element name
-         // surrounded by <b> tags. Element attributes are separated by <br>,
-         // with attribute name and value enclosed individually in <span> tags.
-         // Enumerations or lists have the individual value items wrapped in a
-         // <ul> with individual items separated by <li>. There are no line-
-         // enders (\n, \r).
-         //
-         // Everything handled by this handler is already in html format.
 
-         // get the selected item from the JList
+         // get the selected item from the JList, it should be an ElementPanel
          Object o = parent.getSelectedValue();
          if ( o == null )
             return ;
-         String data = o.toString();
-         if ( data.length() == 0 )
+         if ( !( o instanceof ElementPanel ) )
             return ;
-         if ( !data.startsWith( "<html>" ) )
-            return ;
+         final ElementPanel ep = ( ElementPanel ) o;
 
-         // get ready to layout
          final JPanel top = new JPanel( new KappaLayout() );
          KappaLayout.Constraints c = KappaLayout.createConstraint();
          c.p = 3;
          c.a = KappaLayout.W;
 
-         // get the name of the element
-         int start = "<html><b>".length();
-         int end = data.indexOf( "</b>" );
-         element_name = data.substring( start, end );
-         top.add( new JLabel( "<html><b>" + element_name + "</b>" ), c );
-
-         // parse the rest of the html
-         start = end + "</b>".length();
-         data = data.substring( start );
-
-         Pattern p = Pattern.compile( "<br>" );
-         String[] attrs = p.split( data );
-
+         top.add( new JLabel( "<html><b>" + ep.getName() + "</b></html>" ), c );
          c.a = KappaLayout.E;
          ++ c.y;
 
-         Pattern div_pattern = Pattern.compile( "</span>" );
-         for ( int i = 0; i < attrs.length; i++ ) {
-            if (attrs[i].length() == 0)
-               continue;
-            String[] pair = div_pattern.split( attrs[ i ] );
-            if (pair.length != 2)
-               break;
-            
-            String name = pair[ 0 ];
-            if (!name.startsWith("<span>"))
-               continue;
-            String value = pair[ 1 ];
-            
-            name = name.substring("<span>".length());
-            value = value.substring("<span>".length());
-
-            if ( name.equals( "taskname" ) )
+         final Map attributes = ep.getAttributes();
+         Iterator it = attributes.keySet().iterator();
+         while ( it.hasNext() ) {
+            String name = it.next().toString();
+            if ( name.equals( "taskname" ) && ep.isTask() )
                continue;
 
-            JLabel label = new JLabel( name + ":" );
-            JTextField comp = new JTextField( 25 );
-            comp.setText( value );
+            DTDAttribute attribute = ( DTDAttribute ) attributes.get( name );
+            DTDDecl decl = attribute.getDecl();
+            boolean required = decl.equals( DTDDecl.REQUIRED );
+            Object type = attribute.getType();
+
+            JLabel label = new JLabel( "<html>" + ( required ? "<font color=red>*</font>" : "" ) + name + ":" );
+
+            JComponent comp = null;
+            if ( type instanceof DTDEnumeration || type instanceof DTDNotationList ) {
+               String[] items = ( ( DTDEnumeration ) type ).getItem();
+               comp = new JComboBox( items );
+               ( ( JComboBox ) comp ).setEditable( false );
+            }
+            else {
+               // assume String type
+               comp = new JTextField( 25 );
+               ( ( JTextField ) comp ).setText( attribute.getDefaultValue() );
+            }
+            comp.setName( name );
 
             top.add( label, c );
             c.x = 1;
@@ -106,46 +83,45 @@ public class AttributeViewer extends MouseAdapter {
             c.x = 0;
             ++c.y;
          }
-         
+
+         // button panel
          KappaLayout kl = new KappaLayout();
-         JPanel btn_panel = new JPanel(kl);
-         JButton ok_btn = new JButton("OK");
-         JButton cancel_btn = new JButton("Cancel");
-         btn_panel.add(ok_btn, "0, 0, 1, 1, 0, wh, 3");
-         btn_panel.add(cancel_btn, "1, 0, 1, 1, 0, wh, 3");
-         kl.makeColumnsSameWidth(0, 1);
+         JPanel btn_panel = new JPanel( kl );
+         JButton ok_btn = new JButton( "OK" );
+         JButton cancel_btn = new JButton( "Cancel" );
+         btn_panel.add( ok_btn, "0, 0, 1, 1, 0, wh, 3" );
+         btn_panel.add( cancel_btn, "1, 0, 1, 1, 0, wh, 3" );
+         kl.makeColumnsSameWidth( 0, 1 );
          c.x = 0;
          ++c.y;
          c.w = 2;
          c.p = 6;
-         top.add(btn_panel, c);
-         
-         ok_btn.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent ae) {
-               pm.setVisible(false);
-               StringBuffer sb = new StringBuffer();
-               int cnt = top.getComponentCount();
-               JLabel label = (JLabel)top.getComponent(0);
-               sb.append(label.getText()).append("<br>");
-               
-               JTextField tf;
-               for (int i = 1; i < cnt - 2; i += 2) {
-                  label = (JLabel)top.getComponent(i);
-                  tf = (JTextField)top.getComponent(i + 1);
-                  String label_text = label.getText();
-                  sb.append("<span>").append(label_text.substring(0, label_text.length() - 1)).append("</span>");
-                  sb.append("<span>").append(tf.getText()).append("</span>").append("<br>");
+         top.add( btn_panel, c );
+
+         ok_btn.addActionListener( new ActionListener() {
+                  public void actionPerformed( ActionEvent ae ) {
+                     pm.setVisible( false );
+
+                     int cnt = top.getComponentCount();
+                     for ( int i = 0; i < cnt; i++ ) {
+                        Component c = top.getComponent( i );
+                        if ( c instanceof JTextField ) {
+                           JTextField tf = ( JTextField ) c;
+                           DTDAttribute attr = ( DTDAttribute ) attributes.get( tf.getName() );
+                           attr.setDefaultValue( tf.getText() );
+                        }
+                     }
+                     ep.setAttributes( attributes );
+                  }
                }
-               sb.append("</html>");
-               ((DefaultListModel)parent.getModel()).set(parent.getSelectedIndex(), sb.toString());
-            }
-         });
-         
-         cancel_btn.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent ae) {
-               pm.setVisible(false);  
-            }
-         });
+                                 );
+
+         cancel_btn.addActionListener( new ActionListener() {
+                  public void actionPerformed( ActionEvent ae ) {
+                     pm.setVisible( false );
+                  }
+               }
+                                     );
 
          pm = new JPopupMenu();
          pm.add( new JScrollPane( top ) );

@@ -104,11 +104,11 @@ public class ProjectBuilder extends JPanel {
          //project_tree.addMouseListener( new AttributeViewer( project_tree ) );
          project_tree.setDragEnabled( true );
 
-         ElementPanel project_panel = new ElementPanel(DNDConstants.PROJECT);
+         ElementPanel project_panel = new ElementPanel(project_tree.getPathForRow(0));
          JSplitPane splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
                true,
                new JScrollPane( project_tree ),
-               project_panel );
+               new JScrollPane( project_panel ) );
          setLayout( new LambdaLayout() );
          add( splitpane, "0, 0, 1, 1, 0, wh, 3" );
          project_tree.setDragEnabled(true);
