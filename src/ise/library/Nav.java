@@ -49,9 +49,6 @@ public class Nav extends JToolBar implements ActionListener {
      * @param client  the client object to provide navigation for
      */
     public Nav( Navable client ) {
-        if(true)
-            throw new RuntimeException("got a new nav");
-        System.out.println("new changes");
         if ( client == null )
             throw new IllegalArgumentException( "client cannot be null" );
         this.client = client;
@@ -64,7 +61,7 @@ public class Nav extends JToolBar implements ActionListener {
         Icon icon = null;
         if ( url != null )
             icon = new ImageIcon( url );
-        if (icon == null)
+        if (icon != null)
             back.setIcon( icon );
         else
             back.setText("<");
@@ -74,10 +71,10 @@ public class Nav extends JToolBar implements ActionListener {
         icon = null;
         if ( url != null )
             icon = new ImageIcon( url );
-        if (icon == null)
+        if (icon != null)
             forward.setIcon( icon );
         else
-            forward.setText("<");
+            forward.setText(">");
 
         back.setMargin( new Insets( 0, 0, 0, 0 ) );
         forward.setMargin( new Insets( 0, 0, 0, 0 ) );
