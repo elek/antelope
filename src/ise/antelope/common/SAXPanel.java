@@ -100,6 +100,8 @@ public class SAXPanel extends JPanel implements Navable {
                            Object object = path.getLastPathComponent();
                            if ( object instanceof SAXTreeNode ) {
                               SAXTreeNode node = ( SAXTreeNode ) object;
+                              if (!node.isTarget())
+                                 return;
                               TreeModel tm = SAXPanel.this.getDependencyModel( node, (SAXTreeNode)node.getRoot() );
                               if ( tm != null ) {
                                  JPanel panel = new JPanel( new BorderLayout() );
@@ -111,8 +113,7 @@ public class SAXPanel extends JPanel implements Navable {
                                  }
                                  panel.add( new JScrollPane( dt ) );
                                  final JDialog dialog = new JDialog(GUIUtils.getRootJFrame(SAXPanel.this), "Dependency Tree", true);
-                                 dialog.getContentPane().add(panel, BorderLayout.CENTER);
-                                 dialog.setLocation(new java.awt.Point(me.getX(), me.getY()));
+                                 dialog.getContentPane().add(new JScrollPane(panel), BorderLayout.CENTER);
                                  JButton close_btn = new JButton("Close");
                                  JPanel btn_panel = new JPanel();
                                  btn_panel.add(close_btn);
@@ -124,6 +125,10 @@ public class SAXPanel extends JPanel implements Navable {
                                     }
                                  });
                                  dialog.pack();
+                                 dialog.setSize(300, 300);
+                                 java.awt.Point p = SAXPanel.this.getLocation();
+                                 SwingUtilities.convertPointToScreen(p, SAXPanel.this);
+                                 dialog.setLocation(GUIUtils.getBestAnchorPoint(dialog, p.x + me.getX(), p.y + me.getY()));
                                  dialog.setVisible(true);
                               }
                            }

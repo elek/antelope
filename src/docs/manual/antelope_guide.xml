@@ -716,8 +716,74 @@ Here is Antelope in edit mode:
 </figure>
 </para>
 
+<para>
+Icons:
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+   <imagedata fileref="ant.gif" format="GIF"/>
+</imageobject>
+</inlinemediaobject>
+An Ant Project.
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+   <imagedata fileref="red_ant.gif" format="GIF"/>
+</imageobject>
+</inlinemediaobject>
+An imported Ant Project.
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+   <imagedata fileref="Target16.gif" format="GIF"/>
+</imageobject>
+</inlinemediaobject>
+An Ant Target in the main project file.
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+   <imagedata fileref="RedTarget16.gif" format="GIF"/>
+</imageobject>
+</inlinemediaobject>
+An Ant Target in an imported project file.
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+   <imagedata fileref="Wrench16.gif" format="GIF"/>
+</imageobject>
+</inlinemediaobject>
+An Ant Task.
+</para>
+
+<para>
+Note the navigation arrows circled in red in the above image. As you click on items in the edit tree, the cursor in the editor panel will move to that item in the build file. The navigation arrows allow you to go back and forward, much like the back and forward buttons on a web browser. <emphasis>Beware that clicking on a target imported from another file will cause that file to be opened in the editor panel.</emphasis>
+</para>
+
+<para>
+<figure>
+<title>Dependency Tree</title>
+<imageobject>
+    <imagedata fileref="dependency_tree.gif" format="GIF"/>
+</imageobject>
+</figure>
+</para>
+
+<para>
+Right clicking on a target in the edit tree shows a dependency tree for that target. A "dependency tree" shows a list of targets that the selected target will by virtue of the targets being listed in the targets' 'depends' attribute, as well as any targets that may be called by &lt;ant&gt; and &lt;antcall&gt; tasks contained in the target. Like the edit tree, clicking on targets in the dependency tree will also move the cursor in the editor panel to the selected item.
+</para>
+
 <para id="tip">
-<emphasis role="bold">Tip:</emphasis> Antelope can open most xml files and display them in the editor and in the tree. If the xml file is not a build file (as determined by the root element being "project"), then the "Run" and "Trace" mode button panels will be disabled.
+<emphasis role="bold">Tip:</emphasis> Antelope can open most xml files and display them in the editor and in the tree. If the xml file is not a build file (as determined by the root element being "project"), then the "Run" and "Trace" mode buttons will be disabled.
 </para>
 </chapter>
 

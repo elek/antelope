@@ -134,7 +134,7 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
                icon = new ImageIcon( url );
          }
          else if (node.isTask()) {
-            String image_src = "images/wrench.jpg";
+            String image_src = "images/Wrench16.gif";
             java.net.URL url = getClass().getClassLoader().getResource( image_src );
             if ( url != null )
                icon = new ImageIcon( url );

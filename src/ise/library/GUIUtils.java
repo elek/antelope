@@ -99,11 +99,11 @@ public class GUIUtils {
     * @param frame the component to expand
     */
    public static void fillScreen( Component frame ) {
-      String version = System.getProperty("java.version");
-      if (version.startsWith("1.4") || version.startsWith("1.5")) {
-         if (frame instanceof Frame) {
-            ((Frame)frame).setExtendedState(Frame.MAXIMIZED_BOTH);
-            return;
+      String version = System.getProperty( "java.version" );
+      if ( version.startsWith( "1.4" ) || version.startsWith( "1.5" ) ) {
+         if ( frame instanceof Frame ) {
+            ( ( Frame ) frame ).setExtendedState( Frame.MAXIMIZED_BOTH );
+            return ;
          }
       }
       Dimension screen_size = Toolkit.getDefaultToolkit().getScreenSize();
@@ -120,8 +120,8 @@ public class GUIUtils {
       Object parent = c.getParent();
       while ( parent != null ) {
          if ( parent instanceof Frame )
-            return (Frame)parent;
-         parent = ( (Component)parent ).getParent();
+            return ( Frame ) parent;
+         parent = ( ( Component ) parent ).getParent();
       }
       return null;
    }
@@ -138,8 +138,8 @@ public class GUIUtils {
       Object parent = c.getParent();
       while ( parent != null ) {
          if ( parent instanceof javax.swing.JFrame )
-            return (javax.swing.JFrame)parent;
-         parent = ( (Component)parent ).getParent();
+            return ( javax.swing.JFrame ) parent;
+         parent = ( ( Component ) parent ).getParent();
       }
       return null;
    }
@@ -153,29 +153,22 @@ public class GUIUtils {
       Object parent = c.getParent();
       while ( parent != null ) {
          if ( parent instanceof Window )
-            return (Window)parent;
-         parent = ( (Component)parent ).getParent();
+            return ( Window ) parent;
+         parent = ( ( Component ) parent ).getParent();
       }
       return null;
    }
 
    /**
-    * Borrowed from jEdit's GUIUtilities.
-    * Shows the specified popup menu, ensuring it is displayed within
-    * the bounds of the screen.
-    *
-    * @param popup  The popup menu
-    * @param comp   The component to show it for
-    * @param x      The x co-ordinate
-    * @param y      The y co-ordinate
-    * @since        jEdit 4.0pre1
+    * Calculates the best location to show the component based on the given (x, y)
+    * coordinates. The returned point will be as close as possible to the original
+    * point while allowing the entire component to be displayed on screen.
     */
-   public static void showPopupMenu( javax.swing.JPopupMenu popup, Component comp,
-         int x, int y ) {
+   public static Point getBestAnchorPoint( Component comp, int x, int y ) {
       Point p = new Point( x, y );
       javax.swing.SwingUtilities.convertPointToScreen( p, comp );
 
-      Dimension size = popup.getPreferredSize();
+      Dimension size = comp.getSize();
       Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
       boolean horiz = false;
@@ -185,13 +178,13 @@ public class GUIUtils {
       int origX = x;
 
       if ( p.x + size.width > screen.width
-            && size.width < screen.width ) {
+              && size.width < screen.width ) {
          x += ( screen.width - p.x - size.width );
          horiz = true;
       }
 
       if ( p.y + size.height > screen.height
-            && size.height < screen.height ) {
+              && size.height < screen.height ) {
          y += ( screen.height - p.y - size.height );
          vert = true;
       }
@@ -204,10 +197,25 @@ public class GUIUtils {
       if ( horiz && vert ) {
          x = origX - size.width - 2;
       }
-
-      popup.show( comp, x, y );
+      return new Point( x, y );
    }
-   
+
+   /**
+    * Shows the specified popup menu, ensuring it is displayed within
+    * the bounds of the screen.
+    *
+    * @param popup  The popup menu
+    * @param comp   The component to show it for
+    * @param x      The x co-ordinate
+    * @param y      The y co-ordinate
+    * @since        jEdit 4.0pre1
+    */
+   public static void showPopupMenu( javax.swing.JPopupMenu popup, Component comp,
+         int x, int y ) {
+      Point p = getBestAnchorPoint( comp, x, y );
+      popup.show( comp, p.x, p.y );
+   }
+
 
 
 }

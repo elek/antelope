@@ -104,6 +104,7 @@
         <!-- copy the images and style sheets to the prep directory -->
         <copy todir="${doc.dir}/manual">
             <fileset dir="${src.dir}/docs/manual" includes="**/*.gif" />
+            <fileset dir="${src.dir}/docs/manual" includes="**/*.jpg" />
             <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
         </copy>
         

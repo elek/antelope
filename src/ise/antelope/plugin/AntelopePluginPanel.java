@@ -114,6 +114,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
    public void init() {
       SwingUtilities.invokeLater( new Runnable() {
                public void run() {
+                  System.out.println( "loading ant" );
                   try {
                      // load ant
                      jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
@@ -132,9 +133,12 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                   catch ( Exception e ) {
                      // start Antelope anyway
                      /// really? what good is antelope without ant???
+                     e.printStackTrace();
                   }
+                  System.out.println( "ant loaded" );
 
                   // set up Antelope's menu
+                  System.out.println( "load antelope" );
                   _view.getStatus().setMessageAndClear( "Loading Antelope..." );
                   JMenuItem mi = new JMenuItem( "Open Current Buffer" );
                   mi.addActionListener( new ActionListener() {
@@ -146,6 +150,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                                       );
                   ArrayList menu_items = new ArrayList();
                   menu_items.add( mi );
+                  System.out.println( "added menu items" );
 
                   // get the last open file
                   String name = Constants.PREFS.get( LAST_OPEN_FILE, null );
@@ -155,7 +160,14 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                   }
 
                   // create and add Antelope
-                  antelopePanel = new AntelopePanel( file, AntelopePluginPanel.this, true, menu_items );
+                  System.out.println( "create antelope panel" );
+                  try {
+                     antelopePanel = new AntelopePanel( file, AntelopePluginPanel.this, true, menu_items );
+                  }
+                  catch ( Throwable t ) {
+                     t.printStackTrace();
+                  }
+                  System.out.println( "antelope panel created" );
                   removeAll();
                   setBackground( java.awt.Color.WHITE );
                   add( antelopePanel );
@@ -226,8 +238,8 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
          return ;
       if ( f.isDirectory() )
          return ;
-      if (getView().getBuffer().getPath().equals(f.getAbsolutePath()))
-         return;
+      if ( getView().getBuffer().getPath().equals( f.getAbsolutePath() ) )
+         return ;
       jEdit.openFile( getView(), f.getAbsolutePath() );
    }
 
@@ -357,20 +369,20 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
          case EDIT_EVENT:
             if ( ae.getSource() instanceof Point ) {
                try {
-               Point p = ( Point ) ae.getSource();
-               final int offset = getView().getTextArea().getLineStartOffset( p.x - 1 );
-               SwingUtilities.invokeLater(
-                  new Runnable() {
-                     public void run() {
-                        getView().getTextArea().requestFocus();
-                        getView().getTextArea().setCaretPosition( offset, true );
-                        getView().getTextArea().scrollToCaret( true );
+                  Point p = ( Point ) ae.getSource();
+                  final int offset = getView().getTextArea().getLineStartOffset( p.x - 1 );
+                  SwingUtilities.invokeLater(
+                     new Runnable() {
+                        public void run() {
+                           getView().getTextArea().requestFocus();
+                           getView().getTextArea().setCaretPosition( offset, true );
+                           getView().getTextArea().scrollToCaret( true );
+                        }
                      }
-                  }
-               );
+                  );
                }
-               catch(Exception e) {
-                  // ignore this  
+               catch ( Exception e ) {
+                  // ignore this
                }
             }
             else {
