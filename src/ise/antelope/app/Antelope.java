@@ -175,6 +175,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       JMenuItem font_mi = new JMenuItem( "Font..." );
       JMenuItem options_mi = new JMenuItem( "Editor..." );
       JMenuItem syntax_mi = new JMenuItem( "Syntax..." );
+      JMenuItem build_options_mi = new JMenuItem("Build File Options...");
       JMenuItem help_mi = new JMenuItem( "Help",
             new ImageIcon( ClassLoader.getSystemResource( "images/Help16.gif" ) ) );
       JMenuItem about_mi = new JMenuItem( "About",
@@ -229,6 +230,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
       format_menu.add( font_mi );
       format_menu.add( syntax_mi );
       format_menu.add( options_mi );
+      format_menu.add( build_options_mi);
       help_menu.add( help_mi );
       help_menu.add( about_mi );
       bar.add( _file_menu );
@@ -363,6 +365,13 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                OptionChooser oc = OptionChooser.showDialog( Antelope.this, _editor );
+            }
+         }
+      );
+      build_options_mi.addActionListener(
+         new ActionListener() {
+            public void actionPerformed( ActionEvent ae ) {
+               _antelope_panel.setOptionsPanel( AntelopeOptions.showDialog( _antelope_panel, Antelope.this ));
             }
          }
       );

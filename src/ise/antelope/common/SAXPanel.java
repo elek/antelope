@@ -180,6 +180,10 @@ public class SAXPanel extends JPanel implements Navable {
          e.printStackTrace();
       }
    }
+   
+   public SAXTreeModel getModel() {
+      return (SAXTreeModel)tree.getModel();  
+   }
 
    public void setPosition( Object o ) {
       if ( o instanceof java.awt.Point ) {
@@ -263,7 +267,7 @@ public class SAXPanel extends JPanel implements Navable {
                continue;
 
             // load the build file using the SAXNodeHandler, get a project node
-            SAXTreeNode ant_root = (SAXTreeNode)new SAXTreeModel(build_file).getRoot();
+            SAXTreeNode ant_root = ( SAXTreeNode ) new SAXTreeModel( build_file ).getRoot();
 
             // get the target name, default is the default target in the build file
             String ant_target_name = null;
@@ -401,11 +405,11 @@ public class SAXPanel extends JPanel implements Navable {
    }
 
    /**
-    * @return true if any file tracked by getPropertyFiles is newer than when it
+    * @return true if any property file tracked by the model is newer than when it
     * was first looked at.
     */
    public boolean shouldReload() {
-      return ((SAXTreeModel)tree.getModel()).shouldReload();  
+      return ( ( SAXTreeModel ) tree.getModel() ).shouldReload();
    }
 
    /**
@@ -422,5 +426,17 @@ public class SAXPanel extends JPanel implements Navable {
       if ( root.getName() == null )
          return false;
       return root.getName().equals( "project" );
+   }
+
+   /**
+    * Returns a map of targets in the current build file, including any imported
+    * or included targets from other files.  Key is the target name,
+    * value is a SAXTreeNode.
+    * @return a list of targets in the current build file. Key is the target name,
+    * value is a SAXTreeNode.
+    */
+   protected HashMap getTargets() {
+      SAXTreeModel model = (SAXTreeModel)tree.getModel();
+      return model.getTargets();
    }
 }

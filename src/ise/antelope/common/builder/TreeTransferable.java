@@ -1,21 +1,21 @@
 package ise.antelope.common.builder;
 
 import java.awt.datatransfer.*;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeNode;
 
 /**
- * Package TreePaths for movement.
+ * Package TreeNodes for movement.
  */
 public class TreeTransferable implements Transferable {
 
    private static DataFlavor[] flavors = null;
-   private TreePath data = null;
+   private TreeNode data = null;
 
    /**
     * @param data the type of Ant element being transferred, e.g., target, task,
     * type, etc.
     */
-   public TreeTransferable( TreePath data ) {
+   public TreeTransferable( TreeNode data ) {
       this.data = data;
       init();
    }
@@ -28,7 +28,7 @@ public class TreeTransferable implements Transferable {
    private void init() {
       try {
          flavors = new DataFlavor[ 1 ];
-         flavors[ 0 ] = new TreePathFlavor();
+         flavors[ 0 ] = new TreeNodeFlavor();
       }
       catch ( Exception e ) {
          e.printStackTrace();
@@ -44,7 +44,7 @@ public class TreeTransferable implements Transferable {
    public Object getTransferData( DataFlavor df ) {
       if ( df == null )
          return null;
-      if ( data != null && df instanceof TreePathFlavor )
+      if ( data != null && df instanceof TreeNodeFlavor )
          return data;
       return null;
    }

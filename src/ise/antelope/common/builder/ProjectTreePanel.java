@@ -18,21 +18,25 @@ public class ProjectTreePanel extends JPanel {
       project_tree.setModel( tree_model );
       add( project_tree );
       project_tree.setTransferHandler( new MutableTreeTransferHandler() );
-      project_tree.setDragEnabled(true);
+      project_tree.setDragEnabled( true );
       setBackground( project_tree.getBackground() );
       project_tree.addMouseListener( new MouseDelegate() );
-      project_tree.setCellRenderer(new ProjectTreeCellRenderer());
+      project_tree.setCellRenderer( new ProjectTreeCellRenderer() );
+      project_tree.setExpandsSelectedPaths(true);
    }
 
    class MouseDelegate extends MouseAdapter {
       public void mousePressed( MouseEvent me ) {
+         TreePath tp = project_tree.getClosestPathForLocation( me.getX(), me.getY() );
          if ( me.isPopupTrigger() ) {
-            TreePath tp = project_tree.getClosestPathForLocation( me.getX(), me.getY() );
             ElementPanel ep = ( ElementPanel ) tp.getLastPathComponent();
             MouseListener[] ml = ep.getMouseListeners();
             for ( int i = 0; i < ml.length; i++ ) {
                ml[ i ].mousePressed( me );
             }
+         }
+         else {
+            project_tree.setSelectionPath( tp );
          }
       }
       public void mouseReleased( MouseEvent me ) {
@@ -46,7 +50,7 @@ public class ProjectTreePanel extends JPanel {
             }
          }
          else {
-            project_tree.setSelectionPath(tp);  
+            project_tree.setSelectionPath( tp );
          }
       }
    }

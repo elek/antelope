@@ -10,10 +10,10 @@ public class TreeTransferHandler extends TransferHandler {
 
    protected Transferable createTransferable( JComponent c ) {
       try {
-         TreePath tp = ( ( JTree ) c ).getSelectionPath();
+         TreeNode tp = (TreeNode)( ( JTree ) c ).getSelectionPath().getLastPathComponent();
          if ( tp == null )
             return null;
-         String leaf = tp.getLastPathComponent().toString();
+         String leaf = tp.toString();
          if (leaf.equals(DNDConstants.TASK) || leaf.equals(DNDConstants.TYPE))
             return null;
          return new TreeTransferable( tp );

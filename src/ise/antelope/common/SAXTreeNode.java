@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.io.File;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
+import ise.library.TableArray;
 
 /**
  * This tree node captures some information about the node location from the
@@ -24,6 +25,7 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable {
    private boolean isTask = false;
    private boolean isType = false;
    private boolean isTarget = false;
+   private boolean isDefaultTarget = false;
    private boolean isProject = false;
 
    public SAXTreeNode( String name, Point location, Attributes attr ) {
@@ -42,12 +44,38 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable {
    public Attributes getAttributes() {
       return attributes;
    }
-   
-   public String getAttributeValue(String name) {
-      if (attributes == null)
+
+   /**
+    * Converts the org.xml.sax.Attributes to a TableArray.
+    * The table has these columns in this order: 
+    * <ol>
+    * <li>local name</li>
+    * <li>qualified name</li>
+    * <li>type</li>
+    * <li>uri</li>
+    * <li>value</li>
+    * </ol>
+    * The table array is indexed at (0, 0).
+    * /// Is this any more useful than the Attributes themselves???
+    * @return a TableArray containing the attributes for this node.
+    */
+   public TableArray getAttributeTable() {
+      TableArray ta = new TableArray();
+      Attributes attr = getAttributes();
+      for ( int i = 0; i < attr.getLength(); i++ ) {
+         ta.put(0, i, attr.getLocalName(i));
+         ta.put(1, i, attr.getQName(i));
+         ta.put(2, i, attr.getType(i));
+         ta.put(3, i, attr.getValue(i));
+      }
+      return ta;
+   }
+
+   public String getAttributeValue( String name ) {
+      if ( attributes == null )
          return null;
       int index = attributes.getIndex( name );
-      return index > -1 ? attributes.getValue(index) : null;
+      return index > -1 ? attributes.getValue( index ) : null;
    }
 
    public Point getLocation() {
@@ -56,6 +84,34 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable {
 
    public String getName() {
       return name;
+   }
+
+   /**
+    * Indicates whether this node is a private target. Only makes sense if the node
+    * is indeed a target.
+    * @return true if any of these conditions are satisfied:<br>
+    *    <ul>
+    *    <li>The target name contains one or more "."</li>
+    *    <li>The target name starts with a "-"</li>
+    *    <li>The description attribute is null or empty</li>
+    *    </ul>
+    */
+   public boolean isPrivate() {
+      if ( !isTarget() )
+         return false;
+      String name = getAttributeValue( "name" );
+      if ( name.indexOf( "." ) > 0 ) {
+         return true;
+      }
+      if ( name.startsWith( "-" ) ) {
+         return true;
+      }
+      String description = getAttributeValue( "description" );
+      if ( description == null || description.equals( "" )
+         ) {
+         return true;
+      }
+      return false;
    }
 
    public void setFile( File file ) {
@@ -95,37 +151,45 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable {
    public boolean isCalled() {
       return isCalled;
    }
-   
-   public void setType(boolean b) {
-      isType = b;  
+
+   public void setType( boolean b ) {
+      isType = b;
    }
-   
+
    public boolean isType() {
-      return isType;  
+      return isType;
    }
-   
-   public void setTask(boolean b) {
-      isTask = b;  
+
+   public void setTask( boolean b ) {
+      isTask = b;
    }
-   
+
    public boolean isTask() {
-      return isTask;  
+      return isTask;
    }
-   
-   public void setTarget(boolean b) {
-      isTarget = b;  
+
+   public void setTarget( boolean b ) {
+      isTarget = b;
    }
-   
+
    public boolean isTarget() {
-      return isTarget;  
+      return isTarget;
    }
    
-   public void setProject(boolean b) {
-      isProject = b;  
+   public void setDefaultTarget(boolean b) {
+      isDefaultTarget = b;  
    }
    
+   public boolean isDefaultTarget() {
+      return isDefaultTarget;  
+   }
+
+   public void setProject( boolean b ) {
+      isProject = b;
+   }
+
    public boolean isProject() {
-      return isProject;  
+      return isProject;
    }
 
    public String toString() {
@@ -135,8 +199,9 @@ public class SAXTreeNode extends DefaultMutableTreeNode implements Cloneable {
          sb.append( getAttributes().toString() ).append( ";" );
       if ( getFile() != null )
          sb.append( getFile().toString() ).append( ";" );
-      sb.append(isImported() ? "imported;" : "not imported;");
-      sb.append(isCalled() ? "called]" : "not called]");
+      sb.append( isImported() ? "imported;" : "not imported;" );
+      sb.append( isDefaultTarget() ? "default; " : "not default;");
+      sb.append( isCalled() ? "called]" : "not called]" );
       return sb.toString();
    }
 }

@@ -84,6 +84,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
    /** Description of the Field */
    private AntProject _project = null;
+   private HashMap _property_files = null;
 
    /**
     * Ant 1.6 has an unnamed target that is used to hold all project-level tasks.
@@ -109,6 +110,7 @@ public class AntelopePanel extends JPanel implements Constants {
    private JButton _options_btn = null;
    private JButton _reload_btn = null;
    private JCheckBox _multi = new JCheckBox( "Multiple targets" );
+   private AbstractButton _default_btn = null;
 
    /** Description of the Field */
    private JScrollPane _scroller = null;   // for the button panel
@@ -202,10 +204,7 @@ public class AntelopePanel extends JPanel implements Constants {
       _build_file = build_file;
       _helper = helper;
       _use_internal_menu = use_internal_menu;
-
-      if ( _build_file != null ) {
-         setPrefs( _build_file );
-      }
+      setPrefs( _build_file );
 
       try {
          // for some reason, the GUIUtils aren't always loaded in jEdit,
@@ -464,7 +463,7 @@ public class AntelopePanel extends JPanel implements Constants {
                      }
 
                      // reload the project if need be
-                     if ( _settings.getAutoReload() || _sax_panel.shouldReload() ) {
+                     if ( _settings.getAutoReload() || shouldReload() ) {
                         try {
                            reload();
                         }
@@ -591,93 +590,90 @@ public class AntelopePanel extends JPanel implements Constants {
             }
 
             // execute a target, but first reload the project if need be
-            if ( _settings.getAutoReload() || _sax_panel.shouldReload() ) {
+            if ( _settings.getAutoReload() || shouldReload() ) {
                reload();
-               // find the button again, the reload replaces the buttons
-               // on the button panel, so the button that caused this action event
-               // is not the same button that needs to change color
-               Component[] components = _button_panel.getComponents();
-               int i = 0;
-               for ( ; i < components.length; i++ ) {
-                  if ( target_name.equals( ( ( AbstractButton ) components[ i ] ).getActionCommand() ) ) {
-                     break;
-                  }
-               }
-               if ( i == components.length )
-                  button = ( AbstractButton ) ae.getSource();
-               else
-                  button = ( AbstractButton ) components[ i ];
-
             }
-            else
-               button = ( AbstractButton ) ae.getSource();
 
-            _runner =
-               new Thread() {
-                  public void run() {
-                     // set button color
-                     Color original_color = button.getForeground();
-                     button.setForeground( Color.RED );
+            executeTarget( target_name );
 
-                     // maybe save all files before running the target
-                     saveBeforeRun();
-
-                     try {
-                        if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
-                           _performance_listener.reset();
-                        }
-
-                        ArrayList targets = new ArrayList();
-
-                        // run the unnamed target if Ant 1.6
-                        if ( getAntVersion() == 16 && _unnamed_target != null )
-                           targets.add( _unnamed_target.getName() );
-
-                        // run the targets
-                        targets.add( target_name );
-                        AntelopePanel.this.executeTargets( this, targets );
-                     }
-                     catch ( Exception e ) {
-                        _project.fireBuildFinished( e );
-                     }
-                     finally {
-                        if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
-                           log( _performance_listener.getPerformanceStatistics() );
-                           _performance_listener.reset();
-                        }
-                        _build_logger.close();
-                        button.setForeground( original_color );
-                        button.setSelected( false );
-                     }
-                  }
-
-                  public void interrupt() {
-                     if ( !isAlive() ) {
-                        return ;
-                     }
-                     super.interrupt();
-                     log( Level.SEVERE, "=====> BUILD INTERRUPTED <=====" );
-                  }
-               };
-            _target_runner = _runner;
-            _runner.start();
          }
       };
 
 
    /**
-    * Executes a target.
+    * Executes a target in a separate thread.
     *
     * @param target the name of a target to run
-    * @param runner the thread that the target is running in. If Antelope is running
-    * as a plugin, this thread will be passed to the Console plugin so the stop
-    * button in the Console will stop the build.
-    * @exception Exception  Description of Exception
     */
-   public void executeTarget( Thread runner, String target ) throws Exception {
-      ArrayList targets = new ArrayList();
-      targets.add( target );
-      executeTargets( runner, targets );
+   public void executeTarget( String target ) {
+      final String target_name = target;
+      _runner =
+         new Thread() {
+            public void run() {
+               // find the button again, the reload replaces the buttons
+               // on the button panel, so the button that caused this action event
+               // is not the same button that needs to change color
+               Component[] components = _button_panel.getComponents();
+               AbstractButton button = null;
+               int i = 0;
+               for ( ; i < components.length; i++ ) {
+                  if ( target_name.equals( ( ( AbstractButton ) components[ i ] ).getActionCommand() ) ) {
+                     button = ( AbstractButton ) components[ i ];
+                     break;
+                  }
+               }
+
+               // set button color
+               Color original_color = null;
+               if ( button != null ) {
+                  original_color = button.getForeground();
+                  button.setForeground( Color.RED );
+               }
+
+               // maybe save all files before running the target
+               saveBeforeRun();
+
+               try {
+                  if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
+                     _performance_listener.reset();
+                  }
+
+                  ArrayList targets = new ArrayList();
+
+                  // run the unnamed target if Ant 1.6
+                  if ( getAntVersion() == 16 && _unnamed_target != null )
+                     targets.add( _unnamed_target.getName() );
+
+                  // run the targets
+                  targets.add( target_name );
+                  AntelopePanel.this.executeTargets( this, targets );
+               }
+               catch ( Exception e ) {
+                  _project.fireBuildFinished( e );
+               }
+               finally {
+                  if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
+                     log( _performance_listener.getPerformanceStatistics() );
+                     _performance_listener.reset();
+                  }
+                  _build_logger.close();
+                  if ( button != null && original_color != null ) {
+                     button.setForeground( original_color );
+                     button.setSelected( false );
+                  }
+               }
+            }
+
+            public void interrupt() {
+               if ( !isAlive() ) {
+                  return ;
+               }
+               super.interrupt();
+               log( Level.SEVERE, "=====> BUILD INTERRUPTED <=====" );
+            }
+         };
+      _target_runner = _runner;
+      _runner.start();
    }
 
    /**
@@ -689,7 +685,7 @@ public class AntelopePanel extends JPanel implements Constants {
     * button in the Console will stop the build.
     * @exception Exception  Description of Exception
     */
-   public void executeTargets( Thread runner, ArrayList targets ) throws Exception {
+   private void executeTargets( Thread runner, ArrayList targets ) throws Exception {
       // maybe prep the error source
       clearErrorSource();
 
@@ -713,12 +709,23 @@ public class AntelopePanel extends JPanel implements Constants {
       _project.fireBuildStarted();
       Iterator it = targets.iterator();
       while ( it.hasNext() ) {
-         if ( _target_runner != runner )
-            break;
          String target = ( String ) it.next();
          _project.executeTarget( target );
+         if ( _target_runner != runner )
+            break;
       }
       _project.fireBuildFinished( null );
+   }
+
+   /**
+    * Executes the default target.
+    *
+    * @exception Exception  Description of Exception
+    */
+   public void executeDefaultTarget() {
+      if ( _default_btn != null ) {
+         executeTarget( _default_btn.getActionCommand() );
+      }
    }
 
    /** Saves jEdit buffers before running target. */
@@ -822,6 +829,70 @@ public class AntelopePanel extends JPanel implements Constants {
    }
 
    /**
+    * Finds all property files that the build file loads so they can be checked
+    * later for changes. If they've changed, the build file can be automatically
+    * reloaded to reflect those changes.
+    * @see #shouldReload
+    */
+   private void loadPropertyFiles() {
+      if ( _sax_panel != null ) {
+         _property_files = ( ( SAXTreeModel ) _sax_panel.getModel() ).getPropertyFiles();
+         if ( _property_files == null )
+            return ;
+         HashMap filelist = new HashMap();
+         ArrayList resolved = new ArrayList();
+         Iterator it = _property_files.keySet().iterator();
+         while ( it.hasNext() ) {
+            Object o = it.next();
+            File f = null;
+            if ( o instanceof File ) {
+               f = ( File ) o;
+               Long lastModified = ( Long ) _property_files.get( f );
+               filelist.put( f, lastModified );
+            }
+            else if ( _project != null ) {
+               String value = o.toString();
+               String filename = value;
+               if (value.startsWith("${") && value.endsWith("}")) {
+                  filename = filename.substring(2, filename.length() - 1);
+               }
+               filename = _project.getProperty( filename );
+               if (filename != null)
+                  f = new File( filename );
+               if ( !f.exists() ) {
+                  f = new File( _project.getBaseDir(), filename );
+               }
+               if ( f.exists() ) {
+                  filelist.put( f, new Long(f.lastModified()) );
+                  resolved.add(value);
+               }
+               else
+                  _logger.warning("Unable to find property file " + filename);
+            }
+         }
+         it = resolved.iterator();
+         while(it.hasNext()) {
+            filelist.remove(it.next());
+         }
+         _property_files = filelist;
+      }
+   }
+
+   public boolean shouldReload() {
+      if ( _property_files == null )
+         return false;
+      Iterator it = _property_files.keySet().iterator();
+      while ( it.hasNext() ) {
+         File f = ( File ) it.next();
+         Long lastModified = ( Long ) _property_files.get( f );
+         if ( lastModified != null && lastModified.longValue() != f.lastModified() ){
+            return true;
+         }
+      }
+      return false;
+   }
+
+   /**
     * Sets up an Ant project and creates a button panel for the given build
     * file. Each target gets a button.
     *
@@ -897,7 +968,7 @@ public class AntelopePanel extends JPanel implements Constants {
             _center_panel.last();
             _run_btn.setEnabled( false );
             _trace_btn.setEnabled( false );
-            _edit_btn.setEnabled( false );
+            ///_edit_btn.setEnabled( false );
             _props_btn.setEnabled( false );
             _options_btn.setEnabled( false );
          }
@@ -929,6 +1000,7 @@ public class AntelopePanel extends JPanel implements Constants {
                // load the settings for the build file and create an
                // Ant project
                _project = createProject( _build_file );
+               loadPropertyFiles();
 
                // set the label with the name of this project
                String project_name = _project.getProperty( "ant.project.name" );
@@ -947,12 +1019,6 @@ public class AntelopePanel extends JPanel implements Constants {
                // Ant 1.6 has an un-named target to hold project-level tasks, so
                // find it and save it for later.
 
-
-
-
-
-
-
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
                   Iterator iter = targets.keySet().iterator();
@@ -965,6 +1031,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
                // make buttons by sorting the targets by name
                _targets = new TreeMap( java.text.Collator.getInstance() );
+               HashMap sax_targets = _sax_panel.getTargets();
                Enumeration enum = targets.keys();
                while ( enum.hasMoreElements() ) {
                   // adjust which targets are showing --
@@ -1035,13 +1102,43 @@ public class AntelopePanel extends JPanel implements Constants {
                   }
                   AbstractButton button;
                   if ( _multi.isSelected() ) {
-                     button = new JCheckBox( ( isPrivate( target ) ? "<html><i>" : "" ) + target_name );
+                     SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
+                     button = new JCheckBox( );
+                     String btn_text = "<html>";
+                     if ( node == null ) {
+                        btn_text += "<i>";
+                     }
+                     else {
+                        if ( node.isPrivate() )
+                           btn_text += "<i>";
+                        if ( node.isDefaultTarget() )
+                           button.setForeground( GREEN );
+                     }
+                     btn_text += target_name;
+                     button.setText( btn_text );
                      button.addActionListener( _cb_listener );
                      button.setBackground( _button_panel.getBackground() );
+                     if ( node.isDefaultTarget() )
+                        _default_btn = button;
                   }
                   else {
-                     button = new JButton( ( isPrivate( target ) ? "<html><i>" : "" ) + target_name );
+                     String btn_text = "<html>";
+                     SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
+                     button = new JButton();
+                     if ( node == null ) {   // this shouldn't happen
+                        btn_text += isPrivate( target ) ? "<i>" : "";
+                     }
+                     else {
+                        if ( node.isPrivate() )
+                           btn_text += "<i>";
+                        if ( node.isDefaultTarget() )
+                           button.setForeground( GREEN );
+                     }
+                     btn_text += target_name;
+                     button.setText( btn_text );
                      button.addActionListener( _button_listener );
+                     if ( node != null && node.isDefaultTarget() )
+                        _default_btn = button;
                   }
                   button.setActionCommand( target_name );
                   button.setToolTipText( description );
@@ -1227,12 +1324,11 @@ public class AntelopePanel extends JPanel implements Constants {
     * @param build_file  The build file to get the preferences for.
     */
    private void setPrefs( File build_file ) {
-      if ( build_file == null )
-         return ;
-      _settings = new OptionSettings( build_file );
-
+      if ( _settings != null )
+         _settings.load( build_file );
+      else
+         _settings = new OptionSettings( build_file );
       _prefs = _settings.getPrefs();
-
    }
 
    /**
@@ -1410,6 +1506,10 @@ public class AntelopePanel extends JPanel implements Constants {
       return _options;
    }
 
+   public void setOptionsPanel( AntelopeOptions op ) {
+      _options = op;
+   }
+
    /**
     * Gets the useErrorParsing attribute of the AntelopePanel object
     *
@@ -1426,19 +1526,19 @@ public class AntelopePanel extends JPanel implements Constants {
    public void showButtonText( boolean b ) {
       if ( b ) {
          _run_btn.setText( "Run" );
-         _trace_btn.setText("Trace");
-         _edit_btn.setText("Edit");
-         _props_btn.setText("Properties");
-         _options_btn.setText("Options");
-         _reload_btn.setText("Reload");
+         _trace_btn.setText( "Trace" );
+         _edit_btn.setText( "Edit" );
+         _props_btn.setText( "Properties" );
+         _options_btn.setText( "Options" );
+         _reload_btn.setText( "Reload" );
       }
       else {
          _run_btn.setText( "" );
-         _trace_btn.setText("");
-         _edit_btn.setText("");
-         _props_btn.setText("");
-         _options_btn.setText("");
-         _reload_btn.setText("");
+         _trace_btn.setText( "" );
+         _edit_btn.setText( "" );
+         _props_btn.setText( "" );
+         _options_btn.setText( "" );
+         _reload_btn.setText( "" );
       }
    }
 
@@ -1457,31 +1557,31 @@ public class AntelopePanel extends JPanel implements Constants {
          if ( url != null )
             icon = new ImageIcon( url );
          _run_btn.setIcon( icon );
-         
+
          url = getClass().getClassLoader().getResource( "images/Zoom16.gif" );
          icon = null;
          if ( url != null )
             icon = new ImageIcon( url );
          _trace_btn.setIcon( icon );
-         
+
          url = getClass().getClassLoader().getResource( "images/Edit16.gif" );
          icon = null;
          if ( url != null )
             icon = new ImageIcon( url );
          _edit_btn.setIcon( icon );
-         
+
          url = getClass().getClassLoader().getResource( "images/Information16.gif" );
          icon = null;
          if ( url != null )
             icon = new ImageIcon( url );
          _props_btn.setIcon( icon );
-         
+
          url = getClass().getClassLoader().getResource( "images/Properties16.gif" );
          icon = null;
          if ( url != null )
             icon = new ImageIcon( url );
          _options_btn.setIcon( icon );
-         
+
          url = getClass().getClassLoader().getResource( "images/Refresh16.gif" );
          icon = null;
          if ( url != null )
@@ -1489,12 +1589,12 @@ public class AntelopePanel extends JPanel implements Constants {
          _reload_btn.setIcon( icon );
       }
       else {
-         _run_btn.setIcon(null);
-         _trace_btn.setIcon(null);
-         _edit_btn.setIcon(null);
-         _props_btn.setIcon(null);
-         _options_btn.setIcon(null);
-         _reload_btn.setIcon(null);
+         _run_btn.setIcon( null );
+         _trace_btn.setIcon( null );
+         _edit_btn.setIcon( null );
+         _props_btn.setIcon( null );
+         _options_btn.setIcon( null );
+         _reload_btn.setIcon( null );
       }
    }
 

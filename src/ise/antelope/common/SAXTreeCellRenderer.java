@@ -38,39 +38,16 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
       return showAttributes;
    }
 
-   private boolean isPrivate( SAXTreeNode target_node ) {
-      if ( target_node == null )
-         return false;
-      if ( !target_node.getName().equals( "target" ) ) {
-         return false;
-      }
-      Attributes attr = target_node.getAttributes();
-      if ( attr == null )
-         return false;
-
-      String target_name = attr.getValue( attr.getIndex( "name" ) );
-      if ( target_name.indexOf( "." ) > 0 ) {
-         return true;
-      }
-      if ( target_name.startsWith( "-" ) ) {
-         return true;
-      }
-      String description = attr.getValue( attr.getIndex( "description" ) );
-      if ( description == null || description.equals( "" ) ) {
-         return true;
-      }
-      return false;
-   }
 
    private String getLabelText( SAXTreeNode node ) {
       if ( node != null ) {
          StringBuffer name = new StringBuffer();
          Attributes attr = node.getAttributes();
-         if ( node.getName().equals( "target" ) ) {
+         if ( node.isTarget() || node.isProject() ) {
             name.append( "<html>" );
             if ( attr != null ) {
                name.append( "<b>" );
-               boolean p = isPrivate( node );
+               boolean p = node.isPrivate();
                if ( p )
                   name.append( "<i>" );
                name.append( attr.getValue( attr.getIndex( "name" ) ) );
@@ -89,8 +66,8 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
                   }
                }
             }
-            if (showAttributes && node.isImported()) {
-               name.append( " (imported from " ).append( node.getFile()).append(")");
+            if ( showAttributes && node.isImported() ) {
+               name.append( " (imported from " ).append( node.getFile() ).append( ")" );
             }
          }
          else {
@@ -113,9 +90,9 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
    public ImageIcon getImageIcon( SAXTreeNode node ) {
       ImageIcon icon = null;
       if ( node != null ) {
-         if ( node.getName().equals( "project" ) ) {
+         if ( node.isProject() ) {
             String image_src = "";
-            if (node.isImported())
+            if ( node.isImported() )
                image_src = "images/red_ant.gif";
             else
                image_src = "images/ant.gif";
@@ -123,17 +100,35 @@ public class SAXTreeCellRenderer extends DefaultTreeCellRenderer {
             if ( url != null )
                icon = new ImageIcon( url );
          }
-         else if ( node.getName().equals( "target" ) ) {
+         else if ( node.isTarget() ) {
             String image_src = "";
-            if (node.isImported())
-               image_src = "images/RedTarget16.gif";
-            else
-               image_src = "images/Target16.gif";
+
+            if ( node.isImported() ) {
+               if ( node.isDefaultTarget() )
+                  image_src = "images/GreenRedTarget16.gif";
+               else {
+                  if ( node.isPrivate() )
+                     image_src = "images/GrayRedTarget16.gif";
+                  else
+                     image_src = "images/BlackRedTarget16.gif";
+               }
+            }
+            else {
+               if ( node.isDefaultTarget() )
+                  image_src = "images/GreenTarget16.gif";
+               else {
+                  if ( node.isPrivate() )
+                     image_src = "images/GrayTarget16.gif";
+                  else
+                     image_src = "images/Target16.gif";
+               }
+            }
+
             java.net.URL url = getClass().getClassLoader().getResource( image_src );
             if ( url != null )
                icon = new ImageIcon( url );
          }
-         else if (node.isTask()) {
+         else if ( node.isTask() ) {
             String image_src = "images/Wrench16.gif";
             java.net.URL url = getClass().getClassLoader().getResource( image_src );
             if ( url != null )

@@ -59,6 +59,8 @@ import java.util.prefs.Preferences;
  */
 public interface Constants {
    
+   public final static String NL = System.getProperty("line.separator");
+   
    // preferences node
    public final static String PREFS_NODE = "/ise/antelope";
    public static Preferences PREFS = ise.library.UserPreferencesFactory.getUserRoot().node(PREFS_NODE);

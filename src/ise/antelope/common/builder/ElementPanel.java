@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import ise.library.*;
 import com.wutka.dtd.*;
 
@@ -25,10 +25,15 @@ public class ElementPanel extends JPanel implements java.io.Serializable, java.l
    private TreeMap attributes = null;
 
    public ElementPanel( TreePath tp ) {
-      tree_path = tp;
-      element_name = tree_path.getLastPathComponent().toString();
+      this((TreeNode)tp.getLastPathComponent());
+   }
+   
+   public ElementPanel(TreeNode tn) {
+      //tree_path = tp;
+      //element_name = tree_path.getLastPathComponent().toString();
+      element_name = tn.toString();
       display_name = element_name;
-      isTaskOrType = tp.getPathCount() == 3;
+      //isTaskOrType = tp.getPathCount() == 3;
 
       element = ( DTDElement ) DNDConstants.ANT_DTD.elements.get( element_name );
       if ( element != null ) {
@@ -56,9 +61,9 @@ public class ElementPanel extends JPanel implements java.io.Serializable, java.l
       }
 
       // do some specific checking
-      if ( element_name.equals( DNDConstants.TARGET ) ) {
-         element_name = JOptionPane.showInputDialog( null, "Enter target name:" );
-      }
+      //if ( element_name.equals( DNDConstants.TARGET ) ) {
+      //   element_name = JOptionPane.showInputDialog( null, "2 Enter target name:" );
+      //}
 
       setLayout( new BorderLayout() );
       setBorder( new DropShadowBorder() );

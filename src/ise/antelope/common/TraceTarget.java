@@ -115,7 +115,7 @@ public class TraceTarget {
          Object depend = dependencies.nextElement();
          Project project = target.getProject();
          Hashtable targets = project.getTargets();
-         Target t = (Target)targets.get( depend.toString() );
+         Target t = ( Target ) targets.get( depend.toString() );
          sb.append( doTrace( t ) );
       }
       return sb.toString();
@@ -133,23 +133,31 @@ public class TraceTarget {
       StringBuffer sb = new StringBuffer();
       Task[] tasks = target.getTasks();
       for ( int i = 0; i < tasks.length; i++ ) {
-         Task task = tasks[i];
+         Task task = tasks[ i ];
          String task_name = task.getTaskName();
          if ( task_name.equals( "antcall" ) ) {
             // trace the target specified by an 'antcall' task
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
             Hashtable attrs = rc.getAttributeMap();
             Iterator it = attrs.keySet().iterator();
-            while(it.hasNext()) {
-               String name = (String)it.next();
-               String value = (String)attrs.get(name);
+            while ( it.hasNext() ) {
+               String name = ( String ) it.next();
+               String value = ( String ) attrs.get( name );
                if ( name.equals( "target" ) ) {
-                  Hashtable targets = target.getProject().getTargets();
-                  Target subtarget = (Target)targets.get( value );
-                  sb.append( "<" ).append( target.getName() ).append( ">" );
-                  sb.append( "[" ).append( task_name ).append( " target=" );
-                  sb.append( quote( subtarget.toString() ) ).append( "]" ).append( NL );
-                  sb.append( doTrace( subtarget ) );
+                  Project p = target.getProject();
+                  if (p == null)
+                     break;
+                  Hashtable targets = p.getTargets();
+                  Target subtarget = ( Target ) targets.get( value );
+                  if ( subtarget == null ) {
+                     sb.append( "Error: <antcall> calling non-existant target " ).append( value ).append(NL);
+                  }
+                  else {
+                     sb.append( "<" ).append( target.getName() ).append( ">" );
+                     sb.append( "[" ).append( task_name ).append( " target=" );
+                     sb.append( quote( subtarget.toString() ) ).append( "]" ).append( NL );
+                     sb.append( doTrace( subtarget ) );
+                  }
                }
             }
          }
@@ -163,9 +171,9 @@ public class TraceTarget {
             String dir = "";
             String subtarget = "";
             Iterator it = attrs.keySet().iterator();
-            while(it.hasNext()) {
-               String name = (String)it.next();
-               String value = (String)attrs.get(name);
+            while ( it.hasNext() ) {
+               String name = ( String ) it.next();
+               String value = ( String ) attrs.get( name );
                if ( name.equals( "antfile" ) )
                   antfile = value;
                if ( name.equals( "dir" ) )
@@ -189,7 +197,7 @@ public class TraceTarget {
                subtarget = p.getDefaultTarget();
             if ( p != null ) {
                Hashtable targets = p.getTargets();
-               Target remote_target = (Target)targets.get( subtarget );
+               Target remote_target = ( Target ) targets.get( subtarget );
                sb.append( doTrace( remote_target ) );
             }
          }
@@ -199,9 +207,9 @@ public class TraceTarget {
             String property_value = "";
             Hashtable attrs = rc.getAttributeMap();
             Iterator it = attrs.keySet().iterator();
-            while(it.hasNext()) {
-               String name = (String)it.next();
-               String value = (String)attrs.get(name);
+            while ( it.hasNext() ) {
+               String name = ( String ) it.next();
+               String value = ( String ) attrs.get( name );
                if ( name.equals( "name" ) )
                   property_name = value;
                if ( name.equals( "value" ) )
@@ -219,9 +227,9 @@ public class TraceTarget {
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
             Hashtable attrs = rc.getAttributeMap();
             Iterator it = attrs.keySet().iterator();
-            while(it.hasNext()) {
-               String name = (String)it.next();
-               String value = (String)attrs.get(name);
+            while ( it.hasNext() ) {
+               String name = ( String ) it.next();
+               String value = ( String ) attrs.get( name );
                value = parseValue( value, target.getProject() );
                sb.append( " " ).append( name ).append( "=" ).append( quote( value ) );
             }
@@ -279,7 +287,7 @@ public class TraceTarget {
          String match = matcher.group();
          sb.append( value.substring( index, matcher.start() ) );
          String var = trimCurly( match );
-         String val = (String)props.get( var );
+         String val = ( String ) props.get( var );
          if ( val == null ) {
             val = match;
             if ( !unknown_properties.contains( match ) ) {
@@ -332,7 +340,7 @@ public class TraceTarget {
       try {
          p.init();   // this takes as much as 9 seconds the first time, less than 1/2 second later
          ProjectHelper ph = ProjectHelper.getProjectHelper();
-         ph.parse(p, build_file);
+         ph.parse( p, build_file );
          p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
 
          // copy the inherited properties
@@ -341,7 +349,7 @@ public class TraceTarget {
          Iterator it = inherited.keySet().iterator();
          while ( it.hasNext() ) {
             Object key = it.next();
-            p.setUserProperty( (String)key, (String)inherited.get( key ) );
+            p.setUserProperty( ( String ) key, ( String ) inherited.get( key ) );
          }
       }
       catch ( Exception e ) {

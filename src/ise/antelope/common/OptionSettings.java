@@ -5,9 +5,11 @@ import java.util.prefs.Preferences;
 
 import org.apache.tools.ant.Project;
 
+/**
+ * Loads options per build file and general application settings.
+ */
 public class OptionSettings implements Constants {
 
-   private File _build_file;
    private Preferences _prefs;
    private boolean _save_before_run = true;
    private boolean _show_all_targets = true;
@@ -25,45 +27,45 @@ public class OptionSettings implements Constants {
    private boolean _show_button_text = false;
    private boolean _show_button_icon = true;
 
+
    /**
     * Loads the option settings for the given build file from the persistent
     * storage for settings. 
     */
    public OptionSettings( File build_file ) {
-      if ( build_file == null )
-         throw new IllegalArgumentException( "build file is null" );
-      _build_file = build_file;
-      load();
+      load( build_file );
    }
 
-   public void load() {
-      // per build file settings
-      int hashCode = _build_file.hashCode();
-      _prefs = PREFS.node( String.valueOf( hashCode ) );
-      _save_before_run = _prefs.getBoolean( SAVE_BEFORE_RUN, true );
-      _show_all_targets = _prefs.getBoolean( SHOW_ALL_TARGETS, true );
-      _show_targets_wo_desc = _prefs.getBoolean( SHOW_TARGETS_WO_DESC, false );
-      _show_targets_w_dot = _prefs.getBoolean( SHOW_TARGETS_W_DOTS, false );
-      _show_targets_w_dash = _prefs.getBoolean( SHOW_TARGETS_W_DASH, false );
-      _message_level = _prefs.getInt( MSG_LEVEL, Project.MSG_INFO );
-      _show_build_events = _prefs.getBoolean( SHOW_BUILD_EVENTS, true );
-      _show_target_events = _prefs.getBoolean( SHOW_TARGET_EVENTS, false );
-      _show_task_events = _prefs.getBoolean( SHOW_TASK_EVENTS, false );
-      _show_log_messages = _prefs.getBoolean( SHOW_LOG_MSGS, true );
-      _use_error_parsing = _prefs.getBoolean( USE_ERROR_PARSING, true );
-      _show_performance_output = _prefs.getBoolean( SHOW_PERFORMANCE_OUTPUT, false );
-      _auto_reload = _prefs.getBoolean( AUTO_RELOAD, true );
-      
+   public void load( File build_file ) {
       // application settings
-      _show_button_text = PREFS.getBoolean(SHOW_BUTTON_TEXT, false);
-      _show_button_icon = PREFS.getBoolean(SHOW_BUTTON_ICON, true);
+      _show_button_text = PREFS.getBoolean( SHOW_BUTTON_TEXT, false );
+      _show_button_icon = PREFS.getBoolean( SHOW_BUTTON_ICON, true );
+
+      // per build file settings
+      if ( build_file != null ) {
+         int hashCode = build_file.hashCode();
+         _prefs = PREFS.node( String.valueOf( hashCode ) );
+         _save_before_run = _prefs.getBoolean( SAVE_BEFORE_RUN, true );
+         _show_all_targets = _prefs.getBoolean( SHOW_ALL_TARGETS, true );
+         _show_targets_wo_desc = _prefs.getBoolean( SHOW_TARGETS_WO_DESC, false );
+         _show_targets_w_dot = _prefs.getBoolean( SHOW_TARGETS_W_DOTS, false );
+         _show_targets_w_dash = _prefs.getBoolean( SHOW_TARGETS_W_DASH, false );
+         _message_level = _prefs.getInt( MSG_LEVEL, Project.MSG_INFO );
+         _show_build_events = _prefs.getBoolean( SHOW_BUILD_EVENTS, true );
+         _show_target_events = _prefs.getBoolean( SHOW_TARGET_EVENTS, false );
+         _show_task_events = _prefs.getBoolean( SHOW_TASK_EVENTS, false );
+         _show_log_messages = _prefs.getBoolean( SHOW_LOG_MSGS, true );
+         _use_error_parsing = _prefs.getBoolean( USE_ERROR_PARSING, true );
+         _show_performance_output = _prefs.getBoolean( SHOW_PERFORMANCE_OUTPUT, false );
+         _auto_reload = _prefs.getBoolean( AUTO_RELOAD, true );
+      }
    }
 
    public void save() {
       // application settings
-      PREFS.putBoolean( SHOW_BUTTON_TEXT, _show_button_text);
-      PREFS.putBoolean( SHOW_BUTTON_ICON, _show_button_icon);
-      
+      PREFS.putBoolean( SHOW_BUTTON_TEXT, _show_button_text );
+      PREFS.putBoolean( SHOW_BUTTON_ICON, _show_button_icon );
+
       // per build file settings
       if ( _prefs == null )
          return ;
@@ -194,20 +196,20 @@ public class OptionSettings implements Constants {
    public boolean getShowLogMessages() {
       return _show_log_messages;
    }
-   
-   public void setShowButtonText(boolean b) {
-      _show_button_text = b;  
+
+   public void setShowButtonText( boolean b ) {
+      _show_button_text = b;
    }
-   
+
    public boolean getShowButtonText() {
-      return _show_button_text;  
+      return _show_button_text;
    }
-   
-   public void setShowButtonIcon(boolean b) {
-      _show_button_icon = b;  
+
+   public void setShowButtonIcon( boolean b ) {
+      _show_button_icon = b;
    }
-   
+
    public boolean getShowButtonIcon() {
-      return _show_button_icon;  
+      return _show_button_icon;
    }
 }

@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.*;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -44,7 +46,9 @@ public class SAXNodeHandler extends DefaultHandler {
    private boolean isImported = false;
 
    private HashMap propertyFiles = null;
-
+   
+   private Logger _logger = Logger.getLogger( "ise.antelope.Antelope" );
+   
    // need to update occassionally as new versions of Ant are released.
    // these lists are from Ant 1.6.1.
    private List taskList = Arrays.asList( new String[] {"propertyfile", "importtypelib", "vsscheckin", "sql", "cvspass", "p4reopen", "csc", "dirname", "wlrun", "p4label", "p4revert", "replaceregexp", "get", "jjtree", "sleep", "jarlib-display", "dependset", "zip", "patch", "jspc", "style", "test", "tstamp", "unwar", "vsshistory", "icontract", "cvschangelog", "p4submit", "ccmcheckin", "p4change", "bzip2", "sync", "p4delete", "vssadd", "javadoc", "p4integrate", "translate", "signjar", "cclock", "chown", "vajload", "jarlib-available", "WsdlToDotnet", "buildnumber", "jpcovmerge", "ejbjar", "war", "rename", "sequential", "serverdeploy", "property", "subant", "move", "ildasm", "copydir", "cccheckin", "ccunlock", "wljspc", "fixcrlf", "sosget", "pathconvert", "record", "p4sync", "exec", "ccmklabel", "p4edit", "manifest", "maudit", "antlr", "netrexxc", "jpcovreport", "execon", "ccmcheckout", "ant", "xmlvalidate", "xslt", "p4resolve", "iplanet-ejbc", "ccmcheckintask", "gzip", "native2ascii", "ccrmtype", "starteam", "ear", "input", "presetdef", "rmic", "checksum", "mail", "loadfile", "vsscheckout", "stylebook", "soscheckin", "mimemail", "stlabel", "gunzip", "concat", "cab", "touch", "parallel", "splash", "antcall", "ccmkbl", "cccheckout", "typedef", "p4have", "filter", "xmlproperty", "import", "copy", "jsharpc", "symlink", "antstructure", "script", "ccmcreatetask", "rpm", "delete", "replace", "mmetrics", "attrib", "waitfor", "untar", "loadproperties", "available", "echoproperties", "chgrp", "vajexport", "bunzip2", "whichresource", "copyfile", "p4labelsync", "vsscreate", "macrodef", "ejbc", "unjar", "vbc", "wsdltodotnet", "mkdir", "condition", "cvs", "tempfile", "junitreport", "taskdef", "echo", "ccupdate", "java", "vsslabel", "renameext", "basename", "javadoc2", "tar", "vsscp", "vajimport", "p4fstat", "setproxy", "p4counter", "wlstop", "ilasm", "soscheckout", "apply", "ccuncheckout", "jarlib-resolve", "jlink", "cvstagdiff", "javacc", "chmod", "pvcs", "jarlib-manifest", "jar", "ccmklbtype", "sound", "scriptdef", "defaultexcludes", "mparse", "blgenclient", "uptodate", "jjdoc", "genkey", "javah", "ccmreconfigure", "fail", "unzip", "javac", "p4add", "jpcoverage", "soslabel", "depend", "vssget", "deltree", "ddcreator"} );
@@ -62,7 +66,12 @@ public class SAXNodeHandler extends DefaultHandler {
     * @param in the source file
     */
    public SAXNodeHandler( File in ) {
+      this( in, false );
+   }
+
+   public SAXNodeHandler( File in, boolean imported ) {
       infile = in;
+      isImported = imported;
    }
 
    /**
@@ -101,93 +110,122 @@ public class SAXNodeHandler extends DefaultHandler {
     * @exception SAXException  Description of the Exception
     */
    public void startElement( String uri, String localName, String qName, Attributes attributes ) throws SAXException {
-      Locator l = new LocatorImpl( locator );
-      SAXTreeNode child = new SAXTreeNode( qName, new Point( l.getLineNumber(), l.getColumnNumber() ), attributes );
-      child.setImported( isImported );
+      try {
+         Locator l = new LocatorImpl( locator );
+         SAXTreeNode child = new SAXTreeNode( qName, new Point( l.getLineNumber(), l.getColumnNumber() ), attributes );
+         child.setImported( isImported );
 
-      // maybe mark this element as a project, target, task, or type
-      setKind( qName, child );
+         // maybe mark this element as a project, target, task, or type
+         setKind( qName, child );
 
-      // set the source file for the node. Elements from included files will
-      // have a systemId set, elements in the base file will not, nor will
-      // imported files.
-      /// might need to deal with http as well as file
-      if ( l.getSystemId() != null && l.getSystemId().startsWith( "file:" ) ) {
-         String sid = l.getSystemId();
-         if ( sid.startsWith( "file:" ) )
-            sid = sid.substring( "file:".length() );
-         File f = new File( sid );
-         if ( !f.exists() && infile != null ) {
-            File dir = infile;
-            if ( !dir.isDirectory() )
-               dir = dir.getParentFile();
-            f = new File( dir, f.getName() );
-         }
-         child.setFile( f );
-      }
-      else if ( infile != null ) {
-         child.setFile( infile );
-      }
-
-      // for the <import> task, load the imported file
-      if ( qName.equals( "import" ) ) {
-         // verify the imported file exists
-         int index = attributes.getIndex( "file" );
-         if ( index > -1 ) {
-            String filename = attributes.getValue( index );
-            File f = new File( filename );
-            if ( !f.exists() ) {
-               f = new File( infile.getParent(), filename );
+         // set the source file for the node. Elements from included files will
+         // have a systemId set, elements in the base file will not, nor will
+         // imported files.
+         /// might need to deal with http as well as file
+         if ( l.getSystemId() != null && l.getSystemId().startsWith( "file:" ) ) {
+            String sid = l.getSystemId();
+            if ( sid.startsWith( "file:" ) )
+               sid = sid.substring( "file:".length() );
+            File f = new File( sid );
+            if ( !f.exists() && infile != null ) {
+               File dir = infile;
+               if ( !dir.isDirectory() )
+                  dir = dir.getParentFile();
+               f = new File( dir, f.getName() );
             }
-            if ( f.exists() ) {
-               try {
-                  // stash the current settings
-                  SAXTreeNode old_root = getRoot();
-                  Locator old_locator = locator;
-                  Locator old_doc_locator = docLocator;
-                  File old_infile = infile;
-                  boolean old_is_imported = isImported;
+            child.setFile( f );
+         }
+         else if ( infile != null ) {
+            child.setFile( infile );
+         }
 
-                  // adjust the settings for the imported file
-                  infile = f;
-                  isImported = true;
-
-                  // do the import
-                  InputSource source = new InputSource( new FileReader( f ) );
-                  SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-                  parser.parse( source, this );
-
-                  // restore the previous settings
-                  rootNode = old_root;
-                  locator = old_locator;
-                  docLocator = old_doc_locator;
-                  infile = old_infile;
-                  isImported = old_is_imported;
+         // for the <import> task, load the imported file
+         if ( qName.equals( "import" ) ) {
+            // verify the imported file exists
+            int index = attributes.getIndex( "file" );
+            if ( index > -1 ) {
+               String filename = attributes.getValue( index );
+               File f = new File( filename );
+               if ( !f.exists() ) {
+                  f = new File( infile.getParent(), filename );
                }
-               catch ( Exception e ) {
-                  e.printStackTrace();
+               if ( f.exists() ) {
+                  try {
+                     // stash the current settings
+                     SAXTreeNode old_root = getRoot();
+                     Locator old_locator = locator;
+                     Locator old_doc_locator = docLocator;
+                     File old_infile = infile;
+                     boolean old_is_imported = isImported;
+
+                     // adjust the settings for the imported file
+                     infile = f;
+                     isImported = true;
+
+                     // do the import
+                     InputSource source = new InputSource( new FileReader( f ) );
+                     SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+                     SAXNodeHandler handler = new SAXNodeHandler( f, true );
+                     parser.parse( source, handler );
+                     child = handler.getRoot();
+
+                     // restore the previous settings
+                     rootNode = old_root;
+                     locator = old_locator;
+                     docLocator = old_doc_locator;
+                     infile = old_infile;
+                     isImported = old_is_imported;
+                  }
+                  catch ( Exception e ) {
+                     StringBuffer sb = new StringBuffer();
+                     sb.append( "<html>Error loading imported file: " ).append( f.getAbsolutePath() ).append( "<br>" );
+                     sb.append( "at line number: " ).append( l.getLineNumber() ).append( ", col number: " ).append( l.getColumnNumber() ).append( "<p>" );
+                     sb.append( "The specific error is: " ).append( e.getMessage() ).append( "<p>" );
+                     sb.append( "Do you want to load the rest of the file?" );
+                     int rtn = JOptionPane.showConfirmDialog( null, sb.toString(), "Error loading build file", JOptionPane.ERROR_MESSAGE );
+                     if ( rtn == JOptionPane.NO_OPTION )
+                        throw new SAXException( e );
+                  }
                }
             }
          }
-      }
 
-      // maybe store some dependant property files
-      if ( qName.equals( "property" ) && child.getAttributeValue( "file" ) != null ) {
-         addPropertyFile( child, "file" );
-      }
-      else if ( qName.equals( "loadproperties" ) && child.getAttributeValue( "srcfile" ) != null ) {
-         addPropertyFile( child, "srcfile" );
-      }
+         // maybe store some dependant property files
+         if ( qName.equals( "property" ) && child.getAttributeValue( "file" ) != null ) {
+            addPropertyFile( child, "file" );
+         }
+         else if ( qName.equals( "loadproperties" ) && child.getAttributeValue( "srcfile" ) != null ) {
+            addPropertyFile( child, "srcfile" );
+         }
 
 
-      if ( stack.empty() ) {
-         rootNode = child;
+         // add the child to the parent node
+         if ( stack.empty() ) {
+            rootNode = child;
+         }
+         else {
+            SAXTreeNode parent = ( SAXTreeNode ) stack.peek();
+            parent.add( child );
+            // check if this node is the default target for the build file
+            if ( child.isTarget() ) {
+               String default_target = parent.getAttributeValue( "default" );
+               String child_target = child.getAttributeValue( "name" );
+               if ( default_target != null && child_target != null && default_target.equals( child_target ) ) {
+                  child.setDefaultTarget( true );
+               }
+            }
+         }
+
+
+         stack.push( child );
       }
-      else {
-         SAXTreeNode parent = ( SAXTreeNode ) stack.peek();
-         parent.add( child );
+      catch ( SAXException se ) {
+         StringBuffer sb = new StringBuffer();
+         sb.append( "<html>Error loading build file " );
+         sb.append( "at line number: " ).append( locator.getLineNumber() ).append( ", col number: " ).append( locator.getColumnNumber() ).append( "<p>" );
+         sb.append( "The specific error is: " ).append( se.getMessage() ).append( "<p>" );
+         throw new SAXException(sb.toString());
       }
-      stack.push( child );
    }
 
 
@@ -221,6 +259,14 @@ public class SAXNodeHandler extends DefaultHandler {
                return is;
             }
             catch ( Exception e ) {
+               StringBuffer sb = new StringBuffer();
+               sb.append( "<html>Error loading included resource: " ).append( systemId ).append( "<br>" );
+               sb.append( "at line number: " ).append( locator.getLineNumber() ).append( ", col number: " ).append( locator.getColumnNumber() ).append( "<p>" );
+               sb.append( "The specific error is: " ).append( e.getMessage() ).append( "<p>" );
+               sb.append( "Do you want to load the rest of the file?" );
+               int rtn = JOptionPane.showConfirmDialog( null, sb.toString(), "Error loading build file", JOptionPane.ERROR_MESSAGE );
+               if ( rtn == JOptionPane.NO_OPTION )
+                  throw new RuntimeException( e );
                return null;
             }
          }
@@ -241,6 +287,14 @@ public class SAXNodeHandler extends DefaultHandler {
                   return is;
                }
                catch ( Exception e ) {
+                  StringBuffer sb = new StringBuffer();
+                  sb.append( "<html>Error loading included resource: " ).append( systemId ).append( "<br>" );
+                  sb.append( "at line number: " ).append( locator.getLineNumber() ).append( ", col number: " ).append( locator.getColumnNumber() ).append( "<p>" );
+                  sb.append( "The specific error is: " ).append( e.getMessage() ).append( "<p>" );
+                  sb.append( "Do you want to load the rest of the file?" );
+                  int rtn = JOptionPane.showConfirmDialog( null, sb.toString(), "Error loading build file", JOptionPane.ERROR_MESSAGE );
+                  if ( rtn == JOptionPane.NO_OPTION )
+                     throw new RuntimeException( e );
                   return null;
                }
             }
@@ -252,6 +306,14 @@ public class SAXNodeHandler extends DefaultHandler {
                   return is;
                }
                catch ( Exception e ) {
+                  StringBuffer sb = new StringBuffer();
+                  sb.append( "<html>Error loading included resource: " ).append( systemId ).append( "<br>" );
+                  sb.append( "at line number: " ).append( locator.getLineNumber() ).append( ", col number: " ).append( locator.getColumnNumber() ).append( "<p>" );
+                  sb.append( "The specific error is: " ).append( e.getMessage() ).append( "<p>" );
+                  sb.append( "Do you want to load the rest of the file?" );
+                  int rtn = JOptionPane.showConfirmDialog( null, sb.toString(), "Error loading build file", JOptionPane.ERROR_MESSAGE );
+                  if ( rtn == JOptionPane.NO_OPTION )
+                     throw new RuntimeException( e );
                   return null;
                }
             }
@@ -291,8 +353,12 @@ public class SAXNodeHandler extends DefaultHandler {
             f = new File( child.getFile().getParentFile(), filename );
          }
       }
-      if ( f.exists() ) 
+      if ( f.exists() )
          propertyFiles.put( f, new Long( f.lastModified() ) );
+      else {
+         propertyFiles.put(filename, new Long(0));
+         //_logger.warning("Warning:" + Constants.NL + "Property file " + filename + " not found, will attempt to resolve later.");
+      }
    }
 
    /**

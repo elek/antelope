@@ -52,7 +52,7 @@ Antelope.menu.label=Antelope
 # menu separator to be inserted. This line also must start with the string 
 # passed to the GUIUtilities.loadMenu method in createMenuItems. The items
 # are the action names as set in the actions.xml file.
-plugin.ise.antelope.plugin.AntelopePlugin.menu=antelope.show - antelope.hide - antelope.toggle
+plugin.ise.antelope.plugin.AntelopePlugin.menu=antelope.show - antelope.hide - antelope.toggle - antelope.default
 
 # the next three items are the labels to add to a submenu on
 # the plugins menu for the AntelopePlugin. The plugins menu will have
@@ -62,6 +62,7 @@ plugin.ise.antelope.plugin.AntelopePlugin.menu=antelope.show - antelope.hide - a
 antelope.show.label=Show
 antelope.hide.label=Hide
 antelope.toggle.label=Toggle
+antelope.default.label=Run Default Target
 
 #-----------------------
 # option pane settings

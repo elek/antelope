@@ -1,6 +1,17 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.1.3:
+12 Apr 2004
+o Fixed the threading for running the default target from a jEdit shortcut.
+
+3.1.2:
+9 Apr 2004
+o Fixed a bug introduced in 3.1.0 that caused a NPE on an fresh install of Antelope as a jEdit plugin. I had added some icons to the button panel, but forgot that the default settings wouldn't be read unless there was a previously opened build file, which isn't the case on a new install. 
+o The default target is now shown with a green color text. 
+o Running the default target can be added as a short cut in jEdit. There's something a bit weird about how this works, no output is displayed until the target is complete, so it looks like nothing is happening, then all of a sudden the entire output is shown. Coincidentally, this specific feature was requested in e-mail yesterday. 
+o Added some new icons to the Edit tree. Private targets have gray target icons, the default target is green, public targets are black target icons. Imported (via the <import> task) are the same colors, except bulls eye on the targets is red. 
+
 3.1.0:
 30 Mar 2004
 o added reload button to control panel.
@@ -9,7 +20,7 @@ o changed text to icons on all buttons in conrol panel.
 o updated build file to make building the docs while disconnected easier.
 
 3.0.7:
-o Changed the preferences again. The custom preferences are now used on all platforms and all jvm versions, but the custom preferences no longer are the system default preferences. This means if you ran version 3.0.6, you will loose any stored settings, but all settings from any previous version of Antelope are available and will be use. I never felt comfortable about doing that anyway. The point of implementing the custom preferences was to get around an annoying bug in the Unix/Linux implementation of java.util.prefs. If you are still running with a jvm that has that bug (see bugs 4868444 and 4751177 at java.sun.com) and want to get rid of all the annoying messages, add this to your command line when starting Antelope:
+o Changed the preferences again. The custom preferences are now used on all platforms and all jvm versions, but the custom preferences no longer are the system default preferences. This means if you ran version 3.0.6 (and 3.0.6 only), you will loose any stored settings, but all settings from any previous version of Antelope are available and will be use. I never felt comfortable about doing that anyway. The point of implementing the custom preferences was to get around an annoying bug in the Unix/Linux implementation of java.util.prefs. If you are still running with a jvm that has that bug (see bugs 4868444 and 4751177 at java.sun.com) and want to get rid of all the annoying messages, add this to your command line when starting Antelope:
 
 -Djava.util.prefs.PreferencesFactory=ise.library.UserPreferences
 

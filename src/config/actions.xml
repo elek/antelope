@@ -28,5 +28,18 @@
          return view.getDockableWindowManager().isDockableWindowVisible(ise.antelope.plugin.AntelopePlugin.NAME);
       </IS_SELECTED>
    </ACTION>
+   
+   <ACTION NAME="antelope.default">
+      <CODE>
+         ise.antelope.plugin.AntelopePlugin plugin = jEdit.getPlugin("ise.antelope.plugin.AntelopePlugin");
+         final View myview = view;
+         SwingUtilities.invokeLater(new Runnable(){
+            public void run() {
+               plugin.executeDefaultTarget(myview);
+            }
+         });
+      </CODE>
+   </ACTION>
+  
 </ACTIONS>
 

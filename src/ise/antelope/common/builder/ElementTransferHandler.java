@@ -1,7 +1,7 @@
 package ise.antelope.common.builder;
 
 import javax.swing.*;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.awt.datatransfer.*;
 import com.wutka.dtd.*;
 import java.util.*;
@@ -69,9 +69,9 @@ public class ElementTransferHandler extends TransferHandler {
          if(data != null)
             ep = (ElementPanel)data;
          else {
-            data = t.getTransferData(new TreePathFlavor());
+            data = t.getTransferData(new TreeNodeFlavor());
             if (data != null){
-               TreePath tp = (TreePath)data;
+               TreeNode tp = (TreeNode)data;
                ep = new ElementPanel(tp);
             }
             else

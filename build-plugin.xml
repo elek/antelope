@@ -21,6 +21,8 @@
     
     <!-- source code directory, this is where the .java files live -->
    <property name="src.dir" location="src" />
+   
+   <property name="lib.dir" location="lib"/>
     
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
@@ -51,6 +53,11 @@
          <!-- include classes directory -->
          <pathelement location="${classes.dir}" />
          <pathelement path="${java.class.path}"/>
+         
+         <!-- include third party libraries -->
+         <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+         </fileset>
          
          <!-- include jedit.jar and dependent plugins -->
          <pathelement location="${jedit.install.dir}/jedit.jar" />

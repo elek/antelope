@@ -4,7 +4,8 @@
     </description>
     
     <!-- read build.props to override properties set below -->
-    <property file="build.props"/>
+    <property name="build.props" value="build.props"/>
+    <property file="${build.props}"/>
 
     <!-- version number, override in build.props if necessary -->
     <property name="build.num" value="3.0.3"/>
@@ -31,6 +32,9 @@
     included in the finished jar file. -->
     <property name="classes.dir" location="classes" />
     
+    <!-- location for third party library files -->
+    <property name="lib.dir" location="lib"/>
+    
     <!-- where to put the finished distribution file -->
     <property name="dist.dir" location="dist"/>
     
@@ -48,6 +52,9 @@
       <path id="classpathref">
          <pathelement location="${classes.dir}" />
          <pathelement path="${java.class.path}"/>
+         <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+         </fileset>
       </path>
    </target>
 
@@ -165,7 +172,7 @@
    <target name="runBuilder" 
            description="Runs Antelope Builder as a standalone app."
            depends="setClasspath, copy_resources">
-      <java classname="ise.antelope.common.builder.ProjectBuilder" fork="true">
+      <java classname="ise.antelope.common.dependency.DependencyViewer" fork="true">
          <classpath refid="classpathref"/>
       </java>
    </target>

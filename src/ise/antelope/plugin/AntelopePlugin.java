@@ -317,7 +317,7 @@ public class AntelopePlugin extends EBPlugin implements Constants {
          if ( app != null ) {
             AntelopePanel panel = app.getAntelopePanel();
             panel.createProject( buildFile );
-            panel.executeTarget( null, target );
+            panel.executeTarget( target );
             return ;
          }
 
@@ -325,7 +325,7 @@ public class AntelopePlugin extends EBPlugin implements Constants {
          ErrorSource.registerErrorSource( es );
          AntelopePanel panel = new AntelopePanel( buildFile, null, false );
          panel.addLogHandler( new ConsolePluginHandler( view, es ) );
-         panel.executeTarget( null, target );
+         panel.executeTarget( target );
       }
       catch ( Exception e ) {
          Log.log( Log.DEBUG, AntelopePlugin.class, "EXCEPTION: " + e.getMessage() );
@@ -333,6 +333,25 @@ public class AntelopePlugin extends EBPlugin implements Constants {
       }
 
    }
+
+
+   public static void executeDefaultTarget( View view ) {
+      try {
+         AntelopePluginPanel app = ( AntelopePluginPanel ) panelList.get( view );
+         if ( app != null ) {
+            AntelopePanel panel = app.getAntelopePanel();
+            panel.executeDefaultTarget();
+            return ;
+         }
+      }
+      catch ( Exception e ) {
+         Log.log( Log.DEBUG, AntelopePlugin.class, "EXCEPTION: " + e.getMessage() );
+         e.printStackTrace();
+      }
+
+   }
+
+
 
    /**
     * @return a list of targets found in the given build file.   
