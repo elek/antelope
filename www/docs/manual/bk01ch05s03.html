@@ -1,40 +1,8 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Antelope as a jEdit Plugin</title><link href="./style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="index.html" title="Antelope Users Guide"><link rel="up" href="bk01ch05.html" title="Chapter&nbsp;5.&nbsp;Running Antelope"><link rel="previous" href="bk01ch05s02.html" title="Antelope as a Stand-Alone Application"><link rel="next" href="bk01ch06.html" title="Chapter&nbsp;6.&nbsp;Running Ant Targets"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Antelope as a jEdit Plugin</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="bk01ch05s02.html">Prev</a>&nbsp;</td><th align="center" width="60%">Chapter&nbsp;5.&nbsp;Running Antelope</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="bk01ch06.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="plugin"></a>Antelope as a jEdit Plugin</h2></div></div><div></div></div><p>
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Antelope as a jEdit Plugin</title><link href="./style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.65.1" name="generator"><link rel="home" href="index.html" title="Antelope Users Guide"><link rel="up" href="bk01ch05.html" title="Chapter&nbsp;5.&nbsp;Running Antelope"><link rel="previous" href="bk01ch05s02.html" title="Antelope as a Stand-Alone Application"><link rel="next" href="bk01ch06.html" title="Chapter&nbsp;6.&nbsp;Running Ant Targets"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Antelope as a jEdit Plugin</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="bk01ch05s02.html">Prev</a>&nbsp;</td><th align="center" width="60%">Chapter&nbsp;5.&nbsp;Running Antelope</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="bk01ch06.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="plugin"></a>Antelope as a jEdit Plugin</h2></div></div><div></div></div><p>
 <span class="bold"><b><span class="italic">Due to changes in the jEdit API, Antelope plugin versions prior to 2.60 are for jEdit 4.1, versions 2.60 and later require jEdit 4.2 or later.
 </span></b></span>
 </p><p>
-Antelope is packaged as a single jar file, AntelopePlugin_3.0.5.jar. To install Antelope in jEdit, there are two options: install using the plugin manager and by hand.
-</p><p>
-The easiest way to get the latest version of Antelope installed into jEdit is to use the "install.xml" script:
-</p><p>
-<pre class="programlisting">
-
-    cd AntelopePlugin_3.0.5
-    ant -f install.xml
-
-</pre>
-</p><p>
-This will install Antelope into jEdit with a minimum of hassle. This approach assumes that you already have a working Ant installation, which is a requirement for Antelope anyway.
-</p><p>
-To install using the plugin manager in jEdit, click the "Plugins" menu, then "Plugin Manager", then "Install Plugins". Pick Antelope from the list of available plugins and follow the instructions.
-</p><p>
-You may want to install Antelope by hand to use a version later than that provided by the plugin manager. Almost always, a newer version of Antelope will be available on the Antelope project web site than is available via the plugin manager. To install by hand, copy Antelope.jar to ${user.home}/.jedit/jars. Several other jar files are required:
-</p><div class="itemizedlist"><ul type="disc"><li><p>
-<span class="bold"><b>ant.jar</b></span> Antelope requires Ant to do anything useful. Ant is available at http://ant.apache.org. Copy or link this file to ${user.home}/.jedit/jars. If you have installed the "AntFarm" plugin, you already have some version of Ant installed. I recommend getting the latest from Apache and installing it yourself.
-</p></li><li><p>
-<span class="bold"><b>(Ant 1.5.x) optional.jar</b></span> This is an optional library that is distributed with Ant. It has additional Ant tasks that may be useful. Copy or link this file to ${user.home}/.jedit/jars as required. 
-</p></li><li><p><span class="bold"><b>(Ant 1.6.x) ant-launcher.jar</b></span> Ant 1.6.0 split the main ant.jar into a number of smaller files to improve performance and managability. For Ant 1.6.x, ant-launcher.jar is the file that is used to actually start Ant. Copy or link this file to ${user.home}/.jedit/jars.
-</p></li><li><p>
-<span class="bold"><b>tools.jar</b></span> This is distributed with the Java Software Development Kit. If your build file makes use of any of the JDK tools (such as javac or javadoc), you need this in the classpath. The AntelopePlugin asks jEdit to load tools.jar automatically, but depending on your environment (jEdit is running in a plain JRE, for example), this may fail. Copy or link this file to ${user.home}/.jedit/jars if you need it and jEdit can't load it. Antelope will tell you when it can't find a tool from this jar the first time you try to use the tool.
-</p></li><li><p>
-<span class="bold"><b>Console.jar</b></span> This is a jEdit plugin and is required. Output from Antelope will be displayed in the Console. Make sure jEdit has this plugin installed.
-</p></li><li><p>
-<span class="bold"><b>ErrorList.jar</b></span> This is another jEdit plugin and is required. Errors produced by Ant are displayed by Antelope in the ErrorList plugin. Make sure jEdit has this plugin installed.
-</p></li><li><p>
-<span class="bold"><b>An XML parser</b></span> This can be one of several publicly available XML parsers. Ant is shipped with the Xerces parser. To use the Xerces parser shipped with Ant, add xercesImpl.jar and xml-api.jar from the ${ant.home}/lib directory to your classpath. If you have the XML plugin installed, then you already have a version of Xerces installed.
-</p><p>
-<span class="bold"><a name="xmlparser"></a><b>Note:</b></span> There is sometimes a problem with various jEdit plugins and xml parsers. Generally, this is due to a conflict with several similar parsers being in the class path. The simplest way to resolve this issue (and this procedure is recommended by Sun) is to remove ALL xml parsers (xerces, crimson, xml4j, etc) from the ${user.home}/.jedit/jar directory and copy ONE of them to your ${JAVA_HOME}/jre/lib/endorsed directory. If you do not have permission to write to that directory, then copy it to your ${jedit.home}/jars directory. This will ensure that a good parser is in your classpath, that it is loaded before any plugins, and that there will be no conflicts from having multiple parsers. My recommendation is that the Xerces parser packaged with Ant be used as it is generally one of the newer versions and has been tested heavily with Ant. I personally have not had any problem with this procedure, and I use both Antelope and the XML plugin regularly with jEdit.
-</p></li></ul></div><p>
 Here is Antelope running in jEdit:
 </p><p>
-<div class="figure"><a name="N101DA"></a><p class="title"><b>Figure&nbsp;5.3.&nbsp;Antelope in jEdit</b></p><img src="jedit.gif" alt="Antelope in jEdit"></div>
+<div class="figure"><a name="N101D8"></a><p class="title"><b>Figure&nbsp;5.6.&nbsp;Antelope in jEdit</b></p><img src="jedit.gif" alt="Antelope in jEdit"></div>
 </p></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="bk01ch05s02.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="bk01ch05.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="bk01ch06.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Antelope as a Stand-Alone Application&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;6.&nbsp;Running Ant Targets</td></tr></table></div></body></html>
