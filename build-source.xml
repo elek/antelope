@@ -15,6 +15,8 @@
     <!-- source code directory, this is where the .java files live -->
     <property name="src.dir" location="src" />
     
+    <property name="lib.dir" location="lib" />
+    
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
     <property name="prep.dir" location="prep"/>
@@ -46,6 +48,9 @@
         <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${basedir}">
               <include name="src/**/*"/>
+           </zipfileset>
+           <zipfileset prefix="${ant.project.name}_${build.num}" dir="${lib.dir}">
+              <include name="**/*.jar"/>
            </zipfileset>
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}">
               <include name="docs/manual/**/*"/>

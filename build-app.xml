@@ -146,6 +146,9 @@
               <include name="install.txt"/>
               <include name="ChangeLog.txt"/>
            </zipfileset>
+           <zipfileset prefix="${ant.project.name}_${build.num}/lib" dir="${lib.dir}">
+              <include name="**/*.jar"/>
+           </zipfileset>
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${basedir}">
               <include name="run.xml"/>
            </zipfileset>

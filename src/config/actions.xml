@@ -40,6 +40,18 @@
          });
       </CODE>
    </ACTION>
+
+   <ACTION NAME="antelope.lastran">
+      <CODE>
+         ise.antelope.plugin.AntelopePlugin plugin = jEdit.getPlugin("ise.antelope.plugin.AntelopePlugin");
+         final View myview = view;
+         SwingUtilities.invokeLater(new Runnable(){
+            public void run() {
+               plugin.executeLastRanTargets(myview);
+            }
+         });
+      </CODE>
+   </ACTION>
   
 </ACTIONS>
 

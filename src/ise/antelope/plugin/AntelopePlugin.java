@@ -351,6 +351,21 @@ public class AntelopePlugin extends EBPlugin implements Constants {
 
    }
 
+   public static void executeLastRanTargets( View view ) {
+      try {
+         AntelopePluginPanel app = ( AntelopePluginPanel ) panelList.get( view );
+         if ( app != null ) {
+            AntelopePanel panel = app.getAntelopePanel();
+            panel.executeLastRanTargets();
+            return ;
+         }
+      }
+      catch ( Exception e ) {
+         Log.log( Log.DEBUG, AntelopePlugin.class, "EXCEPTION: " + e.getMessage() );
+         e.printStackTrace();
+      }
+
+   }
 
 
    /**

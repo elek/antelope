@@ -17,6 +17,8 @@
     
     <!-- source code directory, this is where the .java files live -->
    <property name="src.dir" location="src" />
+   
+   <property name="lib.dir" location="lib"/>
     
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
@@ -40,6 +42,9 @@
          </zipfileset>
          <zipfileset dir="${basedir}" includes="build-plugin.xml" fullpath="${app.name}/build.xml"/>
          <zipfileset prefix="${app.name}" dir="${basedir}" includes="build.props"/>
+         <zipfileset prefix="${app.name}/lib" dir="${lib.dir}">
+            <include name="**/*.jar"/>
+         </zipfileset>
          <zipfileset prefix="${app.name}/src" dir="${src.dir}">
             <include name="**/common/*"/>
             <include name="**/tasks/*"/>

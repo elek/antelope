@@ -78,11 +78,9 @@ public class AntelopePanel extends JPanel implements Constants {
 
    private OptionSettings _settings = null;
 
-   /** Description of the Field */
    private AntLogger _build_logger = null;
    private AntPerformanceListener _performance_listener = null;
 
-   /** Description of the Field */
    private AntProject _project = null;
    private HashMap _property_files = null;
 
@@ -92,11 +90,9 @@ public class AntelopePanel extends JPanel implements Constants {
     */
    private Target _unnamed_target = null;
 
-   /** Description of the Field */
    private TreeMap _targets = null;   // key is a String, value is a Target
    private ArrayList _buttons = null;
    private ArrayList _execute_targets = null;
-   /** Description of the Field */
    private DeckPanel _center_panel = null;
    private JPanel _button_panel = null;
    private JTabbedPane _tabs = null;
@@ -112,41 +108,35 @@ public class AntelopePanel extends JPanel implements Constants {
    private JCheckBox _multi = new JCheckBox( "Multiple targets" );
    private AbstractButton _default_btn = null;
 
-   /** Description of the Field */
    private JScrollPane _scroller = null;   // for the button panel
    private JPanel _btn_container = null;
 
-   /** Description of the Field */
    private JTextField _project_name = null;
-   /** Description of the Field */
    private File _last_directory = null;   // for the file chooser
-   /** Description of the Field */
    private File _build_file = null;   // the current Ant build file
-   /** Description of the Field */
+
+   // enable trace mode?
    private boolean _trace = false;   // trace or execute mode
 
-   /** Description of the Field */
+   // enable edit mode?
    private boolean _edit = false;   // edit mode
 
-   /** Description of the Field */
+   // target running threads
    private Thread _runner = null;
    private Thread _target_runner = null;
 
+   private ArrayList _last_ran_targets = null;
+
    // option settings
-   /** Description of the Field */
    private AntelopeOptions _options = null;   // to adjust the options
-   /** Description of the Field */
    private JMenu _recent = null;
 
-   /** Description of the Field */
+   // should the internal menu be used? Antelope (app) uses it's own menus.
    private boolean _use_internal_menu = true;
 
    // basic logger settings
-   /** Description of the Field */
    private Logger _logger = null;
-   /** Description of the Field */
    private Handler _console = null;
-   /** Description of the Field */
    private Level _log_level = Level.ALL;
 
    /** Description of the Field */
@@ -686,6 +676,8 @@ public class AntelopePanel extends JPanel implements Constants {
     * @exception Exception  Description of Exception
     */
    private void executeTargets( Thread runner, ArrayList targets ) throws Exception {
+      _last_ran_targets = targets;
+
       // maybe prep the error source
       clearErrorSource();
 
@@ -725,6 +717,20 @@ public class AntelopePanel extends JPanel implements Constants {
    public void executeDefaultTarget() {
       if ( _default_btn != null ) {
          executeTarget( _default_btn.getActionCommand() );
+      }
+   }
+
+   /**
+    * Reruns the last ran target(s).   
+    */
+   public void executeLastRanTargets() {
+      if ( _last_ran_targets != null ) {
+         if ( _unnamed_target != null )
+            _last_ran_targets.remove( _unnamed_target.getName() );
+         Iterator it = _last_ran_targets.iterator();
+         while ( it.hasNext() ) {
+            executeTarget( ( String ) it.next() );
+         }
       }
    }
 
@@ -844,6 +850,8 @@ public class AntelopePanel extends JPanel implements Constants {
          Iterator it = _property_files.keySet().iterator();
          while ( it.hasNext() ) {
             Object o = it.next();
+            if (o == null)
+               continue; 
             File f = null;
             if ( o instanceof File ) {
                f = ( File ) o;
@@ -853,26 +861,26 @@ public class AntelopePanel extends JPanel implements Constants {
             else if ( _project != null ) {
                String value = o.toString();
                String filename = value;
-               if (value.startsWith("${") && value.endsWith("}")) {
-                  filename = filename.substring(2, filename.length() - 1);
+               if ( value.startsWith( "${" ) && value.endsWith( "}" ) ) {
+                  filename = filename.substring( 2, filename.length() - 1 );
                }
                filename = _project.getProperty( filename );
-               if (filename != null)
+               if ( filename != null )
                   f = new File( filename );
-               if ( !f.exists() ) {
+               if ( f != null && !f.exists() ) {
                   f = new File( _project.getBaseDir(), filename );
                }
-               if ( f.exists() ) {
-                  filelist.put( f, new Long(f.lastModified()) );
-                  resolved.add(value);
+               if ( f != null && f.exists() ) {
+                  filelist.put( f, new Long( f.lastModified() ) );
+                  resolved.add( value );
                }
                else
-                  _logger.warning("Unable to find property file " + filename);
+                  _logger.warning( "Unable to find property file for " + value );
             }
          }
          it = resolved.iterator();
-         while(it.hasNext()) {
-            filelist.remove(it.next());
+         while ( it.hasNext() ) {
+            filelist.remove( it.next() );
          }
          _property_files = filelist;
       }
@@ -885,7 +893,7 @@ public class AntelopePanel extends JPanel implements Constants {
       while ( it.hasNext() ) {
          File f = ( File ) it.next();
          Long lastModified = ( Long ) _property_files.get( f );
-         if ( lastModified != null && lastModified.longValue() != f.lastModified() ){
+         if ( lastModified != null && lastModified.longValue() != f.lastModified() ) {
             return true;
          }
       }
@@ -1018,6 +1026,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
                // Ant 1.6 has an un-named target to hold project-level tasks, so
                // find it and save it for later.
+
 
                _unnamed_target = null;
                if ( getAntVersion() == 16 ) {
