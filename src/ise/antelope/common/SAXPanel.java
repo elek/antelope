@@ -100,10 +100,9 @@ public class SAXPanel extends JPanel implements Navable {
                            Object object = path.getLastPathComponent();
                            if ( object instanceof SAXTreeNode ) {
                               SAXTreeNode node = ( SAXTreeNode ) object;
-                              TreeModel tm = getDependencyModel( node );
+                              TreeModel tm = SAXPanel.this.getDependencyModel( node, (SAXTreeNode)node.getRoot() );
                               if ( tm != null ) {
                                  JPanel panel = new JPanel( new BorderLayout() );
-                                 panel.add( new JLabel( "Dependency Tree" ), BorderLayout.NORTH );
                                  JTree dt = new JTree( tm );
                                  dt.addMouseListener( this );
                                  dt.setCellRenderer( new SAXTreeCellRenderer() );
@@ -111,9 +110,21 @@ public class SAXPanel extends JPanel implements Navable {
                                     dt.expandRow( i );
                                  }
                                  panel.add( new JScrollPane( dt ) );
-                                 JPopupMenu pm = new JPopupMenu();
-                                 pm.add( panel );
-                                 GUIUtils.showPopupMenu( pm, SAXPanel.this, me.getX(), me.getY() );
+                                 final JDialog dialog = new JDialog(GUIUtils.getRootJFrame(SAXPanel.this), "Dependency Tree", true);
+                                 dialog.getContentPane().add(panel, BorderLayout.CENTER);
+                                 dialog.setLocation(new java.awt.Point(me.getX(), me.getY()));
+                                 JButton close_btn = new JButton("Close");
+                                 JPanel btn_panel = new JPanel();
+                                 btn_panel.add(close_btn);
+                                 dialog.getContentPane().add(btn_panel, BorderLayout.SOUTH);
+                                 close_btn.addActionListener(new ActionListener(){
+                                    public void actionPerformed(ActionEvent ae) {
+                                       dialog.hide();
+                                       dialog.dispose();
+                                    }
+                                 });
+                                 dialog.pack();
+                                 dialog.setVisible(true);
                               }
                            }
                         }
@@ -141,31 +152,31 @@ public class SAXPanel extends JPanel implements Navable {
     */
    public TreeModel getDependencyModel( String target_name ) {
       SAXTreeNode initial_target = getTargetNode( target_name, ( SAXTreeNode ) tree.getModel().getRoot() );
-      return getDependencyModel( initial_target );
+      return getDependencyModel( initial_target, ( SAXTreeNode ) tree.getModel().getRoot() );
    }
 
    /**
     * @return a TreeModel representing the dependency tree of the given
     * target. Returns null if the target is not found.
     */
-   public TreeModel getDependencyModel( SAXTreeNode node ) {
+   public TreeModel getDependencyModel( SAXTreeNode node, SAXTreeNode tree_root ) {
       if ( node == null )
          return null;
-      SAXTreeNode root = (SAXTreeNode)node.clone();//new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes() );
+      SAXTreeNode root = ( SAXTreeNode ) node.clone(); //new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes() );
       root.setFile( node.getFile() );
-      addDependentTargetNodes( root );
-      addCalledTargetNodes( node, root );
+      addDependentTargetNodes( root, tree_root );
+      addCalledTargetNodes( node, root, tree_root );
       return new DefaultTreeModel( root );
    }
 
-   private void addCalledTargetNodes( SAXTreeNode src, SAXTreeNode dest ) {
-      SAXTreeNode[] called_targets = getCalledTargetNodes(src);
-      if (called_targets.length > 0) {
+   private void addCalledTargetNodes( SAXTreeNode src, SAXTreeNode dest, SAXTreeNode tree_root ) {
+      SAXTreeNode[] called_targets = getCalledTargetNodes( src, tree_root );
+      if ( called_targets.length > 0 ) {
          SAXTreeNode called_root = new SAXTreeNode( "Calls", dest.getLocation(), null, dest.getFile() );
-         for (int i = 0; i < called_targets.length; i++) {
-            called_root.add(called_targets[i]);  
+         for ( int i = 0; i < called_targets.length; i++ ) {
+            called_root.add( called_targets[ i ] );
          }
-         dest.add(called_root);
+         dest.add( called_root );
       }
    }
 
@@ -174,19 +185,19 @@ public class SAXPanel extends JPanel implements Navable {
     * @return an array of child nodes representing ant and/or antcall tasks.
     * The array may be empty, but won't be null.
     */
-   private SAXTreeNode[] getCalledTargetNodes( SAXTreeNode node ) {
+   private SAXTreeNode[] getCalledTargetNodes( SAXTreeNode node, SAXTreeNode tree_root ) {
       int child_count = node.getChildCount();
       ArrayList children = new ArrayList();
       for ( int i = 0; i < child_count; i++ ) {
          SAXTreeNode child_node = ( SAXTreeNode ) node.getChildAt( i );
          String child_name = child_node.getName();
-         if ( child_name.equals( "antcall" ) || child_name.equals("call") || child_name.equals("runtarget") || child_name.equals("antcallback")) {
-            Attributes attrs = child_node.getAttributes();
+         Attributes attrs = child_node.getAttributes();
+         if ( child_name.equals( "antcall" ) || child_name.equals( "call" ) || child_name.equals( "runtarget" ) || child_name.equals( "antcallback" ) ) {
             int index = attrs.getIndex( "target" );
             if ( index == -1 )
                continue;
             String called_target = attrs.getValue( "target" );
-            SAXTreeNode called_node = getTargetNode( called_target, ( SAXTreeNode ) tree.getModel().getRoot() );
+            SAXTreeNode called_node = getTargetNode( called_target, tree_root );
             if ( called_node != null ) {
                called_node.setCalled( true );
                children.add( called_node );
@@ -195,45 +206,61 @@ public class SAXPanel extends JPanel implements Navable {
          if ( child_name.equals( "ant" ) ) {
             // get the build file name, default is build.xml
             String antfile = "build.xml";
-            int index = attrs.getIndex("antfile");
-            if (index > -1)
-               antfile = attrs.getValue("antfile");
-            
+            int index = attrs.getIndex( "antfile" );
+            if ( index > -1 )
+               antfile = attrs.getValue( "antfile" );
+
             // get the directory, default is the basedir of the current project
-            String dir = node.getFile() != null ? node.getFile().getParent().getAbsolutePath() : "";
-            index = attrs.getIndex("dir");
-            if (index > -1)
-               dir = attrs.getValue("dir");
-            
+            String dir = node.getFile() != null ? node.getFile().getParent() : "";
+            index = attrs.getIndex( "dir" );
+            if ( index > -1 )
+               dir = attrs.getValue( "dir" );
+
             // make sure the build file exists
-            File build_file = new File(dir, antfile);
-            if (!build_file.exists())
+            File build_file = new File( dir, antfile );
+            if ( !build_file.exists() )
                continue;
-            
+
             // load the build file using the SAXNodeHandler, get a project node
-            
+            SAXTreeNode ant_root = SAXTreeModel.load( build_file );
+
             // get the target name, default is the default target in the build file
-            
+            String ant_target_name = null;
+            index = attrs.getIndex( "target" );
+            if ( index > -1 )
+               ant_target_name = attrs.getValue( "target" );
+            else {
+               Attributes ant_attrs = ant_root.getAttributes();
+               index = ant_attrs.getIndex( "default" );
+               if ( index > -1 )
+                  ant_target_name = ant_attrs.getValue( "default" );
+            }
+            if ( ant_target_name == null )
+               continue;
+
             // get the target dependencies and called targets
-            
-            // add some nodes
+            SAXTreeNode ant_target = getTargetNode( ant_target_name, ant_root );
+            SAXTreeNode ant_target_copy = ( SAXTreeNode ) ant_target.clone(); //new SAXTreeNode( node.getName(), node.getLocation(), node.getAttributes() );
+            addDependentTargetNodes( ant_target_copy, tree_root );
+            addCalledTargetNodes( ant_target, ant_target_copy, tree_root );
+            children.add( ant_target_copy );
          }
       }
-      SAXTreeNode[] nodes = new SAXTreeNode[children.size()];
+      SAXTreeNode[] nodes = new SAXTreeNode[ children.size() ];
       Iterator it = children.iterator();
-      for (int i = 0; it.hasNext(); i++) {
-         nodes[i] = (SAXTreeNode)it.next();  
+      for ( int i = 0; it.hasNext(); i++ ) {
+         nodes[ i ] = ( SAXTreeNode ) it.next();
       }
       return nodes;
    }
 
-   private void addDependentTargetNodes( SAXTreeNode node ) {
+   private void addDependentTargetNodes( SAXTreeNode node, SAXTreeNode tree_root ) {
       SAXTreeNode depends_root = new SAXTreeNode( "Depends on", node.getLocation(), null, node.getFile() );
-      SAXTreeNode[] depends = getDependentTargetNodes( node );
+      SAXTreeNode[] depends = getDependentTargetNodes( node, tree_root );
       for ( int i = 0; i < depends.length; i++ ) {
          if ( depends[ i ] != null ) {
             depends_root.add( depends[ i ] );
-            //addDependentTargetNodes( depends[ i ] );
+            //addDependentTargetNodes( depends[ i ], tree_root );
          }
       }
       if ( depends_root.getChildCount() > 0 )
@@ -249,14 +276,14 @@ public class SAXPanel extends JPanel implements Navable {
     * null if no target with that name is found. Note that in the case of
     * duplicate target names, the first one found will be returned.
     */
-   private SAXTreeNode getTargetNode( String target_name, SAXTreeNode root ) {
+   private SAXTreeNode getTargetNode( String target_name, SAXTreeNode tree_root ) {
       if ( target_name == null )
          return null;
       try {
-         int child_count = root.getChildCount( );
+         int child_count = tree_root.getChildCount( );
          SAXTreeNode candidate = null;
          for ( int i = 0; i < child_count; i++ ) {
-            SAXTreeNode node = ( SAXTreeNode ) root.getChildAt( i );
+            SAXTreeNode node = ( SAXTreeNode ) tree_root.getChildAt( i );
 
             // check targets in imported projects
             if ( node.getName().equals( "project" ) && candidate == null ) {
@@ -277,7 +304,7 @@ public class SAXPanel extends JPanel implements Navable {
                      if ( target_name.startsWith( subproject_name ) ) {
                         String tn = target_name.substring( subproject_name.length() + 1 ); // +1 for the dot
                         if ( tn.equals( name ) ) {
-                           candidate = (SAXTreeNode)sub_node.clone();
+                           candidate = ( SAXTreeNode ) sub_node.clone();
                            candidate.setImported( sub_node.isImported() );
                         }
                      }
@@ -294,9 +321,9 @@ public class SAXPanel extends JPanel implements Navable {
                continue;
             String name = attrs.getValue( index );
             if ( target_name.equals( name ) ) {
-               candidate = (SAXTreeNode)node.clone();
-               addDependentTargetNodes(candidate);
-               addCalledTargetNodes(node, candidate);
+               candidate = ( SAXTreeNode ) node.clone();
+               addDependentTargetNodes( candidate, tree_root );
+               addCalledTargetNodes( node, candidate, tree_root );
                return candidate;
             }
          }
@@ -314,7 +341,7 @@ public class SAXPanel extends JPanel implements Navable {
     * @return an array of tree nodes that represent dependency targets. This
     * array may be empty.
     */
-   private SAXTreeNode[] getDependentTargetNodes( SAXTreeNode target_node ) {
+   private SAXTreeNode[] getDependentTargetNodes( SAXTreeNode target_node, SAXTreeNode tree_root ) {
       Attributes attrs = target_node.getAttributes();
       int index = attrs.getIndex( "depends" );
       if ( index == -1 )
@@ -326,7 +353,7 @@ public class SAXPanel extends JPanel implements Navable {
          return new SAXTreeNode[ 0 ];
       SAXTreeNode[] nodes = new SAXTreeNode[ size ];
       for ( int i = 0; st.hasMoreTokens(); i++ ) {
-         SAXTreeNode node = getTargetNode( st.nextToken().trim(), ( SAXTreeNode ) tree.getModel().getRoot() );
+         SAXTreeNode node = getTargetNode( st.nextToken().trim(), tree_root );
          nodes[ i ] = node;
       }
       return nodes;

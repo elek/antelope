@@ -569,6 +569,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
          FileUtilities.copyToWriter( reader, writer );
          TextAreaDefaults defaults = TextAreaDefaults.getDefaults();
          SyntaxDocument doc = defaults.document;
+         doc.putProperty(SyntaxDocument.FILE, build_file);
          doc.remove( 0, doc.getLength() );
          doc.insertString( 0, writer.toString(), null );
          _editor.setDocument( doc );
@@ -596,11 +597,15 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
    /**
     * Saves the contents of the editor to the current build file from the
-    * AntelopePanel.
+    * AntelopePanel. Whoa, Nelly! It is possible that the build file in the
+    * editor is NOT the build file open in the AntelopePanel!
     */
    private void saveBuildFile() {
-
-      File build_file = _antelope_panel.getBuildFile();
+      // don't do this:
+      //File build_file = _antelope_panel.getBuildFile();
+      // instead, do this:
+      SyntaxDocument doc = (SyntaxDocument)_editor.getDocument();
+      File build_file = (File)doc.getProperty(SyntaxDocument.FILE);
       if ( build_file == null )
          return ;
 

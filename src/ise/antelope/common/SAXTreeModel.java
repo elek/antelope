@@ -35,12 +35,12 @@ public class SAXTreeModel extends DefaultTreeModel {
       super( load( xmlFile ) );
    }
 
-   private static SAXTreeNode load( String xml ) {
+   public static SAXTreeNode load( String xml ) {
       StringReader sr = new StringReader( xml );
       return load( sr );
    }
 
-   private static SAXTreeNode load( File xmlFile ) {
+   public static SAXTreeNode load( File xmlFile ) {
       try {
          infile = xmlFile;
          FileReader fr = new FileReader( xmlFile );
@@ -53,7 +53,7 @@ public class SAXTreeModel extends DefaultTreeModel {
       }
    }
 
-   private static SAXTreeNode load( Reader reader ) {
+   public static SAXTreeNode load( Reader reader ) {
       try {
          InputSource source = new InputSource( reader );
          SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
@@ -64,8 +64,8 @@ public class SAXTreeModel extends DefaultTreeModel {
       }
       catch ( Exception e ) {
          /// not so sure this one is noise...
-         ///throw new RuntimeException(e);
-         return null;
+         throw new RuntimeException(e);
+         ///return null;
       }
    }
    
