@@ -123,7 +123,7 @@ public class StopWatchTask extends Task {
          return ;
       }
       if ( action.equals( ELAPSED ) ) {
-         String time = sw.format( sw.total() );
+         String time = sw.format( sw.elapsed() );
          log( "[" + name + ": " + time + "]" );
          getProject().setProperty(name, time);
          return ;
