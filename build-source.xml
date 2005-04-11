@@ -48,6 +48,10 @@
         <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${basedir}">
               <include name="src/ise/**/*"/>
+              <include name="src/images/**/*"/>
+              <include name="src/config/**/*"/>
+              <include name="src/docs/**/*"/>
+              <include name="src/README.txt"/>
               <exclude name="**/builder/**/*"/>
               <exclude name="**/dependency/**/*"/>
            </zipfileset>

@@ -8,7 +8,7 @@
     <property file="${build.props}"/>
 
     <!-- version number, override in build.props if necessary -->
-    <property name="build.num" value="3.0.3"/>
+    <property name="build.num" value="3.2.2"/>
         
     
     <!-- shouldn't need to override the following properties -->
@@ -92,7 +92,9 @@
             <exclude name="testcases/**/*"/>
             <exclude name="**/plugin/**/*"/>
         </javac>
+        <!--
         <copy file="${src.dir}/ant.dtd" todir="${classes.dir}/ise/antelope/common/builder"/>
+        -->
     </target>
     
    <!-- ========================================================================
@@ -105,11 +107,12 @@
    ========================================================================= -->
     <target name="dist"
             description="Compiles, jars, and puts a zip file in the dist directory."
-            depends="clean,compile,prep_files,jar,zip"/>
+            depends="init,clean,compile,prep_files,jar,zip"/>
+            
     <target name="jar" description="make jar file">     
         <!-- make the jar file, put it in $prep.dir -->
         <tstamp/>
-        <jar jarfile="${prep.dir}/${ant.project.name}_${build.num}.jar">
+        <jar jarfile="${prep.dir}/antelope_app.jar">
             <manifest>
                 <attribute name="AppName" value="${ant.project.name}" />
                 <attribute name="AppVersion" value="${build.num}" />
@@ -121,7 +124,7 @@
             <!-- include everything in the build directory -->
             <fileset dir="${classes.dir}">
                 <include name="**/*" />
-                <exclude name="**/ise/launcher/**/*"/>
+                <exclude name="**/ise/antelope/launcher/**/*"/>
                 <exclude name="**/com/**/*"/>
                 <exclude name="**/testcases/**/*"/>
             </fileset>
@@ -136,28 +139,38 @@
                 <include name="**/*" />
             </fileset>
         </jar>
-        <jar jarfile="${prep.dir}/${ant.project.name}_Launcher_${build.num}.jar">
+        <jar jarfile="${prep.dir}/AntelopeApp.jar">
             <manifest>
                 <attribute name="AppName" value="${ant.project.name}" />
                 <attribute name="AppVersion" value="${build.num}" />
                 <attribute name="Author" value="Dale Anson" />
                 <attribute name="Created-By" value="${user.name}"/>
                 <attribute name="Created-On" value="${TODAY}"/>
-                <attribute name="Main-Class" value="ise.launcher.Launcher"/>
+                <attribute name="Main-Class" value="ise.antelope.launcher.Launcher"/>
             </manifest>
 
             <!-- include just the Launcher files -->
             <fileset dir="${classes.dir}">
-                <include name="**/ise/launcher/**/*"/>
+                <include name="**/ise/antelope/launcher/**/*"/>
+            </fileset>
+            <fileset dir="${prep.dir}">
+                <include name="antelope_app.jar"/>
             </fileset>
         </jar>
+        <delete>
+            <fileset dir="${prep.dir}">
+                <include name="antelope_app.jar"/>
+            </fileset>
+        </delete>
     </target>
+    
     <target name="zip" description="make zip file">
         <!-- zip the jar and installation instructions and put the zip file in
         the $dist directory -->
         <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}">
               <include name="${ant.project.name}_${build.num}.jar"/>
+              <include name="AntelopeApp.jar"/>
            </zipfileset>
            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}/docs">
               <include name="license.txt"/>
@@ -303,6 +316,7 @@
             description="Create directory structure."
             unless="init.done">
         <mkdir dir="${src.dir}" />
+        <mkdir dir="${lib.dir}"/>
         <mkdir dir="${classes.dir}" />
         <mkdir dir="${prep.dir}"/>
         <mkdir dir="${doc.dir}" />          

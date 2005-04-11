@@ -18,7 +18,7 @@
    <property file="build.props"/>
 
     <!-- version number, override in build.props if necessary -->
-   <property name="build.num" value="3.0.1"/>
+   <property name="build.num" value="3.2.2"/>
         
     
     <!-- shouldn't need to override the following properties -->
