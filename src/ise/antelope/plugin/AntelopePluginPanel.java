@@ -53,6 +53,7 @@ import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
@@ -138,9 +139,8 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                             }
                         }
                         jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
-
+                        
                         // set up Antelope's menu
-                        System.out.println( "load antelope" );
                         _view.getStatus().setMessageAndClear( "Loading Antelope..." );
                         JMenuItem mi = new JMenuItem( "Open Current Buffer" );
                         mi.addActionListener( new ActionListener() {
@@ -152,7 +152,6 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                                             );
                         ArrayList menu_items = new ArrayList();
                         menu_items.add( mi );
-                        System.out.println( "added menu items" );
 
                         // get the last open file
                         String name = Constants.PREFS.get( LAST_OPEN_FILE, null );
@@ -163,6 +162,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
 
                         // create and add Antelope
                         try {
+                            
                             antelopePanel = new AntelopePanel( file, AntelopePluginPanel.this, true, menu_items );
                         }
                         catch ( Throwable t ) {

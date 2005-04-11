@@ -78,6 +78,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
     /** Reference to the AntelopePanel  */
     private AntelopePanel _antelope_panel = null;
+    
+    private JSplitPane _split_pane = null;
 
     /** Reference to the build file editor  */
     private JEditTextArea _editor;
@@ -124,7 +126,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         setTitle("Antelope");
         
         File build_file = null;
-        if (args.length > 0) {
+        if (args != null && args.length > 0) {
             build_file = new File(args[0]);
             if (!build_file.exists()) { 
                 JOptionPane.showMessageDialog(Antelope.this, "Build file " + args[0] + " does not exist.", "Build File Not Found", JOptionPane.WARNING_MESSAGE);
@@ -158,8 +160,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource("images/red_ant.gif")).getImage());                                         
                                          
         JPanel contents = new JPanel(new BorderLayout());
-        JSplitPane split_pane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, _antelope_panel, _tabs );
-        contents.add(split_pane, BorderLayout.CENTER);
+        _split_pane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, _antelope_panel, _tabs );
+        contents.add(_split_pane, BorderLayout.CENTER);
         status = new StatusBar();
         contents.add(status, BorderLayout.SOUTH);
         setContentPane( contents );
@@ -303,8 +305,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         exit_mi.addActionListener(
             new ActionListener() {
                 public void actionPerformed( ActionEvent ae ) {
-                    _antelope_panel.close();
-                    System.exit( 0 );
+                    exit(0);
                 }
             }
         );
@@ -563,8 +564,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         addWindowListener(
             new WindowAdapter() {
                 public void windowClosing( WindowEvent we ) {
-                    _antelope_panel.close();
-                    System.exit( 0 );
+                    exit(0);
                 }
             }
         );
@@ -588,10 +588,37 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         */
         pack();
         ta.requestFocus();
-        GUIUtils.fillScreen( this );
-        split_pane.setDividerLocation( 0.25 );
+        int app_x = PREFS.getInt(APP_X, 0);
+        int app_y = PREFS.getInt(APP_Y, 0);
+        int app_w = PREFS.getInt(APP_W, 0);
+        int app_h = PREFS.getInt(APP_H, 0);
+        if (app_w == 0 || app_h == 0)
+            GUIUtils.fillScreen(this);
+        else
+            setBounds(app_x, app_y, app_w, app_h);
+        int divider_location = PREFS.getInt(DIVIDER_LOCATION, 0);
+        if (divider_location == 0)
+           _split_pane.setDividerLocation( 0.25 );
+        else
+           _split_pane.setDividerLocation(divider_location);
         setVisible( true );
         status.setStatus("Antelope ready.");
+    }
+    
+    private void exit(int status) {
+        try {
+            Rectangle bounds = getBounds();
+            PREFS.putInt(APP_X, bounds.x);
+            PREFS.putInt(APP_Y, bounds.y);
+            PREFS.putInt(APP_W, bounds.width);
+            PREFS.putInt(APP_H, bounds.height);
+            PREFS.putInt(DIVIDER_LOCATION, _split_pane.getDividerLocation());
+            PREFS.flush();
+        }
+        catch(Exception e) {
+        }
+        _antelope_panel.close();
+        System.exit(status);
     }
 
 
@@ -845,10 +872,6 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             ;
     }
     
-    public ActionListener getTraceButtonAction() {
-        return null;   
-    }
-
      /**
      * Gets the traceButtonAction attribute of the Antelope object
      *

@@ -122,6 +122,8 @@ public class AboutDialog
         super( owner, title, true );
 
         // set up JEditorPane
+        System.out.println("AboutDialog, contents = " + contents);
+        System.out.println("AboutDialog, content type = " + contents.openConnection().getContentType());
         editor = new JEditorPane( contents );
         initialURL = contents;
         init( nav );

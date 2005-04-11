@@ -77,6 +77,7 @@ public final class Locator {
         } else {
             url = c.getResource(resource);
         }
+        System.out.println("Antelope.jar URL? " + url);
         if (url != null) {
             String u = url.toString();
             if (u.startsWith("jar:file:")) {
@@ -200,7 +201,7 @@ public final class Locator {
     }
 
     /**
-     * Get an array or URLs representing all of the jar files in the
+     * Get an array of URLs representing all of the jar files in the
      * given location. If the location is a file, it is returned as the only
      * element of the array. If the location is a directory, it is scanned for
      * jar files

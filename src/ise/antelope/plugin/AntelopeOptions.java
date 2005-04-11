@@ -57,7 +57,6 @@ public class AntelopeOptions implements OptionPane, Constants {
                   if ( rtn == JFileChooser.APPROVE_OPTION ) {
                      try {
                         File f = chooser.getSelectedFile();
-                           System.out.println("f = " + f.getAbsolutePath());
                         if ( !f.exists() ) {
                            JOptionPane.showMessageDialog( null, "Directory " + f.toString() + " does not exist.", "Error", JOptionPane.ERROR_MESSAGE );
                            return ;
@@ -72,7 +71,6 @@ public class AntelopeOptions implements OptionPane, Constants {
                         }
 
                         if ( f.equals( new File( ant_home ) ) ){
-                           System.out.println("f2 = " + f.getAbsolutePath());
                            return ;
                         }
                         ant_home = f.getAbsolutePath();

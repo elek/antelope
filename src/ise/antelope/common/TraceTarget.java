@@ -150,27 +150,29 @@ public class TraceTarget {
                     }
                 }
                 catch ( Exception e ) {
-                   e.printStackTrace();
+                    e.printStackTrace();
                     continue;
                 }
-                Iterator it = attrs.keySet().iterator();
-                while ( it.hasNext() ) {
-                    String name = ( String ) it.next();
-                    String value = ( String ) attrs.get( name );
-                    if ( name.equals( "target" ) ) {
-                        Project p = target.getProject();
-                        if ( p == null )
-                            break;
-                        Hashtable targets = p.getTargets();
-                        Target subtarget = ( Target ) targets.get( value );
-                        if ( subtarget == null ) {
-                            sb.append( "Error: <antcall> calling non-existant target " ).append( value ).append( NL );
-                        }
-                        else {
-                            sb.append( "<" ).append( target.getName() ).append( ">" );
-                            sb.append( "[" ).append( task_name ).append( " target=" );
-                            sb.append( quote( subtarget.toString() ) ).append( "]" ).append( NL );
-                            sb.append( doTrace( subtarget ) );
+                if ( attrs != null ) {
+                    Iterator it = attrs.keySet().iterator();
+                    while ( it.hasNext() ) {
+                        String name = ( String ) it.next();
+                        String value = ( String ) attrs.get( name );
+                        if ( name.equals( "target" ) ) {
+                            Project p = target.getProject();
+                            if ( p == null )
+                                break;
+                            Hashtable targets = p.getTargets();
+                            Target subtarget = ( Target ) targets.get( value );
+                            if ( subtarget == null ) {
+                                sb.append( "Error: <antcall> calling non-existant target " ).append( value ).append( NL );
+                            }
+                            else {
+                                sb.append( "<" ).append( target.getName() ).append( ">" );
+                                sb.append( "[" ).append( task_name ).append( " target=" );
+                                sb.append( quote( subtarget.toString() ) ).append( "]" ).append( NL );
+                                sb.append( doTrace( subtarget ) );
+                            }
                         }
                     }
                 }

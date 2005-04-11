@@ -55,7 +55,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import ise.library.*;
-import ise.library.*;
 import org.apache.tools.ant.*;
 
 /**

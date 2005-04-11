@@ -142,4 +142,11 @@ public interface Constants {
    
    // node name for Ant user properties
    public final static String ANT_USER_PROPS = "ant_user_props";
+   
+   // app size and location
+   public final static String APP_X = "app_x";
+   public final static String APP_Y = "app_y";
+   public final static String APP_W = "app_w";
+   public final static String APP_H = "app_h";
+   public final static String DIVIDER_LOCATION = "divider_location";
 }

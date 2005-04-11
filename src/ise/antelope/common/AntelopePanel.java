@@ -147,8 +147,8 @@ public class AntelopePanel extends JPanel implements Constants {
     private AntProgressListener _progress = null;
 
     private Color GREEN = new Color( 0, 153, 51 );
-    
-    private String IMPLICIT_TARGET_NAME = "_implicit_";
+
+    private String IMPLICIT_TARGET_NAME = "&lt;implicit&gt;";
 
     /** Constructor for the AntelopePanel object */
     public AntelopePanel() {
@@ -253,8 +253,8 @@ public class AntelopePanel extends JPanel implements Constants {
             }
         );
         if ( _helper != null ) {
-            if (_helper.getTraceButtonAction() != null)
-               _trace_btn.addActionListener(_helper.getTraceButtonAction());
+            if ( _helper.getTraceButtonAction() != null )
+                _trace_btn.addActionListener( _helper.getTraceButtonAction() );
         }
 
         _edit_btn = new JToggleButton();
@@ -646,11 +646,11 @@ public class AntelopePanel extends JPanel implements Constants {
                         // run the unnamed target if Ant 1.6
                         if ( getAntVersion() == 16 && _unnamed_target != null ) {
                             //targets.add( _unnamed_target.getName() );
-                            targets.add("");
+                            targets.add( "" );
                         }
 
                         // run the targets
-                        if (!target_name.equals(IMPLICIT_TARGET_NAME))
+                        if ( !target_name.equals( IMPLICIT_TARGET_NAME ) )
                             targets.add( target_name );
                         AntelopePanel.this.executeTargets( this, targets );
                     }
@@ -718,9 +718,9 @@ public class AntelopePanel extends JPanel implements Constants {
         Iterator it = targets.iterator();
         while ( it.hasNext() ) {
             String target = ( String ) it.next();
-            if (target.equals("") && _unnamed_target != null) {
+            if ( target.equals( "" ) && _unnamed_target != null ) {
                 Hashtable ptargets = _project.getTargets();
-                ((Target)ptargets.get("")).execute();
+                ( ( Target ) ptargets.get( "" ) ).execute();
             }
             else
                 _project.executeTarget( target );
@@ -961,7 +961,6 @@ public class AntelopePanel extends JPanel implements Constants {
                 _center_panel.removeAll();
             }
             AntelopePanel.this.add( _center_panel, BorderLayout.CENTER );
-
             if ( _button_panel == null ) {
                 _button_panel = new JPanel( new KappaLayout() );
                 _button_panel.setBackground( Color.white );
@@ -981,7 +980,6 @@ public class AntelopePanel extends JPanel implements Constants {
             if ( _sax_panel == null ) {
                 _sax_panel = new SAXPanel( _helper );
             }
-
             // load the 'edit' panel
             boolean isAntBuildFile = _sax_panel.openBuildFile( _build_file );
             _center_panel.add( "tree", _sax_panel );
@@ -1076,7 +1074,7 @@ public class AntelopePanel extends JPanel implements Constants {
                     while ( it.hasNext() ) {
                         // adjust which targets are showing --
                         String target_name = ( String ) it.next();
-
+                        //System.out.println("AntelopePanel, target_name 1 = " + target_name);
                         // Ant 1.6 has an un-named target to hold project-level tasks.
                         // It has no name and shouldn't be executed by itself, so
                         // don't make a button for it.
@@ -1085,13 +1083,17 @@ public class AntelopePanel extends JPanel implements Constants {
                         }
 
                         Target target = ( Target ) targets.get( target_name );
-                        if (target == null) {
-                            SAXTreeNode node = (SAXTreeNode)sax_targets.get(target_name);
-                            if (node.isImported()) {
-                                target_name = node.getAttributeValue("name");
-                                target = (Target)targets.get(target_name);
+                        
+                        if ( target == null ) {
+                            SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
+                            if ( node.isImported() ) {
+                                target_name = node.getAttributeValue( "name" );
+                                //System.out.println("AntelopePanel, target_name = " + target_name);
+                                target = ( Target ) targets.get( target_name );
+                                //if (target == null)
+                                //    System.out.println("AntelopePanel, target for " + target_name + " was null");
                             }
-                            if (target == null)
+                            if ( target == null )
                                 continue;
                         }
                         String description = target.getDescription();
@@ -1133,8 +1135,8 @@ public class AntelopePanel extends JPanel implements Constants {
                         }
                     }
 
-                    if (_unnamed_target != null) {
-                        _targets.put(IMPLICIT_TARGET_NAME, _unnamed_target);   
+                    if ( _unnamed_target != null ) {
+                        _targets.put( IMPLICIT_TARGET_NAME, _unnamed_target );
                     }
                     // make a new button panel and populate it with new buttons
                     // for the targets for this project
@@ -1153,7 +1155,7 @@ public class AntelopePanel extends JPanel implements Constants {
                         }
                         AbstractButton button;
                         if ( _multi.isSelected() ) {
-                            if (target_name.equals(IMPLICIT_TARGET_NAME))
+                            if ( target_name.equals( IMPLICIT_TARGET_NAME ) )
                                 continue;
                             SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
                             button = new JCheckBox( );
@@ -1220,6 +1222,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
             /// not sure this is a good idea, we're calling invokeLater
             /// from within an invokeLater
+            /*
             SwingUtilities.invokeLater(
                 new Runnable() {
                     public void run() {
@@ -1229,6 +1232,7 @@ public class AntelopePanel extends JPanel implements Constants {
                     }
                 }
             );
+            */
         }
         catch ( Exception e ) {
             e.printStackTrace();
@@ -1254,27 +1258,27 @@ public class AntelopePanel extends JPanel implements Constants {
 
         // configure the project
         AntProject p = new AntProject();
-        System.setProperty("org.apache.tools.ant.ProjectHelper", "ise.antelope.common.AntelopeProjectHelper2");
+        System.setProperty( "org.apache.tools.ant.ProjectHelper", "ise.antelope.common.AntelopeProjectHelper2" );
         try {
             ClassLoader cl = _helper.getAntClassLoader();
-            p.setCoreLoader(cl);
+            p.setCoreLoader( cl );
             p.init( cl );   // this takes as much as 9 seconds the first time, less than 1/2 second later
 
             // add the antelope build logger now so that any output produced by the
             // ProjectHelper is captured
             p.addBuildListener( _build_logger );
-            setInputHandler(p, "ise.antelope.common.AntInputHandler");
-            
+            setInputHandler( p, "ise.antelope.common.AntInputHandler" );
+
             p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
             p.setProperty( "ant.version", Main.getAntVersion() );
             //String ant_home = System.getProperty("ant.home");
             String ant_home = AntUtils.getAntHome();
-            if (ant_home != null) {
-                p.setProperty("ant.home", ant_home);
+            if ( ant_home != null ) {
+                p.setProperty( "ant.home", ant_home );
             }
             String ant_lib_dirs = AntUtils.getAntLibDirs();
-            if (ant_lib_dirs != null)
-                p.setProperty("ant.library.dir", ant_lib_dirs);
+            if ( ant_lib_dirs != null )
+                p.setProperty( "ant.library.dir", ant_lib_dirs );
 
             // add ant.jar to the classpath
             // for Ant 1.6, does ant-launcher.jar need to be added also? --
@@ -1320,16 +1324,16 @@ public class AntelopePanel extends JPanel implements Constants {
             p.addBuildListener( _progress );
 
             // add the gui input handler
-            setInputHandler(p, "ise,antelope.common.AntInputHandler");
+            setInputHandler( p, "ise,antelope.common.AntInputHandler" );
             /*
             try {
                 Object ih = PrivilegedAccessor.getNewInstance( "ise.antelope.common.AntInputHandler", new Object[] {( Component ) this} );
                 PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
-            }
+        }
             catch ( Exception e ) {
                 e.printStackTrace();
-            }
-            */
+        }
+            */ 
             // optionally add the antelope performance listener
             if ( _settings.getShowPerformanceOutput() ) {
                 if ( _performance_listener == null )
@@ -1357,15 +1361,15 @@ public class AntelopePanel extends JPanel implements Constants {
             throw new Exception( error.getMessage() );
         }
     }
-    
-    private void setInputHandler(Project p, String inputHandler) {
-            try {
-                Object ih = PrivilegedAccessor.getNewInstance( "ise.antelope.common.AntInputHandler", new Object[] {( Component ) this} );
-                PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
-            }
-            catch ( Exception e ) {
-                e.printStackTrace();
-            }
+
+    private void setInputHandler( Project p, String inputHandler ) {
+        try {
+            Object ih = PrivilegedAccessor.getNewInstance( "ise.antelope.common.AntInputHandler", new Object[] {( Component ) this} );
+            PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
     }
 
 

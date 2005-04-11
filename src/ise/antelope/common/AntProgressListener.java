@@ -95,6 +95,8 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
     private Color defaultColor = new Color( 0, 153, 51 );   // a nice green for build succeeded
     private double ant_version = 0;
 
+    private HashMap project_cache = new HashMap();
+
     /**
      * Default constructor sets up the progress bar values.
      */
@@ -207,9 +209,8 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      */
     public int countTasks( Target target ) {
         if ( target == null )
-            throw new IllegalArgumentException( "target is null" );
-        int cnt = doCountTasks(target);
-        System.out.println("Target: " + target.getName() + ", task count: " + cnt);
+            return 0;
+        int cnt = doCountTasks( target );
         return cnt;
     }
 
@@ -245,8 +246,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
             Project project = target.getProject();
             Hashtable targets = project.getTargets();
             Target t = ( Target ) targets.get( depend.toString() );
-            int cnt = doCountTasks(t);
-            System.out.println("Target " + target.getName() + ", dependent target " + t.getName() + " has " + cnt + " tasks.");
+            int cnt = doCountTasks( t );
             task_count += cnt ;
         }
         return task_count;
@@ -329,9 +329,9 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
                 else
                     f = new File( dir, antfile );
                 Project p = createProject( f, target.getProject().getProperties() );
-                if ( subtarget.equals( "" ) )
-                    subtarget = p.getDefaultTarget();
                 if ( p != null ) {
+                    if ( subtarget.equals( "" ) )
+                        subtarget = p.getDefaultTarget();
                     Hashtable targets = p.getTargets();
                     Target remote_target = ( Target ) targets.get( subtarget );
                     task_count += doCountTasks( remote_target );
@@ -398,24 +398,28 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      */
     private Project createProject( File build_file, Hashtable inherited ) {
         // configure the project
-        Project p = new Project();
-        try {
-            p.init();   // this takes as much as 9 seconds the first time, less than 1/2 second later
-            ProjectHelper ph = ProjectHelper.getProjectHelper();
-            ph.parse( p, build_file );
-            p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
+        Project p = ( Project ) project_cache.get( build_file );
+        if ( p == null ) {
+            p = new Project();
+            project_cache.put( build_file, p );
+            try {
+                p.init();   // this takes as much as 9 seconds the first time, less than 1/2 second later
+                ProjectHelper ph = ProjectHelper.getProjectHelper();
+                ph.parse( p, build_file );
+                p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
 
-            // copy the inherited properties
-            if ( inherited == null )
-                return p;
-            Iterator it = inherited.keySet().iterator();
-            while ( it.hasNext() ) {
-                Object key = it.next();
-                p.setUserProperty( ( String ) key, ( String ) inherited.get( key ) );
+                // copy the inherited properties
+                if ( inherited == null )
+                    return p;
+                Iterator it = inherited.keySet().iterator();
+                while ( it.hasNext() ) {
+                    Object key = it.next();
+                    p.setUserProperty( ( String ) key, ( String ) inherited.get( key ) );
+                }
             }
-        }
-        catch ( Exception e ) {
-            return null;
+            catch ( Exception e ) {
+                return null;
+            }
         }
         return p;
     }
