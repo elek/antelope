@@ -62,7 +62,7 @@ public class Op {
     */
    public void addConfiguredNum( Num num ) {
       nums.addElement( num );
-      System.out.println("Op.addNum " + num);
+      //System.out.println("Op.addNum " + num);
       
    }
 
@@ -91,7 +91,7 @@ public class Op {
       if ( datatype != null )
          op.setDatatype( datatype );
       //ops.addElement( op );
-      System.out.println("Op.addConfiguredOp");
+      //System.out.println("Op.addConfiguredOp");
       addConfiguredNum(op.calculate());
    }
    
@@ -122,7 +122,7 @@ public class Op {
       */
       
       // make an array of operands
-      System.out.println("operation is " + operation + " on these numbers:");
+      //System.out.println("operation is " + operation + " on these numbers:");
       String[] operands = new String[ nums.size() ];
       Enumeration en = nums.elements();
       int i = 0;
@@ -130,7 +130,7 @@ public class Op {
          Num num = (Num)en.nextElement();
          if (datatype != null)
             num.setDatatype(datatype);
-         System.out.println(num.toString());
+         //System.out.println(num.toString());
          operands[ i++ ] = num.toString();
       }
 

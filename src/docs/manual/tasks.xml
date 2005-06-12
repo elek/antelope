@@ -1,6 +1,6 @@
 
 <!-- Antelope plugin user's guide -->
-<!-- (C) 2002 Dale Anson -->
+<!-- (C) 2002-2005 Dale Anson -->
 
 <book>
 <bookinfo>
@@ -2318,6 +2318,564 @@ There is none of the weird property manipulation done by "ant", "antcall", "antf
 ]]>    
 </programlisting>
 </para>   
+</chapter>
+
+<chapter id="greptask">
+@@style@@
+    <title>Grep Task</title>
+<para>
+This task uses a regular expression to do pattern matching against a string and store the match in a property.  This is useful for extracting a substring, or checking that an html form contains a particular value.</para> 
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="grep" classname="ise.antelope.tasks.Find"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Grep Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>in</entry>
+<entry>The string to perform the regular expression matching on</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>regex</entry>
+<entry>The regular expression.  See the Java API documentation for java.util.regex.Pattern for the details of the syntax for this expression.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>group</entry>
+<entry>The regular expression group to return in the property.</entry>
+<entry>0</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>property</entry>
+<entry>The name of a property in which to put the matched value.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>allmatches</entry>
+<entry>A regex may find multiple matches in the input string.  If this attribute is set to true, then the property set after the grep will contain all matches.  The individual matches can be separated by using the 'separator' attribute (see below). The default is 'false', that is, only return the first match.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>separator</entry>
+<entry>When 'allmatches' is set to true and there are multiple matches, this value will be used to separate the individual matches.</entry>
+<entry>${line.separator}</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>caseinsensitive</entry>
+<entry>Enables case-insensitive matching.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>comments</entry>
+<entry>Permits whitespace and comments in pattern.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>dotall</entry>
+<entry>Enables dotall mode.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>multiline</entry>
+<entry>Enables multiline mode.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>unicodecase</entry>
+<entry>Enables Unicode-aware case folding.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>canoneq</entry>
+<entry>Enables canonical equivalence.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>unixlines</entry>
+<entry>Enables Unix lines mode.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Examples:
+</para>
+<para>
+<programlisting>
+<![CDATA[
+ <target name="test" description="Test grep">
+      <grep in="${response}" regex="(account id=)([0-9]+)" group="2" property="AccountId"/>
+      <echo>Account Id: ${AccountId} received for ${user}</echo>
+ </target>
+]]>    
+</programlisting>
+</para>   
+<para>
+This example uses the 'var' and 'post' tasks along with 'grep' to list the download url's for Ant:
+<programlisting>
+<![CDATA[
+
+    <target name="test">
+      <var name="ant_download_page" unset="true"/>
+      <post to="http://ant.apache.org/bindownload.cgi" 
+            verbose="no" 
+            property="ant_download_page"/>
+      <grep in="${ant_download_page}" 
+            regex="select name=&quot;Preferred.*?&lt;/select" 
+            dotall="yes" 
+            property="options"/>
+      
+      <var name="urls" unset="true"/>
+      <grep in="${options}" 
+         regex="&lt;option.*?&gt;(.*?)&lt;/option&gt;"
+         group="1"
+         allmatches="yes"
+         separator="${line.separator}"
+         property="urls"/>
+      <echo>${urls}</echo>
+    </target>
+      
+     [echo] http://apache.gr-linux.com
+     [echo] http://www.reverse.net/pub/apache
+     [echo] http://government-grants.org/mirrors/apache.org
+     [echo] http://apache.mirrors.hoobly.com
+     [echo] http://apache.mirrormax.net
+     [echo] http://www.ibiblio.org/pub/mirrors/apache
+     [echo] http://www.mirrormonster.com/apache.org
+     [echo] http://apache.towardex.com
+     [echo] http://www.axint.net/apache
+     [echo] http://apache.tradebit.com/pub
+     [echo] http://www.eng.lsu.edu/mirrors/apache
+     [echo] http://mirrors.isc.org/pub/apache
+     [echo] http://www.theshell.com/pub/apache
+     [echo] http://apache.mirrors.redwire.net
+     [echo] http://apache.cs.utah.edu
+     [echo] http://www.tux.org/pub/net/apache/dist
+     [echo] http://linux.cs.lewisu.edu/apache
+     [echo] http://apache.roweboat.net
+     [echo] http://apache.secsup.org/dist
+     [echo] http://www.signal42.com/mirrors/apache
+     [echo] http://apache.mirror99.com
+     [echo] http://mirrors.xtria.com/apache
+     [echo] http://apache.downlod.in
+     [echo] http://apache.mirrors.pair.com
+     [echo] http://apache.seekmeup.com
+     [echo] http://mirrors.combose.com/apache
+     [echo] http://www.wmwweb.com/apache
+     [echo] http://apache.intissite.com
+     [echo] http://apache.oregonstate.edu
+     [echo] http://apache.bestwebcover.com
+     [echo] http://ftp.wayne.edu/apache
+     [echo] http://mirrors.ccs.neu.edu/Apache/dist
+     [echo] http://www.ip97.com/apache.org
+     [echo] http://apache.mirrors.versehost.com
+     [echo] http://mirrors.playboy.com/apache
+     [echo] ftp://ftp.ccs.neu.edu/net/mirrors/Apache/dist
+     [echo] ftp://apache.mirrors.pair.com
+     [echo] ftp://apache.cs.utah.edu/pub/apache.org
+     [echo] ftp://apache.mirrors.redwire.net/pub/apache
+     [echo] ftp://ftp.oregonstate.edu/pub/apache
+     [echo] ftp://ftp.wayne.edu/apache
+     [echo] ftp://mirror.sg.depaul.edu/pub/apache
+     [echo] ftp://www.ibiblio.org/pub/mirrors/apache
+     [echo] ftp://ftp.tux.org/pub/net/apache/dist
+     [echo] ftp://www.reverse.net/pub/apache
+     [echo] ftp://apache.secsup.org/pub/apache/dist
+     [echo] http://www.eu.apache.org/dist (backup)
+     [echo] http://www.apache.org/dist (backup)      
+]]>    
+</programlisting>
+</para>   
+
+</chapter>
+
+<chapter id="suitetask">
+@@style@@
+    <title>Suite Task</title>
+<para>
+ Modeled after the TestSuite provided by jUnit, this class is an Ant task that
+ looks through the build file that contains this task, calls a 'setUp' target
+ (if it exists), then executes all nested tasks, and last calls
+ a target named 'tearDown' (if it exists).  Both 'setUp' and 'tearDown' are
+ optional targets in the build file.  A build file may contain multiple suite tasks, note that each invocation will call 'setUp' and 'tearDown', so you may want to use some conditionals to only have them execute once.
+</para>
+<para>
+ Typically, the nested tasks are TestCases, although they can be any task as appropriate to your testing.  The nested tasks may also be Suites, so you can group your tests easily.  Nested tasks are executed in order.
+</para> 
+<para>
+ Suite may also hold FileSets.  Each file in the FileSet will be treated as a file suitable for use by a TestCase and will be executed as such.  This makes it easy to run an entire directory of tests without having to specify a TestCase for each one individually.
+</para>
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="suite" classname="ise.antelope.tasks.Suite"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Suite Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>enabled</entry>
+<entry>Determines if this suite should be ran.  By using a property for this attribute, it is easy to turn off/on multiple tests.</entry>
+<entry>On</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>assertenabled</entry>
+<entry>Generally tests will use the Assert task.  This attribute sets whether asserts should be enabled.</entry>
+<entry>Yes</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>showoutput</entry>
+<entry>If true, show intermediate test results</entry>
+<entry>Yes</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>showsummary</entry>
+<entry>If true, show a summary of test results at the end of the test run.</entry>
+<entry>Yes</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+In the example below, the "suite" tasks is a top-level task, so will execute automatically.  This example does not use 'setUp' or 'tearDown' targets.
+</para>
+<para>
+<programlisting>
+<![CDATA[
+<project name="mathtest" basedir="." xmlns:a="antlib:ise.antelope.tasks">
+   
+   <description>
+     Build file to run unit tests for the Math task
+   </description>
+   
+   <a:suite>
+      <a:testcase file="math_basic_tests.xml"/>
+      <a:testcase file="math_rules_tests.xml"/>
+      <a:testcase file="math_precision_tests.xml"/>
+   </a:suite>
+   
+$ ant -f mathtest.xml
+Buildfile: mathtest.xml
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] + mathtest
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+
+test6:
+[antlib:ise.antelope.tasks:testcase] test6 passed.
+
+test5:
+[antlib:ise.antelope.tasks:testcase] test5 passed.
+
+test4:
+[antlib:ise.antelope.tasks:testcase] test4 passed.
+
+test3:
+[antlib:ise.antelope.tasks:testcase] test3 passed.
+
+test2:
+[antlib:ise.antelope.tasks:testcase] test2 passed.
+
+test1:
+[antlib:ise.antelope.tasks:testcase] test1 passed.
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] + mathtest
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] ---- Results --------------------------------
+[antlib:ise.antelope.tasks:testcase] Ran 6 out of 6 tests.
+[antlib:ise.antelope.tasks:testcase] Passed: 6
+[antlib:ise.antelope.tasks:testcase] Failed: 0
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] + math_rules_tests
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+
+test7.2:
+[antlib:ise.antelope.tasks:testcase] test7.2 passed.
+
+test7.1:
+[antlib:ise.antelope.tasks:testcase] test7.1 passed.
+
+test7.0:
+[antlib:ise.antelope.tasks:testcase] test7.0 passed.
+
+test8.3:
+[antlib:ise.antelope.tasks:testcase] test8.3 passed.
+
+test8.2:
+[antlib:ise.antelope.tasks:testcase] test8.2 passed.
+
+test9:
+[antlib:ise.antelope.tasks:testcase] test9 passed.
+
+test8.1:
+[antlib:ise.antelope.tasks:testcase] test8.1 passed.
+
+test8.0:
+[antlib:ise.antelope.tasks:testcase] test8.0 passed.
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] + math_rules_tests
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] ---- Results --------------------------------
+[antlib:ise.antelope.tasks:testcase] Ran 8 out of 8 tests.
+[antlib:ise.antelope.tasks:testcase] Passed: 8
+[antlib:ise.antelope.tasks:testcase] Failed: 0
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] + math_precision_tests
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+
+test11:
+     [echo] Division by zero test
+    [a:try] Task 'a:math' in target 'test11' failed, error message is: java.lang.ArithmeticException: / by zero
+[antlib:ise.antelope.tasks:testcase] test11 failed: java.lang.ArithmeticException: / by zero
+
+test10:
+     [echo] Circle area test
+[antlib:ise.antelope.tasks:testcase] test10 passed.
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] + math_precision_tests
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+[antlib:ise.antelope.tasks:testcase]
+[antlib:ise.antelope.tasks:testcase] ---- Errors ---------------------------------
+[antlib:ise.antelope.tasks:testcase] test11 failed: java.lang.ArithmeticException: / by zero
+[antlib:ise.antelope.tasks:testcase] ---- Results --------------------------------
+[antlib:ise.antelope.tasks:testcase] Ran 2 out of 2 tests.
+[antlib:ise.antelope.tasks:testcase] Passed: 1
+[antlib:ise.antelope.tasks:testcase] Failed: 1
+[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+    [suite] ++-- Totals -------------------------------++
+    [suite] ++ Total Ran 16 out of 16 tests.
+    [suite] ++ Total Passed: 15
+    [suite] ++ Total Failed: 1
+    [suite] ++-----------------------------------------++
+
+BUILD SUCCESSFUL
+Total time: 0 seconds   
+</project>
+]]>    
+</programlisting>
+</para>   
+</chapter>
+
+<chapter id="testcasetask">
+@@style@@
+    <title>TestCase Task</title>
+<para>
+ Modeled after the TestCase provided by jUnit, this class is an Ant task that
+ looks through the build file that contains this task, calls a 'setUp' target
+ (if it exists), then all targets whose names start with 'test', and last calls
+ a target named 'tearDown' (if it exists).  Both 'setUp' and 'tearDown' are
+ optional targets in the build file. 
+</para>
+<para>
+ Ant stores targets in a hashtable, so there is no guaranteed order in which
+ the 'test*' targets will be called.  If order is important, use the 'depends'
+ attribue of a target to enforce order, and do not name dependent targets with
+ a name starting with 'test'.
+</para> 
+<para>
+ Most unit tests will make use of Assert.  As the Assert task requires that the property "ant.enable.asserts" be set to true before it will do anything, this task automatically sets this property to true. 
+</para>
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="testcase" classname="ise.antelope.tasks.TestCase"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>TestCase Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>file</entry>
+<entry>The file containing tests.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>enabled</entry>
+<entry>Determines if this test should be ran.  By using a property for this attribute, it is easy to turn off/on multiple tests.</entry>
+<entry>On</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>assertenabled</entry>
+<entry>Generally tests will use the Assert task.  This attribute sets whether asserts should be enabled.</entry>
+<entry>Yes</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>showoutput</entry>
+<entry>If true, show intermediate test results</entry>
+<entry>Yes</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>showsummary</entry>
+<entry>If true, show a summary of test results at the end of the test run.</entry>
+<entry>Yes</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+TestCase is most often used in conjunction with the Suite task.
+</para>
+<para>
+<programlisting>
+<![CDATA[
+<project name="mathtest" basedir="." default="suite" 
+   xmlns:a="antlib:ise.antelope.tasks">
+   
+   <description>
+     Build file to run unit tests for the Math task
+   </description>
+   
+   <a:suite>
+      <a:testcase file="math_basic_tests.xml"/>
+      <a:testcase file="math_rules_tests.xml"/>
+      <a:testcase file="math_precision_tests.xml"/>
+   </a:suite>
+   
+</project>   
+]]>    
+</programlisting>
+</para>   
+
+<para>
+Here is an example build file containing actual tests.  The 'setUp' target will execute first, then the two test targets.
+</para>
+<para>
+<programlisting>
+<![CDATA[
+<project name="math_precision_tests" basedir="." default="suite" 
+   xmlns:a="antlib:ise.antelope.tasks">
+   
+   <target name="setUp">
+      <echo>Running math precision tests.</echo>
+   </target>
+   
+   <target name="test10">
+      <echo>Circle area test</echo>
+      <a:math result="pi">
+         <a:op op="*">
+            <a:num value="PI"/>
+            <a:op op="pow">
+               <a:num value="1"/>
+               <a:num value="2"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:assert message="failed circle area test">
+         <a:bool>
+            <a:startswith string="${pi}" with="3.141592653589793"/>
+         </a:bool>
+      </a:assert>
+   </target>
+   
+   <target name="test11">
+      <echo>Division by zero test</echo>
+      <!-- division by zero -->
+      <a:try>
+         <a:math result="x">
+            <a:op op="/">
+               <a:num value="PI"/>
+               <a:num value="0"/>
+            </a:op>
+         </a:math>
+         <fail>Division by 0 succeeded: ${x}</fail>
+         <catch>
+            <assert/>
+         </catch>
+      </a:try>
+   </target>
+   
+</project>
+]]>    
+</programlisting>
+</para>   
+
 </chapter>
 
 <chapter id="performance">

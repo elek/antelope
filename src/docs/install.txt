@@ -2,12 +2,15 @@ Antelope Installation:
 
 Make sure Ant is installed correctly and that the Ant startup script is in your path.
 
-Unzip the distribution file. It will create a directory named Antelope_@@build.num@@.
+Unzip the distribution file. It will create a directory named AntelopeApp_@@build.num@@.
 
-Change to the Antelope_@@build.num@@ directory. In this directory will be a file named "run.xml" and Antelope_@@build.num@@.jar.
+Change to the AntelopeApp_@@build.num@@ directory. 
 
 From a command prompt, run:
 
-ant -f run.xml
+java -jar AntelopeApp_@@build.num@@.jar
+
+If your platform supports it, you can also double click on the jar file from
+a file browser.
 
 

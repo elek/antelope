@@ -1,6 +1,11 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.2.6:
+11 Jun 2005
+o added Grep, Suite, and TestCase Ant tasks.
+o updated antlib.xml and antelope.taskdefs with missing typedefs
+
 3.2.2:
 10 Apr 2005
 o various minor updates.

@@ -121,12 +121,8 @@ public class Launcher {
             filename = filename.replaceAll( "[ ]", "%20" );
             filename = filename.replaceAll( "\\\\", "/" );
             String jarurl = "subjar:/" + filename + "!" + PLUGIN_JAR;
-            System.out.println( "jarurl? " + jarurl );
             Class c = Class.forName("ise.antelope.launcher.subjar.Handler");
-            System.out.println("Handler? " + c);
-        System.out.println("Launcher, java.protocol.handler.pkgs = " + System.getProperty("java.protocol.handler.pkgs"));
             URL url = new URL( jarurl );
-
             loader.addURL( url );
             return loader.findClass( "ise.antelope.common.AntelopePanel" );
         }
@@ -169,7 +165,6 @@ public class Launcher {
         // app jars
         File sourceJar = jarFile;
         if ( sourceJar == null ) {
-            System.out.println( "sourceJar is null so checking Locator" );
             sourceJar = Locator.getClassSource( ise.antelope.launcher.Launcher.class );
         }
         if ( sourceJar == null )

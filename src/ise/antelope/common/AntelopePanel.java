@@ -188,14 +188,15 @@ public class AntelopePanel extends JPanel implements Constants {
     public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu,
             ArrayList menu_items ) {
 
-
-
+        Log.log("AntelopePanel constructor");
         setLayout( new BorderLayout() );
 
         //_build_file = build_file;
         _helper = helper;
         _use_internal_menu = use_internal_menu;
+        Log.log("next set prefs");
         setPrefs( build_file );
+        Log.log("prefs set");
 
         try {
             // for some reason, the GUIUtils aren't always loaded in jEdit,
@@ -308,6 +309,7 @@ public class AntelopePanel extends JPanel implements Constants {
         _reload_btn.setToolTipText( "Reload current build file" );
         _reload_btn.addActionListener( new ActionListener() {
                     public void actionPerformed( ActionEvent ae ) {
+                        Log.log("_reload_btn actionPerformed");
                         reload();
                     }
                 }
@@ -382,7 +384,9 @@ public class AntelopePanel extends JPanel implements Constants {
         );
 
         // initialize the logger
+        Log.log("next init logger");
         initLogger();
+        Log.log("logger initialized");
 
         // initialize from the build file
         openBuildFile( build_file );
@@ -598,7 +602,6 @@ public class AntelopePanel extends JPanel implements Constants {
                 }
 
                 executeTarget( target_name );
-
             }
         };
 
@@ -942,10 +945,10 @@ public class AntelopePanel extends JPanel implements Constants {
      * @param build_file  an Ant build file.
      */
     public void openBuildFile( final File build_file ) {
+        Log.log("openBuildFile");
         if ( build_file == null || !build_file.exists() )
             return ;
         boolean new_file = !build_file.equals( _build_file );
-
         _build_file = build_file;
         try {
             // constraints for layout
@@ -955,12 +958,16 @@ public class AntelopePanel extends JPanel implements Constants {
 
             // set up panels
             if ( _center_panel == null ) {
+                Log.log("adding new _center_panel");
                 _center_panel = new DeckPanel();
+                AntelopePanel.this.add( _center_panel, BorderLayout.CENTER );
+                Log.log("added new _center_panel");
             }
             else {
+                Log.log("next removeAll from _center_panel");
                 _center_panel.removeAll();
+                Log.log("did _center_panel.removeAll");
             }
-            AntelopePanel.this.add( _center_panel, BorderLayout.CENTER );
             if ( _button_panel == null ) {
                 _button_panel = new JPanel( new KappaLayout() );
                 _button_panel.setBackground( Color.white );
@@ -1047,7 +1054,7 @@ public class AntelopePanel extends JPanel implements Constants {
                     // that meet the user's subtarget display settings.
                     Map targets = _project.getTargets();
                     if ( targets == null || targets.size() == 0 ) {
-                        //System.out.println( "no targets in project" );
+                        //Log.log( "no targets in project" );
                         return ;   /// ??? really ???
                     }
 
@@ -1074,7 +1081,7 @@ public class AntelopePanel extends JPanel implements Constants {
                     while ( it.hasNext() ) {
                         // adjust which targets are showing --
                         String target_name = ( String ) it.next();
-                        //System.out.println("AntelopePanel, target_name 1 = " + target_name);
+                        //Log.log("AntelopePanel, target_name 1 = " + target_name);
                         // Ant 1.6 has an un-named target to hold project-level tasks.
                         // It has no name and shouldn't be executed by itself, so
                         // don't make a button for it.
@@ -1088,10 +1095,10 @@ public class AntelopePanel extends JPanel implements Constants {
                             SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
                             if ( node.isImported() ) {
                                 target_name = node.getAttributeValue( "name" );
-                                //System.out.println("AntelopePanel, target_name = " + target_name);
+                                //Log.log("AntelopePanel, target_name = " + target_name);
                                 target = ( Target ) targets.get( target_name );
                                 //if (target == null)
-                                //    System.out.println("AntelopePanel, target for " + target_name + " was null");
+                                //    Log.log("AntelopePanel, target for " + target_name + " was null");
                             }
                             if ( target == null )
                                 continue;
@@ -1192,6 +1199,7 @@ public class AntelopePanel extends JPanel implements Constants {
                             btn_text += target_name;
                             button.setText( btn_text );
                             button.addActionListener( _button_listener );
+                            Log.log("actionListener added");
                             if ( node != null && node.isDefaultTarget() )
                                 _default_btn = button;
                         }
@@ -1222,22 +1230,23 @@ public class AntelopePanel extends JPanel implements Constants {
 
             /// not sure this is a good idea, we're calling invokeLater
             /// from within an invokeLater
-            /*
+            /* */
             SwingUtilities.invokeLater(
                 new Runnable() {
                     public void run() {
-                        _button_panel.validate();
-                        AntelopePanel.this.validate();
-                        AntelopePanel.this.repaint();
+                      _button_panel.validate();
+                      AntelopePanel.this.validate();
+                      AntelopePanel.this.repaint();
                     }
                 }
             );
-            */
+            /* */
         }
         catch ( Exception e ) {
             e.printStackTrace();
         }
         fireEvent( _build_file );
+        Log.log("openBuildfile is done");
 
     }
 
@@ -1747,10 +1756,12 @@ public class AntelopePanel extends JPanel implements Constants {
     //=============================================================
     /** Initializes the logger. */
     private void initLogger() {
+        Log.log("initLogger");
         _logger = Logger.getLogger( "ise.antelope.Antelope" );
         _logger.setUseParentHandlers( false );
         _build_logger = new AntLogger();
-
+        Log.log("created _build_logger");
+        
         // do this after the AntLogger is created as the AntLogger
         // installs a ConsoleHandler by default, so remove all ConsoleHandlers
         // to be on the safe side.
@@ -1759,7 +1770,7 @@ public class AntelopePanel extends JPanel implements Constants {
             for ( int i = 0; i < handlers.length; i++ ) {
                 Handler handler = handlers[ i ];
                 if ( handler instanceof ConsoleHandler ) {
-                    //_logger.removeHandler( handler );
+                    _logger.removeHandler( handler ); ///
                 }
             }
         }
@@ -1767,6 +1778,7 @@ public class AntelopePanel extends JPanel implements Constants {
             e.printStackTrace();
         }
         _logger.setLevel( Level.ALL );
+        Log.log("initLogger done");
     }
 
 

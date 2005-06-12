@@ -56,6 +56,7 @@ import javax.swing.event.*;
 import javax.swing.text.*;
 
 import ise.library.*;
+import ise.antelope.common.Log;
 
 /**
  * A simple log handler for Antelope that shows the Ant output in a GUI.
@@ -101,7 +102,7 @@ public class AntelopeGUILogHandler extends Handler {
      * @param use_frame  If true, will show the output in a separate frame.
      */
     public AntelopeGUILogHandler( boolean use_frame ) {
-
+        Log.log("AntelopeGUILogHandler constructor");
         _content_pane = new JPanel(new BorderLayout());
 
         _text = new JTextPane();
@@ -230,12 +231,15 @@ public class AntelopeGUILogHandler extends Handler {
      * Starts the log.
      */
     public void open() {
+        Log.log("gui log handler.open");
         if ( getFormatter() != null ) {
             int index = _text.getDocument().getLength();
             try {
                 _text.getDocument().insertString( index, getFormatter().getHead( AntelopeGUILogHandler.this ), null );
             }
-            catch ( Exception e ) {}
+            catch ( Exception e ) {
+                Log.log(e);
+            }
         }
     }
 
@@ -282,13 +286,16 @@ public class AntelopeGUILogHandler extends Handler {
                             else 
                                 _text.setCaretPosition(caret_position);
                         }
-                    catch ( Exception e ) {}
+                    catch ( Exception e ) {
+                        Log.log(e);
+                    }
                     }
                 }
             );
         }
         catch ( Exception ignored ) {
             // ignored
+            Log.log(ignored);
         }
     }
 

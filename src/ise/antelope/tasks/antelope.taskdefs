@@ -10,12 +10,21 @@ default=ise.antelope.tasks.DefaultCase
 else=ise.antelope.tasks.ElseTask
 finally=ise.antelope.tasks.FinallyTask
 find=ise.antelope.tasks.Find
+grep=ise.antelope.tasks.Find
 if=ise.antelope.tasks.IfTask
 limit=ise.antelope.tasks.Limit
 math=ise.antelope.tasks.MathTask
 post=ise.antelope.tasks.PostTask
 stopwatch=ise.antelope.tasks.StopWatchTask
+suite=ise.antelope.tasks.Suite
 switch=ise.antelope.tasks.SwitchTask
+testcase=ise.antelope.tasks.TestCase
 try=ise.antelope.tasks.TryTask
 var=ise.antelope.tasks.Variable
+
+islessthan=ise.antelope.tasks.IsLessThan
+isgreaterthan=ise.antelope.tasks.IsGreaterThan
+mathequals=ise.antelope.tasks.MathEquals
+endswith=ise.antelope.tasks.EndsWith
+startswith=ise.antelope.tasks.StartsWith
 

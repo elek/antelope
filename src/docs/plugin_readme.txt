@@ -2,14 +2,10 @@ plugin_readme.txt
 
 AntelopePlugin @@build.num@@
 
-Antelope home page: http://antelope.sourceforge.net
+Antelope home page: http://antelope.tigris.org
 
-Downloads:
-Plugin:
-http://prdownloads.sourceforge.net/antelope/AntelopePlugin_@@build.num@@.zip?download
-
-Source:
-http://prdownloads.soureforge.net/antelope/Antelope_@@build.num@@.zip?download
+Download binary plugin and/or source at:
+http://antelope.tigris.org/servlets/ProjectDocumentList
 
 
 Requirements:
@@ -34,6 +30,15 @@ On Linux/Unix it is generally:
 or
 
 /export/home/your_user_name/.jedit/jars
+
+
+Building from source:
+1. Download the source, see link above.
+2. Unzip, then cd AntelopePluginSrc_@@build.num@@
+3. Ensure the location of jedit.jar is set in either build.props or in
+build.xml.
+4. ant
+
 
 
 

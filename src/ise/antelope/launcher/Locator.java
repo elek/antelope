@@ -77,7 +77,6 @@ public final class Locator {
         } else {
             url = c.getResource(resource);
         }
-        System.out.println("Antelope.jar URL? " + url);
         if (url != null) {
             String u = url.toString();
             if (u.startsWith("jar:file:")) {

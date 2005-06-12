@@ -329,15 +329,23 @@ public class Math {
    }
 
    public static double divide( double a, double b ) {
+      if (b == 0)
+          throw new ArithmeticException("/ by zero");
       return a / b;
    }
    public static float divide( float a, float b ) {
+      if (b == 0)
+          throw new ArithmeticException("/ by zero");
       return a / b;
    }
    public static long divide( long a, long b ) {
+      if (b == 0)
+          throw new ArithmeticException("/ by zero");
       return a / b;
    }
    public static int divide( int a, int b ) {
+      if (b == 0)
+          throw new ArithmeticException("/ by zero");
       return a / b;
    }
    public static BigDecimal divide( BigDecimal[] a ) {
@@ -366,8 +374,11 @@ public class Math {
       if ( a.length == 1 )
          return a[ 0 ];
       double b = a[ 0 ];
-      for ( int i = 1; i < a.length; i++ )
+      for ( int i = 1; i < a.length; i++ ) {
+         if (a[i] == 0)
+             throw new ArithmeticException("/ by zero");
          b /= a[ i ];
+      }
       return b;
    }
    public static float divide( float[] a ) {
@@ -376,8 +387,11 @@ public class Math {
       if ( a.length == 1 )
          return a[ 0 ];
       float b = a[ 0 ];
-      for ( int i = 1; i < a.length; i++ )
+      for ( int i = 1; i < a.length; i++ ) {
+         if (a[i] == 0)
+             throw new ArithmeticException("/ by zero");
          b /= a[ i ];
+      }
       return b;
    }
    public static long divide( long[] a ) {
@@ -386,8 +400,11 @@ public class Math {
       if ( a.length == 1 )
          return a[ 0 ];
       long b = a[ 0 ];
-      for ( int i = 1; i < a.length; i++ )
+      for ( int i = 1; i < a.length; i++ ) {
+         if (a[i] == 0)
+             throw new ArithmeticException("/ by zero");
          b /= a[ i ];
+      }
       return b;
    }
    public static int divide( int[] a ) {
@@ -396,8 +413,11 @@ public class Math {
       if ( a.length == 1 )
          return a[ 0 ];
       int b = a[ 0 ];
-      for ( int i = 1; i < a.length; i++ )
+      for ( int i = 1; i < a.length; i++ ) {
+         if (a[i] == 0)
+             throw new ArithmeticException("/ by zero");
          b /= a[ i ];
+      }
       return b;
    }
 
@@ -828,7 +848,7 @@ public class Math {
          }
       }
       catch ( Exception e ) {
-         e.printStackTrace();
+         //e.printStackTrace();
          if ( e instanceof ArithmeticException ) {
             //System.out.println("rethrowing " + e.getMessage());
             throw ( ArithmeticException ) e;

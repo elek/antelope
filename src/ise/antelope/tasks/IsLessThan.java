@@ -53,6 +53,7 @@
 */
 package ise.antelope.tasks;
 
+import org.apache.tools.ant.taskdefs.condition.Condition;
 import org.apache.tools.ant.taskdefs.condition.Equals;
 import org.apache.tools.ant.BuildException;
 
@@ -62,7 +63,7 @@ import org.apache.tools.ant.BuildException;
  * treats arguments as Strings.
  * @author Dale Anson
  */
-public class IsLessThan extends Equals {
+public class IsLessThan extends Equals implements Condition {
 
     private String arg1, arg2;
     private boolean trim = false;

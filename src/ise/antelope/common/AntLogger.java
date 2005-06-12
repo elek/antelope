@@ -317,6 +317,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
     * @param event  Ignored.
     */
    public void buildStarted( BuildEvent event ) {
+      Log.log("build started");
       handleProperties( event );
       log( " " );
       // note: ConsolePluginHandler uses the ===== to show the Console plugin
@@ -370,6 +371,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       message.append( "===== BUILD FINISHED =====" ).append( lSep );
 
       String msg = message.toString();
+      Log.log(msg);
       log( Level.CONFIG, msg );
       //}
       close();
@@ -483,6 +485,8 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       if ( message == null ) {
          return ;
       }
+      
+      Log.log("AntLogger, got message: " + message);
 
       // log the message
       LogRecord record = new LogRecord( level, message );
@@ -503,6 +507,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
     * however, zero-length strings are.
     */
    protected void log( String message ) {
+      Log.log("antLogger, got message: " + message);
       log( Level.INFO, message );
    }
 
@@ -637,7 +642,17 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
    private PrintStream createPrintStream() {
       PrintStream ps = new PrintStream(
                new java.io.OutputStream() {
+                   StringBuffer line = new StringBuffer();
                   public void write( int b ) {
+                      /*
+                      if ((byte)b == '\n') {
+                        log(line.toString());
+                        line = new StringBuffer();
+                      }
+                      else {
+                        line.append((byte)b);   
+                      }
+                      */
                      byte[] bytes = {( byte ) b};
                      write( bytes, 0, 1 );
                   }

@@ -123,6 +123,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
     public void init( String[] params ) {
         this.args = params;
         
+        Log.log("init");
+        
         setTitle("Antelope");
         
         File build_file = null;
@@ -136,15 +138,14 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         
         _tabs = new JTabbedPane();
 
-        final AntelopePanel panel;
-
         if ( build_file == null ) {
             String name = Constants.PREFS.get( LAST_OPEN_FILE, null );
             if ( name != null )
                 build_file = new File( name );
         }
+        Log.log("next create antelope panel");
         _antelope_panel = new AntelopePanel( build_file, this, false );
-
+        Log.log("created antelope panel");
         _antelope_panel.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
                         String cmd = ae.getActionCommand();
@@ -156,9 +157,8 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                 }
                                          );
 
-
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource("images/red_ant.gif")).getImage());                                         
-                                         
+        
         JPanel contents = new JPanel(new BorderLayout());
         _split_pane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, _antelope_panel, _tabs );
         contents.add(_split_pane, BorderLayout.CENTER);
@@ -344,9 +344,11 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             }
         );
 
+        Log.log("next create gui log handler");
         final AntelopeGUILogHandler logger = new AntelopeGUILogHandler( false );
         logger.setFont( _font );
         _antelope_panel.addLogHandler( logger );
+        Log.log("log handler created");
 
         final JTextComponent ta = logger.getTextComponent();
         find_mi.addActionListener(
@@ -586,6 +588,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         }
         catch (Throwable e) {}
         */
+        Log.log("next pack");
         pack();
         ta.requestFocus();
         int app_x = PREFS.getInt(APP_X, 0);
@@ -596,13 +599,16 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             GUIUtils.fillScreen(this);
         else
             setBounds(app_x, app_y, app_w, app_h);
+        Log.log("bounds set");
         int divider_location = PREFS.getInt(DIVIDER_LOCATION, 0);
         if (divider_location == 0)
            _split_pane.setDividerLocation( 0.25 );
         else
            _split_pane.setDividerLocation(divider_location);
         setVisible( true );
+        Log.log("set visible");
         status.setStatus("Antelope ready.");
+        Log.log("ready");
     }
     
     private void exit(int status) {
@@ -775,9 +781,12 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
 
     public class MenuItemListener implements ActionListener {
         public void actionPerformed( ActionEvent ae ) {
+            Log.log("MenuItemListener.actionPerformed");
             JMenuItem mi = ( JMenuItem ) ae.getSource();
             String filename = mi.getText();
+            Log.log("MenuItemListener, filename is " + filename);
             _antelope_panel.openBuildFile( new File( filename ) );
+            Log.log("MenuItemListener, after openBuildFile");
         }
     }
 
@@ -954,6 +963,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
      * @param args  The command line arguments
      */
     public static void main( String[] args ) {
+        Log.log("main");
         /// load our preferences handler -- this one doesn't give any problems on
         /// Linux like the default preferences handler does. ??? could this possibly
         /// cause problems with a system preferences factory? Shouldn't there be
