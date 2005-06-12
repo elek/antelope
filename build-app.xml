@@ -52,9 +52,11 @@
       <path id="classpathref">
          <pathelement location="${classes.dir}" />
          <pathelement path="${java.class.path}"/>
+         <!--
          <fileset dir="${lib.dir}">
             <include name="*.jar"/>
          </fileset>
+         -->
       </path>
    </target>
 
@@ -91,6 +93,9 @@
             <classpath refid="classpathref" />
             <exclude name="testcases/**/*"/>
             <exclude name="**/plugin/**/*"/>
+            <exclude name="**/common/gui/*"/>
+            <exclude name="**/common/builder/*"/>
+            <exclude name="**/common/dependency/*"/>
         </javac>
         <!--
         <copy file="${src.dir}/ant.dtd" todir="${classes.dir}/ise/antelope/common/builder"/>
@@ -316,16 +321,16 @@
             description="Create directory structure."
             unless="init.done">
         <mkdir dir="${src.dir}" />
-        <mkdir dir="${lib.dir}"/>
         <mkdir dir="${classes.dir}" />
         <mkdir dir="${prep.dir}"/>
         <mkdir dir="${doc.dir}" />          
         <mkdir dir="${config.dir}" />
         <mkdir dir="${dist.dir}"/>
         <property name="init.done" value="true"/>
+        <echo>init done</echo>
     </target>
     
-    <target name="temp">
-    
+    <target name="test">
+    	<echo>just a test</echo>
     </target>
 </project>

@@ -32,6 +32,7 @@
       Target: dist
    ========================================================================= -->
    <target name="dist" description="Package files for building a plugin.">
+      <property name="app.name" value="Antelope"/>
         
       <!-- zip the jar and installation instructions and put the zip file in
       the $dist directory -->

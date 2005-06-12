@@ -54,9 +54,11 @@
          <pathelement path="${java.class.path}"/>
          
          <!-- include third party libraries -->
+         <!--
          <fileset dir="${lib.dir}">
             <include name="*.jar"/>
          </fileset>
+         -->
          
          <!-- include jedit.jar and dependent plugins -->
          <pathelement location="${jedit.install.dir}/jedit.jar" />
@@ -99,6 +101,7 @@
          <!-- this next bit is excluded until it is good -->
          <exclude name="**/common/gui/*"/>
          <exclude name="**/common/builder/*"/>
+         <exclude name="**/common/dependency/*"/>
       </javac>
    </target>
     

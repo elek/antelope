@@ -1,4 +1,4 @@
-<project name="Antelope Master Build" basedir="." default="plugin">
+<project name="Antelope Master Build" basedir="." default="all">
    <description>
       Master build file for Antelope, calls other build files to do the actual
       work:
