@@ -64,10 +64,15 @@ import org.apache.tools.ant.BuildException;
 public class StartsWith extends IsTrue {
     
     private String string = null;
+    private String propertyName = null;
     private String with = null;
     
     public void setString(String s) {
         this.string = s;   
+    }
+    
+    public void setProperty(String s) {
+        String propertyName = s;   
     }
     
     public void setWith(String w) {
@@ -75,11 +80,17 @@ public class StartsWith extends IsTrue {
     }
     
     public boolean eval() throws BuildException {
-        if (string == null)
-            throw new BuildException("string must be set.");
+        if (string == null || propertyName == null)
+            throw new BuildException("string or property must be set.");
         if (with == null)
             throw new BuildException("with must be set.");
-        return string.startsWith(with);
+        
+        if (string != null)
+            return string.startsWith(with);
+        else {
+            String propertyValue = getProject().getProperty(propertyName);
+            return propertyValue == null ? false : propertyValue.startsWith(with);    
+        }
     }
 
 }

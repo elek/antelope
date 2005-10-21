@@ -31,6 +31,7 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
     private int totalRanCount = 0;
     private int totalPassedCount = 0;
     private int totalFailedCount = 0;
+    private int totalWarningCount = 0;
 
     // should the results be shown?
     private boolean showSummary = true;
@@ -40,6 +41,9 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
 
     // should Asserts be enabled?
     private boolean assertEnabled = true;
+    
+    // should the suite throw a build exception on error?
+    private boolean failonerror = false;
 
     public void init() {
         super.init();
@@ -97,11 +101,20 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
     public String getName() {
         return name;
     }
+    
+    public void setFailonerror(boolean f) {
+        failonerror = f;   
+    }
+    
+    public boolean getFailonerror() {
+        return failonerror;   
+    }
 
     /**
+     * Set to true if the test should be allowed to run.
      * @param b if true, execute the test.  This is handy for enabling or disabling
      * groups of tests by setting a single property.  Optional, default
-        * is true, the suite should run.
+     * is true, the suite should run.
      */
     public void setEnabled( boolean b ) {
         enabled = b;
@@ -137,6 +150,10 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
 
     public int getFailedCount() {
         return totalFailedCount;
+    }
+    
+    public int getWarningCount() {
+        return totalWarningCount;   
     }
 
     /** Run tests. */
@@ -202,12 +219,15 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
                     totalRanCount += acc.getRanCount();
                     totalPassedCount += acc.getPassedCount();
                     totalFailedCount += acc.getFailedCount();
+                    totalWarningCount += acc.getWarningCount();
                 }
             }
             if ( showSummary ) {
                 log( getSummary() );
             }
 
+            if (failonerror && totalFailedCount > 0)
+                throw new BuildException("+++++ FAILED +++++\n" + getSummary());
         }
         catch ( Exception ex ) {
             ex.printStackTrace();
@@ -227,6 +247,7 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
         sb.append( "++-- Totals -------------------------------++" ).append( ls );
         sb.append( "++ Total Ran " ).append( totalRanCount ).append( " out of " ).append( totalTestCount ).append( " tests." ).append( ls );
         sb.append( "++ Total Passed: " ).append( totalPassedCount ).append( ls );
+        sb.append( "++ Total Warnings: " ).append( totalWarningCount ).append( ls );
         sb.append( "++ Total Failed: " ).append( totalFailedCount ).append( ls );
         sb.append( "++-----------------------------------------++" ).append( ls );
         return sb.toString();

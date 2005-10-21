@@ -52,14 +52,16 @@
 * <http://www.apache.org/>.
 */
 package ise.antelope.tasks;
+
+
 import java.util.Enumeration;
-
 import java.util.Vector;
-import org.apache.tools.ant.BuildException;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.TaskContainer;
+import org.apache.tools.ant.types.EnumeratedAttribute;
 
 
 /**
@@ -101,6 +103,7 @@ public class Assert extends Task implements TaskContainer {
     private String value = null;
     private String name = null;
     private String message = "";
+    private int level = AssertException.ERROR;
 
     // to hold optional nested boolean task
     private Task condition_task = null;
@@ -139,6 +142,7 @@ public class Assert extends Task implements TaskContainer {
             return;
         this.message = msg;
     }
+    
 
     /**
      * Set the 'exists' attribute. If true, throws BuildException if the
@@ -168,14 +172,21 @@ public class Assert extends Task implements TaskContainer {
      *
      * @param fail  Ant boolean, whether to stop the build on assertion error.
      */
-    public void setFailonerror(String fail) {
-        fail = fail.toLowerCase();
-        if (fail.equals("false") || fail.equals("off") || fail.equals("no"))
-            failOnError = false;
-        else
-            failOnError = true;
+    public void setFailonerror(boolean fail) {
+        failOnError = fail;
     }
-
+    
+	/**
+	 * Sets the assertion level.  This is like message level or debug level,
+	 * valid values are "error" (the default), "warning", "info", and "debug".
+	 * Setting the level to "warning", "info", or "debug" will force the
+	 * fail on error setting to false.
+	 * @param assertlevel one of "error", "warning", "info", or "debug" levels.
+	 */
+    public void setLevel(AssertLevel assertlevel) {
+        level = assertlevel.indexOfValue(assertlevel.getValue());  
+    }
+    
     /**
      * Override {@link org.apache.tools.ant.Task#maybeConfigure maybeConfigure}
      * in a way that leaves the nested tasks unconfigured until they get
@@ -226,6 +237,18 @@ public class Assert extends Task implements TaskContainer {
      * @exception BuildException  Description of Exception
      */
     public void execute() throws BuildException {
+        // adjust failOnError depending on level
+        switch (level) {
+            default:    // error
+                failOnError = true;
+                break;
+            case 2:     // warning
+            case 3:     // info
+            case 4:     // debug
+                failOnError = false;
+                break;
+        }
+        
         // check for global 'ant.enable.asserts' property -- if this isn't set or
         // is set to false, just run the nested tasks and skip the assertion
         // testing.
@@ -259,12 +282,13 @@ public class Assert extends Task implements TaskContainer {
                     log(msg, Project.MSG_WARN);
             }
 
+            // do the actual assert checks...
             // check that the property has the right value
             if (value != null) {
                 if (prop_value == null) {
                     String msg = "Assertion failed: Expected '" + value + "', but was null\n" + message;
                     if (failOnError)
-                        throw new BuildException(msg);
+                        throw new AssertException(msg, level);
                     else
                         log(msg, Project.MSG_WARN);
                 }
@@ -283,7 +307,7 @@ public class Assert extends Task implements TaskContainer {
                         if (prop_bvalue != bvalue) {
                             String msg = "Assertion failed: Expected '" + bvalue + "', but was '" + prop_bvalue + "'.\n" + message;
                             if (failOnError)
-                                throw new BuildException(msg);
+                                throw new AssertException(msg, level);
                             else
                                 log(msg, Project.MSG_WARN);
                         }
@@ -292,7 +316,7 @@ public class Assert extends Task implements TaskContainer {
                         // property values are different
                         String msg = "Assertion failed: Expected '" + value + "', but was '" + prop_value + "'.\n" + message;
                         if (failOnError)
-                            throw new BuildException(msg);
+                            throw new AssertException(msg, level);
                         else
                             log(msg, Project.MSG_WARN);
                     }
@@ -305,7 +329,7 @@ public class Assert extends Task implements TaskContainer {
                 if (message == null)
                     message = "Assertion failed.";
                 if (failOnError)
-                    throw new BuildException(message);
+                    throw new AssertException(message, level);
                 else
                     log(message, Project.MSG_WARN);
             }
@@ -333,7 +357,7 @@ public class Assert extends Task implements TaskContainer {
             task.perform();
         }
     }
-
+    
     // testing
     /**
      * Description of the Method
@@ -458,7 +482,7 @@ public class Assert extends Task implements TaskContainer {
         // 10. test that failonerror works when false.
         try {
             ass.setValue("blah");
-            ass.setFailonerror("false");
+            ass.setFailonerror(false);
             ass.execute();
             ++num_tests;
         }
@@ -469,7 +493,7 @@ public class Assert extends Task implements TaskContainer {
         // 11. test that failonerror works when true.
         try {
             ass.setValue("blah");
-            ass.setFailonerror("true");
+            ass.setFailonerror(true);
             ass.execute();
             throw new RuntimeException("test 11 failed");
         }

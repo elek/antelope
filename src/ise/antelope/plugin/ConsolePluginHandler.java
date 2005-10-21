@@ -69,9 +69,14 @@ public class ConsolePluginHandler extends Handler {
       String parseline = record.getMessage().trim();
 
       // bring the console to the front, but only at the start and end of a build.
-      if (parseline.startsWith("====="))
+      if (parseline.indexOf("===== BUILD STARTED =====") > -1)
          showConsole( );
 
+      // give focus back to the buffer at the end of the build
+      if (parseline.indexOf("===== BUILD FINISHED =====") > -1) {
+            _view.goToBuffer(_view.getBuffer());    
+      }
+      
       if ( _panel.useErrorParsing() ) {
          int type = ConsolePlugin.parseLine( _view, parseline, dir, _error_source );
          switch ( type ) {

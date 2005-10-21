@@ -46,7 +46,9 @@ public class Find extends Task {
     }
 
     /**
-     * Where to put the results of the search.
+     * Where to put the results of the search. If 'allmatches' is true, then
+     * a second property with this name plus "_count" will be created with the
+     * number of matches found.
      *
      * @param name  The new property value
      */
@@ -172,11 +174,14 @@ public class Find extends Task {
             Pattern p = Pattern.compile(regex, flags);
             Matcher m = p.matcher(findIn);
             StringBuffer result = new StringBuffer();
+            int count = 0;
             if (allMatches) {
                 while (m.find()) {
                     String match = m.group(group);
-                    if (match != null)
+                    if (match != null) {
                         result.append(match).append(separator);
+                        ++ count;   
+                    }
                 }
             }
             else if (m.find()) {
@@ -185,8 +190,11 @@ public class Find extends Task {
                     result.append(match);
             }
 
-            if (result.length() > 0)
+            if (result.length() > 0) {
                 getProject().setUserProperty(property, result.toString());
+                if (allMatches)
+                    getProject().setUserProperty(property + "_count", String.valueOf(count));
+            }
             else
                 log("No match.");
         }

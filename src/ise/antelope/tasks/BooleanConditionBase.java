@@ -1,10 +1,13 @@
 package ise.antelope.tasks;
-import java.util.Enumeration;
 
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.tools.ant.ProjectComponent;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.UnknownElement;
 import org.apache.tools.ant.taskdefs.Available;
 import org.apache.tools.ant.taskdefs.Checksum;
 import org.apache.tools.ant.taskdefs.UpToDate;
@@ -18,6 +21,8 @@ import org.apache.tools.ant.taskdefs.condition.*;
  * @author   danson
  */
 public class BooleanConditionBase extends ProjectComponent {
+
+    private Vector conditions = new Vector();
 
 
     /**
@@ -40,55 +45,12 @@ public class BooleanConditionBase extends ProjectComponent {
     }
 
     /**
-     * Adds a feature to the IsPropertyTrue attribute of the BooleanConditionBase
-     * object
-     *
-     * @param i  The feature to be added to the IsPropertyTrue attribute
-     */
-    public void addIsPropertyTrue( IsPropertyTrue i ) {
-        addIsTrue( i );
-    }
-
-
-    /**
-     * Adds a feature to the IsPropertyFalse attribute of the
-     * BooleanConditionBase object
-     *
-     * @param i  The feature to be added to the IsPropertyFalse attribute
-     */
-    public void addIsPropertyFalse( IsPropertyFalse i ) {
-        addIsFalse( i );
-    }
-
-    public void addIsGreaterThan( IsGreaterThan i ) {
-        addEquals( i );
-    }
-
-    public void addIsLessThan( IsLessThan i ) {
-        addEquals( i );
-    }
-
-    public void addMathEquals( MathEquals i ) {
-        addEquals( i );
-    }
-
-    public void addStartsWith( StartsWith i ) {
-        addIsTrue( i );
-    }
-    public void addEndsWith( EndsWith i ) {
-        addIsTrue( i );
-    }
-
-
-    private Vector conditions = new Vector();
-
-    /**
      * Count the conditions.
      *
      * @return the number of conditions in the container
      * @since 1.1
      */
-    protected int countConditions() {
+    public int countConditions() {
         return conditions.size();
     }
 
@@ -98,171 +60,121 @@ public class BooleanConditionBase extends ProjectComponent {
      * @return an enumeration to use for iteration
      * @since 1.1
      */
-    protected final Enumeration getConditions() {
+    public final Enumeration getConditions() {
         return conditions.elements();
     }
 
-    /**
-     * Add an &lt;available&gt; condition.
-     * @param a an available condition
-     * @since 1.1
-     */
     public void addAvailable( Available a ) {
-        conditions.addElement( a );
+        add( a );
     }
 
-    /**
-     * Add an &lt;checksum&gt; condition.
-     *
-     * @param c a Checksum condition
-     * @since 1.4, Ant 1.5
-     */
     public void addChecksum( Checksum c ) {
-        conditions.addElement( c );
+        add( c );
     }
 
-    /**
-     * Add an &lt;uptodate&gt; condition.
-     *
-     * @param u an UpToDate condition
-     * @since 1.1
-     */
     public void addUptodate( UpToDate u ) {
-        conditions.addElement( u );
+        add( u );
     }
 
-    /**
-     * Add an &lt;not&gt; condition "container".
-     *
-     * @param n a Not condition
-     * @since 1.1
-     */
     public void addNot( Not n ) {
-        conditions.addElement( n );
+        add( n );
     }
 
-    /**
-     * Add an &lt;and&gt; condition "container".
-     *
-     * @param a an And condition
-     * @since 1.1
-     */
     public void addAnd( And a ) {
-        conditions.addElement( a );
+        add( a );
     }
 
-    /**
-     * Add an &lt;or&gt; condition "container".
-     *
-     * @param o an Or condition
-     * @since 1.1
-     */
     public void addOr( Or o ) {
-        conditions.addElement( o );
+        add( o );
     }
 
-    /**
-     * Add an &lt;equals&gt; condition.
-     *
-     * @param e an Equals condition
-     * @since 1.1
-     */
     public void addEquals( Equals e ) {
-        conditions.addElement( e );
+        add( e );
     }
 
-    /**
-     * Add an &lt;os&gt; condition.
-     *
-     * @param o an Os condition
-     * @since 1.1
-     */
     public void addOs( Os o ) {
-        conditions.addElement( o );
+        add( o );
     }
 
-    /**
-     * Add an &lt;isset&gt; condition.
-     *
-     * @param i an IsSet condition
-     * @since Ant 1.5
-     */
     public void addIsSet( IsSet i ) {
-        conditions.addElement( i );
+        add( i );
     }
 
-    /**
-     * Add an &lt;http&gt; condition.
-     *
-     * @param h an Http condition
-     * @since Ant 1.5
-     */
     public void addHttp( Http h ) {
-        conditions.addElement( h );
+        add( h );
     }
 
-    /**
-     * Add a &lt;socket&gt; condition.
-     *
-     * @param s a Socket condition
-     * @since Ant 1.5
-     */
     public void addSocket( Socket s ) {
-        conditions.addElement( s );
+        add( s );
     }
 
-    /**
-     * Add a &lt;filesmatch&gt; condition.
-     *
-     * @param test a FilesMatch condition
-     * @since Ant 1.5
-     */
     public void addFilesMatch( FilesMatch test ) {
-        conditions.addElement( test );
+        add( test );
     }
 
-    /**
-     * Add a &lt;contains&gt; condition.
-     *
-     * @param test a Contains condition
-     * @since Ant 1.5
-     */
     public void addContains( Contains test ) {
-        conditions.addElement( test );
+        add( test );
     }
 
-    /**
-     * Add a &lt;istrue&gt; condition.
-     *
-     * @param test an IsTrue condition
-     * @since Ant 1.5
-     */
     public void addIsTrue( IsTrue test ) {
-        conditions.addElement( test );
+        add( test );
     }
 
-    /**
-     * Add a &lt;isfalse&gt; condition.
-     *
-     * @param test an IsFalse condition
-     * @since Ant 1.5
-     */
     public void addIsFalse( IsFalse test ) {
-        conditions.addElement( test );
+        add( test );
     }
 
-    /**
-     * Add an &lt;isreference&gt; condition.
-     *
-     * @param i an IsReference condition
-     * @since Ant 1.6
-     */
     public void addIsReference( IsReference i ) {
-        conditions.addElement( i );
+        add( i );
+    }
+    
+    public void addIsPropertyTrue( IsPropertyTrue i ) {
+        add( i );
+    }
+
+    public void addIsPropertyFalse( IsPropertyFalse i ) {
+        add( i );
+    }
+
+    public void addIsGreaterThan( IsGreaterThan i ) {
+        add( i );
+    }
+
+    public void addIsLessThan( IsLessThan i ) {
+        add( i );
+    }
+
+    public void addMathEquals( MathEquals i ) {
+        add( i );
+    }
+
+    public void addStartsWith( StartsWith i ) {
+        add( i );
+    }
+    
+    public void addEndsWith( EndsWith i ) {
+        add( i );
+    }
+
+    public void addDateDifference(DateTimeDifference i) {
+        add(i);   
+    }
+    
+    public void addTimeDifference(DateTimeDifference i) {
+        add(i);   
+    }
+    
+    public void addDateBefore(DateTimeBefore i) {
+        add(i);   
+    }
+    
+    public void addTimeBefore(DateTimeBefore i) {
+        add(i);   
     }
 
     /**
-     * Add an arbitrary condition
+     * Add an arbitrary condition -- this doesn't work, it is copied from 
+     * ConditionBase in Ant, and it doesn't work there either.
      * @param c a  condition
      * @since Ant 1.6
      */

@@ -80,7 +80,7 @@ public class AntelopePanel extends JPanel implements Constants {
     private AntLogger _build_logger = null;
     private AntPerformanceListener _performance_listener = null;
 
-    private AntProject _project = null;
+    private Project _project = null;
     private HashMap _property_files = null;
 
     /**
@@ -210,6 +210,15 @@ public class AntelopePanel extends JPanel implements Constants {
         // make sure the xml parser is loaded
         try {
             Class.forName( "javax.xml.parsers.SAXParserFactory" );
+        }
+        catch ( Exception e ) {
+            JOptionPane.showMessageDialog( GUIUtils.getRootJFrame( this ), "<html>Error:<br>" + e.getMessage(),
+                    "Ant Error", JOptionPane.ERROR_MESSAGE );
+        }
+
+        try {
+            getClass().getClassLoader().getResource( "ise/antelope/tasks/antlib.xml" );
+            getClass().getClassLoader().getResource( "ise/antelope/tasks/antelope.taskdefs" );
         }
         catch ( Exception e ) {
             JOptionPane.showMessageDialog( GUIUtils.getRootJFrame( this ), "<html>Error:<br>" + e.getMessage(),
@@ -1057,11 +1066,15 @@ public class AntelopePanel extends JPanel implements Constants {
                         //Log.log( "no targets in project" );
                         return ;   /// ??? really ???
                     }
+                    //for (Iterator it = targets.keySet().iterator(); it.hasNext(); ) {
+                    //    System.out.println(it.next());   
+                    //}
+                    
 
                     // Ant 1.6 has an un-named target to hold project-level tasks, so
                     // find it and save it for later.
                     _unnamed_target = null;
-                    if ( getAntVersion() == 16 ) {
+                    if ( getAntVersion() >= 16 ) {
                         Iterator iter = targets.keySet().iterator();
                         while ( iter.hasNext() ) {
                             if ( iter.next().toString().equals( "" ) ) {
@@ -1077,7 +1090,7 @@ public class AntelopePanel extends JPanel implements Constants {
                     else
                         _targets = new LinkedHashMap();
                     Map sax_targets = _sax_panel.getTargets();
-                    Iterator it = sax_targets.keySet().iterator();
+                    Iterator it = sax_targets.keySet().iterator();///targets.keySet().iterator();
                     while ( it.hasNext() ) {
                         // adjust which targets are showing --
                         String target_name = ( String ) it.next();
@@ -1085,7 +1098,7 @@ public class AntelopePanel extends JPanel implements Constants {
                         // Ant 1.6 has an un-named target to hold project-level tasks.
                         // It has no name and shouldn't be executed by itself, so
                         // don't make a button for it.
-                        if ( target_name == null ) { // || target_name.equals("")) {
+                        if ( target_name == null || target_name.equals("")) {
                             continue;
                         }
 
@@ -1258,7 +1271,7 @@ public class AntelopePanel extends JPanel implements Constants {
      *      given build file
      * @exception Exception  Description of Exception
      */
-    public AntProject createProject( File build_file ) throws Exception {
+    public Project createProject( File build_file ) throws Exception {
         if ( build_file == null || !build_file.exists() )
             return null;
 
@@ -1266,17 +1279,45 @@ public class AntelopePanel extends JPanel implements Constants {
         setPrefs( build_file );
 
         // configure the project
-        AntProject p = new AntProject();
+        Project p = new Project();
+        
+        // set the project helper -- the AntelopeProjectHelper2 is the same as the Ant
+        // ProjectHelper2, but has been slightly modified so it does not automatically 
+        // run the implicit target
         System.setProperty( "org.apache.tools.ant.ProjectHelper", "ise.antelope.common.AntelopeProjectHelper2" );
+        
         try {
             ClassLoader cl = _helper.getAntClassLoader();
             p.setCoreLoader( cl );
-            p.init( cl );   // this takes as much as 9 seconds the first time, less than 1/2 second later
-
+            /*
+            try {
+                Log.log("loading antlib with _helper classloader");
+                cl.getResource( "ise/antelope/tasks/antlib.xml" );
+                Log.log("loaded antlib with _helper classloader");
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            */
+            
             // add the antelope build logger now so that any output produced by the
             // ProjectHelper is captured
             p.addBuildListener( _build_logger );
+            
+            // add the progress bar build listener
+            p.addBuildListener( _progress );
+
+            // optionally add the antelope performance listener
+            if ( _settings.getShowPerformanceOutput() ) {
+                if ( _performance_listener == null )
+                    _performance_listener = new AntPerformanceListener();
+                p.addBuildListener( _performance_listener );
+            }
+            
+            // add the gui input handler
             setInputHandler( p, "ise.antelope.common.AntInputHandler" );
+
+            p.init();   // this takes as much as 9 seconds the first time, less than 1/2 second later
 
             p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
             p.setProperty( "ant.version", Main.getAntVersion() );
@@ -1295,7 +1336,9 @@ public class AntelopePanel extends JPanel implements Constants {
             // is what command-line Ant does. Ant also supports a -lib command-line
             // option where the user can specify additional locations. Should
             // Antelope support this? Need a gui in the properties panel if so.
-            // 12/22/2004: added AntelopeLauncher, so -lib option is handled for app
+            // 12/22/2004: added AntelopeLauncher, so -lib option is handled for app,
+            // but not for plugin
+            /// -- should this be done here or in the helper? --
             java.util.List ant_jars = _helper.getAntJarList();
             if ( ant_jars != null ) {
                 java.util.List cp_list = new ArrayList();
@@ -1318,6 +1361,7 @@ public class AntelopePanel extends JPanel implements Constants {
                 }
                 classpath = sb.toString();
                 p.setProperty( "java.class.path", classpath );
+                System.setProperty("java.class.path", classpath);
             }
 
             // load any saved user properties for this build file. These are properties
@@ -1329,31 +1373,42 @@ public class AntelopePanel extends JPanel implements Constants {
                 p.setUserProperty( keys[ i ], user_prefs.get( keys[ i ], "" ) );
             }
 
-            // add the progress bar build listener
-            p.addBuildListener( _progress );
-
-            // add the gui input handler
-            setInputHandler( p, "ise,antelope.common.AntInputHandler" );
-            /*
+            //ProjectHelper.configureProject( p, build_file );      // deprecated
+            ProjectHelper helper = ProjectHelper.getProjectHelper();
+            p.addReference("ant.projectHelper", helper);
+            helper.parse(p, build_file);
+            
+            //for (Iterator it = p.getTargets().keySet().iterator(); it.hasNext(); ) {
+            //    System.out.println("target: " + it.next());   
+            //}
+            
             try {
-                Object ih = PrivilegedAccessor.getNewInstance( "ise.antelope.common.AntInputHandler", new Object[] {( Component ) this} );
-                PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
-        }
-            catch ( Exception e ) {
-                e.printStackTrace();
-        }
-            */ 
-            // optionally add the antelope performance listener
-            if ( _settings.getShowPerformanceOutput() ) {
-                if ( _performance_listener == null )
-                    _performance_listener = new AntPerformanceListener();
-                p.addBuildListener( _performance_listener );
+                System.out.println("AntelopePanel classloader = " + getClass().getClassLoader().hashCode());
+                Class c = Class.forName("org.apache.tools.ant.Main");
+                if (c != null) {
+                    System.out.println("classloader for Main = " + c.getClassLoader().hashCode());
+                    System.out.println("parent classloader for Main = " + c.getClassLoader().getParent());
+                }
+                else
+                    System.out.println("did not find class for Main");
+                c = Class.forName("ise.antelope.tasks.Unset");
+                if (c != null){
+                    System.out.println("classloader for Unset = " + c.getClassLoader().hashCode());
+                    System.out.println("parent classloader for Unset = " + c.getClassLoader().getParent());
+                    System.out.println("classloader for Unset is a " + c.getClassLoader().getClass().getName());
+                }
+                else
+                    System.out.println("did not find class for Unset");
             }
-            ProjectHelper.configureProject( p, build_file );
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            
             return p;
         }
         catch ( Exception e ) {
-            //e.printStackTrace();
+            Log.log(e);
+            e.printStackTrace(System.out);
             JOptionPane.showMessageDialog( GUIUtils.getRootJFrame( this ),
                     "<html>Error:<br>" + e.getMessage(),
                     "Ant Error",
@@ -1361,6 +1416,8 @@ public class AntelopePanel extends JPanel implements Constants {
             throw e;
         }
         catch ( NoClassDefFoundError error ) {
+            Log.log(error);
+            error.printStackTrace(System.out);
             JOptionPane.showMessageDialog( GUIUtils.getRootJFrame( this ),
                     "<html>Error: No Class Definition Found for<br>" + error.getMessage() +
                     "<br><p>This is most likely caused by a required third-party<br>" +
@@ -1373,7 +1430,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
     private void setInputHandler( Project p, String inputHandler ) {
         try {
-            Object ih = PrivilegedAccessor.getNewInstance( "ise.antelope.common.AntInputHandler", new Object[] {( Component ) this} );
+            AntInputHandler ih = new AntInputHandler(AntelopePanel.this);
             PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
         }
         catch ( Exception e ) {
@@ -1385,7 +1442,7 @@ public class AntelopePanel extends JPanel implements Constants {
     /**
      * @return   the Ant project created in <code>createProject</code>.
      */
-    protected AntProject getAntProject() {
+    protected Project getAntProject() {
         return _project;
     }
 

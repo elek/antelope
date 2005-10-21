@@ -56,7 +56,7 @@ import javax.swing.event.*;
 import javax.swing.text.*;
 
 import ise.library.*;
-import ise.antelope.common.Log;
+import ise.library.Log;
 
 /**
  * A simple log handler for Antelope that shows the Ant output in a GUI.

@@ -41,6 +41,18 @@ public class PrivilegedAccessor {
       field.setAccessible( true );
       return field.get( instance );
    }
+   
+	/**
+	 * Sets the value of the named field.
+	 * @param instance the object instance
+	 * @param fieldName the name of the field
+	 * @param value the value to set for the field
+	 */
+   public static void setValue(Object instance, String fieldName, Object value) throws IllegalAccessException, NoSuchFieldException {
+       Field field = getField(instance.getClass(), fieldName);
+       field.setAccessible(true);
+       field.set(instance, value);
+   }
 
    /**
     * Gets the value of the named static field and returns it as an object.
@@ -86,12 +98,13 @@ public class PrivilegedAccessor {
       if ( args == null )
          args = new Object[] {};
       Class[] classTypes = getClassArray( args );
-      Method[] methods = instance.getClass().getMethods();
+      Method[] methods = instance.getClass().getDeclaredMethods();
       boolean found = false;
       for ( int i = 0; i < methods.length; i++ ) {
          Method method = methods[ i ];
          Class[] paramTypes = method.getParameterTypes();
          if ( method.getName( ).equals( methodName ) && compare( paramTypes, args ) ) {
+            method.setAccessible(true);
             return method.invoke( instance, args );
          }
       }
@@ -169,6 +182,8 @@ public class PrivilegedAccessor {
       if ( c.length != args.length ) {
          return false;
       }
+      if (c.length == 0)
+          return true;
       for ( int i = 0; i < c.length; i++ ) {
          if ( !c[ i ].isInstance( args[ i ] ) ) {
             return false;

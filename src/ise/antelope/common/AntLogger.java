@@ -77,6 +77,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.util.StringUtils;
 import org.apache.tools.ant.util.DateUtils;
 
+import ise.library.Log;
+
 /**
  * Writes build events to a java.util.logging.Logger. This is Ant's
  * DefaultLogger modified for Antelope. Log messages have associated Level:<br>
@@ -320,7 +322,8 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       Log.log("build started");
       handleProperties( event );
       log( " " );
-      // note: ConsolePluginHandler uses the ===== to show the Console plugin
+      // note: ConsolePluginHandler uses this message to show the Console plugin,
+      // so if you change this message, be sure to update the ConsolePluginHandler 
       log( Level.CONFIG, "===== BUILD STARTED =====" + lSep );
       startTime = System.currentTimeMillis();
    }
@@ -367,7 +370,8 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       message.append( "Total time: " );
       message.append( formatTime( System.currentTimeMillis() - startTime ) );
       message.append( lSep );
-      // note: ConsolePluginHandler uses the ===== to show the Console plugin
+      // note: ConsolePluginHandler uses this message to set focus back to the buffer,
+      // so if you change this message, be sure to update the ConsolePluginHandler 
       message.append( "===== BUILD FINISHED =====" ).append( lSep );
 
       String msg = message.toString();

@@ -204,6 +204,7 @@
            depends="setClasspath, copy_resources">
       <java classname="ise.antelope.app.Antelope" fork="true">
          <classpath refid="classpathref"/>
+         <arg value="C:/src/Playpen/cdp_ant_test/CdpTests.xml"/>
       </java>
    </target>
    

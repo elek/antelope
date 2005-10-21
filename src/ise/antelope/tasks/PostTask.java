@@ -347,7 +347,7 @@ public class PostTask extends Task {
                     }
                 }
                 ;
-            runner.run();
+            runner.start();
             runner.join( maxwait );
             if ( runner.isAlive() ) {
                 runner.interrupt();
@@ -470,7 +470,7 @@ public class PostTask extends Task {
                         }
                     };
                 currentRunner = runner;
-                runner.run();
+                runner.start();
                 runner.join( maxwait );
                 if ( runner.isAlive() ) {
                     currentRunner = null;
@@ -678,16 +678,19 @@ public class PostTask extends Task {
             String[] args = raw.split( "[;]" );
             for ( int i = 0; i < args.length; i++ ) {
                 String part = args[ i ];
-                String[] parts = part.split( "[=]" );
-                parts[ 0 ] = parts[ 0 ].trim();
+                int eq_index = part.indexOf("=");
+                if (eq_index == -1)
+                    continue;
+                String first_part = part.substring(0, eq_index).trim();
+                String second_part = part.substring(eq_index + 1);
                 if ( i == 0 ) {
-                    name = parts[ 0 ];
-                    value = parts[ 1 ];
+                    name = first_part;
+                    value = second_part;
                 }
-                else if ( parts[ 0 ].equalsIgnoreCase( "Path" ) )
-                    path = parts[ 1 ];
-                else if ( parts[ 0 ].equalsIgnoreCase( "Domain" ) )
-                    domain = parts[ 1 ];
+                else if ( first_part.equalsIgnoreCase( "Path" ) )
+                    path = second_part;
+                else if ( first_part.equalsIgnoreCase( "Domain" ) )
+                    domain = second_part;
             }
             if (name == null)
                 throw new IllegalArgumentException("Raw cookie does not contain a cookie name.");
@@ -744,7 +747,7 @@ public class PostTask extends Task {
         }
 
         /**
-         * @param the domain of the cookie        
+         * @param domain the domain of the cookie        
          */
         public void setDomain( String domain ) {
             this.domain = domain;

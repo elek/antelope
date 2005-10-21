@@ -141,7 +141,7 @@ public class MathTask extends Task {
 
    /**
     * Add a nested operation. Only one operation is allowed at a time.
-    * @param the operation to add.
+    * @param op the operation to add.
     */
    public void addConfiguredOp( Op op ) {
       if ( this.op != null )

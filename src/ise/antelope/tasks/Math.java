@@ -626,7 +626,7 @@ public class Math {
     * operations supported by java.lang.Math and this class. Assumes data 
     * type is "double".
     * @param op the name of a mathematical operation to perform
-    * @param the operands for the operation, these strings must parse to numbers.  
+    * @param operands the operands for the operation, these strings must parse to numbers.  
     */
    public Number calculate( String op, String[] operands ) {
       return calculate( op, "double", operands );
@@ -637,7 +637,7 @@ public class Math {
     * operations supported by java.lang.Math.
     * @param op the name of a mathematical operation to perform
     * @param type the data type of the operands
-    * @param the operands for the operation  
+    * @param operands the operands for the operation  
     * @return the result of the calculation. For boolean operations, returns
     * 1 for true, 0 for false;
     */

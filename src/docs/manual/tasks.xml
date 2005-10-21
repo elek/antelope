@@ -44,7 +44,7 @@ The Try task is modeled after the Java <computeroutput>try/catch</computeroutput
 The Variable task is modeled after Java variable declaration and assignment.
 </para>
 <para>
-These tasks have become indispensible for me in daily use. I think you will find that your Ant build files are more robust and better structured through the use of these tasks.
+These tasks have become indispensible for me in daily use. I think you will find that your Ant build files are more robust and better structured through the use of these tasks.  I've tried to incorporate real-world examples, in fact, many come from the unit tests for the tasks.  If you have a source code distribution, you can look at the unit tests for more examples.
 </para>
 
 
@@ -204,8 +204,11 @@ The Assert task may contain one 'bool' element. The 'bool' element is identical 
 <link linkend="conditionals">StartsWith</link>,
 <link linkend="conditionals">EndsWith</link>,
 <link linkend="conditionals">IsGreaterThan</link>,
-<link linkend="conditionals">IsLessThan</link> and conditions.
-See the If task for examples of using these conditionals.
+<link linkend="conditionals">IsLessThan</link>,
+<link linkend="conditionals">DateTimeBefore</link>,
+<link linkend="conditionals">DateTimeDifference</link>,
+<link linkend="conditionals">MathEquals</link> conditions.
+See the <link linkend="IfTask">If task</link> for examples of using these conditionals.
 </para>
 
 <para>
@@ -278,6 +281,13 @@ To use this task in your build files, include a task definition like this:
 <entry>No</entry>
 </row>
 
+<row>
+<entry>level</entry>
+<entry>A "level" for the assert, similar to debug levels.  Valid values are 'error', 'warning', 'info', 'debug'.</entry>
+<entry>error</entry>
+<entry>No</entry>
+</row>
+
 </tbody>
 </tgroup>
 </table>
@@ -289,6 +299,10 @@ As stated above, the Assert task may contain a nested "bool" task, otherwise,
 the Assert task does not support any nested 
 elements apart from Ant tasks. Any valid Ant task may be embedded within the 
 assert task.
+</para>
+
+<para>
+The "level" attribute is only (so far) useful when Assert is used in conjunction with the <link linkend="testcasetask">Testcase task</link>. Setting this attribute to "warning", "info", or "debug" will force "failonerror" to false. 
 </para>
 
 <para>
@@ -972,6 +986,198 @@ comparison is used.
 </programlisting>
 </para>
 
+<bridgehead renderas='sect3'>DateBefore, TimeBefore </bridgehead>
+<para>
+Tests whether the first date/time is before the second date/time.  
+</para>
+<para>
+<table frame="all">
+<title>DateBefore, TimeBefore</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>datetime1</entry>
+<entry>The first date/time.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>datetime2</entry>
+<entry>The second date/time.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>format</entry>
+<entry>The format of the date/time stamps.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>lenient</entry>
+<entry>Whether the datetime parser should use lenient parsing, defaults to true.</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+   <target name="test1">
+      <a:assert>
+         <bool>
+            <not>
+            <datebefore datetime1="2005-09-09 14:58:36" datetime2="2005-07-11 14:58:36" format="yyyy-MM-dd HH:mm:ss"/>
+            </not>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test2">
+      <a:assert>
+         <bool>
+            <not>
+            <timebefore datetime1="22:58:36" datetime2="10:58:36" format="HH:mm:ss"/>
+            </not>
+         </bool>
+      </a:assert>
+   </target>
+   
+   <target name="test3">
+      <a:assert>
+         <bool>
+            <timebefore datetime1="2005" datetime2="2030" format="yyyy"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test4">
+      <a:assert>
+         <bool>
+            <timebefore datetime1="01:00:00" datetime2="03:00:00" format="hh:mm:ss"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+</para>
+
+
+<bridgehead renderas='sect3'>DateDifference, TimeDifference </bridgehead>
+<para>
+Tests that the difference between two dates or times is a certain value.  
+</para>
+<para>
+<table frame="all">
+<title>DateDifference, TimeDifference</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>datetime1</entry>
+<entry>The first date/time.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>datetime2</entry>
+<entry>The second date/time.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>format</entry>
+<entry>The format of the date/time stamps.</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>lenient</entry>
+<entry>Whether the datetime parser should use lenient parsing, defaults to true.</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>value</entry>
+<entry>The expected difference between the 2 datetimes.</entry>
+<entry>No, default is 0</entry>
+</row>
+<row>
+<entry>unit</entry>
+<entry>Sets the unit for the difference between the 2 datetimes.  For example,
+if value is 12 and unit is "hours", then this
+condition checks that the difference between the 2 datetimes is 12 hours.
+Valid values are "millisecond", "second", "minute", "hour", "day", "week", "month", "year".</entry>
+<entry>Yes</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+   <target name="test1">
+      <a:assert message="Difference between dates is not 60 days.">
+         <bool>
+            <datedifference datetime1="2005-09-09 14:58:36" datetime2="2005-07-11 14:58:36" format="yyyy-MM-dd HH:mm:ss" value="60" unit="day"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test2">
+      <a:assert message="Difference between hours is not 12.">
+         <bool>
+            <timedifference datetime1="22:58:36" datetime2="10:58:36" format="HH:mm:ss" value="12" unit="hour"/>
+         </bool>
+      </a:assert>
+   </target>
+   
+   <target name="test3">
+      <a:assert message="Difference between years is not 25.">
+         <bool>
+            <timedifference datetime1="2005" datetime2="2030" format="yyyy" value="25" unit="year"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test4">
+      <a:assert message="Difference between minutes is not 120.">
+         <bool>
+            <timedifference datetime1="01:00:00" datetime2="03:00:00" format="hh:mm:ss" value="120" unit="minute"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test5">
+      <a:assert message="Difference between seconds is not 7200.">
+         <bool>
+            <timedifference datetime1="01:00:00" datetime2="03:00:00" format="hh:mm:ss" value="7200" unit="second"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+</para>
+
 
 </section>
 
@@ -1251,6 +1457,87 @@ The following example uses a nested Finally to clean up resources:
 See the <link linkend="post">post</link> task for a better way to do a post.
 </para>
 
+</chapter>
+
+<chapter id="Unset">
+@@style@@
+    <title>Unset Task</title>
+    
+<para>
+The Unset task provides easier access to one of the most used use cases of <link linkend="Variable">Variable</link>, the ability to unset a property.  By design, Ant properties are immutable, but sometimes it is handy to set a property to a new value. 
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="unset" classname="ise.antelope.tasks.Unset"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Unset Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>name</entry>
+<entry>The name of the property to unset.</entry>
+<entry>None</entry>
+<entry>Yes, unless 'file' is used.</entry>
+</row>
+
+<row>
+<entry>file</entry>
+<entry>The name of a property file.  All properties references in the file will be unset.  This means you can load a bunch of properties from a file, then unset them all with a single line.</entry>
+<entry>None</entry>
+<entry>Yes, unless 'name' is used.</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+Example:
+<programlisting>
+<![CDATA[
+<project name="unset_example" basedir=".">
+    <taskdef resource="ise/antelope/tasks/antlib.xml"/>
+    <property name="x" value="6"/>
+    <echo>original value = ${x}</echo>
+    <unset name="x"/>
+    <echo>unset: ${x}</echo>
+    <property name="x" value="hello"/>
+    <echo>new value = ${x}</echo>
+</project>    
+    
+$ ant -f unset_example.xml
+Buildfile: unset_example.xml
+     [echo] original value = 6
+     [echo] unset: ${x}
+     [echo] new value = hello
+
+BUILD SUCCESSFUL
+Total time: 0 seconds    
+]]>
+</programlisting>
+</para>
 </chapter>
 
 <chapter id="Variable">
@@ -1562,6 +1849,537 @@ Neither the echo nore the fail will happen in this example. The build will not c
 </programlisting>
 </para>
 </chapter>
+
+
+<chapter id="FileUtils">
+@@style@@
+   <title>FileUtils</title>
+   
+<para>
+The FileUtils task provides a number of useful file information functions, such as readability, writability, length, etc.  Caution: this task does not follow the standard Ant convention of property immutability.
+</para>   
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="fileutil" classname="ise.antelope.tasks.FileUtilTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>FileUtil Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>file</entry>
+<entry>The file or directory in question.</entry>
+<entry>None</entry>
+<entry>No, but does nothing without a file.</entry>
+</row>
+
+<row>
+<entry>property</entry>
+<entry>Where to store the answer. Caution: this task will overwrite any existing property with this name.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Operations as nested elements:
+</para>
+
+<para>
+<table frame="all">
+<title>listfiles</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>separator</entry>
+<entry>The separator to use between individual items in the list of files.</entry>
+<entry>, (comma)</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>includepath</entry>
+<entry>If true, include the path with the filenames in the list.  If false, include only the filenames.</entry>
+<entry>true</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+<table frame="all">
+<title>lastmodified</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>format</entry>
+<entry>A format for the last modified timestamp.  Must comply with the standards listed in java.text.SimpleDateFormat.</entry>
+<entry></entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+</para>
+
+<para>
+These operations have no attributes:
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="bold">canread</emphasis> Is the file readable?
+</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">canwrite</emphasis> Is the file writable?
+</para> 
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">length</emphasis> Finds the length of the file.
+</para> 
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">filecount</emphasis> Find the number of files in the directory.
+</para> 
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">isdirectory</emphasis> Is the file a directory?
+</para> 
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">isfile</emphasis> Is the file a file?
+</para> 
+</listitem>
+</itemizedlist>
+
+</para>
+
+<para>
+Only one of the operations can be used at once.
+</para>
+
+<para>
+Examples: See the <link linkend="Split">Split</link> for several examples.
+</para>
+
+
+
+</chapter>
+
+<chapter id="StringUtils">
+@@style@@
+   <title>StringUtils</title>
+   
+<para>
+The StringUtils task provides a number of useful string manipulation functions, such as converting a string to upper or lower case, trimming white space, finding a substring, etc.  Caution: this task does not follow the standard Ant convention of property immutability.
+</para>   
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>StringUtil Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>string</entry>
+<entry>The string to manipulate.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>property</entry>
+<entry>Where to store the manipulated string. Caution: this task will overwrite any existing property with this name.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Operations as nested elements:
+</para>
+
+<para>
+Find the index of or the last index of a substring.
+<table frame="all">
+<title>indexof, lastindexof</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>string</entry>
+<entry>The string to find the index of.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>fromindex</entry>
+<entry>Where to start looking.</entry>
+<entry>0</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+Get a substring from the string.
+<table frame="all">
+<title>substring</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>beginindex</entry>
+<entry>Start of substring.</entry>
+<entry>0</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>endindex</entry>
+<entry>End of substring.</entry>
+<entry>End of string.</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+Replace parts of the string.
+<table frame="all">
+<title>replace</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>regex</entry>
+<entry>Pattern to replace.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>replacement</entry>
+<entry>What to replace with.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+Sort items in a string.  This is useful for sorting a comma separated list or a property value that spans several lines.
+<table frame="all">
+<title>sort</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>separator</entry>
+<entry>The character separating individual items in the string.</entry>
+<entry>Any of tab, new line, carriage return, line feed, or space.</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+
+</para>
+
+<para>
+These operations have no attributes:
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="bold">lowercase</emphasis> Converts the string to lowercase.
+</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">uppercase</emphasis> Converts the string to uppercase.
+</para> 
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">length</emphasis> Finds the length of the string.
+</para> 
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold">trim</emphasis> Removes white space from boths ends of the string.
+</para> 
+</listitem>
+</itemizedlist>
+
+</para>
+
+<para>
+More than one of the operations can be used at once, that is, you can convert a string to lowercase and trim it at the same time.  See below for examples.
+</para>
+
+<para>
+Examples:
+</para>
+
+<para>
+Convert a string to lower case:
+<programlisting>
+<![CDATA[
+   <target name="test1">
+      <property name="prop1" value="ABCDE"/>
+      <echo>prop1 before = ${prop1}</echo>
+      <a:stringutil string="${prop1}" property="prop1">
+         <a:lowercase/>
+      </a:stringutil>
+      <echo>prop1 after = ${prop1}</echo>
+      <a:assert message="prop1, expected abcde, got ${prop1}">
+         <bool>
+            <equals arg1="abcde" arg2="${prop1}"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+</para>
+
+<para>
+Convert a string to upper case:
+<programlisting>
+<![CDATA[
+   <target name="test2">
+      <property name="prop2" value="abcdefgh"/>
+      <echo>prop2 before = ${prop2}</echo>
+      <a:stringutil string="${prop2}" property="prop2">
+         <a:uppercase/>
+      </a:stringutil>
+      <echo>prop2 after = ${prop2}</echo>
+      <a:assert message="prop2, expected ABCDEFGH, got ${prop2}">
+         <bool>
+            <equals arg1="ABCDEFGH" arg2="${prop2}"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+</para>
+
+<para>
+Convert a string to upper case and trim white space:
+<programlisting>
+<![CDATA[
+   <target name="test3">
+      <property name="prop3" value=" abcdefgh "/>
+      <echo>prop3 before = ${prop3}</echo>
+      <a:stringutil string="${prop3}" property="prop3">
+         <a:uppercase/>
+         <a:trim/>
+      </a:stringutil>
+      <echo>prop3 after = ${prop3}</echo>
+      <a:assert message="prop3, expected ABCDEFGH, got ${prop2}">
+         <bool>
+            <equals arg1="ABCDEFGH" arg2="${prop3}"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+</para>
+
+<para>
+Convert a string to upper case, trim white space, and find a substring:
+<programlisting>
+<![CDATA[
+   <target name="test4">
+      <property name="prop4" value=" abcdefgh "/>
+      <echo>prop4 before = ${prop4}</echo>
+      <a:stringutil string="${prop4}" property="prop4">
+         <a:uppercase/>
+         <a:trim/>
+         <a:substring beginindex="3"/>
+      </a:stringutil>
+      <echo>prop4 after = ${prop4}</echo>
+      <a:assert message="prop4, expected DEFGH, got ${prop4}">
+         <bool>
+            <equals arg1="DEFGH" arg2="${prop4}"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+</para>
+
+<para>
+Get the length of a string:
+<programlisting>
+<![CDATA[
+   <target name="test7">
+      <property name="prop7" value="abcdefgh"/>
+      <echo>prop7 before = ${prop7}</echo>
+      <a:stringutil string="${prop7}" property="prop7">
+         <a:length/>
+      </a:stringutil>
+      <echo>prop7 length = ${prop7}</echo>
+      <a:assert message="prop7, expected 8, got ${prop7}">
+         <bool>
+            <mathequals arg1="8" arg2="${prop7}"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+</para>
+
+<para>
+Sort a list:
+<programlisting>
+<![CDATA[
+   <target name="test12">
+      <property name="prop12" value="a,b,c,d,e,f,g,h,a,b,c,d,e,f,g,h"/>
+      <echo>prop12 before = ${prop12}</echo>
+      <a:stringutil string="${prop12}" property="prop12">
+         <a:sort separator=","/>
+      </a:stringutil>
+      <echo>prop12 sorted = ${prop12}</echo>
+      <a:assert message="prop12, expected 'a,a,b,b,c,c,d,d,e,e,f,f,g,g,h,h', got ${prop12}">
+         <bool>
+            <equals arg1="a,a,b,b,c,c,d,d,e,e,f,f,g,g,h,h" arg2="${prop12}"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+</para>
+
+
+</chapter>
+
 
 
 <chapter id="math">
@@ -1915,6 +2733,13 @@ The Post task has three ways of specifying the data to be posted. Nested "prop" 
 <entry>wantresponse</entry>
 <entry>Whether to wait for a response from the remote server or not. In many cases this can greatly improve the performance of the build script as the server response may be large and useless to the script. Use this with caution - while the response from the server may not be required for the client, the server may require that the client accept the response prior to processing the post data.</entry>
 <entry>true</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>property</entry>
+<entry>If set and wantresponse, put the response from the remote server into this property.</entry>
+<entry>None</entry>
 <entry>No</entry>
 </row>
 
@@ -2449,12 +3274,12 @@ Examples:
 </programlisting>
 </para>   
 <para>
-This example uses the 'var' and 'post' tasks along with 'grep' to list the download url's for Ant:
+This example uses the 'unset' and 'post' tasks along with 'grep' to list the download url's for Ant:
 <programlisting>
 <![CDATA[
 
     <target name="test">
-      <var name="ant_download_page" unset="true"/>
+      <unset name="ant_download_page"/>
       <post to="http://ant.apache.org/bindownload.cgi" 
             verbose="no" 
             property="ant_download_page"/>
@@ -2463,7 +3288,7 @@ This example uses the 'var' and 'post' tasks along with 'grep' to list the downl
             dotall="yes" 
             property="options"/>
       
-      <var name="urls" unset="true"/>
+      <unset name="urls"/>
       <grep in="${options}" 
          regex="&lt;option.*?&gt;(.*?)&lt;/option&gt;"
          group="1"
@@ -2525,6 +3350,485 @@ This example uses the 'var' and 'post' tasks along with 'grep' to list the downl
 </programlisting>
 </para>   
 
+</chapter>
+
+
+<chapter id="Split">
+@@style@@
+    <title>Split Task</title>
+    
+<para>
+This task splits a property or file into pieces.  This is similar to the "split" utility found on most Unix and Linux distributions.
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="split" classname="ise.antelope.tasks.SplitTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+Once a file has been split into smaller pieces, it can be rejoined with the "concat" task that is part of the standard Ant core tasks.
+</para>
+
+<para>
+<table frame="all">
+<title>Split Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>prefix</entry>
+<entry>The start of the filename(s) to write the parts to.</entry>
+<entry>x</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>bytes</entry>
+<entry>How big, in bytes, to make the individual pieces. In general, use lines for text files, bytes or size for binary files.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>size</entry>
+<entry>How big to make the individual pieces. Like the Unix/Linux split utility, this attribute allows modifiers: b for 512, k for 1K, m for 1 Meg, so 100k is the same as passing 102400 in the bytes attribute.  In general, use lines for text files, bytes or size for binary files.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>lines</entry>
+<entry>How big to make the individual pieces in lines.  In general, use lines for text files, bytes or size for binary files.</entry>
+<entry>1000</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>property</entry>
+<entry>Split the value of the property into several files.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>string</entry>
+<entry>Split this string into several files.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>file</entry>
+<entry>Split this file into several files.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>outputdir</entry>
+<entry>Destination for the output files.</entry>
+<entry>None</entry>
+<entry>Maybe.  If file is given and output dir is not, will write to the same directory as file, otherwise, this is a required attribute.</entry>
+</row>
+
+<row>
+<entry>failonerror</entry>
+<entry>Should the build stop if this task fails?</entry>
+<entry>Yes</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Examples
+</para>
+
+<para>
+Split the value of a property into several files:
+<programlisting>
+<![CDATA[
+   <target name="test1" depends="clean">
+      <property name="prop1" value="ABCDE"/>
+      <a:split property="prop1" bytes="1" outputdir="${out_dir}"/>
+      <a:fileutil file="${out_dir}" property="file_count">
+         <a:filecount/>
+      </a:fileutil>
+      <a:assert message="Expected 5 files, got ${file_count}">
+         <bool>
+            <a:mathequals arg1="5" arg2="${file_count}"/>
+         </bool>
+      </a:assert>
+   </target>
+]]>
+</programlisting>
+This will result in 5 files named x.0, x.1, x.2, x.3, and x.4, each containing a single character.
+</para>
+
+<para>
+This more involved example shows how to split ant.jar into several files each 100000 bytes in size.  The files will be names ant.jar.0, ant.jar.1, ..., ant.jar.10.  Then the parts are put back together with concat.
+<programlisting>
+<![CDATA[
+   <target name="test2" depends="clean">
+      <!-- make sure ant.jar is available -->
+      <property name="ant.jar" value="${ant.library.dir}/ant.jar"/>
+      <available property="ant.jar.available" file="${ant.jar}"/>
+      
+      <a:if name="ant.jar.available" value="true">
+         <!-- ant.jar generally runs around 1MB in size, so split into 100000 byte pieces -->
+         <a:unset name="piece_size"/>
+         <property name="piece_size" value="100000"/>
+         <a:split file="${ant.jar}" bytes="${piece_size}" outputdir="${out_dir}" prefix="ant.jar"/>
+         
+         <!-- count the parts -->
+         <a:fileutil file="${out_dir}" property="file_count">
+            <a:filecount/>
+         </a:fileutil>
+         
+         <!-- calculate how many parts there should be -->
+         <a:fileutil file="${ant.jar}" property="ant_size">
+            <a:filelength/>
+         </a:fileutil>
+         <a:math result="split_size">
+            <a:op op="ceil">
+               <a:op op="/">
+                  <a:num value="${ant_size}"/>
+                  <a:num value="${piece_size}"/>
+               </a:op>
+            </a:op>
+         </a:math>
+         
+         <!-- make sure there are the right number of parts -->
+         <a:assert message="Expected ${split_size} files, got ${file_count}">
+            <bool>
+               <a:mathequals arg1="${split_size}" arg2="${file_count}"/>
+            </bool>
+         </a:assert>
+
+         <!-- sort the filenames of the parts so concat puts them together in
+         the right order-->
+         <a:fileutil file="${out_dir}" property="file_list">
+            <a:listfiles includepath="no"/>
+         </a:fileutil>
+         <a:stringutil string="${file_list}" property="file_list">
+            <a:sort/>
+         </a:stringutil>
+         
+         <!-- put them back together -->
+         <concat destfile="${out_dir}/ant.jar" binary="true">
+            <filelist dir="${out_dir}" files="${file_list}"/>
+         </concat>
+
+         <!-- make sure the new file is the identical to the original -->
+         <a:assert message="concat did not produce identical file">
+            <bool>
+               <filesmatch file1="${ant.jar}" file2="${out_dir}/ant.jar"/>
+            </bool>
+         </a:assert>
+      </a:if>
+   </target>
+]]>
+</programlisting>
+</para>
+    
+</chapter>
+
+
+
+<chapter id="Repeat">
+@@style@@
+    <title>Repeat Task</title>
+<para>
+The Repeat task performs the same subtasks over and over a certain number of times or until a condition is met.  Since most tasks are configured when the build file is first loaded and never again, this task may not do what you want.
+</para> 
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="call" classname="ise.antelope.tasks.Repeat"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Repeat Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>count</entry>
+<entry>The number of times to repeat execution of the nested tasks.</entry>
+<entry>1</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>interval</entry>
+<entry>How long to wait between repetitions.  If set to 0, only 1 repetition will be performed, this is to avoid a tight loop.</entry>
+<entry>0</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>unit</entry>
+<entry>The units for interval, allowed values are "milliseconds", "seconds", "minutes", "days", and "weeks"</entry>
+<entry>seconds</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>property</entry>
+<entry>The name of a property to set upon completion.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>value</entry>
+<entry>The value to set for the property to be set upon completion.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Here are a number of examples taken from the unit tests for this task:
+<programlisting>
+<![CDATA[
+   <target name="test1a">
+      <!-- no count set, verify performs tasks once -->
+      <a:var name="count" value="0"/>
+      <a:repeat>
+         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      </a:repeat>
+      <a:assert>
+         <bool>
+            <mathequals arg1="${count}" arg2="1"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test1b">
+      <!-- count > 1, verify performs tasks correct number of times -->
+      <a:var name="count" value="0"/>
+      <a:repeat count="3" interval="1">
+         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      </a:repeat>
+      <a:assert message="Expected 3, got ${count}">
+         <bool>
+            <mathequals arg1="${count}" arg2="3"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test1c">
+      <!-- count = -1, verify performs tasks indefinitely -->
+      <a:var name="count" value="0"/>
+      <a:limit maxwait="10">
+         <a:repeat count="-1" interval="1">
+            <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+         </a:repeat>
+      </a:limit>
+      <a:assert>
+         <bool>
+            <and>
+               <a:isgreaterthan arg1="${count}" arg2="8"/>
+               <a:islessthan arg1="${count}" arg2="12"/>
+            </and>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test2a">
+      <!-- no interval set, verify performs tasks 10 seconds apart -->
+      <a:var name="count" value="0"/>
+      <a:stopwatch name="test2a_stopwatch" action="start"/>
+      <a:repeat count="2">
+         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      </a:repeat>
+      <a:stopwatch name="test2a_stopwatch" action="total"/>
+      <a:assert message="Got ${count}, expected 2">
+         <bool>
+            <and>
+               <a:mathequals arg1="${count}" arg2="2"/>
+               <a:islessthan arg1="${test2a_stopwatch}" arg2="11"/>
+            </and>
+         </bool>
+      </a:assert>
+   </target>
+
+
+   <target name="test2b">
+      <!-- interval set to other than 10 seconds, verify tasks performed correct
+           time apart. -->
+      <a:var name="count" value="0"/>
+      <a:stopwatch name="test2b_stopwatch" action="start"/>
+      <a:repeat count="2" interval="5">
+         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      </a:repeat>
+      <a:stopwatch name="test2b_stopwatch" action="total"/>
+      <a:assert>
+         <bool>
+            <and>
+               <a:mathequals arg1="${count}" arg2="2"/>
+               <a:islessthan arg1="${test2b_stopwatch}" arg2="6"/>
+            </and>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test2c">
+      <!-- interval = 0, verify tasks performed just once -->
+      <a:var name="count" value="0"/>
+      <a:stopwatch name="test2c_stopwatch" action="start"/>
+      <a:repeat count="5" interval="0">
+         <a:math result="count" operand1="${count}" operand2="1" operation="+" datatype="int"/>
+      </a:repeat>
+      <a:stopwatch name="test2c_stopwatch" action="total"/>
+      <a:assert>
+         <bool>
+            <and>
+               <a:mathequals arg1="${count}" arg2="1"/>
+               <a:islessthan arg1="${test2c_stopwatch}" arg2="1"/>
+            </and>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test3a">
+      <!-- failOnError not set, verify continues to execute tasks even if one fails -->
+      <a:var name="count" value="0"/>
+      <a:repeat count="3" interval="1">
+         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+         <fail/>
+      </a:repeat>
+      <a:assert>
+         <bool>
+            <a:mathequals arg1="${count}" arg2="3"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test3b">
+      <!-- failOnError set to false, same as 3a -->
+      <a:var name="count" value="0"/>
+      <a:repeat count="3" interval="1" failonerror="no">
+         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+         <fail/>
+      </a:repeat>
+      <a:assert>
+         <bool>
+            <a:mathequals arg1="${count}" arg2="3"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test3c">
+      <!-- failOnError set to true, verify build fails if subtask fails -->
+      <a:var name="count" value="0"/>
+      <a:try>
+         <a:repeat count="3" interval="1" failonerror="yes">
+            <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+            <fail/>
+         </a:repeat>
+      </a:try>
+      <a:assert>
+         <bool>
+            <a:mathequals arg1="${count}" arg2="1"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test4a">
+      <!-- property name set, value not set, verify property is set to true when task
+           is complete -->
+      <a:var name="count" value="0"/>
+      <a:repeat count="1" interval="1" property="test4a_property">
+         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+         <fail/>
+      </a:repeat>
+      <a:assert>
+         <bool>
+            <istrue value="${test4a_property}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test4b">
+      <!-- property ame set, value set to a specific value, verify property is set to
+           specific value when task is complete -->
+      <a:var name="count" value="0"/>
+      <a:repeat count="1" interval="1" property="test4b_property" value="good">
+         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+         <fail/>
+      </a:repeat>
+      <a:assert name="test4b_property" value="good"/>
+   </target>
+
+   <target name="test5">
+      <property name="call_count" value="0"/>
+      <a:limit seconds="5" failonerror="true">
+         <a:repeat count="-1" interval="1">
+            <a:until>
+               <a:contains property="log_contents" substring="All tests passed 4 times." />
+            </a:until>
+
+            <echo>read log</echo>
+            <a:new>
+               <a:call target="readLog"/>
+            </a:new>
+            <echo>${call_count} - ${log_contents}</echo>
+
+         </a:repeat>
+      </a:limit>
+   </target>
+
+   <target name="readLog">
+      <a:unset name="log_contents"/>
+      <a:new>
+         <a:math result="call_count" operand1="${call_count}" operand2="1" operation="+" datatype="int"/>
+         <property name="log_contents" value="All tests passed ${call_count} times."/>
+      </a:new>
+   </target>
+]]>    
+</programlisting>
+</para>   
 </chapter>
 
 <chapter id="suitetask">
@@ -2605,7 +3909,6 @@ In the example below, the "suite" tasks is a top-level task, so will execute aut
 <programlisting>
 <![CDATA[
 <project name="mathtest" basedir="." xmlns:a="antlib:ise.antelope.tasks">
-   
    <description>
      Build file to run unit tests for the Math task
    </description>
@@ -2616,104 +3919,120 @@ In the example below, the "suite" tasks is a top-level task, so will execute aut
       <a:testcase file="math_precision_tests.xml"/>
    </a:suite>
    
-$ ant -f mathtest.xml
-Buildfile: mathtest.xml
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] + mathtest
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+   <!-- alternatively, a fileset could be used:
+   <a:suite>
+      <fileset dir="${basedir}">
+         <include name="math_*.xml"/>
+      </fileset>
+   </a:suite>
+   -->
+</project>
+
+$ ant -f mathtest2.xml
+Buildfile: mathtest2.xml
+ [testcase] +-------------------------------------------+
+ [testcase] + mathtest
+ [testcase] +-------------------------------------------+
 
 test6:
-[antlib:ise.antelope.tasks:testcase] test6 passed.
+ [testcase] ERROR: test6 failed: string or property must be set.
 
 test5:
-[antlib:ise.antelope.tasks:testcase] test5 passed.
+ [testcase] test5 passed.
 
 test4:
-[antlib:ise.antelope.tasks:testcase] test4 passed.
+ [testcase] test4 passed.
 
 test3:
-[antlib:ise.antelope.tasks:testcase] test3 passed.
+ [testcase] test3 passed.
 
 test2:
-[antlib:ise.antelope.tasks:testcase] test2 passed.
+ [testcase] test2 passed.
 
 test1:
-[antlib:ise.antelope.tasks:testcase] test1 passed.
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] + mathtest
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] ---- Results --------------------------------
-[antlib:ise.antelope.tasks:testcase] Ran 6 out of 6 tests.
-[antlib:ise.antelope.tasks:testcase] Passed: 6
-[antlib:ise.antelope.tasks:testcase] Failed: 0
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] + math_rules_tests
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-
-test7.2:
-[antlib:ise.antelope.tasks:testcase] test7.2 passed.
-
-test7.1:
-[antlib:ise.antelope.tasks:testcase] test7.1 passed.
-
-test7.0:
-[antlib:ise.antelope.tasks:testcase] test7.0 passed.
-
-test8.3:
-[antlib:ise.antelope.tasks:testcase] test8.3 passed.
-
-test8.2:
-[antlib:ise.antelope.tasks:testcase] test8.2 passed.
-
-test9:
-[antlib:ise.antelope.tasks:testcase] test9 passed.
-
-test8.1:
-[antlib:ise.antelope.tasks:testcase] test8.1 passed.
-
-test8.0:
-[antlib:ise.antelope.tasks:testcase] test8.0 passed.
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] + math_rules_tests
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] ---- Results --------------------------------
-[antlib:ise.antelope.tasks:testcase] Ran 8 out of 8 tests.
-[antlib:ise.antelope.tasks:testcase] Passed: 8
-[antlib:ise.antelope.tasks:testcase] Failed: 0
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] + math_precision_tests
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+ [testcase] test1 passed.
+ [testcase] +-------------------------------------------+
+ [testcase] + mathtest
+ [testcase] +-------------------------------------------+
+ [testcase]
+ [testcase] ---- Errors ---------------------------------
+ [testcase] ERROR: test6 failed: string or property must be set.
+ [testcase] ---- Results --------------------------------
+ [testcase] Ran 6 out of 6 tests.
+ [testcase] Passed: 5
+ [testcase] Warning: 0
+ [testcase] Failed: 1
+ [testcase] +-------------------------------------------+
+ [testcase] +-------------------------------------------+
+ [testcase] + math_precision_tests
+ [testcase] +-------------------------------------------+
 
 test11:
      [echo] Division by zero test
-    [a:try] Task 'a:math' in target 'test11' failed, error message is: java.lang.ArithmeticException: / by zero
-[antlib:ise.antelope.tasks:testcase] test11 failed: java.lang.ArithmeticException: / by zero
+    [a:try] Task 'a:math' in target 'test11' failed, error message is: java.lang.ArithmeticException
+ [testcase] ERROR: test11 failed: java.lang.ArithmeticException: / by zero
 
 test10:
      [echo] Circle area test
-[antlib:ise.antelope.tasks:testcase] test10 passed.
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] + math_precision_tests
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
-[antlib:ise.antelope.tasks:testcase]
-[antlib:ise.antelope.tasks:testcase] ---- Errors ---------------------------------
-[antlib:ise.antelope.tasks:testcase] test11 failed: java.lang.ArithmeticException: / by zero
-[antlib:ise.antelope.tasks:testcase] ---- Results --------------------------------
-[antlib:ise.antelope.tasks:testcase] Ran 2 out of 2 tests.
-[antlib:ise.antelope.tasks:testcase] Passed: 1
-[antlib:ise.antelope.tasks:testcase] Failed: 1
-[antlib:ise.antelope.tasks:testcase] +-------------------------------------------+
+ [testcase] ERROR: test10 failed: string or property must be set.
+ [testcase] +-------------------------------------------+
+ [testcase] + math_precision_tests
+ [testcase] +-------------------------------------------+
+ [testcase]
+ [testcase] ---- Errors ---------------------------------
+ [testcase] ERROR: test11 failed: java.lang.ArithmeticException: / by zero
+ [testcase] ERROR: test10 failed: string or property must be set.
+ [testcase] ---- Results --------------------------------
+ [testcase] Ran 2 out of 2 tests.
+ [testcase] Passed: 0
+ [testcase] Warning: 0
+ [testcase] Failed: 2
+ [testcase] +-------------------------------------------+
+ [testcase] +-------------------------------------------+
+ [testcase] + math_rules_tests
+ [testcase] +-------------------------------------------+
+
+test7.2:
+ [testcase] test7.2 passed.
+
+test7.1:
+ [testcase] test7.1 passed.
+
+test7.0:
+ [testcase] test7.0 passed.
+
+test8.3:
+ [testcase] test8.3 passed.
+
+test8.2:
+ [testcase] test8.2 passed.
+
+test9:
+ [testcase] test9 passed.
+
+test8.1:
+ [testcase] test8.1 passed.
+
+test8.0:
+ [testcase] test8.0 passed.
+ [testcase] +-------------------------------------------+
+ [testcase] + math_rules_tests
+ [testcase] +-------------------------------------------+
+ [testcase] ---- Results --------------------------------
+ [testcase] Ran 8 out of 8 tests.
+ [testcase] Passed: 8
+ [testcase] Warning: 0
+ [testcase] Failed: 0
+ [testcase] +-------------------------------------------+
     [suite] ++-- Totals -------------------------------++
     [suite] ++ Total Ran 16 out of 16 tests.
-    [suite] ++ Total Passed: 15
-    [suite] ++ Total Failed: 1
+    [suite] ++ Total Passed: 13
+    [suite] ++ Total Warnings: 0
+    [suite] ++ Total Failed: 3
     [suite] ++-----------------------------------------++
 
 BUILD SUCCESSFUL
-Total time: 0 seconds   
-</project>
+Total time: 1 second
 ]]>    
 </programlisting>
 </para>   
@@ -2736,7 +4055,7 @@ Total time: 0 seconds
  a name starting with 'test'.
 </para> 
 <para>
- Most unit tests will make use of Assert.  As the Assert task requires that the property "ant.enable.asserts" be set to true before it will do anything, this task automatically sets this property to true. 
+ Most unit tests will make use of Assert.  As the Assert task requires that the property "ant.enable.asserts" be set to true before it will do anything, this task automatically sets this property to true. The Assert task has a "level" attribute.  By default, the level is set to "error", so if the Assert fails, the TestCase fails.  If the level is set to "warning", the test case will be marked as a warning rather than a failure.  If the level is set to "info" or "debug" and the Assert fails, any message associated with the Assert will be written out, but otherwise will be ignored by TestCase. 
 </para>
 <para>
 To use this task in your build files, include a task definition like this:
@@ -2779,6 +4098,12 @@ To use this task in your build files, include a task definition like this:
 <entry>assertenabled</entry>
 <entry>Generally tests will use the Assert task.  This attribute sets whether asserts should be enabled.</entry>
 <entry>Yes</entry>
+<entry>No</entry>
+</row>
+<row>
+<entry>failonerror</entry>
+<entry>If true, cause the build to fail. By default, a failed test does not cause the build to fail, so all tests may have the opportunity to run.</entry>
+<entry>No</entry>
 <entry>No</entry>
 </row>
 <row>

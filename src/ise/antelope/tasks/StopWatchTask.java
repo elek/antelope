@@ -54,79 +54,96 @@
 package ise.antelope.tasks;
 
 import java.util.Hashtable;
-import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
 
 /**
  * Assists in timing tasks and/or targets.
- * @author Dale Anson, danson@germane-software.com
+ *
+ * @author    Dale Anson, danson@germane-software.com
+ * @version   $Revision$
  */
 public class StopWatchTask extends Task {
 
-   // storage for stopwatch name
-   private String name = null;
+    // storage for stopwatch name
+    private String name = null;
 
-   // storage for action
-   private String action = null;
+    // storage for action
+    private String action = null;
 
-   // storage for watches
-   private static Hashtable watches = null;
+    // storage for watches
+    private static Hashtable watches = null;
 
-   // action definitions
-   private static final String STOP = "stop";
-   private static final String START = "start";
-   private static final String ELAPSED = "elapsed";
-   private static final String TOTAL = "total";
+    // action definitions
+    private final static String STOP = "stop";
+    private final static String START = "start";
+    private final static String ELAPSED = "elapsed";
+    private final static String TOTAL = "total";
 
 
-   public void setName( String name ) {
-      this.name = name;
-   }
+    /**
+     * Sets the name attribute of the StopWatchTask object
+     *
+     * @param name  The new name value
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   public void setAction( String action ) {
-      action = action.toLowerCase();
-      if ( action.equals( STOP ) ||
-              action.equals( START ) ||
-              action.equals( ELAPSED ) ||
-              action.equals( TOTAL ) ) {
-         this.action = action;
-      }
-      else {
-         throw new BuildException( "invalid action: " + action );
-      }
-   }
+    /**
+     * Sets the action attribute of the StopWatchTask object
+     *
+     * @param action  The new action value
+     */
+    public void setAction(String action) {
+        action = action.toLowerCase();
+        if (action.equals(STOP) ||
+                action.equals(START) ||
+                action.equals(ELAPSED) ||
+                action.equals(TOTAL)) {
+            this.action = action;
+        }
+        else {
+            throw new BuildException("invalid action: " + action);
+        }
+    }
 
-   public void execute() {
-      if ( name == null )
-         throw new BuildException( "name is null" );
-      if ( action == null )
-         action = START;
-      if ( watches == null )
-         watches = new Hashtable();
-      StopWatch sw = ( StopWatch ) watches.get( name );
-      if ( sw == null && action.equals( START ) ) {
-         sw = new StopWatch( name );
-         watches.put( name, sw );
-         return ;
-      }
-      if ( sw == null )
-         return ;
-      if ( action.equals( STOP ) ) {
-         sw.stop();
-         return ;
-      }
-      if ( action.equals( TOTAL ) ) {
-         sw.stop();
-         String time = sw.format( sw.total() );
-         log( "[" + name + ": " + time + "]" );
-         getProject().setProperty(name, time);
-         return ;
-      }
-      if ( action.equals( ELAPSED ) ) {
-         String time = sw.format( sw.elapsed() );
-         log( "[" + name + ": " + time + "]" );
-         getProject().setProperty(name, time);
-         return ;
-      }
-   }
+    /** Description of the Method */
+    public void execute() {
+        if (name == null)
+            throw new BuildException("name is null");
+        if (action == null)
+            action = START;
+        if (watches == null)
+            watches = new Hashtable();
+        StopWatch sw = (StopWatch) watches.get(name);
+        if (sw == null && action.equals(START)) {
+            sw = new StopWatch(name);
+            watches.put(name, sw);
+            return;
+        }
+        if (sw == null)
+            return;
+        if (action.equals(START)) {
+            sw.start();
+            return;
+        }
+        if (action.equals(STOP)) {
+            sw.stop();
+            return;
+        }
+        if (action.equals(TOTAL)) {
+            String time = sw.format(sw.total());
+            log("[" + name + ": " + time + "]");
+            getProject().setProperty(name, time);
+            return;
+        }
+        if (action.equals(ELAPSED)) {
+            String time = sw.format(sw.elapsed());
+            log("[" + name + ": " + time + "]");
+            getProject().setProperty(name, time);
+            return;
+        }
+    }
 }
+

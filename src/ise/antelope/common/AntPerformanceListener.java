@@ -133,6 +133,8 @@ public class AntPerformanceListener implements BuildListener {
       while ( it.hasNext() ) {
          StopWatch key = ( StopWatch ) it.next();
          Target target = ( Target ) sortedTargets.get( key );
+         if (target == null)
+             continue;
          StringBuffer sb = new StringBuffer();
          if ( target.getProject().getName() != null )
             sb.append( target.getProject().getName() ).append( "." );
@@ -146,11 +148,16 @@ public class AntPerformanceListener implements BuildListener {
       while ( it.hasNext() ) {
          StopWatch key = ( StopWatch ) it.next();
          Task task = ( Task ) sortedTasks.get( key );
+         if (task == null)
+             continue;
          StringBuffer sb = new StringBuffer();
          Target target = task.getOwningTarget();
-         if ( target.getProject().getName() != null )
-            sb.append( target.getProject().getName() ).append( "." );
-         sb.append( target.getName() ).append( "." );
+         if (target != null) {
+             Project p = target.getProject();
+             if (p != null && p.getName() != null)
+                sb.append( p.getName() ).append( "." );
+             sb.append( target.getName() ).append( "." );
+         }
          sb.append( task.getTaskName() ).append( ": " ).append( format( key.total() ) );
          results.append( sb.toString() ).append( lSep );
       }
@@ -244,7 +251,8 @@ public class AntPerformanceListener implements BuildListener {
     */
    public void taskFinished( BuildEvent be ) {
       StopWatch sw = ( StopWatch ) taskStats.get( be.getTask() );
-      sw.stop();
+      if (sw != null)
+          sw.stop();
    }
 
    /**

@@ -58,6 +58,7 @@ import java.util.*;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.jar.*;
 import javax.swing.*;
 import org.gjt.sp.util.Log;
 import org.gjt.sp.jedit.jEdit;
@@ -115,10 +116,13 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
     public void init() {
         SwingUtilities.invokeLater( new Runnable() {
                     public void run() {
+
+                        
                         try {
                             // load ant
                             jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
                             String ant_jars = AntelopePlugin.getAntJars( true );
+                            Log.log( Log.MESSAGE, this, "ant_jars = " + ant_jars );
                             if ( ant_jars != null ) {
                                 jEdit.setProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars", ant_jars );
                                 StringTokenizer st = new StringTokenizer( AntelopePlugin.getAntJars( false ) );
@@ -133,12 +137,14 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                         catch ( Exception e ) {
                             // start Antelope anyway
                             /// really? what good is antelope without ant???
-                            int rtn = JOptionPane.showConfirmDialog(AntelopePluginPanel.this, "<html>Error loading Ant:<p>" + e.getMessage() + "<p>Do you want to try again?", "Error Loading Ant", JOptionPane.YES_NO_OPTION);
-                            if (rtn == JOptionPane.YES_OPTION) {
+                            int rtn = JOptionPane.showConfirmDialog( AntelopePluginPanel.this, "<html>Error loading Ant:<p>" + e.getMessage() + "<p>Do you want to try again?", "Error Loading Ant", JOptionPane.YES_NO_OPTION );
+                            if ( rtn == JOptionPane.YES_OPTION ) {
                                 run();
                             }
                         }
                         jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
+                        
+                        //loadAnt();
                         
                         // set up Antelope's menu
                         _view.getStatus().setMessageAndClear( "Loading Antelope..." );
@@ -162,14 +168,14 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
 
                         // create and add Antelope
                         try {
-                            
+
                             antelopePanel = new AntelopePanel( file, AntelopePluginPanel.this, true, menu_items );
                         }
                         catch ( Throwable t ) {
                             t.printStackTrace();
-                            JOptionPane.showMessageDialog(null, "<html>Error starting Antelope:<p>" +
+                            JOptionPane.showMessageDialog( null, "<html>Error starting Antelope:<p>" +
                                     t.getMessage() + "<p>Usually this can be fixed by restarting jEdit.",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                                    "Error", JOptionPane.ERROR_MESSAGE );
                             return ;
                         }
                         removeAll();
@@ -343,9 +349,9 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
     public ActionListener getRunButtonAction() {
         return null;
     }
-    
+
     public ActionListener getTraceButtonAction() {
-        return null;  
+        return null;
     }
 
     /**
@@ -423,6 +429,44 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                 }
                 break;
             default:
+        }
+    }
+
+    private void loadAnt() {
+        System.out.println("loadAnt");
+        java.util.List ant_jars = getAntJarList();
+        if ( ant_jars != null ) {
+            System.out.println("got jar list: " + ant_jars);
+            // add the ant jars to the classpath
+            StringBuffer sb = new StringBuffer();
+            for ( Iterator it = ant_jars.iterator(); it.hasNext(); ) {
+                sb.append( it.next() ).append( File.pathSeparator );
+            }
+            String classpath = System.getProperty( "java.class.path" ) + File.pathSeparator + sb.toString();
+            System.setProperty( "java.class.path", classpath );
+            System.out.println("set java.class.path: " + System.getProperty("java.class.path"));
+            // add the ant classes to the classloader
+            ClassLoader my_cl = getClass().getClassLoader();
+            for ( Iterator it = ant_jars.iterator(); it.hasNext(); ) {
+                try {
+                    JarFile jf = new JarFile( ( File ) it.next() );
+                    System.out.println("loading classes from: " + jf.toString());
+                    Enumeration en = jf.entries();
+                    while ( en.hasMoreElements() ) {
+                        JarEntry je = ( JarEntry ) en.nextElement();
+                        if ( je.isDirectory() )
+                            continue;
+                        String classname = je.getName();
+                        if ( classname.endsWith( ".class" ) )
+                            classname = classname.substring( 0, classname.length() - 6 );
+                        classname = classname.replace( '/', '.' );
+                        my_cl.loadClass( classname );
+                    }
+                }
+                catch ( Exception e ) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

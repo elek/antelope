@@ -10,11 +10,11 @@ docbook.xsl=file:///C:/cygwin/usr/share/docbook-xsl
 docbookx.dtd=file:///C:/cygwin/usr/share/docbook-xml42/docbookx.dtd
 
 install.dir=${user.home}/.jedit/jars
-build.num=3.2.6
+build.num=3.2.9
 
 # optional settings, remove if you don't use jikes
-build.compiler=jikes
-build.compiler.emacs=true
+#build.compiler=jikes
+#build.compiler.emacs=true
 
 # compiler settings
 showDebug=false

@@ -132,12 +132,15 @@ public class StopWatch {
     }
 
     /**
-     * Total cumulative elapsed time.
+     * Total cumulative elapsed time, stops the stopwatch.
      *
      * @return   the total time
      */
     public long total() {
-        return totalTime;
+        stop();
+        long rtn = totalTime;
+        totalTime = 0;
+        return rtn;
     }
 
     /**

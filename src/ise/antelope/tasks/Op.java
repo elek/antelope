@@ -85,7 +85,7 @@ public class Op {
 
    /**
     * Add a nested operation.
-    * @param the operation to add.
+    * @param op the operation to add.
     */
    public void addConfiguredOp( Op op ) {
       if ( datatype != null )

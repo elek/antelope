@@ -12,24 +12,64 @@
    <taskdef name="catch" classname="ise.antelope.tasks.CatchTask"/>
    <taskdef name="default" classname="ise.antelope.tasks.DefaultCase"/>
    <taskdef name="else" classname="ise.antelope.tasks.ElseTask"/>
+   <taskdef name="fileutil" classname="ise.antelope.tasks.FileUtilTask"/>
    <taskdef name="finally" classname="ise.antelope.tasks.FinallyTask"/>
    <taskdef name="find" classname="ise.antelope.tasks.Find"/>
+   <taskdef name="foreach" classname="ise.antelope.tasks.Foreach"/>
    <taskdef name="grep" classname="ise.antelope.tasks.Find"/>
    <taskdef name="if" classname="ise.antelope.tasks.IfTask"/>
    <taskdef name="limit" classname="ise.antelope.tasks.Limit"/>
    <taskdef name="math" classname="ise.antelope.tasks.MathTask"/>
+   <taskdef name="new" classname="ise.antelope.tasks.New"/>
    <taskdef name="passwordhandler" classname = "ise.antelope.tasks.PasswordHandlerTask"/>
    <taskdef name="post" classname="ise.antelope.tasks.PostTask"/>
+   <taskdef name="readlog" classname="ise.antelope.tasks.ReadLog"/>
+   <taskdef name="repeat" classname="ise.antelope.tasks.Repeat"/>
+   <taskdef name="split" classname="ise.antelope.tasks.SplitTask"/>
    <taskdef name="stopwatch" classname="ise.antelope.tasks.StopWatchTask"/>
    <taskdef name="suite" classname="ise.antelope.tasks.Suite"/>
+   <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask"/>
    <taskdef name="switch" classname="ise.antelope.tasks.SwitchTask"/>
    <taskdef name="testcase" classname="ise.antelope.tasks.TestCase"/>
    <taskdef name="try" classname="ise.antelope.tasks.TryTask"/>
+   <taskdef name="unset" classname="ise.antelope.tasks.Unset"/>
+   <taskdef name="until" classname="ise.antelope.tasks.BooleanConditionTask"/>
    <taskdef name="var" classname="ise.antelope.tasks.Variable"/>
    
+   <typedef name="prop" classname="ise.antelope.tasks.Prop"/>
+   
+   <typedef name="contains" classname="ise.antelope.tasks.Contains"/>
+   <typedef name="datedifference" classname="ise.antelope.tasks.DateTimeDifference"/>
+   <typedef name="timedifference" classname="ise.antelope.tasks.DateTimeDifference"/>
+   <typedef name="datebefore" classname="ise.antelope.tasks.DateTimeBefore"/>
+   <typedef name="timebefore" classname="ise.antelope.tasks.DateTimeBefore"/>
    <typedef name="islessthan" classname="ise.antelope.tasks.IsLessThan"/>
    <typedef name="isgreaterthan" classname="ise.antelope.tasks.IsGreaterThan"/>
    <typedef name="mathequals" classname="ise.antelope.tasks.MathEquals"/>
    <typedef name="endswith" classname="ise.antelope.tasks.EndsWith"/>
    <typedef name="startswith" classname="ise.antelope.tasks.StartsWith"/>
+   
+   <typedef name="and" classname="ise.antelope.tasks.And"/>
+   <typedef name="or" classname="ise.antelope.tasks.Or"/>
+   <typedef name="not" classname="ise.antelope.tasks.Not"/>
+   
+   <typedef name="lowercase" classname="ise.antelope.tasks.typedefs.LowerCase"/>
+   <typedef name="uppercase" classname="ise.antelope.tasks.typedefs.UpperCase"/>
+   <typedef name="trim" classname="ise.antelope.tasks.typedefs.Trim"/>
+   <typedef name="substring" classname="ise.antelope.tasks.typedefs.Substring"/>
+   <typedef name="replace" classname="ise.antelope.tasks.typedefs.Replace"/>
+   <typedef name="indexof" classname="ise.antelope.tasks.typedefs.IndexOf"/>
+   <typedef name="lastindexof" classname="ise.antelope.tasks.typedefs.LastIndexOf"/>
+   <typedef name="length" classname="ise.antelope.tasks.typedefs.Length"/>
+   <typedef name="sort" classname="ise.antelope.tasks.typedefs.Sort"/>
+   
+   <typedef name="canread" classname="ise.antelope.tasks.typedefs.CanRead"/>
+   <typedef name="canwrite" classname="ise.antelope.tasks.typedefs.CanWrite"/>
+   <typedef name="filecount" classname="ise.antelope.tasks.typedefs.FileCount"/>
+   <typedef name="filelength" classname="ise.antelope.tasks.typedefs.FileLength"/>
+   <typedef name="listfiles" classname="ise.antelope.tasks.typedefs.FileList"/>
+   <typedef name="isdirectory" classname="ise.antelope.tasks.typedefs.IsDirectory"/>
+   <typedef name="isfile" classname="ise.antelope.tasks.typedefs.IsFile"/>
+   <typedef name="lastmodified" classname="ise.antelope.tasks.typedefs.LastModified"/>
+   
 </antlib>

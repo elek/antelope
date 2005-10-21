@@ -30,7 +30,7 @@ public class PasswordHandlerTask extends Task {
     /**
      * Sets the name of a property to receive the encrypted or decrypted password.
      *
-     * @param out the property name
+     * @param string out the property name
      */
     public void setOut(String string) {
         out = string;
@@ -39,7 +39,7 @@ public class PasswordHandlerTask extends Task {
     /**
      * One of "encrypt" or "decrypt", if not explicitly set, assumes "decrypt".
      *
-     * @param name  one of "encrypt" or "decrypt".
+     * @param mode  one of "encrypt" or "decrypt".
      */
     public void setMode(String mode) {
         if (mode == null || (!mode.equals("encrypt") && !mode.equals("decrypt")))

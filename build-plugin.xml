@@ -1,29 +1,33 @@
 
-<project name="Antelope" default="dist" basedir="." xmlns:antelope="antlib:ise.antelope.tasks">
+<project name="Antelope" default="dist" basedir=".">
    <description>
        This build file creates Antelope as a jEdit plugin.
-    </description>
+   </description>
     
+   <!-- ========================================================================
+      Set properties:  These first few properties can/should be overridden in
+      either build.props or on the command line.  The default values may or may
+      not work.
+   ========================================================================= -->
     <!-- read build.props to override properties set below -->
    <property file="build.props"/>
 
-    <!-- default location of jedit.jar, override in build.props if necessary -->
+    <!-- default location of jedit.jar -->
    <property name="jedit.install.dir" value="../.."/> 
     
-    <!-- default location of the finished plugin, override in build.props
-    if necessary -->
+    <!-- default location of the finished plugin -->
    <property name="install.dir" value=".." />
     
-    <!-- version number, override in build.props if necessary -->
-   <property name="build.num" value="3.0.1"/>
-    
-    <!-- shouldn't need to override the following properties -->
-    
+    <!-- version number -->
+   <property name="build.num" value="3.2"/>
+
+   
+   <!-- ========================================================================
+      Set properties:  These properties should not need to be changed.
+   ========================================================================= -->
     <!-- source code directory, this is where the .java files live -->
    <property name="src.dir" location="src" />
 
-   <property name="lib.dir" location="lib"/>
-    
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
    <property name="prep.dir" location="prep"/>
@@ -45,20 +49,79 @@
    
     
    <!-- ========================================================================
+      Target: dist
+      this target does several things:
+      first, it creates a jar file in the prep directory. This is a finished
+      jar file suitable for dropping into jEdit.
+      second, it copies the jar file to $install.dir
+      third, it zips the jar file and installation docs into $dist.dir
+   ========================================================================= -->
+   <target name="dist"
+         description="Compiles, jars, puts the jar in the jEdit jars directory."
+         depends="init, clean, compile, prep_files, copy_resources">
+        
+      <!-- make the jar file. jEdit standards require just the name of the
+        plugin, e.g. Antelope.jar. put it in $prep.dir -->
+      <tstamp/>
+      <jar jarfile="${prep.dir}/${ant.project.name}.jar">
+         <manifest>
+            <attribute name="AppName" value="${ant.project.name}" />
+            <attribute name="AppVersion" value="${build.num}" />
+            <attribute name="Author" value="Dale Anson" />
+            <attribute name="Created-By" value="${user.name}"/>
+            <attribute name="Created-On" value="${TODAY}"/>
+         </manifest>
+
+            <!-- include everything in the build directory -->
+         <fileset dir="${classes.dir}">
+            <include name="**/*" />
+            <exclude name="**/ise/antelope/launcher/**/*"/>
+            <exclude name="**/ise/antelope/tasks/**/*"/>
+            <exclude name="**/com/**/*"/>
+            <exclude name="**/common/builder/**/*"/>
+            <exclude name="**/common/dependency/**/*"/>
+            <exclude name="**/testcases/**/*"/>
+         </fileset>
+
+            <!-- include everything in the doc directory -->
+         <fileset dir="${doc.dir}">
+            <include name="**/*" />
+         </fileset>
+
+         <!-- include everything in the config directory -->
+         <fileset dir="${config.dir}">
+            <include name="**/*" />
+         </fileset>
+      </jar>
+      
+      <!-- copy the jar to the right place per jEdit standards -->
+      <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
+        
+      <!-- zip the jar and installation instructions and put the zip file in
+      the $dist directory -->
+      <zip destfile="${dist.dir}/${ant.project.name}Plugin_${build.num}.zip">
+         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}">
+            <include name="${ant.project.name}.jar"/>
+         </zipfileset>
+         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}/docs">
+            <include name="license.txt"/>
+            <include name="plugin_readme.txt"/>
+            <include name="ChangeLog.txt"/>
+         </zipfileset>
+      </zip>
+
+   </target>
+
+   <!-- ========================================================================
       Target: set classpath
    ========================================================================= -->
    <target name="setClasspath">
       <path id="classpathref">
          <!-- include classes directory -->
          <pathelement location="${classes.dir}" />
-         <pathelement path="${java.class.path}"/>
          
-         <!-- include third party libraries -->
-         <!--
-         <fileset dir="${lib.dir}">
-            <include name="*.jar"/>
-         </fileset>
-         -->
+         <!-- include standard classpath, need ant jars -->
+         <pathelement path="${java.class.path}"/>
          
          <!-- include jedit.jar and dependent plugins -->
          <pathelement location="${jedit.install.dir}/jedit.jar" />
@@ -102,146 +165,8 @@
          <exclude name="**/common/gui/*"/>
          <exclude name="**/common/builder/*"/>
          <exclude name="**/common/dependency/*"/>
+         <exclude name="**/com/wutka/**"/>
       </javac>
-   </target>
-    
-   <!-- ========================================================================
-      Target: dist
-      this target does several things:
-      first, it creates a jar file in the prep directory. This is a finished
-      jar file suitable for dropping into jEdit.
-      second, it copies the jar file to $install.dir
-      third, it zips the jar file and installation docs into $dist.dir
-   ========================================================================= -->
-   <target name="dist"
-         description="Compiles, jars, puts the jar in the jEdit jars directory."
-         depends="init,clean,compile,prep_files,copy_resources">
-        
-        <!-- make the jar file. jEdit standards require just the name of the
-        plugin, e.g. Antelope.jar. put it in $prep.dir -->
-      <tstamp/>
-      <jar jarfile="${prep.dir}/${ant.project.name}.jar">
-         <manifest>
-            <attribute name="AppName" value="${ant.project.name}" />
-            <attribute name="AppVersion" value="${build.num}" />
-            <attribute name="Author" value="Dale Anson" />
-            <attribute name="Created-By" value="${user.name}"/>
-            <attribute name="Created-On" value="${TODAY}"/>
-         </manifest>
-
-            <!-- include everything in the build directory -->
-         <fileset dir="${classes.dir}">
-            <include name="**/*" />
-            <exclude name="**/ise/antelope/launcher/**/*"/>
-            <exclude name="**/com/**/*"/>
-            <exclude name="**/common/builder/**/*"/>
-            <exclude name="**/common/dependency/**/*"/>
-            <exclude name="**/testcases/**/*"/>
-         </fileset>
-
-            <!-- include everything in the doc directory -->
-         <fileset dir="${doc.dir}">
-            <include name="**/*" />
-         </fileset>
-
-         <!-- include everything in the config directory -->
-         <fileset dir="${config.dir}">
-            <include name="**/*" />
-         </fileset>
-      </jar>
-        <!-- copy the jar to the right place per jEdit standards -->
-      <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
-        
-        <!-- zip the jar and installation instructions and put the zip file in
-        the $dist directory -->
-      <zip destfile="${dist.dir}/${ant.project.name}Plugin_${build.num}.zip">
-         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}">
-            <include name="${ant.project.name}.jar"/>
-         </zipfileset>
-         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}/docs">
-            <include name="license.txt"/>
-            <include name="plugin_readme.txt"/>
-            <include name="ChangeLog.txt"/>
-         </zipfileset>
-      </zip>
-
-   </target>
-
-   <target name="dist_new"
-         description="Compiles, jars, puts the jar in the jEdit jars directory."
-         depends="clean,compile,prep_files,copy_resources">
-        
-        <!-- make the jar file. jEdit standards require just the name of the
-        plugin, e.g. Antelope.jar. put it in $prep.dir -->
-      <tstamp/>
-      <jar jarfile="${prep.dir}/antelope_plugin.jar">
-         <manifest>
-            <attribute name="AppName" value="${ant.project.name}" />
-            <attribute name="AppVersion" value="${build.num}" />
-            <attribute name="Author" value="Dale Anson" />
-            <attribute name="Created-By" value="${user.name}"/>
-            <attribute name="Created-On" value="${TODAY}"/>
-         </manifest>
-
-            <!-- include everything in the build directory -->
-         <fileset dir="${classes.dir}">
-            <include name="**/*" />
-            <exclude name="**/ise/antelope/plugin/**/*"/>
-            <include name="**/ise/antelope/launcher/**/*"/>
-            <exclude name="**/com/**/*"/>
-            <exclude name="**/common/builder/**/*"/>
-            <exclude name="**/common/dependency/**/*"/>
-            <exclude name="**/testcases/**/*"/>
-         </fileset>
-
-            <!-- include everything in the doc directory -->
-         <fileset dir="${doc.dir}">
-            <include name="**/*" />
-         </fileset>
-      </jar>
-        <jar jarfile="${prep.dir}/${ant.project.name}.jar">
-            <manifest>
-                <attribute name="AppName" value="${ant.project.name}" />
-                <attribute name="AppVersion" value="${build.num}" />
-                <attribute name="Author" value="Dale Anson" />
-                <attribute name="Created-By" value="${user.name}"/>
-                <attribute name="Created-On" value="${TODAY}"/>
-            </manifest>
-
-            <!-- include the Plugin and Launcher files -->
-            <fileset dir="${classes.dir}">
-                <include name="**/ise/antelope/plugin/**/*"/>
-                <include name="**/ise/antelope/launcher/**/*"/>
-            </fileset>
-            
-            <!-- include the Antelope files -->
-            <fileset dir="${prep.dir}">
-                <include name="antelope_plugin.jar"/>
-            </fileset>
-
-            <!-- include everything in the config directory -->
-            <fileset dir="${config.dir}">
-               <include name="**/*" />
-            </fileset>
-
-        </jar>
-        
-        <!-- copy the jar to the right place per jEdit standards -->
-      <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
-        
-        <!-- zip the jar and installation instructions and put the zip file in
-        the $dist directory -->
-      <zip destfile="${dist.dir}/${ant.project.name}Plugin_${build.num}.zip">
-         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}">
-            <include name="${ant.project.name}.jar"/>
-         </zipfileset>
-         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}/docs">
-            <include name="license.txt"/>
-            <include name="plugin_readme.txt"/>
-            <include name="ChangeLog.txt"/>
-         </zipfileset>
-      </zip>
-
    </target>
     
    <!-- ========================================================================
@@ -285,7 +210,8 @@
          <param name="html.stylesheet" expression="./style.css"/>
       </style>
    </target>
-    
+   
+   
    <!-- ========================================================================
       Target: copy_resources
    ========================================================================= -->
@@ -357,7 +283,7 @@
       <fail unless="jedit.install.dir" message="Please set jedit.install.dir property."/>
       <available file="${jedit.install.dir}/jedit.jar" property="jedit.available"/>
       <fail unless="jedit.available" message="jedit.jar not found, please set in properties."/>
-      
+
       <mkdir dir="${src.dir}" />
       <mkdir dir="${classes.dir}" />
       <mkdir dir="${prep.dir}"/>

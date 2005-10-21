@@ -1,63 +1,32 @@
+
 /*
-*  The Apache Software License, Version 1.1
+* Copyright (c) 2001-2004 Ant-Contrib project.  All rights reserved.
 *
-*  Copyright (c) 2001-2002 The Apache Software Foundation.  All rights
-*  reserved.
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
 *
-*  Redistribution and use in source and binary forms, with or without
-*  modification, are permitted provided that the following conditions
-*  are met:
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
-*  1. Redistributions of source code must retain the above copyright
-*  notice, this list of conditions and the following disclaimer.
-*
-*  2. Redistributions in binary form must reproduce the above copyright
-*  notice, this list of conditions and the following disclaimer in
-*  the documentation and/or other materials provided with the
-*  distribution.
-*
-*  3. The end-user documentation included with the redistribution, if
-*  any, must include the following acknowlegement:
-*  "This product includes software developed by the
-*  Apache Software Foundation (http://www.apache.org/)."
-*  Alternately, this acknowlegement may appear in the software itself,
-*  if and wherever such third-party acknowlegements normally appear.
-*
-*  4. The names "The Jakarta Project", "Ant", and "Apache Software
-*  Foundation" must not be used to endorse or promote products derived
-*  from this software without prior written permission. For written
-*  permission, please contact apache@apache.org.
-*
-*  5. Products derived from this software may not be called "Apache"
-*  nor may "Apache" appear in their names without prior written
-*  permission of the Apache Group.
-*
-*  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-*  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-*  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-*  DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-*  ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-*  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-*  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-*  USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-*  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-*  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-*  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-*  SUCH DAMAGE.
-*  ====================================================================
-*
-*  This software consists of voluntary contributions made by many
-*  individuals on behalf of the Apache Software Foundation.  For more
-*  information on the Apache Software Foundation, please see
-*  <http://www.apache.org/>.
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
 */
 package ise.antelope.tasks;
 
+
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
+
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.TaskContainer;
+import org.apache.tools.ant.types.EnumeratedAttribute;
+
 
 /**
  * Limits the amount of time that a task or set of tasks can run. This is useful
@@ -65,26 +34,44 @@ import org.apache.tools.ant.TaskContainer;
  * task is done when either the maxwait time has expired or all nested tasks are
  * complete, whichever is first.
  *
- * @author   Dale Anson, danson@germane-software.com
+ * <p>Developed for use with Antelope, migrated to ant-contrib Oct 2003.
+ *
+ * @author    Dale Anson
+ * @author    Robert D. Rice
+ * @version   $Revision$
+ * @since Ant 1.5
  */
 public class Limit extends Task implements TaskContainer {
+
 
    // storage for nested tasks
    private Vector tasks = new Vector();
 
-   // units are in milliseconds, default value is 3 minutes.
-   private long maxwait = 180 * 1000;
+
+   // time units, default value is 3 minutes.
+   private long maxwait = 180;
+   protected TimeUnit unit = TimeUnit.SECOND_UNIT;
+
+   // property to set if time limit is reached
+   private String timeoutProperty = null;
+   private String timeoutValue = "true";
+
 
    // storage for task currently executing
    private Task currentTask = null;
 
+
    // used to control thread stoppage
    private Thread taskRunner = null;
+
 
    // should the build fail if the time limit has expired? Default is no.
    private boolean failOnError = false;
 
+
    private Exception exception = null;
+
+
 
 
    /**
@@ -98,21 +85,120 @@ public class Limit extends Task implements TaskContainer {
    }
 
 
+
+
    /**
-    * How long to wait for all nested tasks to complete. Default is to wait 180
-    * seconds (= 3 minutes).
+    * How long to wait for all nested tasks to complete, in units. 
+    * Default is to wait 3 minutes.
     *
-    * @param wait  time to wait in seconds, set to 0 to wait forever.
+    * @param wait  time to wait, set to 0 to wait forever.
     */
    public void setMaxwait( int wait ) {
-      // internally, maxwait is in milliseconds
-      maxwait = wait * 1000;
+      maxwait = wait;
+   }
+
+   /**
+    * Sets the unit for the max wait. Default is minutes.
+
+    * @param unit valid values are "millisecond", "second", "minute", "hour", "day", and "week".
+
+    */
+   public void setUnit( String unit ) {
+      if ( unit == null )
+         return ;
+      if ( unit.equals( TimeUnit.SECOND ) ) {
+         setMaxWaitUnit( TimeUnit.SECOND_UNIT );
+         return ;
+      }
+      if ( unit.equals( TimeUnit.MILLISECOND ) ) {
+         setMaxWaitUnit( TimeUnit.MILLISECOND_UNIT );
+         return ;
+      }
+      if ( unit.equals( TimeUnit.MINUTE ) ) {
+         setMaxWaitUnit( TimeUnit.MINUTE_UNIT );
+         return ;
+      }
+      if ( unit.equals( TimeUnit.HOUR ) ) {
+         setMaxWaitUnit( TimeUnit.HOUR_UNIT );
+         return ;
+      }
+      if ( unit.equals( TimeUnit.DAY ) ) {
+         setMaxWaitUnit( TimeUnit.DAY_UNIT );
+         return ;
+      }
+      if ( unit.equals( TimeUnit.WEEK ) ) {
+         setMaxWaitUnit( TimeUnit.WEEK_UNIT );
+         return ;
+      }
+
+   }
+
+   /**
+    * Set a millisecond wait value.
+    * @param value the number of milliseconds to wait.
+    */
+   public void setMilliseconds( int value ) {
+      setMaxwait( value );
+      setMaxWaitUnit( TimeUnit.MILLISECOND_UNIT );
+   }
+
+   /**
+    * Set a second wait value.
+    * @param value the number of seconds to wait.
+    */
+   public void setSeconds( int value ) {
+      setMaxwait( value );
+      setMaxWaitUnit( TimeUnit.SECOND_UNIT );
+   }
+
+   /**
+    * Set a minute wait value.
+    * @param value the number of milliseconds to wait.
+    */
+   public void setMinutes( int value ) {
+      setMaxwait( value );
+      setMaxWaitUnit( TimeUnit.MINUTE_UNIT );
+   }
+
+   /**
+    * Set an hours wait value.
+    * @param value the number of hours to wait.
+    */
+   public void setHours( int value ) {
+      setMaxwait( value );
+      setMaxWaitUnit( TimeUnit.HOUR_UNIT );
+   }
+
+   /**
+    * Set a day wait value.
+    * @param value the number of days to wait.
+    */
+   public void setDays( int value ) {
+      setMaxwait( value );
+      setMaxWaitUnit( TimeUnit.DAY_UNIT );
+   }
+
+   /**
+    * Set a week wait value.
+    * @param value the number of weeks to wait.
+    */
+   public void setWeeks( int value ) {
+      setMaxwait( value );
+      setMaxWaitUnit( TimeUnit.WEEK_UNIT );
+   }
+
+   /**
+    * Set the max wait time unit, default is minutes.
+    */
+   public void setMaxWaitUnit( TimeUnit unit ) {
+      this.unit = unit;
    }
 
 
    /**
-    * Should the build fail if the time limit has expired on this task? Default
-    * is no.
+    * Determines whether the build should fail if the time limit has
+    * expired on this task.
+    * Default is no.
     *
     * @param fail  if true, fail the build if the time limit has been reached.
     */
@@ -122,8 +208,28 @@ public class Limit extends Task implements TaskContainer {
 
 
    /**
+    * Name the property to set after a timeout.
+    *
+    * @param p of property to set if the time limit has been reached.
+    */
+   public void setProperty( String p ) {
+      timeoutProperty = p;
+   }
+
+
+   /**
+    * The value for the property to set after a timeout, defaults to true.
+    *
+    * @param v for the property to set if the time limit has been reached.
+    */
+   public void setValue( String v ) {
+      timeoutValue = v;
+   }
+
+
+   /**
     * Execute all nested tasks, but stopping execution of nested tasks after
-    * maxwait seconds or when all tasks are done, whichever is first.
+    * maxwait or when all tasks are done, whichever is first.
     *
     * @exception BuildException  Description of the Exception
     */
@@ -133,22 +239,22 @@ public class Limit extends Task implements TaskContainer {
          final Thread runner =
             new Thread() {
                public void run() {
-                  Enumeration en = tasks.elements();
-                  while ( en.hasMoreElements() ) {
+                  Enumeration e = tasks.elements();
+                  while ( e.hasMoreElements() ) {
                      if ( taskRunner != this ) {
                         break;
                      }
-                     currentTask = ( Task ) en.nextElement();
+                     currentTask = ( Task ) e.nextElement();
                      try {
                         currentTask.perform();
                      }
-                     catch ( Exception e ) {
+                     catch ( Exception ex ) {
                         if ( failOnError ) {
-                           exception = e;
+                           exception = ex;
                            return ;
                         }
                         else {
-                           exception = e;
+                           exception = ex;
                         }
                      }
                   }
@@ -156,7 +262,8 @@ public class Limit extends Task implements TaskContainer {
             };
          taskRunner = runner;
          runner.start();
-         runner.join( maxwait );
+         runner.join( unit.toMillis( maxwait ) );
+
 
          // stop executing the nested tasks
          if ( runner.isAlive() ) {
@@ -170,15 +277,27 @@ public class Limit extends Task implements TaskContainer {
                   not_ran.append( ", " );
                }
             }
+
+
+            // maybe set timeout property
+            if ( timeoutProperty != null ) {
+               getProject().setNewProperty( timeoutProperty, timeoutValue );
+            }
+
+
+            // create output message
             StringBuffer msg = new StringBuffer();
             msg.append( "Interrupted task <" )
             .append( currentTask.getTaskName() )
             .append( ">. Waited " )
-            .append( ( maxwait / 1000 ) )
-            .append( " seconds, but this task did not complete." )
+            .append( ( maxwait ) ).append( " " ).append( unit.getValue() )
+            .append( ", but this task did not complete." )
             .append( ( not_ran.length() > 0 ?
                   " The following tasks did not execute: " + not_ran.toString() + "." :
                   "" ) );
+
+
+            // deal with it
             if ( failOnError ) {
                throw new BuildException( msg.toString() );
             }
@@ -186,13 +305,17 @@ public class Limit extends Task implements TaskContainer {
                log( msg.toString() );
             }
          }
-         else if (failOnError && exception != null) {
-            throw new BuildException(exception);  
+         else if ( failOnError && exception != null ) {
+            throw new BuildException( exception );
          }
       }
       catch ( Exception e ) {
          throw new BuildException( e );
       }
    }
+
+
 }
+
+
 

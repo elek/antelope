@@ -86,6 +86,7 @@ public class BooleanConditionTask extends TaskAdapter {
     public BooleanConditionTask() {
         cb  = new BooleanConditionBase();
         super.setProxy(cb);
+        cb.setProject(getProject());
     }
 
     /**
@@ -158,6 +159,7 @@ public class BooleanConditionTask extends TaskAdapter {
      */
     public boolean eval() {
         maybeConfigure();
+        cb.setProject(getProject());
         if (cb.getConditionCount() > 1) {
             throw new BuildException("You must not nest more than one condition.");
         }

@@ -146,7 +146,7 @@
             <include name="**/library/**/*"/>
          </fileset>
       </jar>
-      <copy todir="c:/apache-ant-1.6.2/lib">
+      <copy todir="c:/apache-ant-1.6.5/lib">
          <fileset dir="${prep.dir}" includes="**/AntelopeTasks*.jar" />
       </copy>
       
@@ -179,6 +179,26 @@
       </style>
    </target>
     
+   
+   <!-- ========================================================================
+      Target: Javadoc
+   ========================================================================= -->
+   <target name="javadoc"
+         description="Create Javadoc API documentation in 'doc/api' directory.">
+
+      <javadoc sourcepath="${src.dir}"
+            destdir="${doc.dir}/api"
+            packagenames="ise.antelope.tasks"
+            classpathref="classpathref"
+            additionalparam="-source ${compile.source}"
+            Private="false"
+            Author="Dale Anson"
+            Windowtitle="Antelope Tasks">
+         <tag name="created" description="Created" enabled="false"/>
+      </javadoc>
+
+   </target>
+   
    <!-- ========================================================================
       Target: copy_resources
    ========================================================================= -->

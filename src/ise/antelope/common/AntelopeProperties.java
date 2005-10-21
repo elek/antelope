@@ -130,7 +130,7 @@ public class AntelopeProperties {
     *
     * @param project  An Ant Project.
     */
-   public void showProperties( final AntProject project ) {
+   public void showProperties( final Project project ) {
 
       // project properties
       TreeMap map = new TreeMap( project.getProperties() );   // TreeMap sorts.

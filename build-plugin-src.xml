@@ -18,8 +18,6 @@
     <!-- source code directory, this is where the .java files live -->
    <property name="src.dir" location="src" />
    
-   <property name="lib.dir" location="lib"/>
-    
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
    <property name="prep.dir" location="prep"/>
@@ -36,21 +34,19 @@
         
       <!-- zip the jar and installation instructions and put the zip file in
       the $dist directory -->
-      <zip destfile="${dist.dir}/${app.name}PluginSrc_${build.num}.zip">
+      <zip destfile="${dist.dir}/${app.name}PluginSrc_${build.num}.zip" update="true">
          <zipfileset prefix="${app.name}" dir="${prep.dir}/docs">
             <include name="license.txt"/>
             <include name="plugin_readme.txt"/>
          </zipfileset>
+         
          <zipfileset dir="${basedir}" includes="build-plugin.xml" fullpath="${app.name}/build.xml"/>
+         
          <zipfileset prefix="${app.name}" dir="${basedir}" includes="build.props"/>
-         <!--
-         <zipfileset prefix="${app.name}/lib" dir="${lib.dir}">
-            <include name="**/*.jar"/>
-         </zipfileset>
-         -->
+         
          <zipfileset prefix="${app.name}/src" dir="${src.dir}">
             <include name="**/common/*"/>
-            <include name="**/tasks/*"/>
+            <include name="**/tasks/**/*"/>
             <include name="**/plugin/*"/>
             <include name="**/library/*"/>
             <include name="**/config/*"/>

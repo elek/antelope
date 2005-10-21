@@ -97,8 +97,8 @@ public class IsLessThan extends Equals implements Condition {
 
     public boolean eval() throws BuildException {
         if (arg1 == null || arg2 == null) {
-            System.out.println("arg1 = " + arg1);
-            System.out.println("arg2 = " + arg2);
+            //System.out.println("arg1 = " + arg1);
+            //System.out.println("arg2 = " + arg2);
             throw new BuildException("both arg1 and arg2 are required in "
                                      + "less than");
         }

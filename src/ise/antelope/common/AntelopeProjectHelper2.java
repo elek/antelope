@@ -1,55 +1,18 @@
 /*
- * The Apache Software License, Version 1.1
+ * Copyright  2000-2005 The Apache Software Foundation
  *
- * Copyright (c) 2000-2003 The Apache Software Foundation.  All rights
- * reserved.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
- *        Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowlegement may appear in the software itself,
- *    if and wherever such third-party acknowlegements normally appear.
- *
- * 4. The names "Ant" and "Apache Software
- *    Foundation" must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
- *    permission, please contact apache@apache.org.
- *
- * 5. Products derived from this software may not be called "Apache"
- *    nor may "Apache" appear in their names without prior written
- *    permission of the Apache Group.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation.  For more
- * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>.
  */
 
 package ise.antelope.common;
@@ -62,7 +25,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Stack;
 
 import org.xml.sax.Locator;
@@ -89,8 +54,6 @@ import org.xml.sax.XMLReader;
 /**
  * Sax2 based project reader
  *
- * @author duncan@x180.com
- * @author Costin Manolache
  */
 public class AntelopeProjectHelper2 extends ProjectHelper {
     /* Stateless */
@@ -156,20 +119,28 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
             // we are in an imported file.
             context.setIgnoreProjectTag(true);
             Target currentTarget = context.getCurrentTarget();
+            Target currentImplicit = context.getImplicitTarget();
+            Map    currentTargets = context.getCurrentTargets();
             try {
                 Target newCurrent = new Target();
                 newCurrent.setProject(project);
                 newCurrent.setName("");
                 context.setCurrentTarget(newCurrent);
+                context.setCurrentTargets(new HashMap());
+                context.setImplicitTarget(newCurrent);
                 parse(project, source, new RootHandler(context, mainHandler));
                 newCurrent.execute();
             } finally {
                 context.setCurrentTarget(currentTarget);
+                context.setImplicitTarget(currentImplicit);
+                context.setCurrentTargets(currentTargets);
             }
         } else {
             // top level file
+            context.setCurrentTargets(new HashMap());
             parse(project, source, new RootHandler(context, mainHandler));
-            // don't Execute the top-level target
+            // Execute the top-level target
+            /// don't execute the implicit target
             ///context.getImplicitTarget().execute();
         }
     }
@@ -194,7 +165,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 
         if (source instanceof File) {
             buildFile = (File) source;
-            buildFile = new File(buildFile.getAbsolutePath());
+            buildFile = fu.normalize(buildFile.getAbsolutePath());
             context.setBuildFile(buildFile);
             buildFileName = buildFile.toString();
 //         } else if (source instanceof InputStream ) {
@@ -257,6 +228,8 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
                     be.setLocation(location);
                 }
                 throw be;
+            } else if (t == null) {
+                t = exc;
             }
 
             throw new BuildException(exc.getMessage(), t, location);
@@ -264,6 +237,8 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
             Throwable t = exc.getException();
             if (t instanceof BuildException) {
                 throw (BuildException) t;
+            } else if (t == null) {
+                t = exc;
             }
             throw new BuildException(exc.getMessage(), t);
         } catch (FileNotFoundException exc) {
@@ -357,8 +332,8 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
         }
 
         /**
-         * Called when this element and all elements nested into it have been
-         * handled (i.e. at the </end_tag_of_the_element> ).
+         * This method is called when this element and all elements nested into it have been
+         * handled. I.e., this happens at the &lt;/end_tag_of_the_element&gt;.
          * @param uri the namespace uri for this element
          * @param tag the element name
          * @param context the current context
@@ -561,7 +536,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
     /**
      * The main handler - it handles the &lt;project&gt; tag.
      *
-     * @see AntHandler
+     * @see org.apache.tools.ant.helper.ProjectHelper2.AntHandler
      */
     public static class MainHandler extends AntHandler {
 
@@ -587,10 +562,16 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 //                 if (context.importlevel > 0) {
 //                     // we are in an imported file. Allow top-level <target>.
 //                     if (qname.equals( "target" ) )
-//                         return AntelopeProjectHelper2.targetHandler;
+//                         return ProjectHelper2.targetHandler;
 //                 }
-                throw new SAXParseException("Unexpected element \"" + qname
+                if (name.equals(qname)) {
+                    throw new SAXParseException("Unexpected element \"{" + uri
+                    + "}" + name + "\" {" + ANT_CORE_URI + "}" + name,
+                    context.getLocator());
+                } else {
+                    throw new SAXParseException("Unexpected element \"" + qname
                     + "\" " + name, context.getLocator());
+                }
             }
         }
     }
@@ -628,6 +609,9 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
             boolean nameAttributeSet = false;
 
             Project project = context.getProject();
+            // Set the location of the implicit target associated with the project tag
+            context.getImplicitTarget().setLocation(
+                new Location(context.getLocator()));
 
             /** XXX I really don't like this - the XML processor is still
              * too 'involved' in the processing. A better solution (IMO)
@@ -797,6 +781,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
             Project project = context.getProject();
             Target target = new Target();
             target.setProject(project);
+            target.setLocation(new Location(context.getLocator()));
             context.addTarget(target);
 
             for (int i = 0; i < attrs.getLength(); i++) {
@@ -842,6 +827,10 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 
             // If the name has already been defined ( import for example )
             if (currentTargets.containsKey(name)) {
+                if (context.getCurrentTargets().get(name) != null) {
+                    throw new BuildException(
+                        "Duplicate target '" + name + "'", target.getLocation());
+                }
                 // Alter the name.
                 if (context.getCurrentProjectName() != null) {
                     String newName = context.getCurrentProjectName()
@@ -859,6 +848,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 
             if (name != null) {
                 target.setName(name);
+                context.getCurrentTargets().put(name, target);
                 project.addOrReplaceTarget(name, target);
             }
 
@@ -976,19 +966,22 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
                 = new RuntimeConfigurable(task, task.getTaskName());
 
             for (int i = 0; i < attrs.getLength(); i++) {
+                String name = attrs.getLocalName(i);
                 String attrUri = attrs.getURI(i);
                 if (attrUri != null
                     && !attrUri.equals("")
                     && !attrUri.equals(uri)) {
-                    continue; // Ignore attributes from unknown uris
+                    name = attrUri + ":" + attrs.getQName(i);
                 }
-                String name = attrs.getLocalName(i);
                 String value = attrs.getValue(i);
                 // PR: Hack for ant-type value
                 //  an ant-type is a component name which can
                 // be namespaced, need to extract the name
                 // and convert from qualified name to uri/name
-                if (name.equals("ant-type")) {
+                if (ANT_TYPE.equals(name)
+                    || (ANT_CORE_URI.equals(attrUri)
+                        && ANT_TYPE.equals(attrs.getLocalName(i)))) {
+                    name = ANT_TYPE;
                     int index = value.indexOf(":");
                     if (index != -1) {
                         String prefix = value.substring(0, index);
