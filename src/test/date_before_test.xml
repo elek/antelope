@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<project name="date_before_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+   <description>
+        test build file for the date before condition
+        
+    </description>
+
+   
+   <target name="test1">
+      <a:assert>
+         <bool>
+            <not>
+            <datebefore datetime1="2005-09-09 14:58:36" datetime2="2005-07-11 14:58:36" format="yyyy-MM-dd HH:mm:ss"/>
+            </not>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test2">
+      <a:assert>
+         <bool>
+            <not>
+            <timebefore datetime1="22:58:36" datetime2="10:58:36" format="HH:mm:ss"/>
+            </not>
+         </bool>
+      </a:assert>
+   </target>
+   
+   <target name="test3">
+      <a:assert>
+         <bool>
+            <timebefore datetime1="2005" datetime2="2030" format="yyyy"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test4">
+      <a:assert>
+         <bool>
+            <timebefore datetime1="01:00:00" datetime2="03:00:00" format="hh:mm:ss"/>
+         </bool>
+      </a:assert>
+   </target>
+
+
+</project>

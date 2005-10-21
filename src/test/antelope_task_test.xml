@@ -1,0 +1,17 @@
+<project name="antelope_task_test" basedir="." xmlns:a="antlib:ise.antelope.tasks">
+
+    <a:suite>
+        <a:testcase file="grep_test.xml" enabled="false"/>
+        <a:testcase file="limittest.xml" enabled="false"/>
+        <a:testcase file="repeattest.xml" enabled="false"/>
+        <a:testcase file="unset_test.xml" enabled="false"/>
+        <a:testcase file="new_test.xml" enabled="false"/>
+        <a:testcase file="contains_test.xml" enabled="false"/>
+        <a:testcase file="date_difference_test.xml" enabled="false"/>
+        <a:testcase file="date_before_test.xml" enabled="false"/>
+        <a:testcase file="foreach_test.xml" enabled="false"/>
+        <a:testcase file="stringutil_test.xml" enabled="false"/>
+        <a:testcase file="split_test.xml" enabled="true"/>
+    </a:suite>
+    
+</project>

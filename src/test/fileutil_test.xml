@@ -1,0 +1,21 @@
+<project name="fileutil_test" basedir="."  xmlns:a="antlib:ise.antelope.tasks">
+
+   <description>
+      Tests for the FileUtil task.
+   </description>
+   
+   <target name="setUp">
+      
+   </target>
+   
+   <target name="test1">
+      <length property="output" mode="each">
+         <fileset dir="${ant.library.dir}">
+            <include name="*.jar"/>
+         </fileset>
+      </length>
+      <echo>${output}</echo>
+   </target>
+</project>   
+   
+

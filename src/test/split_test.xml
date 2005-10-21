@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+
+<project name="split_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+   <description>
+        build file to test the SplitTask task
+   </description>
+
+   <target name="setUp">
+      <property name="out_dir" value="${java.io.tmpdir}/splittest"/>
+   </target>
+
+   <target name="test1" depends="clean">
+      <property name="prop1" value="ABCDE"/>
+      <a:split property="prop1" bytes="1" outputdir="${out_dir}"/>
+      <a:fileutil file="${out_dir}" property="file_count">
+         <a:filecount/>
+      </a:fileutil>
+      <a:assert message="Expected 5 files, got ${file_count}">
+         <bool>
+            <a:mathequals arg1="5" arg2="${file_count}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <!--
+      Test splitting a file by splitting ant.jar, then reassembling it with concat.
+   -->
+   <target name="test2" depends="clean">
+      <!-- make sure ant.jar is available -->
+      <property name="ant.jar" value="${ant.library.dir}/ant.jar"/>
+      <available property="ant.jar.available" file="${ant.jar}"/>
+      
+      <a:if name="ant.jar.available" value="true">
+         <!-- ant.jar generally runs around 1MB in size, so split into 100000 byte pieces -->
+         <a:unset name="piece_size"/>
+         <property name="piece_size" value="100000"/>
+         <a:split file="${ant.jar}" bytes="${piece_size}" outputdir="${out_dir}" prefix="ant.jar"/>
+         
+         <!-- count the parts -->
+         <a:fileutil file="${out_dir}" property="file_count">
+            <a:filecount/>
+         </a:fileutil>
+         
+         <!-- calculate how many parts there should be -->
+         <a:fileutil file="${ant.jar}" property="ant_size">
+            <a:filelength/>
+         </a:fileutil>
+         <a:math result="split_size">
+            <a:op op="ceil">
+               <a:op op="/">
+                  <a:num value="${ant_size}"/>
+                  <a:num value="${piece_size}"/>
+               </a:op>
+            </a:op>
+         </a:math>
+         
+         <!-- make sure there are the right number of parts -->
+         <a:assert message="Expected ${split_size} files, got ${file_count}">
+            <bool>
+               <a:mathequals arg1="${split_size}" arg2="${file_count}"/>
+            </bool>
+         </a:assert>
+
+         <!-- sort the filenames of the parts so concat puts them together in
+         the right order-->
+         <a:fileutil file="${out_dir}" property="file_list">
+            <a:listfiles includepath="no"/>
+         </a:fileutil>
+         <a:stringutil string="${file_list}" property="file_list">
+            <a:sort/>
+         </a:stringutil>
+         
+         <!-- put them back together -->
+         <concat destfile="${out_dir}/ant.jar" binary="true">
+            <filelist dir="${out_dir}" files="${file_list}"/>
+         </concat>
+
+         <!-- make sure the new file is the identical to the original -->
+         <a:assert message="concat did not produce identical file">
+            <bool>
+               <filesmatch file1="${ant.jar}" file2="${out_dir}/ant.jar"/>
+            </bool>
+         </a:assert>
+      </a:if>
+   </target>
+
+   <!--
+      Same as test 2, but using a modifier.
+   -->
+   <target name="test3" depends="clean">
+      <!-- make sure ant.jar is available -->
+      <property name="ant.jar" value="${ant.library.dir}/ant.jar"/>
+      <available property="ant.jar.available" file="${ant.jar}"/>
+      
+      <a:if name="ant.jar.available" value="true">
+         <!-- ant.jar generally runs around 1MB in size, so split into 100k byte pieces -->
+         <a:unset name="piece_size"/>
+         <property name="piece_size" value="100k"/>
+         <a:split file="${ant.jar}" size="${piece_size}" outputdir="${out_dir}" prefix="ant.jar"/>
+         
+         <!-- count the parts -->
+         <a:fileutil file="${out_dir}" property="file_count">
+            <a:filecount/>
+         </a:fileutil>
+         
+         <!-- calculate how many parts there should be -->
+         <a:fileutil file="${ant.jar}" property="ant_size">
+            <a:filelength/>
+         </a:fileutil>
+         <a:math result="split_size">
+            <a:op op="ceil">
+               <a:op op="/">
+                  <a:num value="${ant_size}"/>
+                  <a:op op="*">
+                     <a:num value="100"/>
+                     <a:num value="1024"/>
+                  </a:op>
+               </a:op>
+            </a:op>
+         </a:math>
+         
+         <!-- make sure there are the right number of parts -->
+         <a:assert message="Expected ${split_size} files, got ${file_count}">
+            <bool>
+               <a:mathequals arg1="${split_size}" arg2="${file_count}"/>
+            </bool>
+         </a:assert>
+
+         <!-- sort the filenames of the parts so concat puts them together in
+         the right order-->
+         <a:fileutil file="${out_dir}" property="file_list">
+            <a:listfiles includepath="no"/>
+         </a:fileutil>
+         <a:stringutil string="${file_list}" property="file_list">
+            <a:sort/>
+         </a:stringutil>
+         
+         <!-- put them back together -->
+         <concat destfile="${out_dir}/ant.jar" binary="true">
+            <filelist dir="${out_dir}" files="${file_list}"/>
+         </concat>
+
+         <!-- make sure the new file is the identical to the original -->
+         <a:assert message="concat did not produce identical file">
+            <bool>
+               <filesmatch file1="${ant.jar}" file2="${out_dir}/ant.jar"/>
+            </bool>
+         </a:assert>
+      </a:if>
+   </target>
+   
+   <target name="clean">
+      <delete dir="${out_dir}"/>
+   </target>
+
+   <!--
+   <target name="tearDown" depends="clean"/>
+   -->
+</project>

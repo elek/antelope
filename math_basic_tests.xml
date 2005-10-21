@@ -1,0 +1,90 @@
+<project name="math_basic_tests" basedir="." default="suite" 
+   xmlns:a="antlib:ise.antelope.tasks">
+   
+   <target name="test1">
+      <!-- 12 + 6 = 18 -->
+      <a:var name="op1" value="12"/>
+      <a:var name="op2" value="6"/>
+      <a:var name="op" value="+"/>
+      <a:math result="result" operand1="${op1}"
+              operation="${op}" operand2="${op2}" datatype="int"/>
+      <a:assert name="result" value="18" message="failed simple add via attributes"/>
+   </target>
+
+   <target name="test2">
+      <!-- (4 + 2) - 2 = 4 -->
+      <a:math result="a" datatype="int">
+         <a:op op="-">
+            <a:op op="+">
+               <a:num value="4"/>
+               <a:num value="2"/>
+            </a:op>
+            <a:num value="2"/>
+         </a:op>
+      </a:math>
+      <a:assert name="a" value="4" message="failed Matt's test case"/>
+   </target>
+   
+   <target name="test3">
+      <!-- (4 + 2) - (2 + 2) = 2 -->
+      <a:math result="b" datatype="int">
+         <a:op op="-">
+            <a:op op="+">
+               <a:num value="4"/>
+               <a:num value="2"/>
+            </a:op>
+            <a:op op="+">
+               <a:num value="2"/>
+               <a:num value="2"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:assert name="b" value="2" message="failed additive grouping"/>
+   </target>
+   
+   <target name="test4">
+      <!-- 2 - (4 + 2) = -4 -->
+      <a:math result="c" datatype="int">
+         <a:op op="-">
+            <a:num value="2"/>
+            <a:op op="+">
+               <a:num value="4"/>
+               <a:num value="2"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:assert name="c" value="-4" message="failed variation of Matt's test case"/>
+   </target>
+   
+   <target name="test5">
+      <!-- variation of 4 + 2 = 6 -->
+      <a:math result="d" datatype="int">
+         <a:op op="+">
+            <a:num value="4"/>
+            <a:num value="2"/>
+         </a:op>
+      </a:math>
+      <a:assert name="d" value="6" message="failed simple add with nested op"/>
+   </target>
+   
+   <target name="test6">
+      <!-- (4 + 2) * (2 + 2) = 24 -->
+      <a:math result="b" datatype="double">
+         <a:op op="*">
+            <a:op op="+">
+               <a:num value="4"/>
+               <a:num value="2"/>
+            </a:op>
+            <a:op op="+">
+               <a:num value="2"/>
+               <a:num value="2"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:assert message="failed multiplying additive groups">
+         <a:bool>
+            <a:mathequals arg1="${b}" arg2="24"/>
+         </a:bool>
+      </a:assert>
+   </target>
+</project>

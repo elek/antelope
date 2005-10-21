@@ -1,0 +1,66 @@
+
+<project name="testing_suite" basedir="." xmlns:a="antlib:ise.antelope.tasks">
+
+   <description>
+      Runs tests for the Suite and TestCase tasks.
+   </description>
+
+   <a:suite name="master suite">
+      <!-- empty suite -->
+      <a:try messageproperty="empty_suite_exception">
+         <a:suite name="empty suite"/>
+         <a:catch>
+            <fail message="empty suite failed: ${empty_suite_exception}"/>
+         </a:catch>
+      </a:try>
+   
+      <!-- suite with 2 testcases -->
+      <a:suite name="2 test case suite">
+         <a:testcase file="first_test.xml"/>
+         
+         <a:assert message="first test setUp failed">
+            <bool>
+               <istrue value="${first_test_setup}"/>
+            </bool>
+         </a:assert>
+         <a:assert message="first test tearDown failed">
+            <bool>
+               <istrue value="${first_test_teardown}"/>
+            </bool>
+         </a:assert>
+         <a:assert message="property in first_test.xml not set in parent project">
+            <bool>
+               <isset property="testId"/>
+            </bool>
+         </a:assert>
+         
+         <a:testcase file="second_test.xml"/>
+         <a:assert message="second test setUp failed">
+            <bool>
+               <istrue value="${second_test_setup}"/>
+            </bool>
+         </a:assert>
+         <a:assert message="second test tearDown failed">
+            <bool>
+               <istrue value="${second_test_teardown}"/>
+            </bool>
+         </a:assert>
+         <a:assert message="unable to read property from second test that was set in first">
+            <bool>
+               <equals arg1="${testId}" arg2="400500600"/>
+            </bool>
+         </a:assert>
+      </a:suite>
+   
+      <!-- suite with fileset -->
+      <a:suite name="fileset suite">
+         <fileset dir=".">
+            <include name="first_test.xml"/>
+            <include name="second_test.xml"/>
+         </fileset>
+      </a:suite>
+   </a:suite>
+
+</project>   
+   
+

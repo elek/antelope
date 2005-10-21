@@ -1,0 +1,36 @@
+<project name="math_precision_tests" basedir="." default="suite" 
+   xmlns:a="antlib:ise.antelope.tasks">
+   
+   <target name="test10">
+      <echo>Circle area test</echo>
+      <a:math result="pi">
+         <a:op op="*">
+            <a:num value="PI"/>
+            <a:op op="pow">
+               <a:num value="1"/>
+               <a:num value="2"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:assert message="failed circle area test">
+         <a:bool>
+            <a:mathequals arg1="${pi}" arg2="3.141592653589793"/>
+         </a:bool>
+      </a:assert>
+   </target>
+   
+   <target name="test11">
+      <echo>Division by zero test</echo>
+      <!-- division by zero -->
+      <a:try>
+         <a:math result="x">
+            <a:op op="/">
+               <a:num value="PI"/>
+               <a:num value="0"/>
+            </a:op>
+         </a:math>
+         <fail>Division by 0 succeeded: ${x}</fail>
+      </a:try>
+   </target>
+   
+</project>

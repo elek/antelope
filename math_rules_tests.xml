@@ -1,0 +1,163 @@
+<project name="math_rules_tests" basedir="." default="suite" 
+   xmlns:a="antlib:ise.antelope.tasks">
+   
+   <target name="test7.0">
+      <!-- test additive identity -->
+      <a:math result="a" datatype="int">
+         <a:op op="+">
+            <a:num value="4"/>
+            <a:num value="0"/>
+         </a:op>
+      </a:math>
+      <a:assert name="a" value="4" message="failed additive identity test"/>
+   </target>
+  
+   <target name="test7.1">
+      <!-- test commutivity of addition -->
+      <a:math result="a" datatype="int">
+         <a:op op="+">
+            <a:num value="4"/>
+            <a:num value="2"/>
+         </a:op>
+      </a:math>
+      <a:math result="b" datatype="int">
+         <a:op op="+">
+            <a:num value="2"/>
+            <a:num value="4"/>
+         </a:op>
+      </a:math>
+      <a:assert name="a" value="${b}" message="failed commutivity of addition test"/>
+   </target>
+  
+   <target name="test7.2">
+      <!-- test associative principle of addition -->
+      <a:math result="a" datatype="int">
+         <a:op op="+">
+            <a:num value="2"/>
+            <a:op op="+">
+               <a:num value="4"/>
+               <a:num value="2"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:math result="b" datatype="int">
+         <a:op op="+">
+            <a:op op="+">
+               <a:num value="2"/>
+               <a:num value="4"/>
+            </a:op>
+            <a:num value="2"/>
+         </a:op>
+      </a:math>
+      <a:assert name="a" value="${b}" message="failed associativity test"/>
+   </target>
+  
+   <target name="test8.0">
+      <!-- test multiplicative identity -->
+      <a:math result="a" datatype="int">
+         <a:op op="*">
+            <a:num value="4"/>
+            <a:num value="1"/>
+         </a:op>
+      </a:math>
+      <a:assert name="a" value="4" message="failed multiplicative identity test"/>
+   </target>
+  
+   <target name="test8.1">
+      <!-- test commutivity of multiplication -->
+      <a:math result="a" datatype="int">
+         <a:op op="*">
+            <a:num value="4"/>
+            <a:num value="21"/>
+         </a:op>
+      </a:math>
+      <a:math result="b" datatype="int">
+         <a:op op="*">
+            <a:num value="21"/>
+            <a:num value="4"/>
+         </a:op>
+      </a:math>
+      <a:assert name="a" value="${b}" message="failed commutivity of multiplication test"/>
+   </target>
+  
+   <target name="test8.2">
+      <!-- test associative principle of multiplication -->
+      <a:math result="a" datatype="int">
+         <a:op op="*">
+            <a:num value="2"/>
+            <a:op op="*">
+               <a:num value="4"/>
+               <a:num value="2"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:math result="b" datatype="int">
+         <a:op op="*">
+            <a:op op="*">
+               <a:num value="4"/>
+               <a:num value="2"/>
+            </a:op>
+            <a:num value="2"/>
+         </a:op>
+      </a:math>
+      <a:assert name="a" value="${b}" message="failed associative principle of multiplication test"/>
+   </target>
+  
+   <target name="test8.3">
+      <!-- test distributive principle of multiplication -->
+      <a:math result="a" datatype="int">
+         <a:op op="*">
+            <a:num value="3"/>
+            <a:op op="+">
+               <a:num value="4"/>
+               <a:num value="2"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:math result="b" datatype="int">
+         <a:op op="+">
+            <a:op op="*">
+               <a:num value="4"/>
+               <a:num value="3"/>
+            </a:op>
+            <a:op op="*">
+               <a:num value="2"/>
+               <a:num value="3"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:assert name="a" value="${b}" message="failed distributive principle of multiplication test"/>
+   </target>
+   
+   <target name="test9">
+      <!-- the triangle inequality: abs(a + b) <= abs(a) + abs(b) -->
+      <a:math result="lhs">
+         <a:op op="abs">
+            <a:op op="+">
+               <a:num value="4"/>
+               <a:num value="-6"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:math result="rhs">
+         <a:op op="+">
+            <a:op op="abs">
+               <a:num value="4"/>
+            </a:op>
+            <a:op op="abs">
+               <a:num value="-6"/>
+            </a:op>
+         </a:op>
+      </a:math>
+      <a:assert message="failed triangle inequality">
+         <a:bool>
+            <a:or>
+               <a:islessthan arg1="${lhs}" arg2="${rhs}"/>
+               <a:equals arg1="${lhs}" arg2="${rhs}"/>
+            </a:or>
+         </a:bool>
+      </a:assert>
+   </target>
+   
+   
+</project>

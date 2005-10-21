@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+
+<project name="unset_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+   <description>
+        test build file for the Unset task
+        
+        Test:
+         Set a property.
+         verify set
+         unset a property
+         verify unset
+         
+    </description>
+
+   
+   <target name="test1">
+   
+      <!-- set a property and verify it is set -->
+      <property name="test1_prop" value="test1_value"/>
+      <a:assert message="test1_prop is not set and should be">
+         <bool>
+            <isset property="test1_prop"/>
+         </bool>
+      </a:assert>
+      
+      <!-- now unset the property and verify it is unset -->
+      <a:unset name="test1_prop"/>
+      <a:assert message="test1_prop is set and should not be">
+         <bool>
+            <not>
+               <isset property="test1_prop"/>
+            </not>
+         </bool>
+      </a:assert>      
+   </target>
+
+   <target name="test2">
+   
+      <!-- set a property location and verify it is set -->
+      <property name="test2_prop" location="c:/temp"/>
+      <a:assert message="test2_prop is not set and should be">
+         <bool>
+            <isset property="test2_prop"/>
+         </bool>
+      </a:assert>
+      
+      <!-- now unset the property and verify it is unset -->
+      <a:unset name="test2_prop"/>
+      <a:assert message="test2_prop is set and should not be">
+         <bool>
+            <not>
+               <isset property="test2_prop"/>
+            </not>
+         </bool>
+      </a:assert>      
+   </target>
+
+   <target name="test3">
+   
+      <!-- set a property and verify it is set -->
+      <property name="test3_prop" value="test3_value"/>
+      <echo>test3_prop value is ${test3_prop}</echo>
+      <a:assert message="test3_prop is not set and should be">
+         <bool>
+            <isset property="test3_prop"/>
+         </bool>
+      </a:assert>
+      
+      <!-- now unset the property and verify it is unset -->
+      <a:unset name="test3_prop"/>
+      <a:assert message="test3_prop is set and should not be">
+         <bool>
+            <not>
+               <isset property="test3_prop"/>
+            </not>
+         </bool>
+      </a:assert>  
+      
+      <!-- set the property again and verify it is set -->
+      <property name="test3_prop" value="test3_value2"/>
+      <echo>new test3_prop value is ${test3_prop}</echo>
+      <a:assert message="test3_prop is not set and should be">
+         <bool>
+            <isset property="test3_prop"/>
+         </bool>
+      </a:assert>
+      
+   </target>
+
+
+</project>

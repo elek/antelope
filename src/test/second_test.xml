@@ -1,0 +1,21 @@
+<project name="second_test" basedir="."  xmlns:a="antlib:ise.antelope.tasks">
+
+   <description>
+      Part of the tests for the Suite and TestCase tasks.
+   </description>
+   
+   <target name="setUp">
+      <property name="second_test_setup" value="true"/>
+   </target>
+   
+   <target name="testSecondTarget">
+      <echo>testSecondTarget reading testId: ${testId}</echo>
+   </target>
+   
+   <target name="tearDown">
+      <property name="second_test_teardown" value="true"/>
+   </target>
+ 
+</project>   
+   
+

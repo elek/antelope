@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+
+<project name="unset_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+   <description>
+        test build file for the StringUtil task
+    </description>
+   
+
+   <target name="test1">
+      <property name="prop1" value="ABCDE"/>
+      <echo>prop1 before = ${prop1}</echo>
+      <a:stringutil string="${prop1}" property="prop1">
+         <a:lowercase/>
+      </a:stringutil>
+      <echo>prop1 after = ${prop1}</echo>
+      <a:assert message="prop1, expected abcde, got ${prop1}">
+         <bool>
+            <equals arg1="abcde" arg2="${prop1}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test2">
+      <property name="prop2" value="abcdefgh"/>
+      <echo>prop2 before = ${prop2}</echo>
+      <a:stringutil string="${prop2}" property="prop2">
+         <a:uppercase/>
+      </a:stringutil>
+      <echo>prop2 after = ${prop2}</echo>
+      <a:assert message="prop2, expected ABCDEFGH, got ${prop2}">
+         <bool>
+            <equals arg1="ABCDEFGH" arg2="${prop2}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test3">
+      <property name="prop3" value=" abcdefgh "/>
+      <echo>prop3 before = ${prop3}</echo>
+      <a:stringutil string="${prop3}" property="prop3">
+         <a:uppercase/>
+         <a:trim/>
+      </a:stringutil>
+      <echo>prop3 after = ${prop3}</echo>
+      <a:assert message="prop3, expected ABCDEFGH, got ${prop2}">
+         <bool>
+            <equals arg1="ABCDEFGH" arg2="${prop3}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test4">
+      <property name="prop4" value=" abcdefgh "/>
+      <echo>prop4 before = ${prop4}</echo>
+      <a:stringutil string="${prop4}" property="prop4">
+         <a:uppercase/>
+         <a:trim/>
+         <a:substring beginindex="3"/>
+      </a:stringutil>
+      <echo>prop4 after = ${prop4}</echo>
+      <a:assert message="prop4, expected DEFGH, got ${prop4}">
+         <bool>
+            <equals arg1="DEFGH" arg2="${prop4}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test5">
+      <property name="prop5" value=" abcdefgh "/>
+      <echo>prop5 before = ${prop5}</echo>
+      <a:stringutil string="${prop5}" property="prop5">
+         <a:uppercase/>
+         <a:trim/>
+         <a:substring beginindex="3" endindex="6"/>
+      </a:stringutil>
+      <echo>prop5 after = ${prop5}</echo>
+      <a:assert message="prop5, expected DEF, got ${prop5}">
+         <bool>
+            <equals arg1="DEF" arg2="${prop5}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test5a">
+      <property name="prop5a" value=" abcdefgh "/>
+      <a:try printmessage="false">
+         <echo>prop5a before = ${prop5a}</echo>
+         <a:stringutil string="${prop5a}" property="prop5a">
+            <a:substring beginindex="6" endindex="3"/>
+         </a:stringutil>
+
+         <a:catch>
+            <echo>test5a passed</echo>
+         </a:catch>
+      </a:try>
+   </target>
+
+   <target name="test6">
+      <property name="prop6" value=" abcdefgh "/>
+      <echo>prop6 before = ${prop6}</echo>
+      <a:stringutil string="${prop6}" property="prop6">
+         <a:uppercase/>
+         <a:trim/>
+         <a:substring beginindex="3" endindex="6"/>
+         <a:replace regex="[D]" replacement="ZZZ"/>
+      </a:stringutil>
+      <echo>prop6 after = ${prop6}</echo>
+      <a:assert message="prop6, expected ZZZEF, got ${prop6}">
+         <bool>
+            <equals arg1="ZZZEF" arg2="${prop6}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test7">
+      <property name="prop7" value="abcdefgh"/>
+      <echo>prop7 before = ${prop7}</echo>
+      <a:stringutil string="${prop7}" property="prop7">
+         <a:length/>
+      </a:stringutil>
+      <echo>prop7 length = ${prop7}</echo>
+      <a:assert message="prop7, expected 8, got ${prop7}">
+         <bool>
+            <mathequals arg1="8" arg2="${prop7}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test8">
+      <property name="prop8" value="abcdefgh"/>
+      <echo>prop8 before = ${prop8}</echo>
+      <a:stringutil string="${prop8}" property="prop8">
+         <a:indexof string="cd"/>
+      </a:stringutil>
+      <echo>prop8 indexof cd = ${prop8}</echo>
+      <a:assert message="prop8, expected 2, got ${prop8}">
+         <bool>
+            <mathequals arg1="2" arg2="${prop8}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test9">
+      <property name="prop9" value="abcdefghabcdefgh"/>
+      <echo>prop9 before = ${prop9}</echo>
+      <a:stringutil string="${prop9}" property="prop9">
+         <a:indexof string="cd" fromindex="9"/>
+      </a:stringutil>
+      <echo>prop9 indexof cd = ${prop9}</echo>
+      <a:assert message="prop9, expected 10, got ${prop9}">
+         <bool>
+            <mathequals arg1="10" arg2="${prop9}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test10">
+      <property name="prop10" value="abcdefghabcdefgh"/>
+      <echo>prop10 before = ${prop10}</echo>
+      <a:stringutil string="${prop10}" property="prop10">
+         <a:lastindexof string="cd"/>
+      </a:stringutil>
+      <echo>prop10 lastindexof cd = ${prop10}</echo>
+      <a:assert message="prop10, expected 10, got ${prop10}">
+         <bool>
+            <mathequals arg1="10" arg2="${prop10}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+   <target name="test11">
+      <property name="prop11" value="abcdefghabcdefgh"/>
+      <echo>prop11 before = ${prop11}</echo>
+      <a:stringutil string="${prop11}" property="prop11">
+         <a:lastindexof string="cd" fromindex="8"/>
+      </a:stringutil>
+      <echo>prop11 lastindexof cd = ${prop11}</echo>
+      <a:assert message="prop11, expected 2, got ${prop11}">
+         <bool>
+            <mathequals arg1="2" arg2="${prop11}"/>
+         </bool>
+      </a:assert>
+   </target>
+   
+   <target name="test12">
+      <property name="prop12" value="a,b,c,d,e,f,g,h,a,b,c,d,e,f,g,h"/>
+      <echo>prop12 before = ${prop12}</echo>
+      <a:stringutil string="${prop12}" property="prop12">
+         <a:sort separator=","/>
+      </a:stringutil>
+      <echo>prop12 sorted = ${prop12}</echo>
+      <a:assert message="prop12, expected 'a,a,b,b,c,c,d,d,e,e,f,f,g,g,h,h', got ${prop12}">
+         <bool>
+            <equals arg1="a,a,b,b,c,c,d,d,e,e,f,f,g,g,h,h" arg2="${prop12}"/>
+         </bool>
+      </a:assert>
+   </target>
+
+
+</project>

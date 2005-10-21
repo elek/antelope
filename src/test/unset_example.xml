@@ -1,0 +1,10 @@
+<project name="blah" basedir=".">
+   <taskdef resource="ise/antelope/tasks/antlib.xml"/>
+    <property name="x" value="6"/>
+    <echo>original value = ${x}</echo>
+    <unset name="x"/>
+    <echo>unset: ${x}</echo>
+    <property name="x" value="hello"/>
+    <echo>new value = ${x}</echo>
+</project>    
+

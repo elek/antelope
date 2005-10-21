@@ -1,0 +1,22 @@
+<project name="first_test" basedir="."  xmlns:a="antlib:ise.antelope.tasks">
+
+   <description>
+      Part of the tests for the Suite and TestCase tasks.
+   </description>
+   
+   <target name="setUp">
+      <property name="first_test_setup" value="true"/>
+   </target>
+   
+   <target name="testFirstTarget">
+      <property name="testId" value="400500600"/>
+      <echo>testFirstTarget setting testId = ${testId}</echo>
+   </target>
+   
+   <target name="tearDown">
+      <property name="first_test_teardown" value="true"/>
+   </target>
+   
+</project>   
+   
+

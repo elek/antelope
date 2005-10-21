@@ -1,0 +1,14 @@
+<project name="test" default="test" basedir="." xmlns:a="antlib:ise.antelope.tasks">
+
+    <property name="ant.enable.asserts" value="true"/>
+    
+    <target name="test">
+        <a:assert message="test1 failed">
+         
+            <bool>
+                <istrue value="false"/>
+            </bool>
+        </a:assert>
+    </target>
+    
+</project>

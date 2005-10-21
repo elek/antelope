@@ -1,0 +1,25 @@
+<project name="mathtest" basedir="." default="suite" xmlns:a="antlib:ise.antelope.tasks">
+    <target name="suite">
+        <a:suite/>
+    </target>
+    
+    <target name="setUp">
+        <echo>doing setUp</echo>
+    </target>
+    
+    <target name="test1">
+        <echo>doing test 1</echo>
+    </target>
+    
+    <target name="test2">
+        <echo>doing test 2</echo>
+    </target>
+    
+    <target name="test3">
+        <echo>doing test 3</echo>
+    </target>
+    
+    <target name="tearDown">    
+        <echo>doing tearDown</echo>
+    </target>
+</project>
