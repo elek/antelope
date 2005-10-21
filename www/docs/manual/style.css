@@ -29,9 +29,12 @@ BUTTON {cursor: auto}
 
 CITE {font-style: italic}
 
-CODE, KBD, SAMP, TT {font-size: 12px}
+CODE, KBD, SAMP, TT {
+   font-size: 12px;
+   font-family: courier;
+}
 
-CODE, PRE {
+PRE {
    border: solid thin;
    padding: 2em;
    background: lightgray;

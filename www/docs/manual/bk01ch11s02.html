@@ -1,0 +1,130 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>API for jEdit Plugin Developers</title><link href="./style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.69.1" name="generator"><link rel="start" href="index.html" title="Antelope Users Guide"><link rel="up" href="bk01ch11.html" title="Chapter&nbsp;11.&nbsp;For Developers"><link rel="prev" href="bk01ch11.html" title="Chapter&nbsp;11.&nbsp;For Developers"><link rel="next" href="bk01ch12.html" title="Chapter&nbsp;12.&nbsp;Frequently Asked Questions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">API for jEdit Plugin Developers</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="bk01ch11.html">Prev</a>&nbsp;</td><th align="center" width="60%">Chapter&nbsp;11.&nbsp;For Developers</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="bk01ch12.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jedit"></a>API for jEdit Plugin Developers</h2></div></div><div></div></div><p>
+Antelope can be used from other jEdit plugins that may desire to run Ant targets. The public API is described here, plus some examples of how to use this API from other plugins. You can also use this API from a beanshell macro, see the <a href="bk01ch12.html" title="Chapter&nbsp;12.&nbsp;Frequently Asked Questions">FAQ section</a>.
+</p><p>
+<pre class="programlisting">
+public static File getBuildFile(View view);
+</pre>
+This method returns a reference to the current build file. 
+</p><p>
+<pre class="programlisting">
+public static String[] getTargetList(File buildFile);
+</pre>
+This method returns a list of the target names in the given build file. 
+</p><p>
+<pre class="programlisting">
+public static void executeTarget( View view, File buildFile, String target );
+</pre>
+This method executes a target. Since the execution is through Antelope, output will be to the Console plugin and errors will be displayed in the ErrorList plugin. The AntelopePlugin will attempt to find an instance of Antelope for the given view, then execute the target. The target must exist in the given build file.
+</p><p>
+<pre class="programlisting">
+public static void setBuildFile(View view, File buildFile);
+</pre>
+This method sets the current build file for the Antelope instance in the given view. Antelope will reload itself to reflect the new build file.
+</p><p>
+Following are some examples of calling these methods from your plugin. Notice that you do not need the Antelope source or classes to compile or run your plugin, so you do not need to make Antelope a dependency for the PluginManager. The examples only work if Antelope is actually installed as a jEdit plugin and do nothing otherwise. The best place to put these examples is in your plugin's Plugin class. These examples are suitable for copy and paste into your plugin's source code. You will need to import: org.gjt.sp.jedit.EditPlugin, org.gjt.sp.jedit.jEdit, org.gjt.sp.jedit.View, and java.io.File. 
+</p><p>
+This simply returns "true" if Antelope is installed. It is convenient to call this method prior to calling the others.
+<pre class="programlisting">
+public static boolean isAntelopeAvailable() {
+   EditPlugin ep = jEdit.getPlugin( "ise.antelope.plugin.AntelopePlugin" );
+   return ep != null;
+}
+</pre>
+</p><p>
+This method returns a reference to the current build file or null if Antelope is not installed or on any other error. 
+<pre class="programlisting">
+   public static File getBuildFile(View view) {
+      if (view == null){
+         return null;
+      }
+      if ( !isAntelopeAvailable() ) {
+         return null;
+      }
+      EditPlugin ep = jEdit.getPlugin( "ise.antelope.plugin.AntelopePlugin" );
+      try {
+         Class c = ep.getClass();
+         java.lang.reflect.Method m = c.getDeclaredMethod( "getBuildFile",
+               new Class[]{View.class} );
+         if ( m == null ) {
+            return null;
+         }
+         return (File)m.invoke( null, new Object[]{view} );
+      }
+      catch ( Throwable e ) {
+      }
+      return null;
+   }
+</pre>
+</p><p>
+This method returns a list of targets in the given build file or null if Antelope is not installed or on any other error. 
+<pre class="programlisting">
+   public static String[] getTargetList(File buildFile) {
+      if (buildFile == null || !buildFile.exists()){
+         return null;
+      }
+      if ( !isAntelopeAvailable() ) {
+         return null;
+      }
+      EditPlugin ep = jEdit.getPlugin( "ise.antelope.plugin.AntelopePlugin" );
+      try {
+         Class c = ep.getClass();
+         java.lang.reflect.Method m = c.getDeclaredMethod( "getTargetList",
+               new Class[]{File.class} );
+         if ( m == null ) {
+            return null;
+         }
+         return (String[])m.invoke( null, new Object[]{buildFile} );
+      }
+      catch ( Throwable e ) {
+      }
+      return null;
+   }
+</pre>
+</p><p>
+This method will execute an Ant target via Antelope.
+<pre class="programlisting">
+   public static void executeAntTarget(View view, File buildFile, String target) {
+      if (view == null || buildFile == null || target == null)
+         return;
+      if ( !isAntelopeAvailable() ) {
+         return;
+      }
+      EditPlugin ep = jEdit.getPlugin( "ise.antelope.plugin.AntelopePlugin" );
+      try {
+         Class c = ep.getClass();
+         java.lang.reflect.Method m = c.getDeclaredMethod( "executeTarget",
+               new Class[]{View.class, File.class, String.class} );
+         if ( m == null ) {
+            return;
+         }
+         m.invoke( null, new Object[]{view, buildFile, target} );
+      }
+      catch ( Throwable e ) {
+      }
+   }
+</pre>
+</p><p>
+This method will cause Antelope to load the given build file.
+<pre class="programlisting">   
+   public static void setAntelopeBuildFile(View view, File buildFile) {
+      if (buildFile == null || !buildFile.exists()){
+         return;
+      }
+      if ( !isAntelopeAvailable() ) {
+         return;
+      }
+      EditPlugin ep = jEdit.getPlugin( "ise.antelope.plugin.AntelopePlugin" );
+      try {
+         Class c = ep.getClass();
+         java.lang.reflect.Method m = c.getDeclaredMethod( "setBuildFile",
+               new Class[]{View.class, File.class} );
+         if ( m == null ) {
+            return;
+         }
+         m.invoke( null, new Object[]{view, buildFile} );
+      }
+      catch ( Throwable e ) {
+      }
+   }
+</pre>
+</p></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="bk01ch11.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="bk01ch11.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="bk01ch12.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Chapter&nbsp;11.&nbsp;For Developers&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;12.&nbsp;Frequently Asked Questions</td></tr></table></div></body></html>
