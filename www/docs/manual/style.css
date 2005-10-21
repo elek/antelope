@@ -35,6 +35,8 @@ CODE, KBD, SAMP, TT {
 }
 
 PRE {
+   font-size: 12px;
+   font-family: courier;
    border: solid thin;
    padding: 2em;
    background: lightgray;
