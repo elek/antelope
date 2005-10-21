@@ -104,6 +104,13 @@ public class FileUtilTask extends Task {
         ops.add(op);   
     }
     
+	/**
+	 * How many lines are in the file?    
+	 */
+    public void addLineCount(FileLineCount op) {
+        ops.add(op);   
+    }
+    
     /** While multiple ops could be added, only the first one is executed. */
     public void execute() {
         if (file == null)

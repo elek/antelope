@@ -60,6 +60,7 @@ canread=ise.antelope.tasks.typedefs.CanRead
 canwrite=ise.antelope.tasks.typedefs.CanWrite
 filecount=ise.antelope.tasks.typedefs.FileCount
 filelength=ise.antelope.tasks.typedefs.FileLength
+linecount=ise.antelope.tasks.typedefs.FileLineCount
 listfiles=ise.antelope.tasks.typedefs.FileList
 isdirectory=ise.antelope.tasks.typedefs.IsDirectory
 isfile=ise.antelope.tasks.typedefs.IsFile

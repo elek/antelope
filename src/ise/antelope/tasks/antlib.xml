@@ -67,6 +67,7 @@
    <typedef name="canwrite" classname="ise.antelope.tasks.typedefs.CanWrite"/>
    <typedef name="filecount" classname="ise.antelope.tasks.typedefs.FileCount"/>
    <typedef name="filelength" classname="ise.antelope.tasks.typedefs.FileLength"/>
+   <typedef name="linecount" classname="ise.antelope.tasks.typedefs.FileLineCount"/>
    <typedef name="listfiles" classname="ise.antelope.tasks.typedefs.FileList"/>
    <typedef name="isdirectory" classname="ise.antelope.tasks.typedefs.IsDirectory"/>
    <typedef name="isfile" classname="ise.antelope.tasks.typedefs.IsFile"/>

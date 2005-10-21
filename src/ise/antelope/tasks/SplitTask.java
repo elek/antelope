@@ -7,6 +7,9 @@ import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
 
 /**
+ * This task is similar to the Unix/Linux split utility, it splits a file into
+ * a number of smaller pieces.  It will also split a property value or a string.
+ *
  * @author    Dale Anson
  * @version   $Revision$
  * @since     Ant 1.6
@@ -23,113 +26,134 @@ public class SplitTask extends Task {
 
 
     /**
-     * Sets the prefix attribute of the SplitTask object
+     * The start of the file names to write.  Files are named using this string,
+     * followed by a "." and a number, e.g. x.0, x.1, etc.  The Unix/Linux split
+     * uses a letter scheme for the suffix, that is not supported here. 
+     *
+     * Should the dot go away? If the user wants a dot, it could be part of this
+     * attribute.  Right now, the dot is there, and there is no way for the user
+     * to make it go away.
      *
      * @param x  The new prefix value
      */
-    public void setPrefix(String x) {
+    public void setPrefix( String x ) {
         prefix = x;
     }
 
     /**
-     * Use bytes or lines, not both. In general, use bytes for binary files,
-     * lines for text.
+     * Set the number of bytes per part.  This is not a required parameter,
+     * the default is to use lines rather than bytes.
+     *
+     * Use bytes or lines, not both. In general, use bytes or size for binary 
+     * files, lines for text files.
      *
      * @param b  number of bytes per part.
      */
-    public void setBytes(int b) {
+    public void setBytes( int b ) {
         bytes = b;
         lines = -1;
     }
 
     /**
      * The linux split command allows modifiers: b for 512, k for 1K, m for 1
-     * Meg.
+     * Meg.  Use this method for a similar effect.  This is not a required
+     * parameter, the default is to use lines rather than size.
+     *
+     * Use bytes or lines, not both. In general, use bytes or size for binary 
+     * files, lines for text files.
      *
      * @param b  the number of bytes per part, with an optional modifier. If
      *      there is no modifier, treat same as setBytes(int).  For example,
      *      setSize("100k") is the same as setBytes(100 * 1024).
      */
-    public void setSize(String b) {
-        if (b == null)
-            return;
-        if (b.length() == 0)
-            return;
+    public void setSize( String b ) {
+        if ( b == null || b.length() == 0 )
+            return ;
         b = b.toLowerCase();
-        String modifier = b.substring(b.length() - 1);
+        String modifier = b.substring( b.length() - 1 );
         int multiplier = 1;
-        b = b.substring(0, b.length() - 1);
-        if (modifier.equals("b")) {
+        b = b.substring( 0, b.length() - 1 );
+        if ( modifier.equals( "b" ) ) {
             multiplier = 512;
         }
-        else if (modifier.equals("k")) {
+        else if ( modifier.equals( "k" ) ) {
             multiplier = 1024;
         }
-        else if (modifier.equals("m")) {
+        else if ( modifier.equals( "m" ) ) {
             multiplier = 1024 * 1024;
         }
         else {
-            b = b + modifier;   
+            // modifier is not recognized, so put it back, maybe it's a number
+            b = b + modifier;
         }
         try {
-            int size = Integer.parseInt(b) * multiplier;
-            setBytes(size);
-            return;
+            int size = Integer.parseInt( b ) * multiplier;
+            setBytes( size );
         }
-        catch (NumberFormatException e) {
-            throw new BuildException("Invalid bytes parameter.");
+        catch ( NumberFormatException e ) {
+            throw new BuildException( "Invalid size parameter." );
         }
     }
 
     /**
-     * Use bytes or lines, not both. In general, use bytes for binary files,
-     * lines for text.
+     * Set the number of lines per part, default is 1000.  This is not a required
+     * parameter, but is the default setting for splitting.
      *
-     * @param x  The new lines value
+     * Use bytes or lines, not both. In general, use bytes or size for binary 
+     * files, lines for text files.
+     *
+     * @param x  The number of lines per part.
      */
-    public void setLines(int x) {
+    public void setLines( int x ) {
         lines = x;
         bytes = -1;
     }
 
     /**
-     * Split the text content of value of the given property.
+     * Split the text value of the given property.
+     *
+     * One of property, value, or file are required.
      *
      * @param p  the name of the property whose value will be split.
      */
-    public void setProperty(String p) {
-        value = getProject().getProperty(p);
-        if (value == null || value.equals(""))
-            throw new BuildException("Property " + p + " has no value.");
+    public void setProperty( String p ) {
+        String v = getProject().getProperty( p );
+        if ( v == null || v.equals( "" ) )
+            throw new BuildException( "Property " + p + " has no value." );
+        setValue( v );
     }
 
     /**
      * Split the given string.
      *
+     * One of property, value, or file are required.
+     *
      * @param v  a string
      */
-    public void setValue(String v) {
-        if (v == null || v.equals(""))
-            throw new BuildException("Value is null or empty.");
+    public void setValue( String v ) {
+        if ( v == null || v.equals( "" ) )
+            throw new BuildException( "Value is null or empty." );
         value = v;
     }
 
     /**
      * Split the contents of the given file.
      *
+     * One of property, value, or file are required.
+     *
      * @param f  the name of the file
      */
-    public void setFile(File f) {
+    public void setFile( File f ) {
         file = f;
     }
 
     /**
-     * Where to put the parts. If file has been set and output dir not set,
-     * output to directory containing file.
+     * Where to put the parts. If file has been set and output directory has not 
+     * set, output to directory containing file.
      *
      * @param d  the output directory
      */
-    public void setOutputdir(File d) {
+    public void setOutputdir( File d ) {
         outputDir = d;
     }
 
@@ -139,68 +163,64 @@ public class SplitTask extends Task {
      *
      * @param fail  true or false
      */
-    public void setFailonerror(boolean fail) {
+    public void setFailonerror( boolean fail ) {
         failOnError = fail;
     }
 
 
     /**
-     * Split the given property or file into pieces.
+     * Split the given property, value, or file into pieces.
      *
      * @exception BuildException  only if failOnError is true
      */
     public void execute() throws BuildException {
         // check params --
         // must have value or file
-        if (value == null && file == null)
-            throw new BuildException("Must have property, value, or file.");
+        if ( value == null && file == null )
+            throw new BuildException( "Must have property, value, or file." );
         // if no file, must have outputDir
-        if (file == null && outputDir == null)
-            throw new BuildException("Must have output directory.");
+        if ( file == null && outputDir == null )
+            throw new BuildException( "Must have output directory." );
         // must have only one of value or file
-        if (value != null && file != null)
-            throw new BuildException("Must not have more than one of property, value, or file.");
+        if ( value != null && file != null )
+            throw new BuildException( "Must not have more than one of property, value, or file." );
 
         try {
-            if (value != null) {
+            if ( value != null )
                 splitValue();
-            }
-            else {
-                splitFile();
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            if (failOnError) {
-                throw new BuildException(e.getMessage());
-            }
             else
-                log(e.getMessage());
+                splitFile();
+        }
+        catch ( Exception e ) {
+            if ( failOnError )
+                throw new BuildException( e.getMessage() );
+            else
+                log( e.getMessage() );
         }
     }
 
     /**
-     * Description of the Method
+     * Split a string value into several files.
      *
-     * @exception Exception  Description of Exception
+     * @exception IOException  if there is an i/o problem
      */
     private void splitValue() throws Exception {
-        if (!outputDir.exists() && !outputDir.mkdirs()) {
-            throw new IOException("Unable to create output directory.");
+        if ( !outputDir.exists() && !outputDir.mkdirs() ) {
+            throw new IOException( "Unable to create output directory." );
         }
 
-        StringReader reader = new StringReader(value);
+        StringReader reader = new StringReader( value );
         int bytes_read = 0;
         int suffix = 0;
-        if (bytes > 0) {
+        if ( bytes > 0 ) {
             // make files all the same number of bytes
-            char[] buffer = new char[bytes];
-            while (bytes_read > -1) {
-                bytes_read = reader.read(buffer, 0, bytes);
-                if (bytes_read == -1)
+            char[] buffer = new char[ bytes ];
+            while ( bytes_read > -1 ) {
+                bytes_read = reader.read( buffer, 0, bytes );
+                if ( bytes_read == -1 )
                     break;
-                FileWriter fw = new FileWriter(new File(outputDir, prefix + "." + String.valueOf(suffix)));
-                fw.write(buffer, 0, bytes_read);
+                FileWriter fw = new FileWriter( new File( outputDir, prefix + "." + String.valueOf( suffix ) ) );
+                fw.write( buffer, 0, bytes_read );
                 fw.flush();
                 fw.close();
                 ++suffix;
@@ -208,52 +228,38 @@ public class SplitTask extends Task {
         }
         else {
             // make files all the same number of lines
-            // reusing offset as line count
-            LineNumberReader lnr = new LineNumberReader(reader);
-            String line = lnr.readLine();
-            FileWriter fw = new FileWriter(new File(outputDir, prefix + "." + String.valueOf(suffix)));
-            while (line != null) {
-                fw.write(line);
-                if (lnr.getLineNumber() % lines == 0) {
-                    fw.flush();
-                    fw.close();
-                    ++suffix;
-                    fw = new FileWriter(new File(outputDir, prefix + "." + String.valueOf(suffix)));
-                }
-            }
-            fw.flush();
-            fw.close();
+            splitByLines( reader );
         }
     }
 
     /**
-     * Description of the Method
+     * Split a file into several files.
      *
-     * @exception Exception  Description of Exception
+     * @exception IOException  if there is an i/o problem
      */
-    private void splitFile() throws Exception {
-        if (!file.exists())
-            throw new FileNotFoundException(file.toString());
-        if (file.length() == 0)
-            throw new BuildException("Zero length file.");
-        if (outputDir == null)
+    private void splitFile() throws IOException {
+        if ( !file.exists() )
+            throw new FileNotFoundException( file.toString() );
+        if ( file.length() == 0 )
+            throw new BuildException( "Zero length file." );
+        if ( outputDir == null )
             outputDir = file.getParentFile();
-        if (!outputDir.exists() && !outputDir.mkdirs()) {
-            throw new IOException("Unable to create output directory.");
+        if ( !outputDir.exists() && !outputDir.mkdirs() ) {
+            throw new IOException( "Unable to create output directory." );
         }
 
         int suffix = 0;
-        if (bytes > 0) {
+        if ( bytes > 0 ) {
             // make files all the same number of bytes
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+            BufferedInputStream bis = new BufferedInputStream( new FileInputStream( file ) );
             int bytes_read = 0;
-            byte[] buffer = new byte[bytes];
-            while (bytes_read > -1) {
-                bytes_read = bis.read(buffer, 0, bytes);
-                if (bytes_read == -1)
+            byte[] buffer = new byte[ bytes ];
+            while ( bytes_read > -1 ) {
+                bytes_read = bis.read( buffer, 0, bytes );
+                if ( bytes_read == -1 )
                     break;
-                FileOutputStream fos = new FileOutputStream(new File(outputDir, prefix + "." + String.valueOf(suffix)));
-                fos.write(buffer, 0, bytes_read);
+                FileOutputStream fos = new FileOutputStream( new File( outputDir, prefix + "." + String.valueOf( suffix ) ) );
+                fos.write( buffer, 0, bytes_read );
                 fos.flush();
                 fos.close();
                 ++suffix;
@@ -261,23 +267,30 @@ public class SplitTask extends Task {
         }
         else {
             // make files all the same number of lines
-            // reusing offset as line count
-            LineNumberReader lnr = new LineNumberReader(new FileReader(file));
-            String line = lnr.readLine();
-            FileWriter fw = new FileWriter(new File(outputDir, prefix + "." + String.valueOf(suffix)));
-            while (line != null) {
-                fw.write(line);
-                if (lnr.getLineNumber() % lines == 0) {
-                    fw.flush();
-                    fw.close();
-                    ++suffix;
-                    fw = new FileWriter(new File(outputDir, prefix + "." + String.valueOf(suffix)));
-                }
-            }
-            fw.flush();
-            fw.close();
+            splitByLines( new FileReader( file ) );
         }
     }
+    
+    private void splitByLines( Reader reader ) throws IOException {
+        int suffix = 0;
+        LineNumberReader lnr = new LineNumberReader( reader );
+        String line = lnr.readLine();
+        BufferedWriter writer = new BufferedWriter( new FileWriter( new File( outputDir, prefix + "." + String.valueOf( suffix ) ) ) );
+        while ( line != null ) {
+            writer.write( line );
+            writer.newLine();
+            if ( lnr.getLineNumber() % lines == 0 ) {
+                writer.flush();
+                writer.close();
+                ++suffix;
+                writer = new BufferedWriter( new FileWriter( new File( outputDir, prefix + "." + String.valueOf( suffix ) ) ) );
+            }
+            line = lnr.readLine();
+        }
+        writer.flush();
+        writer.close();
+    }
+
 }
 
 
