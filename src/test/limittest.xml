@@ -1,80 +1,82 @@
 <?xml version="1.0"?>
 
-<project name="limittest" basedir="." default="test1"  xmlns:a="antlib:ise.antelope.tasks">
-    <description>
+<project name="limittest" basedir="." default="test1" >
+   <description>
         test build file for the Limit task
     </description>
-
          
-  <target name="test1">
+
+   <target name="test1">
     <!-- should stop 'sleep' task, no failure message -->
-    <a:limit maxwait="1">
-        <sleep seconds="5"/>
-        <echo>_failed_</echo>
-        <fail/>
-    </a:limit>
-  </target>
-  
-  <target name="test2">
+      <limit maxwait="1">
+         <sleep seconds="5"/>
+         <echo>_failed_</echo>
+         <fail/>
+      </limit>
+   </target>
+
+   <target name="test2">
     <!-- should not stop 'sleep' task, should print out '_passed_' -->
-    <a:stopwatch name="limit"/>
-    <a:limit maxwait="5">
-        <sleep seconds="1"/>
-        <echo>_passed_</echo>
-    </a:limit>
-    <a:stopwatch name="limit" action="total"/>
-    <a:assert message="Too much time.">
-        <bool>
+      <stopwatch name="limit"/>
+      <limit maxwait="5">
+         <sleep seconds="1"/>
+         <echo>_passed_</echo>
+      </limit>
+      <stopwatch name="limit" action="total"/>
+      <assert message="Too much time.">
+         <bool>
             <islessthan arg1="${limit}" arg2="2"/>
-        </bool>
-    </a:assert>
-  </target>
-  
-  <target name="test3">
+         </bool>
+      </assert>
+   </target>
+
+   <target name="test3">
     <!-- test failonerror attribute, build should fail -->
-    <a:limit maxwait="3" failonerror="true">
-       <a:try>
-        <fail message="Fail on error worked correctly: THIS SHOULD HAPPEN, THIS IS NOT A FAILURE!"/>
-        <a:catch>
-         <property name="test3_prop" value="true"/>
-        </a:catch>
-       </a:try>
-    </a:limit>
-    <a:assert name="test3_prop" exists="true" message="test3, build did not fail and should have"/>
-  </target>
-  
-  <target name="test4">
+      <limit maxwait="3" failonerror="true">
+         <try>
+            <fail message="Fail on error worked correctly: THIS SHOULD HAPPEN, THIS IS NOT A FAILURE!"/>
+            <catch>
+               <property name="test3_prop" value="true"/>
+            </catch>
+         </try>
+      </limit>
+      <assert name="test3_prop" exists="true" message="test3, build did not fail and should have"/>
+   </target>
+
+   <target name="test4">
     <!-- test failonerror attribute, build should not fail -->
-    <a:limit maxwait="3">
-       <a:try>
-        <fail message="_failed_"/>
-        <property name="test4_prop" value="true"/>
-       </a:try>
-    </a:limit>
-    <a:assert name="test4_prop" exists="false" message="test4: build failed and should not have"/>
-  </target>
-  
-    <target name="test5">
-        <a:limit maxwait="1" unit="minute">
-            <sleep seconds="65"/>
-        </a:limit>
-    </target>
-    
-    <target name="test6">
-        <a:limit seconds="6">
-            <sleep seconds="7"/>
-            <property name="test6_prop" value="true"/>
-        </a:limit>
-        <a:assert name="test6_prop" exists="false" message="test 6 failed"/>
-        
-    </target>
-    
-    <target name="test7">
-      <a:limit maxwait="3" maxwaitunit="second">
+      <limit maxwait="3">
+         <try>
+            <fail message="_failed_"/>
+            <property name="test4_prop" value="true"/>
+         </try>
+      </limit>
+      <assert name="test4_prop" exists="false" message="test4: build failed and should not have"/>
+   </target>
+
+   <target name="test5">
+      <limit maxwait="1" unit="minute">
+         <sleep seconds="65"/>
+         <property name="test5_prop" value="true"/>
+      </limit>
+      <assert name="test5_prop" exists="false" message="test 5 failed"/>
+   </target>
+
+   <target name="test6">
+      <limit seconds="6">
+         <sleep seconds="7"/>
+         <property name="test6_prop" value="true"/>
+      </limit>
+      <assert name="test6_prop" exists="false" message="test 6 failed"/>
+
+   </target>
+
+   <target name="test7">
+      <limit maxwait="3" maxwaitunit="second">
          <sleep seconds="1"/>
          <property name="test7_prop" value="true"/>
-      </a:limit>
-      <a:assert name="test7_prop" value="true" message="timeunit test failed"/>
-    </target>
-    
+      </limit>
+      <assert name="test7_prop" value="true" message="timeunit test failed"/>
+   </target>
+
 </project>

@@ -142,7 +142,7 @@ public class AntelopePanel extends JPanel implements Constants {
     private ArrayList _listeners = null;
 
     /** Description of the Field */
-    private CommonHelper _helper = null;
+    private ise.antelope.common.CommonHelper _helper = null;
 
     private AntProgressListener _progress = null;
 
@@ -160,7 +160,7 @@ public class AntelopePanel extends JPanel implements Constants {
      *
      * @param helper
      */
-    public AntelopePanel( CommonHelper helper ) {
+    public AntelopePanel( CommonHelperWrapper helper ) {
         this( null, helper, true );
     }
 
@@ -172,21 +172,47 @@ public class AntelopePanel extends JPanel implements Constants {
      * @param helper
      * @param use_internal_menu
      */
-    public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu ) {
+    public AntelopePanel( File build_file, CommonHelperWrapper helper, boolean use_internal_menu ) {
         this( build_file, helper, use_internal_menu, null );
+    }
+    
+    public AntelopePanel(java.util.List args) {
+        switch(args.size()) {
+            case 0:
+                init(null, null, true, null);
+                break;
+            case 1:
+                init(null, (CommonHelperWrapper)args.get(0), true, null);
+                break;
+            case 3:
+                init((File)args.get(0), (CommonHelperWrapper)args.get(1), ((Boolean)args.get(2)).booleanValue(), null);
+                break;
+            case 4:
+                File f = (File)args.get(0);
+                CommonHelperWrapper chw = (CommonHelperWrapper)args.get(1);
+                boolean b = ((Boolean)args.get(2)).booleanValue();
+                java.util.List m = (java.util.List)args.get(3);
+                init(f, chw, b, m);
+                break;
+        }
     }
 
     /**
      * Constructor for the AntelopePanel object
      *
-     * @param build_file         an Ant build fild
+     * @param build_file         an Ant build file
      * @param helper
      * @param use_internal_menu
      * @param menu_items         additional menu items to add, only useful if
      *      use_internal_menu is true
      */
-    public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu,
-            ArrayList menu_items ) {
+    public AntelopePanel( File build_file, CommonHelperWrapper helper, boolean use_internal_menu,
+            java.util.List menu_items ) {
+        init(build_file, helper, use_internal_menu, menu_items);
+    }
+    
+    private void init(File build_file, CommonHelperWrapper helper, boolean use_internal_menu,
+            java.util.List menu_items ) {
 
         Log.log("AntelopePanel constructor");
         setLayout( new BorderLayout() );
@@ -1289,6 +1315,7 @@ public class AntelopePanel extends JPanel implements Constants {
         try {
             ClassLoader cl = _helper.getAntClassLoader();
             p.setCoreLoader( cl );
+            
             /*
             try {
                 Log.log("loading antlib with _helper classloader");
@@ -1382,6 +1409,10 @@ public class AntelopePanel extends JPanel implements Constants {
             //    System.out.println("target: " + it.next());   
             //}
             
+            /*
+            // looks like a recent change for antlib has busted loading custom tasks from
+            // an antlib declaration. Need to check if this ever worked, I used to use 
+            // taskdef exclusively, and have only recently switched to using antlib.
             try {
                 System.out.println("AntelopePanel classloader = " + getClass().getClassLoader().hashCode());
                 Class c = Class.forName("org.apache.tools.ant.Main");
@@ -1399,10 +1430,20 @@ public class AntelopePanel extends JPanel implements Constants {
                 }
                 else
                     System.out.println("did not find class for Unset");
+                c = Class.forName("org.apache.tools.ant.taskdefs.optional.EchoProperties");
+                if (c != null){
+                    System.out.println("classloader for EchoProperties = " + c.getClassLoader().hashCode());
+                    System.out.println("parent classloader for EchoProperties = " + c.getClassLoader().getParent());
+                    System.out.println("classloader for EchoProperties is a " + c.getClassLoader().getClass().getName());
+                }
+                else
+                    System.out.println("did not find class for EchoProperties");
             }
             catch(Exception e) {
                 e.printStackTrace();
             }
+            */
+            
             
             return p;
         }

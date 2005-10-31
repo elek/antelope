@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="new_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+<project name="new_test" basedir="." default="test1" >
    <description>
         Test build file for the New task.
         
@@ -17,62 +17,62 @@
    
       <!-- set a property and verify it is set -->
       <property name="test1_prop" value="test1_value"/>
-      <a:assert message="test1_prop is not set and should be">
+      <assert message="test1_prop is not set and should be">
          <bool>
             <isset property="test1_prop"/>
          </bool>
-      </a:assert>
+      </assert>
       
       <!-- now unset the property and verify it is unset -->
-      <a:new>
-         <a:unset name="test1_prop"/>
+      <new>
+         <unset name="test1_prop"/>
          <property name="test1_prop" value="test1_value2"/>
-      </a:new>
-      <a:assert name="test1_prop" value="test1_value2" message="test1_prop does not have new value."/>
+      </new>
+      <assert name="test1_prop" value="test1_value2" message="test1_prop does not have new value."/>
    </target>
 
    <target name="test2">
-      <a:unset name="call_count"/>
+      <unset name="call_count"/>
       <property name="call_count" value="0"/>
-      <a:call target="readLog"/>
-      <a:call target="readLog"/>
-      <a:call target="readLog"/>
-      <a:assert message="Expected call_count = 3, got ${call_count}">
+      <call target="readLog"/>
+      <call target="readLog"/>
+      <call target="readLog"/>
+      <assert message="Expected call_count = 3, got ${call_count}">
          <bool>
             <mathequals arg1="3" arg2="${call_count}"/>
          </bool>
-      </a:assert>
+      </assert>
       <echo>${call_count}</echo>
    </target>
 
    <target name="readLog">
-      <a:new>
-         <a:math result="call_count" operand1="${call_count}" operand2="1" operation="+"/>
-         <a:unset name="nitra_log"/>
+      <new>
+         <math result="call_count" operand1="${call_count}" operand2="1" operation="+"/>
+         <unset name="nitra_log"/>
          <property name="nitra_log" value="Inventory for PV01453 filtered ${call_count} times."/>
          <echo>${nitra_log}</echo>
-      </a:new>
+      </new>
    </target>
 
    <target name="test3">
       <property name="verbose" value="false"/>
-      <a:call target="antUrls"/>
+      <call target="antUrls"/>
    </target>
 
    <target name="antUrls">
-      <a:new>
-         <a:unset name="ant_download_page"/>
-         <a:post to="http://ant.apache.org/bindownload.cgi"
+      <new>
+         <unset name="ant_download_page"/>
+         <post to="http://ant.apache.org/bindownload.cgi"
                verbose="${verbose}"
                logfile="${logfile}"
                property="ant_download_page"/>
-         <a:grep in="${ant_download_page}"
+         <grep in="${ant_download_page}"
                regex="select name=&quot;Preferred.*?&lt;/select"
                dotall="yes"
                property="options"/>
 
-         <a:unset name="urls"/>
-         <a:grep in="${options}"
+         <unset name="urls"/>
+         <grep in="${options}"
                regex="&lt;option.*?&gt;(.*?)&lt;/option&gt;"
                group="1"
                allmatches="yes"
@@ -81,33 +81,33 @@
          <echo>${urls}</echo>
          
          <!-- this fails -->
-         <a:unset name="ant_download_page"/>
-         <a:post to="http://ant.apache.org/bindownload.cgi"
+         <unset name="ant_download_page"/>
+         <post to="http://ant.apache.org/bindownload.cgi"
                verbose="${verbose}"
                logfile="${logfile}"
                property="ant_download_page">
-            <a:prop name="Preferred" value="ftp://www.ibiblio.org/pub/mirrors/apache"/>
-         </a:post>
-      </a:new>
+            <prop name="Preferred" value="ftp://www.ibiblio.org/pub/mirrors/apache"/>
+         </post>
+      </new>
    </target>
 
    <target name="test4">
       <property name="test_value" value="true"/>
-      <a:call target="assert"/>
-      <a:try printmessage="false">
-         <a:unset name="test_value"/>
+      <call target="assert"/>
+      <try printmessage="false">
+         <unset name="test_value"/>
          <property name="test_value" value="false"/>
-         <a:call target="assert"/>
-      </a:try>
+         <call target="assert"/>
+      </try>
    </target>
 
    <target name="assert">
-      <a:new>
+      <new>
          <echo>echo1: ${test_value}</echo>
          <sequential>
             <echo>echo2: ${test_value}</echo>
          </sequential>
-      </a:new>
+      </new>
       <sequential>
          <echo>echo3: ${test_value}</echo>
       </sequential>

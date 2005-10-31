@@ -1,4 +1,4 @@
-<project name="second_test" basedir="."  xmlns:a="antlib:ise.antelope.tasks">
+<project name="second_test" basedir="."  >
 
    <description>
       Part of the tests for the Suite and TestCase tasks.

@@ -1,0 +1,23 @@
+
+<project name="mathtest" basedir="." default="test" >
+   <description>
+     Build file to run unit tests for the Math task
+   </description>
+
+   <target name="test">
+      <suite name="Math Test Suite">
+         <testcase file="math_basic_tests.xml"/>
+         <testcase file="math_rules_tests.xml"/>
+         <testcase file="math_precision_tests.xml"/>
+      </suite>
+   
+      <!-- alternatively, a fileset could be used:
+      <suite>
+         <fileset dir="${basedir}">
+            <include name="math_*.xml"/>
+         </fileset>
+      </suite>
+      -->
+   </target>
+   
+</project>

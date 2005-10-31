@@ -1,6 +1,6 @@
 package ise.antelope.tasks;
 
-import ise.antelope.tasks.typedefs.*;
+import ise.antelope.tasks.typedefs.string.*;
 
 import java.util.*;
 import org.apache.tools.ant.BuildException;
@@ -82,6 +82,10 @@ public class StringUtilTask extends Task {
     public void addSort(Sort op) {
         ops.add(op);   
     }
+    
+    public void addMessagebox(MessageBox op) {
+        ops.add(op);   
+    }
 
 
     /** Description of the Method */
@@ -92,6 +96,7 @@ public class StringUtilTask extends Task {
         }
         if (property != null) {
             Unset unset = new Unset();
+            unset.setProject(getProject());
             unset.setName(property);
             unset.execute();
             getProject().setProperty(property, string);

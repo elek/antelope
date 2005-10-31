@@ -17,7 +17,7 @@
 <title>Introduction</title>
 
 <para>
-The Antelope tasks are now part of the Ant-Contrib project, http://ant-contrib.sourceforge.net. In this version, @@build_num@@, the tasks contained in the Antelope distribution are identical to those in Ant-Contrib other than the package name. The Antelope tasks will continue to be distributed as part of the Antelope distribution, but eventually, the package and code base will reside entirely with Ant-Contrib. Additionally, it is likely that the Ant-Contrib tasks that are not part of Antelope will be included in this distribution as well. The intent is to make Ant-Contrib the central location for additional Ant tasks.
+The Antelope tasks are now part of the Ant-Contrib project, http://ant-contrib.sourceforge.net. In this version, @@build.num@@, the tasks contained in the Antelope distribution are identical to those in Ant-Contrib other than the package name. The Antelope tasks will continue to be distributed as part of the Antelope distribution, but eventually, the package and code base will reside entirely with Ant-Contrib. Additionally, it is likely that the Ant-Contrib tasks that are not part of Antelope will be included in this distribution as well. The intent is to make Ant-Contrib the central location for additional Ant tasks.
 </para>
 
 <para>
@@ -1837,7 +1837,7 @@ Neither the echo nor the fail will happen in this example. The build will contin
 </para>
 
 <para>
-Neither the echo nore the fail will happen in this example. The build will not continue once the time has expired.
+Neither the echo nor the fail will happen in this example. The build will not continue once the time has expired.
 <programlisting>
 <![CDATA[
 <limit maxwait="3" failonerror="true">
@@ -1856,7 +1856,7 @@ Neither the echo nore the fail will happen in this example. The build will not c
    <title>FileUtils</title>
    
 <para>
-The FileUtils task provides a number of useful file information functions, such as readability, writability, length, etc.  Caution: this task does not follow the standard Ant convention of property immutability.
+The FileUtils task provides a number of useful file information functions, such as readability, writability, length, etc.  
 </para>   
 
 <para>
@@ -1896,7 +1896,7 @@ To use this task in your build files, include a task definition like this:
 
 <row>
 <entry>property</entry>
-<entry>Where to store the answer. Caution: this task will overwrite any existing property with this name.</entry>
+<entry>Where to store the answer.</entry>
 <entry>None</entry>
 <entry>No</entry>
 </row>
@@ -2026,7 +2026,7 @@ Examples: See the <link linkend="Split">Split</link> for several examples.
    <title>StringUtils</title>
    
 <para>
-The StringUtils task provides a number of useful string manipulation functions, such as converting a string to upper or lower case, trimming white space, finding a substring, etc.  Caution: this task does not follow the standard Ant convention of property immutability.
+The StringUtils task provides a number of useful string manipulation functions, such as converting a string to upper or lower case, trimming white space, finding a substring, etc.
 </para>   
 
 <para>
@@ -2066,7 +2066,7 @@ To use this task in your build files, include a task definition like this:
 
 <row>
 <entry>property</entry>
-<entry>Where to store the manipulated string. Caution: this task will overwrite any existing property with this name.</entry>
+<entry>Where to store the manipulated string.</entry>
 <entry>None</entry>
 <entry>No</entry>
 </row>
@@ -2081,9 +2081,8 @@ Operations as nested elements:
 </para>
 
 <para>
-Find the index of or the last index of a substring.
 <table frame="all">
-<title>indexof, lastindexof</title>
+<title>indexof, lastindexof: Find the index of or the last index of a substring.</title>
 <tgroup cols="4">
 
 <thead>
@@ -2115,9 +2114,9 @@ Find the index of or the last index of a substring.
 </tgroup>
 </table>
 
-Get a substring from the string.
+
 <table frame="all">
-<title>substring</title>
+<title>substring: Get a substring from the string.</title>
 <tgroup cols="4">
 
 <thead>
@@ -2149,9 +2148,9 @@ Get a substring from the string.
 </tgroup>
 </table>
 
-Replace parts of the string.
+
 <table frame="all">
-<title>replace</title>
+<title>replace: Replace parts of the string.</title>
 <tgroup cols="4">
 
 <thead>
@@ -2183,9 +2182,8 @@ Replace parts of the string.
 </tgroup>
 </table>
 
-Sort items in a string.  This is useful for sorting a comma separated list or a property value that spans several lines.
 <table frame="all">
-<title>sort</title>
+<title>sort: Sort items in a string.</title>
 <tgroup cols="4">
 
 <thead>
@@ -2209,9 +2207,50 @@ Sort items in a string.  This is useful for sorting a comma separated list or a 
 </tbody>
 </tgroup>
 </table>
-
+This is useful for sorting a comma separated list or a property value that spans several lines.
 
 </para>
+
+<para>
+<table frame="all">
+<title>messagebox: Put the string in a box for nice display.</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>title</entry>
+<entry>Title for the message box.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>width</entry>
+<entry>
+Maximum width in characters for the message box. Lines 
+will be wrapped to fit inside the box.  The box will not 
+stretch to this width if the message is less than 
+width - 4 characters wide. 
+</entry>
+<entry>60</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
 
 <para>
 These operations have no attributes:
@@ -2302,7 +2341,7 @@ Convert a string to upper case and trim white space:
          <a:trim/>
       </a:stringutil>
       <echo>prop3 after = ${prop3}</echo>
-      <a:assert message="prop3, expected ABCDEFGH, got ${prop2}">
+      <a:assert message="prop3, expected ABCDEFGH, got ${prop3}">
          <bool>
             <equals arg1="ABCDEFGH" arg2="${prop3}"/>
          </bool>
@@ -2377,8 +2416,143 @@ Sort a list:
 </programlisting>
 </para>
 
+<para>
+Message boxes:
+<programlisting>
+<![CDATA[
+   <target name="test13">
+      <property name="prop13" value="Character boundary analysis allows users to interact with characters as they expect to, for example, when moving the cursor around through a text string. Character boundary analysis provides correct navigation of through character strings, regardless of how the character is stored. For example, an accented character might be stored as a base character and a diacritical mark. What users consider to be a character can differ between languages."/>
+      <echo>prop13 before = ${prop13}</echo>
+      <a:stringutil string="${prop13}" property="prop13">
+         <a:messagebox/>
+      </a:stringutil>
+      <echo>prop13 in messagebox:${line.separator}${prop13}</echo>
+
+      <property name="prop13a" value="Character boundary analysis allows users to interact with characters as they expect to, for example, when moving the cursor around through a text string. Character boundary analysis provides correct navigation of through character strings, regardless of how the character is stored. For example, an accented character might be stored as a base character and a diacritical mark. What users consider to be a character can differ between languages."/>
+      <a:stringutil string="${prop13a}" property="prop13a">
+         <a:messagebox title="About Character Boundaries"/>
+      </a:stringutil>
+      <echo>prop13a in messagebox with title:${line.separator}${prop13a}</echo>
+      
+   </target>
+   
+test13:
+     [echo] prop13 before = Character boundary analysis allows users to interact with characters as they expect to, for
+example, when moving the cursor around through a text string. Character boundary analysis provides correct navigation of
+ through character strings, regardless of how the character is stored. For example, an accented character might be store
+d as a base character and a diacritical mark. What users consider to be a character can differ between languages.
+     [echo] prop13 in messagebox:
+     [echo]
+     [echo] +----------------------------------------------------------------------+
+     [echo] | Character boundary analysis allows users to interact with characters |
+     [echo] | as they expect to, for example, when moving the cursor around        |
+     [echo] | through a text string. Character boundary analysis provides correct  |
+     [echo] | navigation of through character strings, regardless of how the       |
+     [echo] | character is stored. For example, an accented character might        |
+     [echo] | be stored as a base character and a diacritical mark. What users     |
+     [echo] | consider to be a character can differ between languages.             |
+     [echo] +----------------------------------------------------------------------+
+     [echo] prop13a in messagebox with title:
+     [echo]
+     [echo] +----------------------------------------------------------------------+
+     [echo] | About Character Boundaries                                           |
+     [echo] +----------------------------------------------------------------------+
+     [echo] | Character boundary analysis allows users to interact with characters |
+     [echo] | as they expect to, for example, when moving the cursor around        |
+     [echo] | through a text string. Character boundary analysis provides correct  |
+     [echo] | navigation of through character strings, regardless of how the       |
+     [echo] | character is stored. For example, an accented character might        |
+     [echo] | be stored as a base character and a diacritical mark. What users     |
+     [echo] | consider to be a character can differ between languages.             |
+     [echo] +----------------------------------------------------------------------+
+[antlib:ise.antelope.tasks:testcase] test13 passed.   
+]]>
+</programlisting>
+</para>
+
 
 </chapter>
+
+
+
+
+<chapter id="UID">
+@@style@@
+   <title>UID</title>
+   
+<para>
+The UID task generates a unique ID.  This ID may be either a unique string or integer.
+</para>   
+
+<para>
+To use this task in your build files, include a task definition like this:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+    <taskdef name="uid" classname="ise.antelope.tasks.UIDTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>UID Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>name</entry>
+<entry>Name of a property to store the unique ID.</entry>
+<entry>None</entry>
+<entry>Yes</entry>
+</row>
+
+<row>
+<entry>int</entry>
+<entry>If true, generate a unique integer.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Examples:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+<uid name="uid_1"/>
+<echo>uid_1 = ${uid_1}</echo>
+<uid name="uid_2" int="yes"/>
+<echo>uid_2 = ${uid_2}</echo>
+
+
+     [echo] uid_1 = -4a1a8b86:10728498757:-7fff
+     [echo] uid_2 = 2
+]]>
+</programlisting>
+</para>
+
+</chapter>
+
+
 
 
 
@@ -2646,6 +2820,152 @@ Some examples:
 </para>
 
 </chapter>
+
+
+<chapter id="hostname">
+@@style@@
+    <title>Hostname</title>
+    
+<para>
+This task shows the hostname or IP address of the local machine.
+</para>
+
+<para>
+To use this task in your build files, include a task definition like this:
+<programlisting>
+<![CDATA[
+    <taskdef name="hostname" classname="ise.antelope.tasks.HostnameTask"/>
+   ]]>
+</programlisting>
+</para>
+
+<para>
+<table frame="all">
+<title>Hostname Task Attributes</title>
+<tgroup cols="4">
+
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+<entry>Default</entry>
+<entry>Required</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>property</entry>
+<entry>Name of the property to store the hostname or IP</entry>
+<entry>hostname</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>showip</entry>
+<entry>If true, get the IP address of the local machine.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>nic</entry>
+<entry>The specific name of an interface to get the hostname or IP address of.</entry>
+<entry>None</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>showall</entry>
+<entry>Get all names or IP addresses for all network interfaces on the local machine.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+<row>
+<entry>failonerror</entry>
+<entry>Should the build fail if this task fails?</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Examples:
+</para>
+
+<para>
+<programlisting>
+<![CDATA[
+   <description>
+      Unit tests for hostname task, not really good as hostname is machine
+      dependent, so writing a portable test is hard. 
+   </description>
+   
+   <target name="test1">
+      <a:unset name="hostname"/>
+      <a:hostname/>
+      <echo>hostname: ${hostname}</echo>
+      <a:assert name="hostname" exists="true" message="test 1 failed."/>
+   </target>
+
+   <target name="test2">
+      <a:unset name="localhost"/>
+      <a:hostname property="localhost"/>
+      <echo>localhost: ${localhost}</echo>
+      <a:assert name="localhost" exists="true" message="test 2 failed."/>
+   </target>
+
+   <target name="test3">
+      <a:unset name="localhost"/>
+      <a:hostname property="localhost" showall="yes"/>
+      <echo>all interfaces: ${localhost}</echo>
+      <a:assert name="localhost" exists="true" message="test 3 failed."/>
+   </target>
+
+   <target name="test4">
+      <a:unset name="localhost"/>
+      <a:hostname property="localhost" showall="yes" showip="yes"/>
+      <echo>all interfaces by IP: ${localhost}</echo>
+      <a:assert name="localhost" exists="true" message="test 4 failed."/>
+   </target>
+
+   <target name="test5">
+      <a:unset name="localhost"/>
+      <a:hostname property="localhost" nic="lo" showip="yes"/>
+      <echo>nic lo: ${localhost}</echo>
+      <a:assert name="localhost" value="lo:127.0.0.1" message="test 5 failed."/>
+   </target>
+   
+Output:
+
+test1:
+     [echo] hostname: blackdog   
+
+test2:
+     [echo] localhost: blackdog
+     
+test3:
+     [echo] all interfaces: lo:127.0.0.1, eth0:, eth1:blackdog.somewhere.com, eth2:blackdog.wireless.somewhere.com
+     
+test4:
+     [echo] all interfaces by IP: lo:127.0.0.1, eth0:, eth1:192.168.1.3, eth2:192.168.44.12
+   
+test5:
+     [echo] nic lo: lo:127.0.0.1
+]]>
+</programlisting>
+</para>
+
+</chapter>
+
+
+
 <chapter id="post">
 @@style@@
     <title>HTTP Post</title>
@@ -2665,6 +2985,10 @@ To use this task in your build files, include a task definition like this:
 
 <para>
 Basically, an HTTP POST sends name/value pairs to a web server. A very common usage is for html forms for submitting data. A typical use of this task is to send data to a servlet for updating a web page with the status of a build. 
+</para>
+
+<para>
+This Post task handles cookies and remembers them across calls.  This means that you can post to a login form, receive authentication cookies, then subsequent posts will automatically pass the correct cookies.  The cookies are stored in memory only, they are not written to disk and will cease to exist upon completion of the build.
 </para>
 
 <para>
@@ -2869,6 +3193,10 @@ I googled for the URL in the following example.
     </post>
 ]]>
 </programlisting>
+</para>
+
+<para>
+Also see the <link linkend="greptask">Grep task</link> for additional examples.
 </para>
 </chapter>
 
@@ -4321,9 +4649,9 @@ Total time: 8.476 sec
 
 <para>
 The preferred way to send bug reports is to use the
-Sourceforge Bug Tracker at
-<ulink url="http://sourceforge.net/projects/antelope">
-http://sourceforge.net/projects/antelope
+Issue Tracker at
+<ulink url="http://antelope.tigris.org">
+http://antelope.tigris.org
 </ulink>.
 </para>
 

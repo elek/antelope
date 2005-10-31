@@ -29,12 +29,25 @@ BUTTON {cursor: auto}
 
 CITE {font-style: italic}
 
-CODE, KBD, SAMP, TT {font-size: 12px}
+.computeroutput {
+   font-family: monospace;
+   border: none;
+   padding: none;
+   background: none;
+}
+
+CODE, KBD, PRE, SAMP, TT {font-size: 12px}
 
 CODE, PRE {
+   font-family: monospace;
+}
+
+
+PRE.PROGRAMLISTING {
+   font-family: monospace;
    border: solid thin;
    padding: 2em;
-   background: lightgray;
+   background: white;
 }
 
 DT {font-weight: bold}
@@ -66,16 +79,26 @@ SMALL, SUB, SUP {font-size: 10px}
 
 TEXTAREA {cursor: text}
 
-TD {padding: 3;
-    background: lightgray}
+TABLE {
+   border: solid thin; 
+   background: white; 
+   cellpadding: 3; 
+   cellspacing: 0; 
+}
+
+TD {
+   padding: 3;
+   background: white;
+}
 
 TH {
    font-weight: bold;
    text-align: center;
    margin-left: 0;
-   background: gray; 
+   background: #ADD8E6; 
    color: black;
 }
+
 
 
 

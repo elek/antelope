@@ -26,6 +26,8 @@ import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.condition.Condition;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 
+import ise.antelope.tasks.typedefs.TimeUnit;
+
 /**
  * Repeatedly executes a set of tasks. Borrowed most of the code from the Limit
  * task.

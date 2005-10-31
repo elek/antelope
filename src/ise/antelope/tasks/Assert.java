@@ -98,6 +98,7 @@ public class Assert extends Task implements TaskContainer {
 
     // attribute storage
     private boolean failOnError = true;
+    private boolean failOnErrorSetByUser = false;
     private String execute = null;
     private boolean exists = true;
     private String value = null;
@@ -174,6 +175,7 @@ public class Assert extends Task implements TaskContainer {
      */
     public void setFailonerror(boolean fail) {
         failOnError = fail;
+        failOnErrorSetByUser = true;
     }
     
 	/**
@@ -237,16 +239,18 @@ public class Assert extends Task implements TaskContainer {
      * @exception BuildException  Description of Exception
      */
     public void execute() throws BuildException {
-        // adjust failOnError depending on level
-        switch (level) {
-            default:    // error
-                failOnError = true;
-                break;
-            case 2:     // warning
-            case 3:     // info
-            case 4:     // debug
-                failOnError = false;
-                break;
+        // adjust failOnError depending on level and user setting
+        if (!failOnErrorSetByUser) {
+            switch (level) {
+                default:    // error
+                    failOnError = true;
+                    break;
+                case 2:     // warning
+                case 3:     // info
+                case 4:     // debug
+                    failOnError = false;
+                    break;
+            }
         }
         
         // check for global 'ant.enable.asserts' property -- if this isn't set or

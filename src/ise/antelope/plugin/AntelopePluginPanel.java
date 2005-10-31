@@ -72,6 +72,7 @@ import console.*;
 import errorlist.*;
 
 import ise.antelope.common.*;
+import ise.library.PrivilegedAccessor;
 
 /**
  * This is the panel displayed and manipulated by jEdit. It wraps the
@@ -80,7 +81,7 @@ import ise.antelope.common.*;
  *
  * @version   $Revision$
  */
-public class AntelopePluginPanel extends JPanel implements Constants, CommonHelper {
+public class AntelopePluginPanel extends JPanel implements ise.antelope.common.CommonHelper, Constants {
 
     private View _view = null;
     private AntelopePanel antelopePanel = null;
@@ -117,7 +118,6 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
         SwingUtilities.invokeLater( new Runnable() {
                     public void run() {
 
-                        
                         try {
                             // load ant
                             jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
@@ -143,8 +143,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                             }
                         }
                         jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
-                        
-                        //loadAnt();
+                        //Class antelope_panel_class = loadAnt();
                         
                         // set up Antelope's menu
                         _view.getStatus().setMessageAndClear( "Loading Antelope..." );
@@ -168,8 +167,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
 
                         // create and add Antelope
                         try {
-
-                            antelopePanel = new AntelopePanel( file, AntelopePluginPanel.this, true, menu_items );
+                            antelopePanel = new AntelopePanel( file, new CommonHelperWrapper(AntelopePluginPanel.this), true, menu_items );
                         }
                         catch ( Throwable t ) {
                             t.printStackTrace();
@@ -432,8 +430,19 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
         }
     }
 
-    private void loadAnt() {
+    private Class loadAnt() {
         System.out.println("loadAnt");
+        try {
+            File jar_file = AntelopePlugin.getAntelopePluginJAR().getFile();
+            ise.antelope.launcher.Launcher launcher = new ise.antelope.launcher.Launcher();
+            return launcher.loadApp(null, jar_file);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+                        
+        /*
         java.util.List ant_jars = getAntJarList();
         if ( ant_jars != null ) {
             System.out.println("got jar list: " + ant_jars);
@@ -468,6 +477,7 @@ public class AntelopePluginPanel extends JPanel implements Constants, CommonHelp
                 }
             }
         }
+        */
     }
 }
 

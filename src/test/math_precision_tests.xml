@@ -1,0 +1,36 @@
+<project name="math_precision_tests" basedir="." default="suite" 
+   >
+   
+   <target name="test10">
+      <echo>Circle area test</echo>
+      <math result="pi">
+         <op op="*">
+            <num value="PI"/>
+            <op op="pow">
+               <num value="1"/>
+               <num value="2"/>
+            </op>
+         </op>
+      </math>
+      <assert message="failed circle area test">
+         <bool>
+            <mathequals arg1="${pi}" arg2="3.141592653589793"/>
+         </bool>
+      </assert>
+   </target>
+   
+   <target name="test11">
+      <echo>Division by zero test</echo>
+      <!-- division by zero -->
+      <try>
+         <math result="x">
+            <op op="/">
+               <num value="PI"/>
+               <num value="0"/>
+            </op>
+         </math>
+         <fail>Division by 0 succeeded: ${x}</fail>
+      </try>
+   </target>
+   
+</project>

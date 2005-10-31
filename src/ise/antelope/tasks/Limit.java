@@ -27,6 +27,8 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.TaskContainer;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 
+import ise.antelope.tasks.typedefs.TimeUnit;
+
 
 /**
  * Limits the amount of time that a task or set of tasks can run. This is useful

@@ -1,0 +1,14 @@
+
+<project name="call_test" default="test" basedir="." >
+   <target name="test" description="Test Call">
+      <call target="called"/>
+      <assert name="a" value="A" message="call test failed."/>
+      <assert name="b" value="B" message="call test failed."/>
+   </target>
+
+   <target name="called">
+      <property name="a" value="A"/>
+      <property name="b" value="B"/>
+   </target>
+
+</project>

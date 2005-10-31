@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="contains_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+<project name="contains_test" basedir="." default="test1" >
    <description>
         Test build file for the Contains condition.
          
@@ -9,11 +9,11 @@
 
    <target name="test1">
       <property name="test1_prop" value="test1_value"/>
-      <a:assert message="test1_prop does not contain 'value' and it should.">
-         <a:bool>
-            <a:contains property="test1_prop" substring="value"/>
-         </a:bool>
-      </a:assert>
+      <assert message="test1_prop does not contain 'value' and it should.">
+         <bool>
+            <contains property="test1_prop" substring="value"/>
+         </bool>
+      </assert>
    </target>
 
 

@@ -1,0 +1,45 @@
+
+<project name="hostname_test" default="test1" basedir="." >
+
+   <description>
+      Unit tests for hostname task, not really good as hostname is machine
+      dependent, so writing a portable test is hard. Maybe pass in known names
+      as properties?
+   </description>
+   
+   <target name="test1">
+      <unset name="hostname"/>
+      <hostname/>
+      <echo>hostname: ${hostname}</echo>
+      <assert name="hostname" exists="true" message="test 1 failed."/>
+   </target>
+
+   <target name="test2">
+      <unset name="localhost"/>
+      <hostname property="localhost"/>
+      <echo>localhost: ${localhost}</echo>
+      <assert name="localhost" exists="true" message="test 2 failed."/>
+   </target>
+
+   <target name="test3">
+      <unset name="localhost"/>
+      <hostname property="localhost" showall="yes"/>
+      <echo>all interfaces: ${localhost}</echo>
+      <assert name="localhost" exists="true" message="test 3 failed."/>
+   </target>
+
+   <target name="test4">
+      <unset name="localhost"/>
+      <hostname property="localhost" showall="yes" showip="yes"/>
+      <echo>all interfaces by IP: ${localhost}</echo>
+      <assert name="localhost" exists="true" message="test 4 failed."/>
+   </target>
+
+   <target name="test5">
+      <unset name="localhost"/>
+      <hostname property="localhost" nic="lo" showip="yes"/>
+      <echo>nic lo: ${localhost}</echo>
+      <assert name="localhost" value="lo:127.0.0.1" message="test 5 failed."/>
+   </target>
+
+</project>

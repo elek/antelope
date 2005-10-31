@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="repeattest" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+<project name="repeattest" basedir="." default="test1" >
    <description>
         test build file for the Repeat task
         
@@ -31,198 +31,198 @@
 
    <target name="test1a">
       <!-- no count set, verify performs tasks once -->
-      <a:var name="count" value="0"/>
-      <a:repeat>
-         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
-      </a:repeat>
-      <a:assert>
+      <var name="count" value="0"/>
+      <repeat>
+         <math result="count" operand1="${count}" operand2="1" operation="+"/>
+      </repeat>
+      <assert>
          <bool>
             <mathequals arg1="${count}" arg2="1"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test1b">
       <!-- count > 1, verify performs tasks correct number of times -->
-      <a:var name="count" value="0"/>
-      <a:repeat count="3" interval="1">
-         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
-      </a:repeat>
-      <a:assert message="Expected 3, got ${count}">
+      <var name="count" value="0"/>
+      <repeat count="3" interval="1">
+         <math result="count" operand1="${count}" operand2="1" operation="+"/>
+      </repeat>
+      <assert message="Expected 3, got ${count}">
          <bool>
             <mathequals arg1="${count}" arg2="3"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test1c">
       <!-- count = -1, verify performs tasks indefinitely -->
-      <a:var name="count" value="0"/>
-      <a:limit maxwait="10">
-         <a:repeat count="-1" interval="1">
-            <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
-         </a:repeat>
-      </a:limit>
-      <a:assert>
+      <var name="count" value="0"/>
+      <limit maxwait="10">
+         <repeat count="-1" interval="1">
+            <math result="count" operand1="${count}" operand2="1" operation="+"/>
+         </repeat>
+      </limit>
+      <assert>
          <bool>
             <and>
-               <a:isgreaterthan arg1="${count}" arg2="8"/>
-               <a:islessthan arg1="${count}" arg2="12"/>
+               <isgreaterthan arg1="${count}" arg2="8"/>
+               <islessthan arg1="${count}" arg2="12"/>
             </and>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test2a">
       <!-- no interval set, verify performs tasks 10 seconds apart -->
-      <a:var name="count" value="0"/>
-      <a:stopwatch name="test2a_stopwatch" action="start"/>
-      <a:repeat count="2">
-         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
-      </a:repeat>
-      <a:stopwatch name="test2a_stopwatch" action="total"/>
-      <a:assert message="Got ${count}, expected 2">
+      <var name="count" value="0"/>
+      <stopwatch name="test2a_stopwatch" action="start"/>
+      <repeat count="2">
+         <math result="count" operand1="${count}" operand2="1" operation="+"/>
+      </repeat>
+      <stopwatch name="test2a_stopwatch" action="total"/>
+      <assert message="Got ${count}, expected 2">
          <bool>
             <and>
-               <a:mathequals arg1="${count}" arg2="2"/>
-               <a:islessthan arg1="${test2a_stopwatch}" arg2="11"/>
+               <mathequals arg1="${count}" arg2="2"/>
+               <islessthan arg1="${test2a_stopwatch}" arg2="11"/>
             </and>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
 
    <target name="test2b">
       <!-- interval set to other than 10 seconds, verify tasks performed correct
            time apart. -->
-      <a:var name="count" value="0"/>
-      <a:stopwatch name="test2b_stopwatch" action="start"/>
-      <a:repeat count="2" interval="5">
-         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
-      </a:repeat>
-      <a:stopwatch name="test2b_stopwatch" action="total"/>
-      <a:assert>
+      <var name="count" value="0"/>
+      <stopwatch name="test2b_stopwatch" action="start"/>
+      <repeat count="2" interval="5">
+         <math result="count" operand1="${count}" operand2="1" operation="+"/>
+      </repeat>
+      <stopwatch name="test2b_stopwatch" action="total"/>
+      <assert>
          <bool>
             <and>
-               <a:mathequals arg1="${count}" arg2="2"/>
-               <a:islessthan arg1="${test2b_stopwatch}" arg2="6"/>
+               <mathequals arg1="${count}" arg2="2"/>
+               <islessthan arg1="${test2b_stopwatch}" arg2="6"/>
             </and>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test2c">
       <!-- interval = 0, verify tasks performed just once -->
-      <a:var name="count" value="0"/>
-      <a:stopwatch name="test2c_stopwatch" action="start"/>
-      <a:repeat count="5" interval="0">
-         <a:math result="count" operand1="${count}" operand2="1" operation="+" datatype="int"/>
-      </a:repeat>
-      <a:stopwatch name="test2c_stopwatch" action="total"/>
-      <a:assert>
+      <var name="count" value="0"/>
+      <stopwatch name="test2c_stopwatch" action="start"/>
+      <repeat count="5" interval="0">
+         <math result="count" operand1="${count}" operand2="1" operation="+" datatype="int"/>
+      </repeat>
+      <stopwatch name="test2c_stopwatch" action="total"/>
+      <assert>
          <bool>
             <and>
-               <a:mathequals arg1="${count}" arg2="1"/>
-               <a:islessthan arg1="${test2c_stopwatch}" arg2="1"/>
+               <mathequals arg1="${count}" arg2="1"/>
+               <islessthan arg1="${test2c_stopwatch}" arg2="1"/>
             </and>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test3a">
       <!-- failOnError not set, verify continues to execute tasks even if one fails -->
-      <a:var name="count" value="0"/>
-      <a:repeat count="3" interval="1">
-         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      <var name="count" value="0"/>
+      <repeat count="3" interval="1">
+         <math result="count" operand1="${count}" operand2="1" operation="+"/>
          <fail/>
-      </a:repeat>
-      <a:assert>
+      </repeat>
+      <assert>
          <bool>
-            <a:mathequals arg1="${count}" arg2="3"/>
+            <mathequals arg1="${count}" arg2="3"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test3b">
       <!-- failOnError set to false, same as 3a -->
-      <a:var name="count" value="0"/>
-      <a:repeat count="3" interval="1" failonerror="no">
-         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      <var name="count" value="0"/>
+      <repeat count="3" interval="1" failonerror="no">
+         <math result="count" operand1="${count}" operand2="1" operation="+"/>
          <fail/>
-      </a:repeat>
-      <a:assert>
+      </repeat>
+      <assert>
          <bool>
-            <a:mathequals arg1="${count}" arg2="3"/>
+            <mathequals arg1="${count}" arg2="3"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test3c">
       <!-- failOnError set to true, verify build fails if subtask fails -->
-      <a:var name="count" value="0"/>
-      <a:try>
-         <a:repeat count="3" interval="1" failonerror="yes">
-            <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      <var name="count" value="0"/>
+      <try>
+         <repeat count="3" interval="1" failonerror="yes">
+            <math result="count" operand1="${count}" operand2="1" operation="+"/>
             <fail/>
-         </a:repeat>
-      </a:try>
-      <a:assert>
+         </repeat>
+      </try>
+      <assert>
          <bool>
-            <a:mathequals arg1="${count}" arg2="1"/>
+            <mathequals arg1="${count}" arg2="1"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test4a">
       <!-- property name set, value not set, verify property is set to true when task
            is complete -->
-      <a:var name="count" value="0"/>
-      <a:repeat count="1" interval="1" property="test4a_property">
-         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      <var name="count" value="0"/>
+      <repeat count="1" interval="1" property="test4a_property">
+         <math result="count" operand1="${count}" operand2="1" operation="+"/>
          <fail/>
-      </a:repeat>
-      <a:assert>
+      </repeat>
+      <assert>
          <bool>
             <istrue value="${test4a_property}"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test4b">
       <!-- property ame set, value set to a specific value, verify property is set to
            specific value when task is complete -->
-      <a:var name="count" value="0"/>
-      <a:repeat count="1" interval="1" property="test4b_property" value="good">
-         <a:math result="count" operand1="${count}" operand2="1" operation="+"/>
+      <var name="count" value="0"/>
+      <repeat count="1" interval="1" property="test4b_property" value="good">
+         <math result="count" operand1="${count}" operand2="1" operation="+"/>
          <fail/>
-      </a:repeat>
-      <a:assert name="test4b_property" value="good"/>
+      </repeat>
+      <assert name="test4b_property" value="good"/>
    </target>
 
    <target name="test5">
       <property name="call_count" value="0"/>
-      <a:limit seconds="5" failonerror="true">
-         <a:repeat count="-1" interval="1">
-            <a:until>
-               <a:contains property="log_contents" substring="All tests passed 4 times." />
-            </a:until>
+      <limit seconds="5" failonerror="true">
+         <repeat count="-1" interval="1">
+            <until>
+               <contains property="log_contents" substring="All tests passed 4 times." />
+            </until>
 
             <echo>read log</echo>
-            <a:new>
-               <a:call target="readLog"/>
-            </a:new>
+            <new>
+               <call target="readLog"/>
+            </new>
             <echo>${call_count} - ${log_contents}</echo>
 
-         </a:repeat>
-      </a:limit>
+         </repeat>
+      </limit>
    </target>
 
    <target name="readLog">
-      <a:unset name="log_contents"/>
-      <a:new>
-         <a:math result="call_count" operand1="${call_count}" operand2="1" operation="+" datatype="int"/>
+      <unset name="log_contents"/>
+      <new>
+         <math result="call_count" operand1="${call_count}" operand2="1" operation="+" datatype="int"/>
          <property name="log_contents" value="All tests passed ${call_count} times."/>
-      </a:new>
+      </new>
    </target>
 
 

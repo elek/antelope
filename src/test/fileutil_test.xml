@@ -1,4 +1,4 @@
-<project name="fileutil_test" basedir="."  xmlns:a="antlib:ise.antelope.tasks">
+<project name="fileutil_test" basedir="."  >
 
    <description>
       Tests for the FileUtil task.

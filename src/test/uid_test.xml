@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<project name="uid_test" basedir="." default="test1" >
+   <description>
+        build file to test the UID task
+   </description>
+
+   <target name="test1">
+      <uid name="uid_1"/>
+      <uid name="uid_2" int="yes"/>
+      <echo>uid_1 = ${uid_1}</echo>
+      <echo>uid_2 = ${uid_2}</echo>
+      <assert message="uids are the same and should not be.">
+         <bool>
+            <not>
+               <equals arg1="${uid_1}" arg2="${uid_2}"/>
+            </not>
+         </bool>
+      </assert>
+   </target>
+   
+   <target name="test2">
+      <uid name="uid_3" int="yes"/>
+      <uid name="uid_4" int="yes"/>
+      <assert message="uids are the same and should not be.">
+         <bool>
+            <not>
+               <mathequals arg1="${uid_3}" arg2="${uid_4}"/>
+            </not>
+         </bool>
+      </assert>
+   </target>
+
+   
+</project>

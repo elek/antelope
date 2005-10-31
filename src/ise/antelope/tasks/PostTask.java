@@ -79,6 +79,8 @@ import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.TaskContainer;
 
+import ise.antelope.tasks.typedefs.Prop;
+
 /**
  * This task does an http post. Name/value pairs for the post can be set in
  * either or both of two ways, by nested Prop elements and/or by a file

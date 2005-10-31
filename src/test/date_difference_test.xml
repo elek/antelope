@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="date_difference_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+<project name="date_difference_test" basedir="." default="test1" >
    <description>
         test build file for the date difference condition
         
@@ -8,43 +8,43 @@
 
    
    <target name="test1">
-      <a:assert message="Difference between dates is not 60 days.">
+      <assert message="Difference between dates is not 60 days.">
          <bool>
             <datedifference datetime1="2005-09-09 14:58:36" datetime2="2005-07-11 14:58:36" format="yyyy-MM-dd HH:mm:ss" value="60" unit="day"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test2">
-      <a:assert message="Difference between hours is not 12.">
+      <assert message="Difference between hours is not 12.">
          <bool>
             <timedifference datetime1="22:58:36" datetime2="10:58:36" format="HH:mm:ss" value="12" unit="hour"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
    
    <target name="test3">
-      <a:assert message="Difference between years is not 25.">
+      <assert message="Difference between years is not 25.">
          <bool>
             <timedifference datetime1="2005" datetime2="2030" format="yyyy" value="25" unit="year"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test4">
-      <a:assert message="Difference between minutes is not 120.">
+      <assert message="Difference between minutes is not 120.">
          <bool>
             <timedifference datetime1="01:00:00" datetime2="03:00:00" format="hh:mm:ss" value="120" unit="minute"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="test5">
-      <a:assert message="Difference between seconds is not 7200.">
+      <assert message="Difference between seconds is not 7200.">
          <bool>
             <timedifference datetime1="01:00:00" datetime2="03:00:00" format="hh:mm:ss" value="7200" unit="second"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
    
 

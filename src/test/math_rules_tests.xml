@@ -1,0 +1,163 @@
+<project name="math_rules_tests" basedir="." default="suite" 
+   >
+   
+   <target name="test7.0">
+      <!-- test additive identity -->
+      <math result="a" datatype="int">
+         <op op="+">
+            <num value="4"/>
+            <num value="0"/>
+         </op>
+      </math>
+      <assert name="a" value="4" message="failed additive identity test"/>
+   </target>
+  
+   <target name="test7.1">
+      <!-- test commutivity of addition -->
+      <math result="a" datatype="int">
+         <op op="+">
+            <num value="4"/>
+            <num value="2"/>
+         </op>
+      </math>
+      <math result="b" datatype="int">
+         <op op="+">
+            <num value="2"/>
+            <num value="4"/>
+         </op>
+      </math>
+      <assert name="a" value="${b}" message="failed commutivity of addition test"/>
+   </target>
+  
+   <target name="test7.2">
+      <!-- test associative principle of addition -->
+      <math result="a" datatype="int">
+         <op op="+">
+            <num value="2"/>
+            <op op="+">
+               <num value="4"/>
+               <num value="2"/>
+            </op>
+         </op>
+      </math>
+      <math result="b" datatype="int">
+         <op op="+">
+            <op op="+">
+               <num value="2"/>
+               <num value="4"/>
+            </op>
+            <num value="2"/>
+         </op>
+      </math>
+      <assert name="a" value="${b}" message="failed associativity test"/>
+   </target>
+  
+   <target name="test8.0">
+      <!-- test multiplicative identity -->
+      <math result="a" datatype="int">
+         <op op="*">
+            <num value="4"/>
+            <num value="1"/>
+         </op>
+      </math>
+      <assert name="a" value="4" message="failed multiplicative identity test"/>
+   </target>
+  
+   <target name="test8.1">
+      <!-- test commutivity of multiplication -->
+      <math result="a" datatype="int">
+         <op op="*">
+            <num value="4"/>
+            <num value="21"/>
+         </op>
+      </math>
+      <math result="b" datatype="int">
+         <op op="*">
+            <num value="21"/>
+            <num value="4"/>
+         </op>
+      </math>
+      <assert name="a" value="${b}" message="failed commutivity of multiplication test"/>
+   </target>
+  
+   <target name="test8.2">
+      <!-- test associative principle of multiplication -->
+      <math result="a" datatype="int">
+         <op op="*">
+            <num value="2"/>
+            <op op="*">
+               <num value="4"/>
+               <num value="2"/>
+            </op>
+         </op>
+      </math>
+      <math result="b" datatype="int">
+         <op op="*">
+            <op op="*">
+               <num value="4"/>
+               <num value="2"/>
+            </op>
+            <num value="2"/>
+         </op>
+      </math>
+      <assert name="a" value="${b}" message="failed associative principle of multiplication test"/>
+   </target>
+  
+   <target name="test8.3">
+      <!-- test distributive principle of multiplication -->
+      <math result="a" datatype="int">
+         <op op="*">
+            <num value="3"/>
+            <op op="+">
+               <num value="4"/>
+               <num value="2"/>
+            </op>
+         </op>
+      </math>
+      <math result="b" datatype="int">
+         <op op="+">
+            <op op="*">
+               <num value="4"/>
+               <num value="3"/>
+            </op>
+            <op op="*">
+               <num value="2"/>
+               <num value="3"/>
+            </op>
+         </op>
+      </math>
+      <assert name="a" value="${b}" message="failed distributive principle of multiplication test"/>
+   </target>
+   
+   <target name="test9">
+      <!-- the triangle inequality: abs(a + b) <= abs(a) + abs(b) -->
+      <math result="lhs">
+         <op op="abs">
+            <op op="+">
+               <num value="4"/>
+               <num value="-6"/>
+            </op>
+         </op>
+      </math>
+      <math result="rhs">
+         <op op="+">
+            <op op="abs">
+               <num value="4"/>
+            </op>
+            <op op="abs">
+               <num value="-6"/>
+            </op>
+         </op>
+      </math>
+      <assert message="failed triangle inequality">
+         <bool>
+            <or>
+               <islessthan arg1="${lhs}" arg2="${rhs}"/>
+               <equals arg1="${lhs}" arg2="${rhs}"/>
+            </or>
+         </bool>
+      </assert>
+   </target>
+   
+   
+</project>

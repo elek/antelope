@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="split_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+<project name="split_test" basedir="." default="test1" >
    <description>
         build file to test the SplitTask task
    </description>
@@ -11,15 +11,15 @@
 
    <target name="test1" depends="clean">
       <property name="prop1" value="ABCDE"/>
-      <a:split property="prop1" bytes="1" outputdir="${out_dir}"/>
-      <a:fileutil file="${out_dir}" property="file_count">
+      <split property="prop1" bytes="1" outputdir="${out_dir}"/>
+      <fileutil file="${out_dir}" property="file_count">
          <filecount/>
-      </a:fileutil>
-      <a:assert message="Expected 5 files, got ${file_count}">
+      </fileutil>
+      <assert message="Expected 5 files, got ${file_count}">
          <bool>
             <mathequals arg1="5" arg2="${file_count}"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <!--
@@ -30,45 +30,45 @@
       <property name="ant.jar" value="${ant.library.dir}/ant.jar"/>
       <available property="ant.jar.available" file="${ant.jar}"/>
       
-      <a:if name="ant.jar.available" value="true">
+      <if name="ant.jar.available" value="true">
          <!-- ant.jar generally runs around 1MB in size, so split into 100000 byte pieces -->
-         <a:unset name="piece_size"/>
+         <unset name="piece_size"/>
          <property name="piece_size" value="100000"/>
-         <a:split file="${ant.jar}" bytes="${piece_size}" outputdir="${out_dir}" prefix="ant.jar"/>
+         <split file="${ant.jar}" bytes="${piece_size}" outputdir="${out_dir}" prefix="ant.jar"/>
          
          <!-- count the parts -->
-         <a:fileutil file="${out_dir}" property="file_count">
+         <fileutil file="${out_dir}" property="file_count">
             <filecount/>
-         </a:fileutil>
+         </fileutil>
          
          <!-- calculate how many parts there should be -->
-         <a:fileutil file="${ant.jar}" property="ant_size">
-            <a:filelength/>
-         </a:fileutil>
-         <a:math result="split_size">
+         <fileutil file="${ant.jar}" property="ant_size">
+            <filelength/>
+         </fileutil>
+         <math result="split_size">
             <op op="ceil">
                <op op="/">
                   <num value="${ant_size}"/>
                   <num value="${piece_size}"/>
                </op>
             </op>
-         </a:math>
+         </math>
          
          <!-- make sure there are the right number of parts -->
-         <a:assert message="Expected ${split_size} files, got ${file_count}">
+         <assert message="Expected ${split_size} files, got ${file_count}">
             <bool>
                <mathequals arg1="${split_size}" arg2="${file_count}"/>
             </bool>
-         </a:assert>
+         </assert>
 
          <!-- sort the filenames of the parts so concat puts them together in
          the right order-->
-         <a:fileutil file="${out_dir}" property="file_list">
+         <fileutil file="${out_dir}" property="file_list">
             <listfiles includepath="no"/>
-         </a:fileutil>
-         <a:stringutil string="${file_list}" property="file_list">
+         </fileutil>
+         <stringutil string="${file_list}" property="file_list">
             <sort/>
-         </a:stringutil>
+         </stringutil>
          
          <!-- put them back together -->
          <concat destfile="${out_dir}/ant.jar" binary="true">
@@ -76,12 +76,12 @@
          </concat>
 
          <!-- make sure the new file is the identical to the original -->
-         <a:assert message="concat did not produce identical file">
+         <assert message="concat did not produce identical file">
             <bool>
                <filesmatch file1="${ant.jar}" file2="${out_dir}/ant.jar"/>
             </bool>
-         </a:assert>
-      </a:if>
+         </assert>
+      </if>
    </target>
 
    <!--
@@ -92,22 +92,22 @@
       <property name="ant.jar" value="${ant.library.dir}/ant.jar"/>
       <available property="ant.jar.available" file="${ant.jar}"/>
       
-      <a:if name="ant.jar.available" value="true">
+      <if name="ant.jar.available" value="true">
          <!-- ant.jar generally runs around 1MB in size, so split into 100k byte pieces -->
-         <a:unset name="piece_size"/>
+         <unset name="piece_size"/>
          <property name="piece_size" value="100k"/>
-         <a:split file="${ant.jar}" size="${piece_size}" outputdir="${out_dir}" prefix="ant.jar"/>
+         <split file="${ant.jar}" size="${piece_size}" outputdir="${out_dir}" prefix="ant.jar"/>
          
          <!-- count the parts -->
-         <a:fileutil file="${out_dir}" property="file_count">
+         <fileutil file="${out_dir}" property="file_count">
             <filecount/>
-         </a:fileutil>
+         </fileutil>
          
          <!-- calculate how many parts there should be -->
-         <a:fileutil file="${ant.jar}" property="ant_size">
+         <fileutil file="${ant.jar}" property="ant_size">
             <filelength/>
-         </a:fileutil>
-         <a:math result="split_size">
+         </fileutil>
+         <math result="split_size">
             <op op="ceil">
                <op op="/">
                   <num value="${ant_size}"/>
@@ -117,23 +117,23 @@
                   </op>
                </op>
             </op>
-         </a:math>
+         </math>
          
          <!-- make sure there are the right number of parts -->
-         <a:assert message="Expected ${split_size} files, got ${file_count}">
+         <assert message="Expected ${split_size} files, got ${file_count}">
             <bool>
                <mathequals arg1="${split_size}" arg2="${file_count}"/>
             </bool>
-         </a:assert>
+         </assert>
 
          <!-- sort the filenames of the parts so concat puts them together in
          the right order-->
-         <a:fileutil file="${out_dir}" property="file_list">
+         <fileutil file="${out_dir}" property="file_list">
             <listfiles includepath="no"/>
-         </a:fileutil>
-         <a:stringutil string="${file_list}" property="file_list">
+         </fileutil>
+         <stringutil string="${file_list}" property="file_list">
             <sort/>
-         </a:stringutil>
+         </stringutil>
          
          <!-- put them back together -->
          <concat destfile="${out_dir}/ant.jar" binary="true">
@@ -141,12 +141,108 @@
          </concat>
 
          <!-- make sure the new file is the identical to the original -->
-         <a:assert message="concat did not produce identical file">
+         <assert message="concat did not produce identical file">
             <bool>
                <filesmatch file1="${ant.jar}" file2="${out_dir}/ant.jar"/>
             </bool>
-         </a:assert>
-      </a:if>
+         </assert>
+      </if>
+   </target>
+   
+   <!--
+      Similar to test 2, but using lines.
+   -->
+   <target name="test4" depends="clean">
+      <!-- make sure Ant's build.xml is available -->
+      <property name="ant.build.xml" value="${ant.home}/build.xml"/>
+      <available property="ant.build.xml.available" file="${ant.build.xml}"/>
+      
+      <if name="ant.build.xml.available" value="true">
+         <!-- Ant's build.xml generally runs around 1700 lines, use 100 lines
+         per file -->
+         <unset name="piece_size"/>
+         <property name="piece_size" value="100"/>
+         <split file="${ant.build.xml}" lines="${piece_size}" outputdir="${out_dir}" prefix="ant.build.xml"/>
+         
+         <!-- count the parts -->
+         <fileutil file="${out_dir}" property="file_count">
+            <filecount/>
+         </fileutil>
+         
+         <!-- calculate how many parts there should be -->
+         <fileutil file="${ant.build.xml}" property="line_count">
+            <linecount/>
+         </fileutil>
+         <math result="split_size">
+            <op op="ceil">
+               <op op="/">
+                  <num value="${line_count}"/>
+                  <num value="${piece_size}"/>
+               </op>
+            </op>
+         </math>
+         
+         <!-- make sure there are the right number of parts -->
+         <assert message="Expected ${split_size} files, got ${file_count}">
+            <bool>
+               <mathequals arg1="${split_size}" arg2="${file_count}"/>
+            </bool>
+         </assert>
+
+         <!-- sort the filenames of the parts so concat puts them together in
+         the right order-->
+         <fileutil file="${out_dir}" property="file_list">
+            <listfiles includepath="no"/>
+         </fileutil>
+         <stringutil string="${file_list}" property="file_list">
+            <sort/>
+         </stringutil>
+         
+         <!-- put them back together -->
+         <concat destfile="${out_dir}/ant.build.xml">
+            <filelist dir="${out_dir}" files="${file_list}"/>
+         </concat>
+
+         <!-- make sure the new file is similar to the original. It may be
+         different since the line separator used in the original may not be
+         the same as the new one. Line count should be the same. -->
+         <fileutil file="${out_dir}/ant.build.xml" property="new_line_count">
+            <linecount/>
+         </fileutil>
+         <assert message="concat did not produce similar file">
+            <bool>
+               <mathequals arg1="${line_count}" arg2="${new_line_count}"/>
+            </bool>
+         </assert>
+         
+         <!-- the original and the new should have the same number of bytes,
+         plus or minus the line count (that is, there could be an extra byte
+         per line in either the original or the new if DOS line enders were 
+         used in one and Unix/Mac line enders in the other) -->
+         <fileutil file="${ant.build.xml}" property="original_length">
+            <filelength/>
+         </fileutil>
+         <fileutil file="${out_dir}/ant.build.xml" property="new_length">
+            <filelength/>
+         </fileutil>
+         <math result="difference">
+            <op op="abs">
+               <op op="-">
+                  <num value="${original_length}"/>
+                  <num value="${new_length}"/>
+               </op>
+            </op>
+         </math>
+         <assert message="File size difference is outside of tolerance.">
+            <bool>
+               <or>
+                  <islessthan arg1="${difference}" arg2="${line_count}"/>
+                  <mathequals arg1="${difference}" arg2="${line_count}"/>
+               </or>
+            </bool>
+         </assert>
+         
+      </if>
    </target>
    
    <!--
@@ -249,7 +345,6 @@
       <delete dir="${out_dir}"/>
    </target>
 
-   <!--
    <target name="tearDown" depends="clean"/>
-   -->
+   
 </project>

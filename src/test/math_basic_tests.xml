@@ -1,0 +1,90 @@
+<project name="math_basic_tests" basedir="." default="suite" 
+   >
+   
+   <target name="test1">
+      <!-- 12 + 6 = 18 -->
+      <var name="op1" value="12"/>
+      <var name="op2" value="6"/>
+      <var name="op" value="+"/>
+      <math result="result" operand1="${op1}"
+              operation="${op}" operand2="${op2}" datatype="int"/>
+      <assert name="result" value="18" message="failed simple add via attributes"/>
+   </target>
+
+   <target name="test2">
+      <!-- (4 + 2) - 2 = 4 -->
+      <math result="a" datatype="int">
+         <op op="-">
+            <op op="+">
+               <num value="4"/>
+               <num value="2"/>
+            </op>
+            <num value="2"/>
+         </op>
+      </math>
+      <assert name="a" value="4" message="failed Matt's test case"/>
+   </target>
+   
+   <target name="test3">
+      <!-- (4 + 2) - (2 + 2) = 2 -->
+      <math result="b" datatype="int">
+         <op op="-">
+            <op op="+">
+               <num value="4"/>
+               <num value="2"/>
+            </op>
+            <op op="+">
+               <num value="2"/>
+               <num value="2"/>
+            </op>
+         </op>
+      </math>
+      <assert name="b" value="2" message="failed additive grouping"/>
+   </target>
+   
+   <target name="test4">
+      <!-- 2 - (4 + 2) = -4 -->
+      <math result="c" datatype="int">
+         <op op="-">
+            <num value="2"/>
+            <op op="+">
+               <num value="4"/>
+               <num value="2"/>
+            </op>
+         </op>
+      </math>
+      <assert name="c" value="-4" message="failed variation of Matt's test case"/>
+   </target>
+   
+   <target name="test5">
+      <!-- variation of 4 + 2 = 6 -->
+      <math result="d" datatype="int">
+         <op op="+">
+            <num value="4"/>
+            <num value="2"/>
+         </op>
+      </math>
+      <assert name="d" value="6" message="failed simple add with nested op"/>
+   </target>
+   
+   <target name="test6">
+      <!-- (4 + 2) * (2 + 2) = 24 -->
+      <math result="b" datatype="double">
+         <op op="*">
+            <op op="+">
+               <num value="4"/>
+               <num value="2"/>
+            </op>
+            <op op="+">
+               <num value="2"/>
+               <num value="2"/>
+            </op>
+         </op>
+      </math>
+      <assert message="failed multiplying additive groups">
+         <bool>
+            <mathequals arg1="${b}" arg2="24"/>
+         </bool>
+      </assert>
+   </target>
+</project>

@@ -1,14 +1,37 @@
-<project name="test" default="test" basedir="." xmlns:a="antlib:ise.antelope.tasks">
+<project name="test" default="test" basedir="." >
 
-    <property name="ant.enable.asserts" value="true"/>
-    
-    <target name="test">
-        <a:assert message="test1 failed">
+   <target name="test" description="Test Assert">
+      <!-- using 'call' and 'try/catch' -->
+      <try>
+         <call target="run"/>
          
-            <bool>
-                <istrue value="false"/>
-            </bool>
-        </a:assert>
-    </target>
+         <catch>
+            <fail message="assert test failed."/>
+         </catch>
+      </try>
+        
+   </target>
+   
+   <!-- ========================================================================
+      Target: set classpath
+   ========================================================================= -->
+   <target name="setClasspath">        
+      <path id="classpathref">
+         <pathelement location="${classes.dir}" />
+         <pathelement path="${java.class.path}"/>
+      </path>
+   </target>
+   
+   <!-- ========================================================================
+      Target: run
+      Runs Antelope as a stand-alone application.
+   ========================================================================= -->
+   <target name="run" 
+           description="Runs assert test."
+           depends="setClasspath">
+      <java classname="ise.antelope.tasks.Assert" fork="true" failonerror="true">
+         <classpath refid="classpathref"/>
+      </java>
+   </target>
     
 </project>

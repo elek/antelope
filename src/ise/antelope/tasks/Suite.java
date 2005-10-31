@@ -10,6 +10,8 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
+import ise.library.ascii.MessageBox;
+
 /**
  * Modeled after the TestSuite provided by jUnit.
  *
@@ -32,6 +34,7 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
     private int totalPassedCount = 0;
     private int totalFailedCount = 0;
     private int totalWarningCount = 0;
+    private Vector failures = new Vector();
 
     // should the results be shown?
     private boolean showSummary = true;
@@ -152,6 +155,15 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
         return totalFailedCount;
     }
     
+    /**
+     * @return   an Enumeration of the failures. Individual elements are Strings
+     *      containing the name of the failed target and the reason why it
+     *      failed.
+     */
+    public Enumeration getFailures() {
+        return failures.elements();
+    }
+
     public int getWarningCount() {
         return totalWarningCount;   
     }
@@ -220,6 +232,9 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
                     totalPassedCount += acc.getPassedCount();
                     totalFailedCount += acc.getFailedCount();
                     totalWarningCount += acc.getWarningCount();
+                    for (Enumeration fen = acc.getFailures(); fen.hasMoreElements(); ) {
+                        failures.add(fen.nextElement());   
+                    }
                 }
             }
             if ( showSummary ) {
@@ -236,21 +251,30 @@ public class Suite extends Task implements TaskContainer, TestStatisticAccumulat
     }
 
     public String getSummary() {
-        StringBuffer sb = new StringBuffer();
+        String title = (name == null ? "Suite" : name ) + " Totals";
+        StringBuffer msg = new StringBuffer();
         String ls = System.getProperty( "line.separator" );
-        if ( name != null && name.length() > 0 ) {
-            sb.append( "++-----------------------------------------++" ).append( ls );
-            sb.append( "++" ).append( ls );
-            sb.append( "++ " ).append( name ).append( ls );
-            sb.append( "++" ).append( ls );
+
+        // log the failures
+        if (failures.size() > 0) {
+            String error_title = "Errors";
+            StringBuffer error_msg = new StringBuffer();
+            Enumeration en = failures.elements();
+            while (en.hasMoreElements()) {
+                error_msg.append((String) en.nextElement()).append(ls);
+            }
+            int box_width = MessageBox.getMaxWidth();
+            MessageBox.setMaxWidth(box_width - 8);
+            msg.append(MessageBox.box(error_title, error_msg));
+            MessageBox.setMaxWidth(box_width);
+            msg.append(ls);
         }
-        sb.append( "++-- Totals -------------------------------++" ).append( ls );
-        sb.append( "++ Total Ran " ).append( totalRanCount ).append( " out of " ).append( totalTestCount ).append( " tests." ).append( ls );
-        sb.append( "++ Total Passed: " ).append( totalPassedCount ).append( ls );
-        sb.append( "++ Total Warnings: " ).append( totalWarningCount ).append( ls );
-        sb.append( "++ Total Failed: " ).append( totalFailedCount ).append( ls );
-        sb.append( "++-----------------------------------------++" ).append( ls );
-        return sb.toString();
+
+        msg.append( "Total Ran:      " ).append( totalRanCount ).append( " out of " ).append( totalTestCount ).append( " tests." ).append( ls );
+        msg.append( "Total Passed:   " ).append( totalPassedCount ).append( ls );
+        msg.append( "Total Warnings: " ).append( totalWarningCount ).append( ls );
+        msg.append( "Total Failed:   " ).append( totalFailedCount ).append( ls );
+        return MessageBox.box(title, msg);
     }
 
     /**

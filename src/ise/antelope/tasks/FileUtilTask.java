@@ -1,6 +1,6 @@
 package ise.antelope.tasks;
 
-import ise.antelope.tasks.typedefs.*;
+import ise.antelope.tasks.typedefs.file.*;
 
 import java.io.File;
 import java.util.*;
@@ -121,6 +121,7 @@ public class FileUtilTask extends Task {
         String value = op.execute(file);
         if (property != null) {
             Unset unset = new Unset();
+            unset.setProject(getProject());
             unset.setName(property);
             unset.execute();
             getProject().setProperty(property, value);

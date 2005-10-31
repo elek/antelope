@@ -65,6 +65,8 @@ import org.apache.tools.ant.taskdefs.ConditionTask;
 import org.apache.tools.ant.taskdefs.condition.*;
 import org.apache.tools.ant.taskdefs.condition.Condition;
 
+import ise.antelope.tasks.condition.*;
+
 /**
  * Wraps a ConditionBase so that the If task can use standard Ant Conditions as
  * its evaluated boolean expression. Wrapping like this means that future

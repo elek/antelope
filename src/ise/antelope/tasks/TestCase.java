@@ -5,6 +5,8 @@ import java.util.*;
 
 import org.apache.tools.ant.*;
 
+import ise.library.ascii.MessageBox;
+
 /**
  * Modeled after the TestCase provided by jUnit, this class is an Ant task that
  * looks through the build file set in the <code>setFile</code> method, calls a
@@ -220,12 +222,7 @@ public class TestCase extends Task implements TestStatisticAccumulator {
 
         if (showOutput) {
             // output start of test
-            StringBuffer sb = new StringBuffer();
-            String ls = System.getProperty("line.separator");
-            sb.append("+-------------------------------------------+").append(ls);
-            sb.append("+ ").append(test_name).append(ls);
-            sb.append("+-------------------------------------------+").append(ls);
-            log(sb.toString());
+            log(MessageBox.box("Starting test: " + test_name));
         }
 
         // get the setUp, tearDown, and test targets
@@ -250,10 +247,8 @@ public class TestCase extends Task implements TestStatisticAccumulator {
         }
 
         // run the setUp target
-        ///log("next execute setUp target");
         if (setUp != null)
             setUp.execute();
-        ///log("done executing setUp target");
 
         // run the test targets
         StringBuffer messages = new StringBuffer();
@@ -287,7 +282,7 @@ public class TestCase extends Task implements TestStatisticAccumulator {
                     ++tests_failed;
                 if (showOutput)
                     log(error + target.getName() + " failed: " + e.getMessage());
-                failures.addElement(error + target.getName() + " failed: " + e.getMessage());
+                failures.addElement(error + test_name + ": " + target.getName() + " failed: " + e.getMessage());
                 if (failOnError)
                     throw new BuildException(e.getMessage());
             }
@@ -320,30 +315,30 @@ public class TestCase extends Task implements TestStatisticAccumulator {
      * @return   The summary value
      */
     public String getSummary() {
-        StringBuffer sb = new StringBuffer();
+        String title = (test_name == null ? "Test" : test_name) + " Results";
+        StringBuffer msg = new StringBuffer();
         String ls = System.getProperty("line.separator");
-        sb.append("+-------------------------------------------+").append(ls);
-        sb.append("+ ").append(test_name).append(ls);
-        sb.append("+-------------------------------------------+").append(ls);
         // log the failures
         if (failures.size() > 0) {
-            sb.append(ls);
-            sb.append("---- Errors ---------------------------------").append(ls);
+            String error_title = "Errors";
+            StringBuffer error_msg = new StringBuffer();
             Enumeration en = failures.elements();
             while (en.hasMoreElements()) {
-                String msg = (String) en.nextElement();
-                sb.append(msg).append(ls);
+                error_msg.append((String) en.nextElement()).append(ls);
             }
+            int box_width = MessageBox.getMaxWidth();
+            MessageBox.setMaxWidth(box_width - 8);
+            msg.append(MessageBox.box(error_title, error_msg));
+            MessageBox.setMaxWidth(box_width);
+            msg.append(ls);
         }
 
         // log the test count info
-        sb.append("---- Results --------------------------------").append(ls);
-        sb.append("Ran ").append(getRanCount()).append(" out of ").append(getTestCaseCount()).append(" tests.").append(ls);
-        sb.append("Passed: ").append(getPassedCount()).append(ls);
-        sb.append("Warning: ").append(getWarningCount()).append(ls);
-        sb.append("Failed: ").append(getFailedCount()).append(ls);
-        sb.append("+-------------------------------------------+").append(ls).append(ls);
-        return sb.toString();
+        msg.append("Ran:     ").append(getRanCount()).append(" out of ").append(getTestCaseCount()).append(" tests.").append(ls);
+        msg.append("Passed:  ").append(getPassedCount()).append(ls);
+        msg.append("Warning: ").append(getWarningCount()).append(ls);
+        msg.append("Failed:  ").append(getFailedCount()).append(ls);
+        return MessageBox.box(title, msg);
     }
 
     /**

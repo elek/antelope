@@ -58,6 +58,8 @@ import org.apache.tools.ant.BuildException;
 import java.util.Vector;
 import java.util.Enumeration;
 
+import ise.antelope.tasks.util.math.*;
+
 /**
  * Provides basic math functions. Simple calculations can be done via attributes
  * only, more complex formulas can be set up via nested Ops.

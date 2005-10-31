@@ -1,0 +1,12 @@
+How to run the tests:
+
+The test files are not meant to be ran on their own.  The tests are to be 
+ran by running antelope_task_test.xml as an Ant build file.  While the 
+individual test files are valid Ant build files, the task definitions are
+loaded in antelope_task_test.xml, not in the individual test files.
+
+To run the tests:
+
+ant -f antelope_task_test.xml
+
+There should be no failed tests.

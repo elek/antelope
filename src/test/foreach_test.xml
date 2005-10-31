@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="foreach_test" basedir="." default="test1" xmlns:a="antlib:ise.antelope.tasks">
+<project name="foreach_test" basedir="." default="test1" >
    <description>
         Test build file for the Foreach task.
         
@@ -11,24 +11,24 @@
 
    <target name="test1">
       <property name="values" value="1, 2, 3"/>
-      <a:foreach values="${values}" property="value" trim="true">
+      <foreach values="${values}" property="value" trim="true">
          <echo>*${value}*</echo>
-         <a:assert>
-            <a:bool>
+         <assert>
+            <bool>
                <isset property="value"/>
-            </a:bool>
-         </a:assert>
-         <a:assert>
-            <a:bool>
-               <a:or>
-                  <a:mathequals arg1="1" arg2="${value}"/>
-                  <a:mathequals arg1="2" arg2="${value}"/>
-                  <a:mathequals arg1="3" arg2="${value}"/>
-               </a:or>
-            </a:bool>
+            </bool>
+         </assert>
+         <assert>
+            <bool>
+               <or>
+                  <mathequals arg1="1" arg2="${value}"/>
+                  <mathequals arg1="2" arg2="${value}"/>
+                  <mathequals arg1="3" arg2="${value}"/>
+               </or>
+            </bool>
             <echo>value = ${value}</echo>
-         </a:assert>
-      </a:foreach>
+         </assert>
+      </foreach>
    </target>
 
 </project>

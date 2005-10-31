@@ -1,5 +1,5 @@
 
-<project name="grep_test" basedir="." xmlns:a="antlib:ise.antelope.tasks">
+<project name="grep_test" basedir=".">
 
    <target name="setUp">
       <property name="in" value="abc def 123456"/>
@@ -14,68 +14,68 @@
    </target>
 
    <target name="testSimpleRegex">
-      <a:grep in="${in}" regex="ef" property="t1"/>
-      <a:assert message="testSimpleRegex failed, expected 'ef', got ${t1}.">
+      <grep in="${in}" regex="ef" property="t1"/>
+      <assert message="testSimpleRegex failed, expected 'ef', got ${t1}.">
          <bool>
             <equals arg1="ef" arg2="${t1}"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="testGroupRegex">
-      <a:grep in="${in}" regex="(abc).*?(ef)" group="2" property="t2"/>
-      <a:assert message="test2 failed, expected 'ef', got '${t2}'">
+      <grep in="${in}" regex="(abc).*?(ef)" group="2" property="t2"/>
+      <assert message="test2 failed, expected 'ef', got '${t2}'">
          <bool>
             <equals arg1="ef" arg2="${t2}"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="testCaseInsensitiveRegex">
-      <a:grep in="${in}" regex="(abc).*?(EF)" caseinsensitive="true" group="2" property="t3"/>
-      <a:assert message="test3 failed, expected 'ef', got '${t3}'">
+      <grep in="${in}" regex="(abc).*?(EF)" caseinsensitive="true" group="2" property="t3"/>
+      <assert message="test3 failed, expected 'ef', got '${t3}'">
          <bool>
             <equals arg1="ef" arg2="${t3}"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
 
    <target name="testMultiLineRegex">
-      <a:grep in="${multi_line_in}" regex=".*?(only)" dotall="true" group="1" property="t4"/>
-      <a:assert message="test4 failed, expected 'only', got '${t4}'">
+      <grep in="${multi_line_in}" regex=".*?(only)" dotall="true" group="1" property="t4"/>
+      <assert message="test4 failed, expected 'only', got '${t4}'">
          <bool>
             <equals arg1="only" arg2="${t4}"/>
          </bool>
-      </a:assert>
+      </assert>
    </target>
    
    <target name="testMultiLineRegex2">
-      <a:unset name="temp.file"/>
+      <unset name="temp.file"/>
       <tempfile property="temp.file"/>
       <echo file="${temp.file}" append="yes">
-CDP_CLIENT_TYPE,EFFECTIVITY_DATE,STATUS,TRANSACTION_FEE_OVERRIDE,CREATED_DATE
+CLIENT_TYPE,EFFECTIVITY_DATE,STATUS,TRANSACTION_FEE,CREATED_DATE
 SELLER,02-JUL-2005,ACTIVE,12,30-JUN-2005
       </echo>
-      <a:unset name="param_adjust"/>
+      <unset name="param_adjust"/>
       <loadfile property="param_adjust" srcFile="${temp.file}"/>
       <echo>${param_adjust}</echo>
       <delete file="${temp.file}"/>
-      <a:grep in="${param_adjust}"
+      <grep in="${param_adjust}"
             regex="((.*?)[,]){6}(.*?)[,]"
             group="2"
             dotall="true"
             property="effectivity_date"/>
-      <a:grep in="${param_adjust}"
+      <grep in="${param_adjust}"
             regex="((.*?)[,]){7}(.*?)[,]"
             group="2"
             dotall="true"
             property="status"/>
-      <a:grep in="${param_adjust}"
+      <grep in="${param_adjust}"
             regex="((.*?)[,]){8}(.*)?"
             group="2"
             dotall="true"
             property="transaction_fee_override"/>
-      <a:grep in="${param_adjust}"
+      <grep in="${param_adjust}"
             regex="(.*?[,])+(.*)$"
             group="2"
             dotall="true"
@@ -84,11 +84,11 @@ SELLER,02-JUL-2005,ACTIVE,12,30-JUN-2005
       <echo>status: ${status}</echo>
       <echo>transaction_fee_override: ${transaction_fee_override}</echo>
       <echo>created_date: ${created_date}</echo>
-      <a:assert message="testMultiLineRegex2 failed, got '${effectivity_date}'">
+      <assert message="testMultiLineRegex2 failed, got '${effectivity_date}'">
          <bool>
             <equals arg1="02-JUL-2005" arg2="${effectivity_date}"/>
          </bool>
-      </a:assert>
+      </assert>
    
    </target>
 </project>

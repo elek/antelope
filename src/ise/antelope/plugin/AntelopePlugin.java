@@ -145,6 +145,7 @@ public class AntelopePlugin extends EBPlugin implements Constants {
 
         Shell.registerShell( SHELL );
         //Log.log( Log.DEBUG, AntelopePlugin.class, ">>>>>>>>>> AntelopePlugin.start()" );
+        
 
     }
 
@@ -365,7 +366,8 @@ public class AntelopePlugin extends EBPlugin implements Constants {
         }
 
     }
-
+    
+    
     /**
      * @return a list of targets found in the given build file.   
      */

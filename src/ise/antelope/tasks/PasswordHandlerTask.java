@@ -6,6 +6,8 @@ import org.apache.tools.ant.BuildException;
 
 import org.apache.tools.ant.Task;
 
+import ise.antelope.tasks.password.*;
+
 /**
  * Copyright 2003
  *

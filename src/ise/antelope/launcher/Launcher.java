@@ -30,7 +30,7 @@ import java.util.Iterator;
 
 /**
  *  This is a launcher for Ant.
- * danson: modified to launch Antelope
+ * danson: modified to launch Antelope, this code originally came from Ant.
  *
  * @since Ant 1.6
  */
@@ -73,7 +73,7 @@ public class Launcher {
             System.exit( 1 );
         }
     }
-
+    
     public void runApp( String[] args ) throws LaunchException, MalformedURLException {
         Args myargs = init( args );
         URL[] jars = myargs.getURLs();
@@ -102,6 +102,40 @@ public class Launcher {
         }
         catch ( Throwable t ) {
             t.printStackTrace();
+        }
+    }
+
+    public Class loadApp( String[] args, File jar_file ) throws LaunchException, MalformedURLException {
+        System.out.println("========= Launcher, loadApp");
+        if (jar_file != null)
+            jarFile = jar_file;
+        Args myargs = init( args );
+        URL[] jars = myargs.getURLs();
+        String[] newArgs = myargs.getArgs();
+
+        // now update the class.path property
+        StringBuffer baseClassPath = new StringBuffer( System.getProperty( "java.class.path" ) );
+        if ( baseClassPath.charAt( baseClassPath.length() - 1 ) == File.pathSeparatorChar ) {
+            baseClassPath.setLength( baseClassPath.length() - 1 );
+        }
+
+        for ( int i = 0; i < jars.length; ++i ) {
+            baseClassPath.append( File.pathSeparatorChar );
+            baseClassPath.append( Locator.fromURI( jars[ i ].toString() ) );
+        }
+
+        System.setProperty( "java.class.path", baseClassPath.toString() );
+
+        // set up a class loader for the application and set the context classloader
+        try {
+            SubJarClassLoader loader = new SubJarClassLoader( jars );
+            Thread.currentThread().setContextClassLoader( loader );
+            System.out.println("========= Launcher, loadApp almost done");
+            return loader.loadClass( "ise.antelope.common.AntelopePanel", true );
+        }
+        catch(Exception e) {
+            e.printStackTrace();   
+            return null;
         }
     }
 
@@ -141,6 +175,9 @@ public class Launcher {
      *            cannot be created.
      */
     private Args init( String[] args ) throws LaunchException, MalformedURLException {
+        System.out.println("===== Launcher, init starting");
+        if (args == null)
+            args = new String[]{};
         String antHomeProperty = AntUtils.getAntHome();
         File antHome = null;
 
@@ -167,8 +204,10 @@ public class Launcher {
         if ( sourceJar == null ) {
             sourceJar = Locator.getClassSource( ise.antelope.launcher.Launcher.class );
         }
-        if ( sourceJar == null )
+        if ( sourceJar == null ) {
+            System.out.println("===== Launcher, init is returning null, couldn't find sourceJar");
             return null;
+        }
         File jarDir = sourceJar.getParentFile();
         ///URL[] appJars = Locator.getLocationURLs( jarDir );
         URL[] appJars = Locator.getLocationURLs( sourceJar );
@@ -260,6 +299,7 @@ public class Launcher {
         Args myargs = new Args();
         myargs.setURLs( jars );
         myargs.setArgs( newArgs );
+        System.out.println("===== Launcher, init complete");
         return myargs;
     }
 
