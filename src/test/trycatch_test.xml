@@ -1,0 +1,86 @@
+
+<project name="trycatch_test" default="test" basedir="." >
+
+   <target name="test1">
+      <unset name="in_catch"/>
+      <try>
+         <fail message="not a test failure, should see this message"/>
+         <catch>
+            <property name="in_catch" value="true"/>
+         </catch>
+      </try>
+      <assert name="in_catch" value="true" message="test 1 failed."/>
+   </target>
+
+   <target name="test2">
+      <unset name="in_catch"/>
+      <unset name="in_finally"/>
+      <try>
+         <fail message="not a test failure, should see this message"/>
+         <catch>
+            <property name="in_catch" value="true"/>
+         </catch>
+         <finally>
+            <property name="in_finally" value="true"/>
+         </finally>
+      </try>
+      <assert name="in_catch" value="true" message="test 2 failed."/>
+      <assert name="in_finally" value="true" message="test 2 failed."/>
+   </target>
+
+   <target name="test3">
+      <unset name="in_try"/>
+      <try>
+         <property name="in_try" value="true"/>
+      </try>
+      <assert name="in_try" value="true" message="test 3 failed."/>
+   </target>
+
+   <target name="test4">
+      <unset name="in_try"/>
+      <unset name="in_finally"/>
+      <try>
+         <property name="in_try" value="true"/>
+         <finally>
+            <property name="in_finally" value="true"/>
+         </finally>
+      </try>
+      <assert name="in_try" value="true" message="test 4 failed."/>
+      <assert name="in_finally" value="true" message="test 4 failed."/>
+   </target>
+
+   <target name="test5">
+      <unset name="in_try1"/>
+      <unset name="in_try2"/>
+      <unset name="in_catch"/>
+      <try break="false">
+         <property name="in_try1" value="true"/>
+         <fail message="not a test failure, should see this message"/>
+         <property name="in_try2" value="true"/>
+         <catch>
+            <property name="in_catch" value="true"/>
+         </catch>
+      </try>
+      <assert name="in_try1" value="true" message="test 5 failed."/>
+      <assert name="in_try2" value="true" message="test 5 failed."/>
+      <assert name="in_catch" value="true" message="test 5 failed."/>
+   </target>
+   
+   <target name="test6">
+      <unset name="stacktrace"/>
+      <try messageproperty="stacktrace">
+         <fail message="not a test failure, should see this message"/>
+      </try>
+      <assert name="stacktrace" exists="true" message="test 6 failed"/>
+   </target>
+
+   <target name="test7">
+      <unset name="stacktrace"/>
+      <try stacktraceproperty="stacktrace">
+         <fail message="not a test failure, should see this message"/>
+      </try>
+      <assert name="stacktrace" exists="true" message="test 7 failed"/>
+   </target>
+   
+   
+</project>
