@@ -1,6 +1,16 @@
 Antelope Change Log
 Version: @@build.num@@
 
+3.2.10:
+o fixed Trace so it works more or less correctly.
+o removed use of the Constant Interface Anti-pattern.
+o rearranged packaging of tasks to better organize typdefs.
+
+3.2.9:
+Oct 2005
+o added Hostname, Split, Repeat, FileUtil, and StringUtil tasks.
+o some general cleanup.
+
 3.2.6:
 11 Jun 2005
 o added Grep, Suite, and TestCase Ant tasks.

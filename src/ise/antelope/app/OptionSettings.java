@@ -10,7 +10,7 @@ import java.awt.Color;
  * Bad, Dale, bad. You have another class named OptionSettings in the 
  * ise.antelope.common package.
  */
-public class OptionSettings implements Constants {
+public class OptionSettings {
 
    private boolean caretBlinks = true;
    private Color caretColor = Color.black;
@@ -134,50 +134,50 @@ public class OptionSettings implements Constants {
     * load default settings from preferences    
     */
    public void load() {
-      caretBlinks = PREFS.getBoolean( CARET_BLINKS, true );
-      caretColor = new Color( PREFS.getInt( CARET_COLOR, 0 ) );
+      caretBlinks = Constants.PREFS.getBoolean( Constants.CARET_BLINKS, true );
+      caretColor = new Color( Constants.PREFS.getInt( Constants.CARET_COLOR, 0 ) );
 
-      electricScroll = PREFS.getInt( ELECTRIC_SCROLL_HEIGHT, 3 );
-      useSmartHome = PREFS.getBoolean( SMART_HOME, false );
-      tabSize = PREFS.getInt( TAB_SIZE, 4 );
+      electricScroll = Constants.PREFS.getInt( Constants.ELECTRIC_SCROLL_HEIGHT, 3 );
+      useSmartHome = Constants.PREFS.getBoolean( Constants.SMART_HOME, false );
+      tabSize = Constants.PREFS.getInt( Constants.TAB_SIZE, 4 );
 
-      selectionColor = new Color( PREFS.getInt( SELECTION_COLOR, 0xccccff ) );
+      selectionColor = new Color( Constants.PREFS.getInt( Constants.SELECTION_COLOR, 0xccccff ) );
 
-      lineHighlightColor = new Color( PREFS.getInt( LINE_HILITE_COLOR, 0xe0e0e0 ) );
-      showLineHighlight = PREFS.getBoolean( SHOW_LINE_HILITE, true );
+      lineHighlightColor = new Color( Constants.PREFS.getInt( Constants.LINE_HILITE_COLOR, 0xe0e0e0 ) );
+      showLineHighlight = Constants.PREFS.getBoolean( Constants.SHOW_LINE_HILITE, true );
 
-      bracketHighlightColor = new Color( PREFS.getInt( BRACKET_HILITE_COLOR, 0 ) );
-      showBracketHighlight = PREFS.getBoolean( SHOW_BRACKET_HILITE, false );
+      bracketHighlightColor = new Color( Constants.PREFS.getInt( Constants.BRACKET_HILITE_COLOR, 0 ) );
+      showBracketHighlight = Constants.PREFS.getBoolean( Constants.SHOW_BRACKET_HILITE, false );
 
-      eolMarkerColor = new Color( PREFS.getInt( EOL_MARKER_COLOR, 0x009999 ) );
-      showEolMarker = PREFS.getBoolean( SHOW_EOL_MARKER, false );
+      eolMarkerColor = new Color( Constants.PREFS.getInt( Constants.EOL_MARKER_COLOR, 0x009999 ) );
+      showEolMarker = Constants.PREFS.getBoolean( Constants.SHOW_EOL_MARKER, false );
       
-      useNativeLF = PREFS.getBoolean(USE_NATIVE_LF, false);
+      useNativeLF = Constants.PREFS.getBoolean(Constants.USE_NATIVE_LF, false);
    }
 
    /**
     * save default settings to preferences    
     */
    public void save() {
-      PREFS.putBoolean( CARET_BLINKS, getCaretBlinks() );
-      PREFS.putInt( CARET_COLOR, getCaretColor().getRGB() );
+      Constants.PREFS.putBoolean( Constants.CARET_BLINKS, getCaretBlinks() );
+      Constants.PREFS.putInt( Constants.CARET_COLOR, getCaretColor().getRGB() );
 
-      PREFS.putInt( ELECTRIC_SCROLL_HEIGHT, getElectricScroll() );
-      PREFS.putBoolean( SMART_HOME, useSmartHome() );
-      PREFS.putInt( TAB_SIZE, tabSize );
+      Constants.PREFS.putInt( Constants.ELECTRIC_SCROLL_HEIGHT, getElectricScroll() );
+      Constants.PREFS.putBoolean( Constants.SMART_HOME, useSmartHome() );
+      Constants.PREFS.putInt( Constants.TAB_SIZE, tabSize );
 
-      PREFS.putInt( SELECTION_COLOR, getSelectionColor().getRGB() );
+      Constants.PREFS.putInt( Constants.SELECTION_COLOR, getSelectionColor().getRGB() );
 
-      PREFS.putInt( LINE_HILITE_COLOR, getLineHighlightColor().getRGB() );
-      PREFS.putBoolean( SHOW_LINE_HILITE, showLineHighlight() );
+      Constants.PREFS.putInt( Constants.LINE_HILITE_COLOR, getLineHighlightColor().getRGB() );
+      Constants.PREFS.putBoolean( Constants.SHOW_LINE_HILITE, showLineHighlight() );
 
-      PREFS.putInt( BRACKET_HILITE_COLOR, getBracketHighlightColor().getRGB() );
-      PREFS.putBoolean( SHOW_BRACKET_HILITE, showBracketHighlight() );
+      Constants.PREFS.putInt( Constants.BRACKET_HILITE_COLOR, getBracketHighlightColor().getRGB() );
+      Constants.PREFS.putBoolean( Constants.SHOW_BRACKET_HILITE, showBracketHighlight() );
 
-      PREFS.putInt( EOL_MARKER_COLOR, getEolMarkerColor().getRGB() );
-      PREFS.putBoolean( SHOW_EOL_MARKER, showEolMarker() );
+      Constants.PREFS.putInt( Constants.EOL_MARKER_COLOR, getEolMarkerColor().getRGB() );
+      Constants.PREFS.putBoolean( Constants.SHOW_EOL_MARKER, showEolMarker() );
       
-      PREFS.putBoolean( USE_NATIVE_LF, getUseNativeLookAndFeel());
+      Constants.PREFS.putBoolean( Constants.USE_NATIVE_LF, getUseNativeLookAndFeel());
    }
 
    /**

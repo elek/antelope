@@ -248,7 +248,7 @@
    <!--
       Similar to test 2, but using lines.
    -->
-   <target name="test4" depends="clean">
+   <target name="test5" depends="clean">
       <!-- make sure Ant's build.xml is available -->
       <property name="ant.build.xml" value="${ant.home}/build.xml"/>
       <available property="ant.build.xml.available" file="${ant.build.xml}"/>

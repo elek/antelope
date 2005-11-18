@@ -13,6 +13,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.tools.ant.*;
+import org.apache.tools.ant.taskdefs.*;
+import org.apache.tools.ant.types.*;
 import org.xml.sax.Attributes;
 
 import org.xml.sax.InputSource;
@@ -52,9 +54,12 @@ public class SAXNodeHandler extends DefaultHandler {
 
     // need to update occassionally as new versions of Ant are released.
     // these lists are from Ant 1.6.1.
-    private List taskList = Arrays.asList(new String[]{"propertyfile", "importtypelib", "vsscheckin", "sql", "cvspass", "p4reopen", "csc", "dirname", "wlrun", "p4label", "p4revert", "replaceregexp", "get", "jjtree", "sleep", "jarlib-display", "dependset", "zip", "patch", "jspc", "style", "test", "tstamp", "unwar", "vsshistory", "icontract", "cvschangelog", "p4submit", "ccmcheckin", "p4change", "bzip2", "sync", "p4delete", "vssadd", "javadoc", "p4integrate", "translate", "signjar", "cclock", "chown", "vajload", "jarlib-available", "WsdlToDotnet", "buildnumber", "jpcovmerge", "ejbjar", "war", "rename", "sequential", "serverdeploy", "property", "subant", "move", "ildasm", "copydir", "cccheckin", "ccunlock", "wljspc", "fixcrlf", "sosget", "pathconvert", "record", "p4sync", "exec", "ccmklabel", "p4edit", "manifest", "maudit", "antlr", "netrexxc", "jpcovreport", "execon", "ccmcheckout", "ant", "xmlvalidate", "xslt", "p4resolve", "iplanet-ejbc", "ccmcheckintask", "gzip", "native2ascii", "ccrmtype", "starteam", "ear", "input", "presetdef", "rmic", "checksum", "mail", "loadfile", "vsscheckout", "stylebook", "soscheckin", "mimemail", "stlabel", "gunzip", "concat", "cab", "touch", "parallel", "splash", "antcall", "ccmkbl", "cccheckout", "typedef", "p4have", "filter", "xmlproperty", "import", "copy", "jsharpc", "symlink", "antstructure", "script", "ccmcreatetask", "rpm", "delete", "replace", "mmetrics", "attrib", "waitfor", "untar", "loadproperties", "available", "echoproperties", "chgrp", "vajexport", "bunzip2", "whichresource", "copyfile", "p4labelsync", "vsscreate", "macrodef", "ejbc", "unjar", "vbc", "wsdltodotnet", "mkdir", "condition", "cvs", "tempfile", "junitreport", "taskdef", "echo", "ccupdate", "java", "vsslabel", "renameext", "basename", "javadoc2", "tar", "vsscp", "vajimport", "p4fstat", "setproxy", "p4counter", "wlstop", "ilasm", "soscheckout", "apply", "ccuncheckout", "jarlib-resolve", "jlink", "cvstagdiff", "javacc", "chmod", "pvcs", "jarlib-manifest", "jar", "ccmklbtype", "sound", "scriptdef", "defaultexcludes", "mparse", "blgenclient", "uptodate", "jjdoc", "genkey", "javah", "ccmreconfigure", "fail", "unzip", "javac", "p4add", "jpcoverage", "soslabel", "depend", "vssget", "deltree", "ddcreator"});
-    private List typeList = Arrays.asList(new String[]{"patternset", "assertions", "propertyset", "filterset", "libfileset", "filterreader", "scriptfilter", "extension", "fileset", "dirset", "filelist", "filterchain", "path", "classfileset", "selector", "xmlcatalog", "description", "mapper", "zipfileset", "substitution", "extensionSet", "regexp"});
-
+    // -- shouldn't need these any longer, the lists are now loaded from the default.properties
+    // files from Ant itself, see the init() method.
+    private List default_taskList = Arrays.asList(new String[]{"propertyfile", "importtypelib", "vsscheckin", "sql", "cvspass", "p4reopen", "csc", "dirname", "wlrun", "p4label", "p4revert", "replaceregexp", "get", "jjtree", "sleep", "jarlib-display", "dependset", "zip", "patch", "jspc", "style", "test", "tstamp", "unwar", "vsshistory", "icontract", "cvschangelog", "p4submit", "ccmcheckin", "p4change", "bzip2", "sync", "p4delete", "vssadd", "javadoc", "p4integrate", "translate", "signjar", "cclock", "chown", "vajload", "jarlib-available", "WsdlToDotnet", "buildnumber", "jpcovmerge", "ejbjar", "war", "rename", "sequential", "serverdeploy", "property", "subant", "move", "ildasm", "copydir", "cccheckin", "ccunlock", "wljspc", "fixcrlf", "sosget", "pathconvert", "record", "p4sync", "exec", "ccmklabel", "p4edit", "manifest", "maudit", "antlr", "netrexxc", "jpcovreport", "execon", "ccmcheckout", "ant", "xmlvalidate", "xslt", "p4resolve", "iplanet-ejbc", "ccmcheckintask", "gzip", "native2ascii", "ccrmtype", "starteam", "ear", "input", "presetdef", "rmic", "checksum", "mail", "loadfile", "vsscheckout", "stylebook", "soscheckin", "mimemail", "stlabel", "gunzip", "concat", "cab", "touch", "parallel", "splash", "antcall", "ccmkbl", "cccheckout", "typedef", "p4have", "filter", "xmlproperty", "import", "copy", "jsharpc", "symlink", "antstructure", "script", "ccmcreatetask", "rpm", "delete", "replace", "mmetrics", "attrib", "waitfor", "untar", "loadproperties", "available", "echoproperties", "chgrp", "vajexport", "bunzip2", "whichresource", "copyfile", "p4labelsync", "vsscreate", "macrodef", "ejbc", "unjar", "vbc", "wsdltodotnet", "mkdir", "condition", "cvs", "tempfile", "junitreport", "taskdef", "echo", "ccupdate", "java", "vsslabel", "renameext", "basename", "javadoc2", "tar", "vsscp", "vajimport", "p4fstat", "setproxy", "p4counter", "wlstop", "ilasm", "soscheckout", "apply", "ccuncheckout", "jarlib-resolve", "jlink", "cvstagdiff", "javacc", "chmod", "pvcs", "jarlib-manifest", "jar", "ccmklbtype", "sound", "scriptdef", "defaultexcludes", "mparse", "blgenclient", "uptodate", "jjdoc", "genkey", "javah", "ccmreconfigure", "fail", "unzip", "javac", "p4add", "jpcoverage", "soslabel", "depend", "vssget", "deltree", "ddcreator"});
+    private List default_typeList = Arrays.asList(new String[]{"patternset", "assertions", "propertyset", "filterset", "libfileset", "filterreader", "scriptfilter", "extension", "fileset", "dirset", "filelist", "filterchain", "path", "classfileset", "selector", "xmlcatalog", "description", "mapper", "zipfileset", "substitution", "extensionSet", "regexp"});
+    private List taskList = default_taskList;
+    private List typeList = default_typeList;
 
     /** Constructor */
     public SAXNodeHandler() {
@@ -79,6 +84,30 @@ public class SAXNodeHandler extends DefaultHandler {
     public SAXNodeHandler(File in, boolean imported) {
         infile = in;
         isImported = imported;
+        init();
+    }
+    
+    private void init() {
+        // this seems like a slick idea, and works when running as an app, but
+        // not as a plugin.  Maybe a jEdit classloader issue???
+        try {
+            Properties p = new Properties();
+            p.load(getClass().getClassLoader().getResourceAsStream("org/apache/tools/ant/taskdefs/defaults.properties"));
+            taskList = Collections.list(p.propertyNames());
+        }
+        catch(Exception e) {
+            //System.out.println("Error loading Ant task list, using defaults.");
+            taskList = default_taskList;
+        }
+        try {
+            Properties p = new Properties();
+            p.load(getClass().getClassLoader().getResourceAsStream("org/apache/tools/ant/types/defaults.properties"));
+            typeList = Collections.list(p.propertyNames());
+        }
+        catch(Exception e) {
+            //System.out.println("Error loading Ant type list, using defaults.");
+            typeList = default_typeList;
+        }
     }
 
     /**

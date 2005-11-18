@@ -8,7 +8,7 @@ import org.apache.tools.ant.Project;
 /**
  * Loads options per build file and general application settings.
  */
-public class OptionSettings implements Constants {
+public class OptionSettings {
 
    private Preferences _prefs;
    private boolean _save_before_run = true;
@@ -41,56 +41,56 @@ public class OptionSettings implements Constants {
 
    public void load( File build_file ) {
       // application settings
-      _show_button_text = PREFS.getBoolean( SHOW_BUTTON_TEXT, false );
-      _show_button_icon = PREFS.getBoolean( SHOW_BUTTON_ICON, true );
+      _show_button_text = Constants.PREFS.getBoolean( Constants.SHOW_BUTTON_TEXT, false );
+      _show_button_icon = Constants.PREFS.getBoolean( Constants.SHOW_BUTTON_ICON, true );
 
       // per build file settings
       if ( build_file != null ) {
          int hashCode = build_file.hashCode();
-         _prefs = PREFS.node( String.valueOf( hashCode ) );
-         _save_before_run = _prefs.getBoolean( SAVE_BEFORE_RUN, true );
-         _show_all_targets = _prefs.getBoolean( SHOW_ALL_TARGETS, true );
-         _show_targets_wo_desc = _prefs.getBoolean( SHOW_TARGETS_WO_DESC, false );
-         _show_targets_w_dot = _prefs.getBoolean( SHOW_TARGETS_W_DOTS, false );
-         _show_targets_w_dash = _prefs.getBoolean( SHOW_TARGETS_W_DASH, false );
-         _sort_targets = _prefs.getBoolean(SORT_TARGETS, true);
-         _message_level = _prefs.getInt( MSG_LEVEL, Project.MSG_INFO );
-         _show_build_events = _prefs.getBoolean( SHOW_BUILD_EVENTS, true );
-         _show_target_events = _prefs.getBoolean( SHOW_TARGET_EVENTS, false );
-         _show_task_events = _prefs.getBoolean( SHOW_TASK_EVENTS, false );
-         _show_log_messages = _prefs.getBoolean( SHOW_LOG_MSGS, true );
-         _use_error_parsing = _prefs.getBoolean( USE_ERROR_PARSING, true );
-         _show_performance_output = _prefs.getBoolean( SHOW_PERFORMANCE_OUTPUT, false );
-         _auto_reload = _prefs.getBoolean( AUTO_RELOAD, true );
-         _multiple_targets = _prefs.getBoolean( MULTIPLE_TARGETS, false );
-         _target_list = _prefs.get( TARGET_LIST, "" );
+         _prefs = Constants.PREFS.node( String.valueOf( hashCode ) );
+         _save_before_run = _prefs.getBoolean( Constants.SAVE_BEFORE_RUN, true );
+         _show_all_targets = _prefs.getBoolean( Constants.SHOW_ALL_TARGETS, true );
+         _show_targets_wo_desc = _prefs.getBoolean( Constants.SHOW_TARGETS_WO_DESC, false );
+         _show_targets_w_dot = _prefs.getBoolean( Constants.SHOW_TARGETS_W_DOTS, false );
+         _show_targets_w_dash = _prefs.getBoolean( Constants.SHOW_TARGETS_W_DASH, false );
+         _sort_targets = _prefs.getBoolean(Constants.SORT_TARGETS, true);
+         _message_level = _prefs.getInt( Constants.MSG_LEVEL, Project.MSG_INFO );
+         _show_build_events = _prefs.getBoolean( Constants.SHOW_BUILD_EVENTS, true );
+         _show_target_events = _prefs.getBoolean( Constants.SHOW_TARGET_EVENTS, false );
+         _show_task_events = _prefs.getBoolean( Constants.SHOW_TASK_EVENTS, false );
+         _show_log_messages = _prefs.getBoolean( Constants.SHOW_LOG_MSGS, true );
+         _use_error_parsing = _prefs.getBoolean( Constants.USE_ERROR_PARSING, true );
+         _show_performance_output = _prefs.getBoolean( Constants.SHOW_PERFORMANCE_OUTPUT, false );
+         _auto_reload = _prefs.getBoolean( Constants.AUTO_RELOAD, true );
+         _multiple_targets = _prefs.getBoolean( Constants.MULTIPLE_TARGETS, false );
+         _target_list = _prefs.get( Constants.TARGET_LIST, "" );
       }
    }
 
    public void save() {
       // application settings
-      PREFS.putBoolean( SHOW_BUTTON_TEXT, _show_button_text );
-      PREFS.putBoolean( SHOW_BUTTON_ICON, _show_button_icon );
+      Constants.PREFS.putBoolean( Constants.SHOW_BUTTON_TEXT, _show_button_text );
+      Constants.PREFS.putBoolean( Constants.SHOW_BUTTON_ICON, _show_button_icon );
 
       // per build file settings
       if ( _prefs == null )
          return ;
-      _prefs.putBoolean( SAVE_BEFORE_RUN, _save_before_run );
-      _prefs.putInt( MSG_LEVEL, _message_level );
-      _prefs.putBoolean( SHOW_BUILD_EVENTS, _show_build_events );
-      _prefs.putBoolean( SHOW_LOG_MSGS, _show_log_messages );
-      _prefs.putBoolean( SHOW_PERFORMANCE_OUTPUT, _show_performance_output );
-      _prefs.putBoolean( SHOW_TARGET_EVENTS, _show_target_events );
-      _prefs.putBoolean( SHOW_ALL_TARGETS, _show_all_targets );
-      _prefs.putBoolean( SHOW_TARGETS_W_DASH, _show_targets_w_dash );
-      _prefs.putBoolean( SHOW_TARGETS_W_DOTS, _show_targets_w_dot );
-      _prefs.putBoolean( SHOW_TARGETS_WO_DESC, _show_targets_wo_desc );
-      _prefs.putBoolean( SORT_TARGETS, _sort_targets);
-      _prefs.putBoolean( SHOW_TASK_EVENTS, _show_task_events );
-      _prefs.putBoolean( USE_ERROR_PARSING, _use_error_parsing );
-      _prefs.putBoolean( AUTO_RELOAD, _auto_reload );
-      _prefs.putBoolean( MULTIPLE_TARGETS, _multiple_targets );
-      _prefs.put( TARGET_LIST, _target_list );
+      _prefs.putBoolean( Constants.SAVE_BEFORE_RUN, _save_before_run );
+      _prefs.putInt( Constants.MSG_LEVEL, _message_level );
+      _prefs.putBoolean( Constants.SHOW_BUILD_EVENTS, _show_build_events );
+      _prefs.putBoolean( Constants.SHOW_LOG_MSGS, _show_log_messages );
+      _prefs.putBoolean( Constants.SHOW_PERFORMANCE_OUTPUT, _show_performance_output );
+      _prefs.putBoolean( Constants.SHOW_TARGET_EVENTS, _show_target_events );
+      _prefs.putBoolean( Constants.SHOW_ALL_TARGETS, _show_all_targets );
+      _prefs.putBoolean( Constants.SHOW_TARGETS_W_DASH, _show_targets_w_dash );
+      _prefs.putBoolean( Constants.SHOW_TARGETS_W_DOTS, _show_targets_w_dot );
+      _prefs.putBoolean( Constants.SHOW_TARGETS_WO_DESC, _show_targets_wo_desc );
+      _prefs.putBoolean( Constants.SORT_TARGETS, _sort_targets);
+      _prefs.putBoolean( Constants.SHOW_TASK_EVENTS, _show_task_events );
+      _prefs.putBoolean( Constants.USE_ERROR_PARSING, _use_error_parsing );
+      _prefs.putBoolean( Constants.AUTO_RELOAD, _auto_reload );
+      _prefs.putBoolean( Constants.MULTIPLE_TARGETS, _multiple_targets );
+      _prefs.put( Constants.TARGET_LIST, _target_list );
       
    }
 

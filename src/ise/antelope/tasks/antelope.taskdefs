@@ -33,6 +33,7 @@ uid=ise.antelope.tasks.UIDTask
 unset=ise.antelope.tasks.Unset
 until=ise.antelope.tasks.BooleanConditionTask
 var=ise.antelope.tasks.Variable
+xmlprop=ise.antelope.tasks.XmlPropertyTask
 
 prop=ise.antelope.tasks.typedefs.Prop
 

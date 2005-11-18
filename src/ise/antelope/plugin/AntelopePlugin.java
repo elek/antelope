@@ -75,7 +75,7 @@ import org.apache.tools.ant.ProjectHelper;
  *
  * @version   $Revision$
  */
-public class AntelopePlugin extends EBPlugin implements Constants {
+public class AntelopePlugin extends EBPlugin {
     /**
      * This name will be used to reference the properties for the plugin.
      */
@@ -477,7 +477,7 @@ public class AntelopePlugin extends EBPlugin implements Constants {
             if ( rtn == JFileChooser.APPROVE_OPTION ) {
                 File f = chooser.getSelectedFile();
                 ant_home = f.getAbsolutePath();
-                PREFS.put( ANT_HOME, ant_home );
+                Constants.PREFS.put( Constants.ANT_HOME, ant_home );
             }
             else {
                 JOptionPane.showMessageDialog( null, "No Ant, no Antelope. Sorry.", "Error", JOptionPane.ERROR_MESSAGE );

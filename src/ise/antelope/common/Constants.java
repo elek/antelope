@@ -57,7 +57,7 @@ import java.util.prefs.Preferences;
  * string value of the hashCode for the build file File object. Within these nodes are
  * stored the individual settings per build file.
  */
-public interface Constants {
+public class Constants {
    
    public final static String NL = System.getProperty("line.separator");
    

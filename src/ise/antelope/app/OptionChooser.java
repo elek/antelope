@@ -32,7 +32,7 @@ import javax.swing.border.EmptyBorder;
  *
  * Also supports switching to native look and feel.
  */
-public class OptionChooser extends JDialog implements Constants {
+public class OptionChooser extends JDialog {
 
     private JFrame parent = null;
     private JEditTextArea editor;

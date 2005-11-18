@@ -63,7 +63,7 @@ import org.apache.tools.ant.*;
  * @author    Dale Anson, danson@germane-software.com
  * @version   $Revision$
  */
-public class AntelopeOptions extends JPanel implements Constants {
+public class AntelopeOptions extends JPanel {
 
    /**
     * Description of the Field

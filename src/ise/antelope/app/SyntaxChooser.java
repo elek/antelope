@@ -67,7 +67,7 @@ import javax.swing.border.EmptyBorder;
  * Allows the user to select a style for a particular syntax type.
  * @author Dale Anson, Dec 2002
  */
-public class SyntaxChooser extends JDialog implements Constants {
+public class SyntaxChooser extends JDialog {
 
     private JButton ok_btn;
     private StyleButton comment1_disp = null;

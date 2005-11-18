@@ -18,7 +18,7 @@ import ise.antelope.common.OptionSettings;
  * Talk about being unoriginal!
  * @author Dale Anson
  */
-public class AntelopeOptions implements OptionPane, Constants {
+public class AntelopeOptions implements OptionPane {
    private JPanel panel = null;
    private View view = null;
 
@@ -74,8 +74,8 @@ public class AntelopeOptions implements OptionPane, Constants {
                            return ;
                         }
                         ant_home = f.getAbsolutePath();
-                        PREFS.put( ANT_HOME, ant_home );
-                        PREFS.flush();
+                        Constants.PREFS.put( Constants.ANT_HOME, ant_home );
+                        Constants.PREFS.flush();
                         ant_home_field.setText( ant_home );
                         JOptionPane.showMessageDialog( null, "You must restart jEdit for this change to take effect.", "Warning", JOptionPane.WARNING_MESSAGE );
                      }

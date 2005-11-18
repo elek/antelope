@@ -2,32 +2,32 @@
 <project name="antelope_task_test" default="test" basedir=".">
 
    <typedef resource="ise/antelope/tasks/antelope.taskdefs"
-         classpath="${ant.library.dir}/AntelopeTasks_3.2.9.jar"/>
+         classpath="${ant.library.dir}/AntelopeTasks_3.2.10.jar"/>
 
    <target name="test">
       <suite name="Antelope Task Tests">
          <testcase file="assert_test.xml"/>
-         <testcase file="call_test.xml" enabled="true"/>
-         <testcase file="contains_test.xml" enabled="true"/>
-         <testcase file="date_before_test.xml" enabled="true"/>
-         <testcase file="date_difference_test.xml" enabled="true"/>
-         <testcase file="foreach_test.xml" enabled="true"/>
-         <testcase file="grep_test.xml" enabled="true"/>
+         <testcase file="call_test.xml" enabled="false"/>
+         <testcase file="contains_test.xml" enabled="false"/>
+         <testcase file="date_before_test.xml" enabled="false"/>
+         <testcase file="date_difference_test.xml" enabled="false"/>
+         <testcase file="foreach_test.xml" enabled="false"/>
+         <testcase file="grep_test.xml" enabled="false"/>
          <testcase file="limittest.xml" enabled="false"/>
-         <suite name="Math Tests">
+         <suite name="Math Tests" enabled="false">
             <testcase file="math_basic_tests.xml"/>
             <testcase file="math_rules_tests.xml"/>
             <testcase file="math_precision_tests.xml"/>
          </suite>
-         <testcase file="new_test.xml" enabled="true"/>
-         <testcase file="repeattest.xml" enabled="true"/>
-         <testcase file="unset_test.xml" enabled="true"/>
-         <testcase file="split_test.xml" enabled="true"/>
+         <testcase file="new_test.xml" enabled="false"/>
+         <testcase file="repeattest.xml" enabled="false"/>
+         <testcase file="unset_test.xml" enabled="false"/>
+         <testcase file="split_test.xml" enabled="false"/>
          <testcase file="stringutil_test.xml" enabled="true"/>
-         <testcase file="uid_test.xml" enabled="true"/>
-         <testcase file="trycatch_test.xml" enabled="true"/>
-         <testcase file="hostname_test.xml" enabled="true"/>
-         <testcase file="password_test.xml" enabled="true"/>
+         <testcase file="uid_test.xml" enabled="false"/>
+         <testcase file="trycatch_test.xml" enabled="false"/>
+         <testcase file="hostname_test.xml" enabled="false"/>
+         <testcase file="password_test.xml" enabled="false"/>
       </suite>
    </target>
 

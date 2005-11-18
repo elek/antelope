@@ -81,10 +81,15 @@ public class TraceTarget {
      * @return        String describing the execution path of the target.
      */
     public String traceTarget( Target target ) {
+        if (target == null)
+            throw new IllegalArgumentException("target is null");
         StringBuffer sb = new StringBuffer();
         sb.append( "Tracing target: " + target.getName() ).append( NL );
         sb.append( "Legend: <target>[task]" ).append( NL ).append( NL );
         sb.append( "<" + target.getName() + ">" ).append( NL );
+        Target implicit_target = getImplicitTarget(target);
+        if (implicit_target != null)
+            sb.append( doTrace(implicit_target));
         sb.append( doTrace( target ) );
         sb.append( "</" + target.getName() + ">" ).append( NL ).append( NL );
         sb.append( "Done tracing target: " + target.getName() ).append( NL ).append( NL );
@@ -137,22 +142,22 @@ public class TraceTarget {
         for ( int i = 0; i < tasks.length; i++ ) {
             Task task = tasks[ i ];
             String task_name = task.getTaskName();
+            Hashtable attrs = null;
+            RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
+            try {
+                if ( AntUtils.getAntVersion() >= 1.60 ) {
+                    attrs = rc.getAttributeMap();
+                }
+                else {
+                    attrs = makeMap( ( AttributeList ) PrivilegedAccessor.invokeMethod( rc, "getAttributes", null ) );
+                }
+            }
+            catch ( Exception e ) {
+                e.printStackTrace();
+                continue;
+            }
             if ( task_name.equals( "antcall" ) ) {
                 // trace the target specified by an 'antcall' task
-                Hashtable attrs = null;
-                RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-                try {
-                    if ( AntUtils.getAntVersion() >= 1.60 ) {
-                        attrs = rc.getAttributeMap();
-                    }
-                    else {
-                        attrs = makeMap( ( AttributeList ) PrivilegedAccessor.invokeMethod( rc, "getAttributes", null ) );
-                    }
-                }
-                catch ( Exception e ) {
-                    e.printStackTrace();
-                    continue;
-                }
                 if ( attrs != null ) {
                     Iterator it = attrs.keySet().iterator();
                     while ( it.hasNext() ) {
@@ -181,19 +186,6 @@ public class TraceTarget {
                 // trace the target specified by an 'ant' task. This target will
                 // be in another build file, so need to grab the build file name
                 // and directory and load a project from it.
-                Hashtable attrs = null;
-                RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-                try {
-                    if ( AntUtils.getAntVersion() >= 1.60 ) {
-                        attrs = ( Hashtable ) PrivilegedAccessor.getValue( rc, "getAttributeMap" );
-                    }
-                    else {
-                        attrs = makeMap( ( AttributeList ) PrivilegedAccessor.getValue( rc, "getAttributes" ) );
-                    }
-                }
-                catch ( Exception e ) {
-                    // ignored
-                }
                 String antfile = "build.xml";
                 String dir = "";
                 String subtarget = "";
@@ -232,20 +224,8 @@ public class TraceTarget {
             }
             else if ( task_name.equals( "property" ) ) {
                 String property_name = "";
-                String property_value = "";
-                Hashtable attrs = null;
-                RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-                try {
-                    if ( AntUtils.getAntVersion() >= 1.60 ) {
-                        attrs = ( Hashtable ) PrivilegedAccessor.getValue( rc, "getAttributeMap" );
-                    }
-                    else {
-                        attrs = makeMap( ( AttributeList ) PrivilegedAccessor.getValue( rc, "getAttributes" ) );
-                    }
-                }
-                catch ( Exception e ) {
-                    // ignored
-                }
+                String property_value = "value";
+                String property_type = "";
                 if (attrs != null) {
                     Iterator it = attrs.keySet().iterator();
                     while ( it.hasNext() ) {
@@ -253,32 +233,29 @@ public class TraceTarget {
                         String value = ( String ) attrs.get( name );
                         if ( name.equals( "name" ) )
                             property_name = value;
-                        if ( name.equals( "value" ) )
+                        if ( name.equals( "value" ) ){
                             property_value = parseValue( value, target.getProject() );
+                            property_type = "value";
+                        }
+                        if ( name.equals("location") ){
+                            property_value = parseValue( value, target.getProject() );
+                            property_type = "location";
+                        }
+                        if ( name.equals("refid") ){
+                            property_value = parseValue( value, target.getProject() );
+                            property_type = "refid";
+                        }
                     }
                 }
                 target.getProject().setProperty( property_name, property_value );
                 sb.append( "<" ).append( target.getName() ).append( ">" );
                 sb.append( "[" ).append( task_name ).append( " name=" ).append( quote( property_name ) );
-                sb.append( "," ).append( " value=" );
+                sb.append( ", " ).append(property_type).append("=" );
                 sb.append( quote( property_value ) ).append( "]" ).append( NL );
             }
             else {
                 sb.append( "<" ).append( target.getName() ).append( ">" );
                 sb.append( "[" ).append( task_name );
-                Hashtable attrs = null;
-                RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
-                try {
-                    if ( AntUtils.getAntVersion() >= 1.60 ) {
-                        attrs = ( Hashtable ) PrivilegedAccessor.getValue( rc, "getAttributeMap" );
-                    }
-                    else {
-                        attrs = makeMap( ( AttributeList ) PrivilegedAccessor.getValue( rc, "getAttributes" ) );
-                    }
-                }
-                catch ( Exception e ) {
-                    // ignored
-                }
                 if (attrs != null) {
                     Iterator it = attrs.keySet().iterator();
                     while ( it.hasNext() ) {
@@ -352,6 +329,9 @@ public class TraceTarget {
             sb.append( val );
             index = matcher.end();
         }
+        if (found)
+            sb.append(value.substring(index));
+        
         if ( !found ) {
             // could be a reference
             Object val = refs.get( value );
@@ -422,6 +402,12 @@ public class TraceTarget {
      */
     public List getUnknownProperties() {
         return unknown_properties;
+    }
+    
+    private Target getImplicitTarget(Target target) {
+        Project project = target.getProject();
+        Hashtable targets = project.getTargets();
+        return (Target)targets.get("");
     }
 
     /**

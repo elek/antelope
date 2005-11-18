@@ -37,6 +37,7 @@
    <taskdef name="unset" classname="ise.antelope.tasks.Unset"/>
    <taskdef name="until" classname="ise.antelope.tasks.BooleanConditionTask"/>
    <taskdef name="var" classname="ise.antelope.tasks.Variable"/>
+   <taskdef name="xmlprop" classname="ise.antelope.tasks.XmlPropertyTask"/>
    
    <typedef name="prop" classname="ise.antelope.tasks.typedefs.Prop"/>
    

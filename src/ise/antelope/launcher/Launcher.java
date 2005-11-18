@@ -93,7 +93,7 @@ public class Launcher {
         System.setProperty( "java.class.path", baseClassPath.toString() );
 
         // set up a class loader for the application and start the app
-        SubJarClassLoader loader = new SubJarClassLoader( jars );
+        SubJarClassLoader loader = new SubJarClassLoader( jars, getClass().getClassLoader() );
         Thread.currentThread().setContextClassLoader( loader );
         try {
             URL url = getClass().getResource( MAIN_JAR );
@@ -128,7 +128,7 @@ public class Launcher {
 
         // set up a class loader for the application and set the context classloader
         try {
-            SubJarClassLoader loader = new SubJarClassLoader( jars );
+            SubJarClassLoader loader = new SubJarClassLoader( jars, getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader );
             System.out.println("========= Launcher, loadApp almost done");
             return loader.loadClass( "ise.antelope.common.AntelopePanel", true );
@@ -149,7 +149,7 @@ public class Launcher {
             Args myargs = init( new String[] {} );
             if ( myargs == null )
                 return null;
-            SubJarClassLoader loader = new SubJarClassLoader( myargs.getURLs() );
+            SubJarClassLoader loader = new SubJarClassLoader( myargs.getURLs(), getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader );
             String filename = jar_file.toString();
             filename = filename.replaceAll( "[ ]", "%20" );

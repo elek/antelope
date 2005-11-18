@@ -196,6 +196,20 @@
       </assert>
    </target>
    
+   <target name="test12a">
+      <property name="prop12a" value="a b c d e f g h a b c d e f g h"/>
+      <echo>prop12a before = ${prop12a}</echo>
+      <stringutil string="${prop12a}" property="prop12a">
+         <sort/>
+      </stringutil>
+      <echo>prop12a sorted = ${prop12a}</echo>
+      <assert message="prop12a, expected 'a,a,b,b,c,c,d,d,e,e,f,f,g,g,h,h', got ${prop12a}">
+         <bool>
+            <equals arg1="a,a,b,b,c,c,d,d,e,e,f,f,g,g,h,h" arg2="${prop12a}"/>
+         </bool>
+      </assert>
+   </target>
+   
    <target name="test13">
       <property name="prop13" value="Character boundary analysis allows users to interact with characters as they expect to, for example, when moving the cursor around through a text string. Character boundary analysis provides correct navigation of through character strings, regardless of how the character is stored. For example, an accented character might be stored as a base character and a diacritical mark. What users consider to be a character can differ between languages."/>
       <echo>prop13 before = ${prop13}</echo>
@@ -215,6 +229,24 @@
          <messagebox title="Short Message"/>
       </stringutil>
       <echo>prop13b in messagebox with title:${line.separator}${prop13b}</echo>
+      
+   </target>
+   
+   <target name="test14">
+      <property name="Prop1" value="/my/folder/"/>
+      <property name="Prop2" value="/my other folder/"/>
+      <property name="Prop3" value="${Prop1}${Prop2}"/>
+      <stringutil string="${Prop2}" property="Prop2">
+          <substring beginindex="1"/>
+      </stringutil>
+      <echo>${Prop1}${Prop2}</echo>
+      
+      <stringutil string="${Prop3}" property="Prop3">
+         <replace regex="//" replacement="/"/>
+      </stringutil>
+      <echo>${Prop3}</echo>
+
+      
       
    </target>
 

@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.regex.*;
 import ise.library.Os;
 
-public class AntUtils implements Constants {
+public class AntUtils {
     private static double ant_version = 0;
 
     /**
@@ -54,7 +54,7 @@ public class AntUtils implements Constants {
         String ant_home = null;
         try {
             // first, check stored settings
-            ant_home = PREFS.get( ANT_HOME, null );
+            ant_home = Constants.PREFS.get( Constants.ANT_HOME, null );
             if ( ant_home != null ) {
                 File ant_dir = new File( ant_home );
                 if ( ant_dir.exists() ) {
@@ -66,7 +66,7 @@ public class AntUtils implements Constants {
             if ( ant_home != null ) {
                 File ant_dir = new File( ant_home );
                 if ( ant_dir.exists() ) {
-                    PREFS.put( ANT_HOME, ant_home );
+                    Constants.PREFS.put( Constants.ANT_HOME, ant_home );
                     return ant_home;
                 }
             }
@@ -76,7 +76,7 @@ public class AntUtils implements Constants {
             if ( ant_home != null ) {
                 File ant_dir = new File( ant_home );
                 if ( ant_dir.exists() ) {
-                    PREFS.put( ANT_HOME, ant_home );
+                    Constants.PREFS.put( Constants.ANT_HOME, ant_home );
                     return ant_home;
                 }
             }

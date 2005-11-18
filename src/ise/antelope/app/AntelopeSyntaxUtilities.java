@@ -7,8 +7,7 @@ import ise.antelope.app.jedit.SyntaxUtilities;
 import ise.antelope.app.jedit.SyntaxStyle;
 import ise.antelope.app.jedit.Token;
 
-public class AntelopeSyntaxUtilities extends SyntaxUtilities
-    implements Constants {
+public class AntelopeSyntaxUtilities extends SyntaxUtilities {
 
     public static SyntaxStyle getDefaultSyntaxStyle( int id ) {
         SyntaxStyle[] defaults = getDefaultSyntaxStyles();
@@ -39,98 +38,98 @@ public class AntelopeSyntaxUtilities extends SyntaxUtilities
         SyntaxStyle[] styles = new SyntaxStyle[ Token.ID_COUNT ];
 
         styles[ Token.COMMENT1 ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( COMMENT1 + COLOR, defaults[ Token.COMMENT1 ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( COMMENT1 + ITALIC, defaults[ Token.COMMENT1 ].isItalic() ),
-                    PREFS.getBoolean( COMMENT1 + BOLD, defaults[ Token.COMMENT1 ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.COMMENT1 + Constants.COLOR, defaults[ Token.COMMENT1 ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.COMMENT1 + Constants.ITALIC, defaults[ Token.COMMENT1 ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.COMMENT1 + Constants.BOLD, defaults[ Token.COMMENT1 ].isBold() ) );
 
         styles[ Token.COMMENT2 ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( COMMENT2 + COLOR, defaults[ Token.COMMENT2 ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( COMMENT2 + ITALIC, defaults[ Token.COMMENT2 ].isItalic() ),
-                    PREFS.getBoolean( COMMENT2 + BOLD, defaults[ Token.COMMENT2 ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.COMMENT2 + Constants.COLOR, defaults[ Token.COMMENT2 ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.COMMENT2 + Constants.ITALIC, defaults[ Token.COMMENT2 ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.COMMENT2 + Constants.BOLD, defaults[ Token.COMMENT2 ].isBold() ) );
 
         styles[ Token.KEYWORD1 ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( KEYWORD1 + COLOR, defaults[ Token.KEYWORD1 ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( KEYWORD1 + ITALIC, defaults[ Token.KEYWORD1 ].isItalic() ),
-                    PREFS.getBoolean( KEYWORD1 + BOLD, defaults[ Token.KEYWORD1 ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.KEYWORD1 + Constants.COLOR, defaults[ Token.KEYWORD1 ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.KEYWORD1 + Constants.ITALIC, defaults[ Token.KEYWORD1 ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.KEYWORD1 + Constants.BOLD, defaults[ Token.KEYWORD1 ].isBold() ) );
 
         styles[ Token.KEYWORD2 ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( KEYWORD2 + COLOR, defaults[ Token.KEYWORD2 ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( KEYWORD2 + ITALIC, defaults[ Token.KEYWORD2 ].isItalic() ),
-                    PREFS.getBoolean( KEYWORD2 + BOLD, defaults[ Token.KEYWORD2 ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.KEYWORD2 + Constants.COLOR, defaults[ Token.KEYWORD2 ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.KEYWORD2 + Constants.ITALIC, defaults[ Token.KEYWORD2 ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.KEYWORD2 + Constants.BOLD, defaults[ Token.KEYWORD2 ].isBold() ) );
 
         styles[ Token.KEYWORD3 ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( KEYWORD3 + COLOR, defaults[ Token.KEYWORD3 ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( KEYWORD3 + ITALIC, defaults[ Token.KEYWORD3 ].isItalic() ),
-                    PREFS.getBoolean( KEYWORD3 + BOLD, defaults[ Token.KEYWORD3 ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.KEYWORD3 + Constants.COLOR, defaults[ Token.KEYWORD3 ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.KEYWORD3 + Constants.ITALIC, defaults[ Token.KEYWORD3 ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.KEYWORD3 + Constants.BOLD, defaults[ Token.KEYWORD3 ].isBold() ) );
 
         styles[ Token.LITERAL1 ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( LITERAL1 + COLOR, defaults[ Token.LITERAL1 ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( LITERAL1 + ITALIC, defaults[ Token.LITERAL1 ].isItalic() ),
-                    PREFS.getBoolean( LITERAL1 + BOLD, defaults[ Token.LITERAL1 ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.LITERAL1 + Constants.COLOR, defaults[ Token.LITERAL1 ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.LITERAL1 + Constants.ITALIC, defaults[ Token.LITERAL1 ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.LITERAL1 + Constants.BOLD, defaults[ Token.LITERAL1 ].isBold() ) );
 
         styles[ Token.LITERAL2 ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( LITERAL2 + COLOR, defaults[ Token.LITERAL2 ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( LITERAL2 + ITALIC, defaults[ Token.LITERAL2 ].isItalic() ),
-                    PREFS.getBoolean( LITERAL2 + BOLD, defaults[ Token.LITERAL2 ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.LITERAL2 + Constants.COLOR, defaults[ Token.LITERAL2 ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.LITERAL2 + Constants.ITALIC, defaults[ Token.LITERAL2 ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.LITERAL2 + Constants.BOLD, defaults[ Token.LITERAL2 ].isBold() ) );
 
         styles[ Token.LABEL ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( LABEL + COLOR, defaults[ Token.LABEL ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( LABEL + ITALIC, defaults[ Token.LABEL ].isItalic() ),
-                    PREFS.getBoolean( LABEL + BOLD, defaults[ Token.LABEL ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.LABEL + Constants.COLOR, defaults[ Token.LABEL ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.LABEL + Constants.ITALIC, defaults[ Token.LABEL ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.LABEL + Constants.BOLD, defaults[ Token.LABEL ].isBold() ) );
 
         styles[ Token.OPERATOR ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( OPERATOR + COLOR, defaults[ Token.OPERATOR ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( OPERATOR + ITALIC, defaults[ Token.OPERATOR ].isItalic() ),
-                    PREFS.getBoolean( OPERATOR + BOLD, defaults[ Token.OPERATOR ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.OPERATOR + Constants.COLOR, defaults[ Token.OPERATOR ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.OPERATOR + Constants.ITALIC, defaults[ Token.OPERATOR ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.OPERATOR + Constants.BOLD, defaults[ Token.OPERATOR ].isBold() ) );
 
         styles[ Token.INVALID ] = new SyntaxStyle(
-                    new Color( PREFS.getInt( INVALID + COLOR, defaults[ Token.INVALID ].getColor().getRGB() ) ),
-                    PREFS.getBoolean( INVALID + ITALIC, defaults[ Token.INVALID ].isItalic() ),
-                    PREFS.getBoolean( INVALID + BOLD, defaults[ Token.INVALID ].isBold() ) );
+                    new Color( Constants.PREFS.getInt( Constants.INVALID + Constants.COLOR, defaults[ Token.INVALID ].getColor().getRGB() ) ),
+                    Constants.PREFS.getBoolean( Constants.INVALID + Constants.ITALIC, defaults[ Token.INVALID ].isItalic() ),
+                    Constants.PREFS.getBoolean( Constants.INVALID + Constants.BOLD, defaults[ Token.INVALID ].isBold() ) );
 
         return styles;
     }
 
     public static void storeStyles( SyntaxStyle[] styles ) {
 
-        PREFS.putInt( COMMENT1 + COLOR, styles[ Token.COMMENT1 ].getColor().getRGB() );
-        PREFS.putBoolean( COMMENT1 + ITALIC, styles[ Token.COMMENT1 ].isItalic() );
-        PREFS.putBoolean( COMMENT1 + BOLD, styles[ Token.COMMENT1 ].isBold() );
+        Constants.PREFS.putInt( Constants.COMMENT1 + Constants.COLOR, styles[ Token.COMMENT1 ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.COMMENT1 + Constants.ITALIC, styles[ Token.COMMENT1 ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.COMMENT1 + Constants.BOLD, styles[ Token.COMMENT1 ].isBold() );
 
-        PREFS.putInt( COMMENT2 + COLOR, styles[ Token.COMMENT2 ].getColor().getRGB() );
-        PREFS.putBoolean( COMMENT2 + ITALIC, styles[ Token.COMMENT2 ].isItalic() );
-        PREFS.putBoolean( COMMENT2 + BOLD, styles[ Token.COMMENT2 ].isBold() );
+        Constants.PREFS.putInt( Constants.COMMENT2 + Constants.COLOR, styles[ Token.COMMENT2 ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.COMMENT2 + Constants.ITALIC, styles[ Token.COMMENT2 ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.COMMENT2 + Constants.BOLD, styles[ Token.COMMENT2 ].isBold() );
 
-        PREFS.putInt( KEYWORD1 + COLOR, styles[ Token.KEYWORD1 ].getColor().getRGB() );
-        PREFS.putBoolean( KEYWORD1 + ITALIC, styles[ Token.KEYWORD1 ].isItalic() );
-        PREFS.putBoolean( KEYWORD1 + BOLD, styles[ Token.KEYWORD1 ].isBold() );
+        Constants.PREFS.putInt( Constants.KEYWORD1 + Constants.COLOR, styles[ Token.KEYWORD1 ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.KEYWORD1 + Constants.ITALIC, styles[ Token.KEYWORD1 ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.KEYWORD1 + Constants.BOLD, styles[ Token.KEYWORD1 ].isBold() );
 
-        PREFS.putInt( KEYWORD2 + COLOR, styles[ Token.KEYWORD2 ].getColor().getRGB() );
-        PREFS.putBoolean( KEYWORD2 + ITALIC, styles[ Token.KEYWORD2 ].isItalic() );
-        PREFS.putBoolean( KEYWORD2 + BOLD, styles[ Token.KEYWORD2 ].isBold() );
+        Constants.PREFS.putInt( Constants.KEYWORD2 + Constants.COLOR, styles[ Token.KEYWORD2 ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.KEYWORD2 + Constants.ITALIC, styles[ Token.KEYWORD2 ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.KEYWORD2 + Constants.BOLD, styles[ Token.KEYWORD2 ].isBold() );
 
-        PREFS.putInt( KEYWORD3 + COLOR, styles[ Token.KEYWORD3 ].getColor().getRGB() );
-        PREFS.putBoolean( KEYWORD3 + ITALIC, styles[ Token.KEYWORD3 ].isItalic() );
-        PREFS.putBoolean( KEYWORD3 + BOLD, styles[ Token.KEYWORD3 ].isBold() );
+        Constants.PREFS.putInt( Constants.KEYWORD3 + Constants.COLOR, styles[ Token.KEYWORD3 ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.KEYWORD3 + Constants.ITALIC, styles[ Token.KEYWORD3 ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.KEYWORD3 + Constants.BOLD, styles[ Token.KEYWORD3 ].isBold() );
 
-        PREFS.putInt( LITERAL1 + COLOR, styles[ Token.LITERAL1 ].getColor().getRGB() );
-        PREFS.putBoolean( LITERAL1 + ITALIC, styles[ Token.LITERAL1 ].isItalic() );
-        PREFS.putBoolean( LITERAL1 + BOLD, styles[ Token.LITERAL1 ].isBold() );
+        Constants.PREFS.putInt( Constants.LITERAL1 + Constants.COLOR, styles[ Token.LITERAL1 ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.LITERAL1 + Constants.ITALIC, styles[ Token.LITERAL1 ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.LITERAL1 + Constants.BOLD, styles[ Token.LITERAL1 ].isBold() );
 
-        PREFS.putInt( LITERAL2 + COLOR, styles[ Token.LITERAL2 ].getColor().getRGB() );
-        PREFS.putBoolean( LITERAL2 + ITALIC, styles[ Token.LITERAL2 ].isItalic() );
-        PREFS.putBoolean( LITERAL2 + BOLD, styles[ Token.LITERAL2 ].isBold() );
+        Constants.PREFS.putInt( Constants.LITERAL2 + Constants.COLOR, styles[ Token.LITERAL2 ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.LITERAL2 + Constants.ITALIC, styles[ Token.LITERAL2 ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.LITERAL2 + Constants.BOLD, styles[ Token.LITERAL2 ].isBold() );
 
-        PREFS.putInt( LABEL + COLOR, styles[ Token.LABEL ].getColor().getRGB() );
-        PREFS.putBoolean( LABEL + ITALIC, styles[ Token.LABEL ].isItalic() );
-        PREFS.putBoolean( LABEL + BOLD, styles[ Token.LABEL ].isBold() );
+        Constants.PREFS.putInt( Constants.LABEL + Constants.COLOR, styles[ Token.LABEL ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.LABEL + Constants.ITALIC, styles[ Token.LABEL ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.LABEL + Constants.BOLD, styles[ Token.LABEL ].isBold() );
+        
+        Constants.PREFS.putInt( Constants.OPERATOR + Constants.COLOR, styles[ Token.OPERATOR ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.OPERATOR + Constants.ITALIC, styles[ Token.OPERATOR ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.OPERATOR + Constants.BOLD, styles[ Token.OPERATOR ].isBold() );
 
-        PREFS.putInt( OPERATOR + COLOR, styles[ Token.OPERATOR ].getColor().getRGB() );
-        PREFS.putBoolean( OPERATOR + ITALIC, styles[ Token.OPERATOR ].isItalic() );
-        PREFS.putBoolean( OPERATOR + BOLD, styles[ Token.OPERATOR ].isBold() );
-
-        PREFS.putInt( INVALID + COLOR, styles[ Token.INVALID ].getColor().getRGB() );
-        PREFS.putBoolean( INVALID + ITALIC, styles[ Token.INVALID ].isItalic() );
-        PREFS.putBoolean( INVALID + BOLD, styles[ Token.INVALID ].isBold() );
+        Constants.PREFS.putInt( Constants.INVALID + Constants.COLOR, styles[ Token.INVALID ].getColor().getRGB() );
+        Constants.PREFS.putBoolean( Constants.INVALID + Constants.ITALIC, styles[ Token.INVALID ].isItalic() );
+        Constants.PREFS.putBoolean( Constants.INVALID + Constants.BOLD, styles[ Token.INVALID ].isBold() );
     }
 }

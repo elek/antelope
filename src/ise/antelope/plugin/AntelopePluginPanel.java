@@ -81,7 +81,7 @@ import ise.library.PrivilegedAccessor;
  *
  * @version   $Revision$
  */
-public class AntelopePluginPanel extends JPanel implements ise.antelope.common.CommonHelper, Constants {
+public class AntelopePluginPanel extends JPanel implements ise.antelope.common.CommonHelper {
 
     private View _view = null;
     private AntelopePanel antelopePanel = null;
@@ -159,7 +159,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                         menu_items.add( mi );
 
                         // get the last open file
-                        String name = Constants.PREFS.get( LAST_OPEN_FILE, null );
+                        String name = Constants.PREFS.get( Constants.LAST_OPEN_FILE, null );
                         File file = null;
                         if ( name != null ) {
                             file = new File( name );
@@ -188,6 +188,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                         // set up the logger
                         _console_handler = new ConsolePluginHandler( AntelopePluginPanel.this );
                         antelopePanel.addLogHandler( _console_handler );
+                        
                         _view.getStatus().setMessageAndClear( "Antelope loaded." );
                     }
                 }

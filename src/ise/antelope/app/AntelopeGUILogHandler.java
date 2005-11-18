@@ -97,7 +97,7 @@ public class AntelopeGUILogHandler extends Handler {
     }
 
     /**
-     *Constructor for the AntelopeGUILogHandler object
+     * Constructor for the AntelopeGUILogHandler object
      *
      * @param use_frame  If true, will show the output in a separate frame.
      */

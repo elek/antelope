@@ -71,7 +71,7 @@ import ise.library.*;
  * @author Dale Anson
  * @version   $Revision$
  */
-public class Antelope extends JFrame implements Constants, CommonHelper {
+public class Antelope extends JFrame implements CommonHelper {
 
     /** Usage  */
     private static String usage = "java ise.antelope.Antelope build_file";
@@ -139,12 +139,12 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         _tabs = new JTabbedPane();
 
         if ( build_file == null ) {
-            String name = Constants.PREFS.get( LAST_OPEN_FILE, null );
+            String name = Constants.PREFS.get( Constants.LAST_OPEN_FILE, null );
             if ( name != null )
                 build_file = new File( name );
         }
         Log.log("next create antelope panel");
-        _antelope_panel = new AntelopePanel( build_file, this, false );
+        _antelope_panel = new AntelopePanel( build_file, new CommonHelperWrapper(this), false );
         Log.log("created antelope panel");
         _antelope_panel.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
@@ -166,9 +166,9 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         contents.add(status, BorderLayout.SOUTH);
         setContentPane( contents );
 
-        String font_family = Constants.PREFS.get( FONT_FAMILY, "Monospaced" );
-        int font_style = Constants.PREFS.getInt( FONT_STYLE, Font.PLAIN );
-        int font_size = Constants.PREFS.getInt( FONT_SIZE, 12 );
+        String font_family = Constants.PREFS.get( Constants.FONT_FAMILY, "Monospaced" );
+        int font_style = Constants.PREFS.getInt( Constants.FONT_STYLE, Font.PLAIN );
+        int font_size = Constants.PREFS.getInt( Constants.FONT_SIZE, 12 );
         _font = new Font( font_family, font_style, font_size );
 
         JMenuBar bar = new JMenuBar();
@@ -388,9 +388,9 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                     Font font = FontDialog.showFontDialog( Antelope.this, _font );
                     if ( font != null ) {
                         _font = font;
-                        Constants.PREFS.put( FONT_FAMILY, _font.getFamily() );
-                        Constants.PREFS.putInt( FONT_STYLE, _font.getStyle() );
-                        Constants.PREFS.putInt( FONT_SIZE, _font.getSize() );
+                        Constants.PREFS.put( Constants.FONT_FAMILY, _font.getFamily() );
+                        Constants.PREFS.putInt( Constants.FONT_STYLE, _font.getStyle() );
+                        Constants.PREFS.putInt( Constants.FONT_SIZE, _font.getSize() );
                         _editor.getPainter().setFont( font );
                         logger.setFont(font);
                     }
@@ -484,9 +484,9 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         _editor.setTokenMarker( new XMLTokenMarker() );
         _editor.getPainter().setStyles( AntelopeSyntaxUtilities.getStoredStyles() );
         _font = new Font(
-                    Constants.PREFS.get( FONT_FAMILY, "dialog" ),
-                    Constants.PREFS.getInt( FONT_STYLE, Font.PLAIN ),
-                    Constants.PREFS.getInt( FONT_SIZE, 12 ) );
+                    Constants.PREFS.get( Constants.FONT_FAMILY, "dialog" ),
+                    Constants.PREFS.getInt( Constants.FONT_STYLE, Font.PLAIN ),
+                    Constants.PREFS.getInt( Constants.FONT_SIZE, 12 ) );
         _editor.getPainter().setFont( _font );
         _editor.setCaretPosition( 0 );
         _editor.scrollToCaret();
@@ -591,16 +591,16 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
         Log.log("next pack");
         pack();
         ta.requestFocus();
-        int app_x = PREFS.getInt(APP_X, 0);
-        int app_y = PREFS.getInt(APP_Y, 0);
-        int app_w = PREFS.getInt(APP_W, 0);
-        int app_h = PREFS.getInt(APP_H, 0);
+        int app_x = Constants.PREFS.getInt(Constants.APP_X, 0);
+        int app_y = Constants.PREFS.getInt(Constants.APP_Y, 0);
+        int app_w = Constants.PREFS.getInt(Constants.APP_W, 0);
+        int app_h = Constants.PREFS.getInt(Constants.APP_H, 0);
         if (app_w == 0 || app_h == 0)
             GUIUtils.fillScreen(this);
         else
             setBounds(app_x, app_y, app_w, app_h);
         Log.log("bounds set");
-        int divider_location = PREFS.getInt(DIVIDER_LOCATION, 0);
+        int divider_location = Constants.PREFS.getInt(Constants.DIVIDER_LOCATION, 0);
         if (divider_location == 0)
            _split_pane.setDividerLocation( 0.25 );
         else
@@ -614,12 +614,12 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
     private void exit(int status) {
         try {
             Rectangle bounds = getBounds();
-            PREFS.putInt(APP_X, bounds.x);
-            PREFS.putInt(APP_Y, bounds.y);
-            PREFS.putInt(APP_W, bounds.width);
-            PREFS.putInt(APP_H, bounds.height);
-            PREFS.putInt(DIVIDER_LOCATION, _split_pane.getDividerLocation());
-            PREFS.flush();
+            Constants.PREFS.putInt(Constants.APP_X, bounds.x);
+            Constants.PREFS.putInt(Constants.APP_Y, bounds.y);
+            Constants.PREFS.putInt(Constants.APP_W, bounds.width);
+            Constants.PREFS.putInt(Constants.APP_H, bounds.height);
+            Constants.PREFS.putInt(Constants.DIVIDER_LOCATION, _split_pane.getDividerLocation());
+            Constants.PREFS.flush();
         }
         catch(Exception e) {
         }
@@ -749,7 +749,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
     public ArrayList getRecentFilesList() {
 
         ArrayList list = new ArrayList();
-        String recent = PREFS.get( RECENT_LIST, "" );
+        String recent = Constants.PREFS.get( Constants.RECENT_LIST, "" );
         StringTokenizer st = new StringTokenizer( recent, File.pathSeparator );
 
         StringBuffer new_recent = new StringBuffer();
@@ -762,7 +762,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
                 // been deleted, there is no reason to keep the stored preferences for
                 // that file.
                 try {
-                    Preferences node = PREFS.node( String.valueOf( file.hashCode() ) );
+                    Preferences node = Constants.PREFS.node( String.valueOf( file.hashCode() ) );
                     node.removeNode();
                 }
                 catch ( Exception e ) {}
@@ -774,7 +774,7 @@ public class Antelope extends JFrame implements Constants, CommonHelper {
             new_recent.append( filename ).append( File.pathSeparator );
         }
 
-        PREFS.put( RECENT_LIST, new_recent.toString() );
+        Constants.PREFS.put( Constants.RECENT_LIST, new_recent.toString() );
 
         return list;
     }

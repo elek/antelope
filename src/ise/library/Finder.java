@@ -6,8 +6,7 @@ import java.awt.event.ActionEvent;
 import java.util.regex.*;
 
 /**
- * Action to do a find in a text component. 
-Does regular expression searching.
+ * Action to do a find in a text component. Does regular expression searching.
  * @author Dale Anson
  */
 public class Finder implements ActionListener {

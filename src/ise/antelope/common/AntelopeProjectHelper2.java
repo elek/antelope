@@ -142,6 +142,14 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
             // Execute the top-level target
             /// don't execute the implicit target
             ///context.getImplicitTarget().execute();
+            Target it = context.getImplicitTarget();
+            Task[] tasks = it.getTasks();
+            for (int i = 0; i < tasks.length; i++) {
+                if (tasks[i].getTaskName().equals("import")) {
+                    System.out.println("found an import task");   
+                    tasks[i].maybeConfigure();
+                }
+            }
         }
     }
 

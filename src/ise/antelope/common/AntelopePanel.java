@@ -71,9 +71,9 @@ import org.apache.tools.ant.*;
  * @version   $Revision$
  * @created   July 23, 2002
  */
-public class AntelopePanel extends JPanel implements Constants {
+public class AntelopePanel extends JPanel {
 
-    private Preferences _prefs = PREFS;
+    private Preferences _prefs = Constants.PREFS;
 
     private OptionSettings _settings = null;
 
@@ -488,7 +488,7 @@ public class AntelopePanel extends JPanel implements Constants {
 
                             // make a list of targets to run
                             ArrayList targets = new ArrayList();
-                            if ( getAntVersion() == 16 && _unnamed_target != null )
+                            if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null )
                                 targets.add( _unnamed_target.getName() );
                             Iterator it = _execute_targets.iterator();
                             while ( it.hasNext() ) {
@@ -545,7 +545,7 @@ public class AntelopePanel extends JPanel implements Constants {
                                 }
 
                                 // run the unnamed target if Ant 1.6
-                                if ( getAntVersion() == 16 && _unnamed_target != null )
+                                if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null )
                                     targets.add( _unnamed_target.getName() );
 
                                 // run the targets
@@ -682,7 +682,7 @@ public class AntelopePanel extends JPanel implements Constants {
                         ArrayList targets = new ArrayList();
 
                         // run the unnamed target if Ant 1.6
-                        if ( getAntVersion() == 16 && _unnamed_target != null ) {
+                        if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null ) {
                             //targets.add( _unnamed_target.getName() );
                             targets.add( "" );
                         }
@@ -1049,7 +1049,7 @@ public class AntelopePanel extends JPanel implements Constants {
             // make sure the configuration settings are loaded, but first save any
             // previous settings
             try {
-                PREFS.put( LAST_OPEN_FILE, build_file.getAbsolutePath() );
+                Constants.PREFS.put( Constants.LAST_OPEN_FILE, build_file.getAbsolutePath() );
             }
             catch ( Throwable e ) {
                 e.printStackTrace();
@@ -1100,7 +1100,7 @@ public class AntelopePanel extends JPanel implements Constants {
                     // Ant 1.6 has an un-named target to hold project-level tasks, so
                     // find it and save it for later.
                     _unnamed_target = null;
-                    if ( getAntVersion() >= 16 ) {
+                    if ( AntUtils.getAntVersion() >= 1.6 ) {
                         Iterator iter = targets.keySet().iterator();
                         while ( iter.hasNext() ) {
                             if ( iter.next().toString().equals( "" ) ) {
@@ -1120,7 +1120,7 @@ public class AntelopePanel extends JPanel implements Constants {
                     while ( it.hasNext() ) {
                         // adjust which targets are showing --
                         String target_name = ( String ) it.next();
-                        //Log.log("AntelopePanel, target_name 1 = " + target_name);
+                        Log.log("AntelopePanel, target_name 1 = " + target_name);
                         // Ant 1.6 has an un-named target to hold project-level tasks.
                         // It has no name and shouldn't be executed by itself, so
                         // don't make a button for it.
@@ -1134,10 +1134,10 @@ public class AntelopePanel extends JPanel implements Constants {
                             SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
                             if ( node.isImported() ) {
                                 target_name = node.getAttributeValue( "name" );
-                                //Log.log("AntelopePanel, target_name = " + target_name);
+                                Log.log("AntelopePanel, target_name = " + target_name);
                                 target = ( Target ) targets.get( target_name );
-                                //if (target == null)
-                                //    Log.log("AntelopePanel, target for " + target_name + " was null");
+                                if (target == null)
+                                    Log.log("AntelopePanel, target for " + target_name + " was null");
                             }
                             if ( target == null )
                                 continue;
@@ -1394,7 +1394,7 @@ public class AntelopePanel extends JPanel implements Constants {
             // load any saved user properties for this build file. These are properties
             // that the user has set using the properties dialog and in command-line
             // Ant would have been passed on the command line.
-            Preferences user_prefs = getPrefs().node( ANT_USER_PROPS );
+            Preferences user_prefs = getPrefs().node( Constants.ANT_USER_PROPS );
             String[] keys = user_prefs.keys();
             for ( int i = 0; i < keys.length; i++ ) {
                 p.setUserProperty( keys[ i ], user_prefs.get( keys[ i ], "" ) );
@@ -1413,6 +1413,8 @@ public class AntelopePanel extends JPanel implements Constants {
             // looks like a recent change for antlib has busted loading custom tasks from
             // an antlib declaration. Need to check if this ever worked, I used to use 
             // taskdef exclusively, and have only recently switched to using antlib.
+            // Using antlib works when Antelope is running as an application, but not as
+            // a plugin.  Seems to have something to do with classloading.
             try {
                 System.out.println("AntelopePanel classloader = " + getClass().getClassLoader().hashCode());
                 Class c = Class.forName("org.apache.tools.ant.Main");
@@ -1546,21 +1548,6 @@ public class AntelopePanel extends JPanel implements Constants {
     }
 
     /**
-     * @return the Ant version if possible. Ant 1.5.x will return 15, Ant 1.6.x will
-     * return 16. Anything else returns 15.
-     */
-    public int getAntVersion() {
-        String ant_version = org.apache.tools.ant.Main.getAntVersion();
-        if ( ant_version.indexOf( "1.6" ) > -1 )
-            return 16;
-        if ( ant_version.indexOf( "1.5" ) > -1 )
-            return 15;
-        if ( ant_version.indexOf( "1.4" ) > -1 )
-            return 14;
-        return 15;
-    }
-
-    /**
      * Sets the useInternalMenu attribute of the AntelopePanel object
      *
      * @param b  The new useInternalMenu value
@@ -1587,7 +1574,7 @@ public class AntelopePanel extends JPanel implements Constants {
         JMenu menu = new JMenu( "Recent Files" );
         String recent = "";
         try {
-            recent = PREFS.get( RECENT_LIST, "" );
+            recent = Constants.PREFS.get( Constants.RECENT_LIST, "" );
         }
         catch ( Exception e ) {}
         ActionListener al =
@@ -1617,7 +1604,7 @@ public class AntelopePanel extends JPanel implements Constants {
         ArrayList list = new ArrayList();
         String recent = "";
         try {
-            recent = PREFS.get( RECENT_LIST, "" );
+            recent = Constants.PREFS.get( Constants.RECENT_LIST, "" );
         }
         catch ( Exception e ) {}
         StringTokenizer st = new StringTokenizer( recent, File.pathSeparator );
@@ -1649,7 +1636,7 @@ public class AntelopePanel extends JPanel implements Constants {
         // get the current list
         String recent = "";
         try {
-            recent = PREFS.get( RECENT_LIST, "" );
+            recent = Constants.PREFS.get( Constants.RECENT_LIST, "" );
         }
         catch ( Exception e ) {}
         if ( recent.startsWith( last_used.getAbsolutePath() ) )
@@ -1671,8 +1658,8 @@ public class AntelopePanel extends JPanel implements Constants {
         list.add( 0, last );
 
         // trim the list to size
-        if ( list.size() > MAX_RECENT_SIZE ) {
-            list = new ArrayList( list.subList( 0, MAX_RECENT_SIZE ) );
+        if ( list.size() > Constants.MAX_RECENT_SIZE ) {
+            list = new ArrayList( list.subList( 0, Constants.MAX_RECENT_SIZE ) );
         }
 
         // save the list
@@ -1683,8 +1670,8 @@ public class AntelopePanel extends JPanel implements Constants {
         }
 
         try {
-            PREFS.put( RECENT_LIST, sb.toString() );
-            PREFS.flush();
+            Constants.PREFS.put( Constants.RECENT_LIST, sb.toString() );
+            Constants.PREFS.flush();
         }
         catch ( Exception e ) {
             e.printStackTrace();
@@ -1967,7 +1954,7 @@ public class AntelopePanel extends JPanel implements Constants {
         saveConfigurationSettings();
         removeAllLogHandlers();
         try {
-            PREFS.flush();
+            Constants.PREFS.flush();
         }
         catch ( Exception e ) {
             e.printStackTrace();

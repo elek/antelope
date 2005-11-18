@@ -218,7 +218,7 @@ public class Assert extends Task implements TaskContainer {
                 return;
             }
             else {
-                throw new BuildException("Only one <bool> allowed per Assert.");
+                throw new BuildException("Only one <bool> or <condition> allowed per Assert.");
             }
         }
         tasks.addElement(task);

@@ -163,6 +163,13 @@
       <ant antfile="build-app.xml" target="run"/>
    </target>
    
+   <target name="test_deployment">
+      <echo>dist.dir = ${dist.dir}</echo>
+      <ant antfile="${src.dir}/test/antelope_deployment_suite.xml" 
+           dir="${src.dir}/test"
+           inheritAll="true"/>
+   </target>
+   
    <!-- ========================================================================
       Target: init
       this target creates the directories needed for this project and

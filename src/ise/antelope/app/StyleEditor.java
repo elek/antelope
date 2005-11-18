@@ -66,7 +66,7 @@ import javax.swing.border.EmptyBorder;
  * Allows the user to select a style for a particular syntax type.
  * @author Dale Anson, Dec 2002
  */
-public class StyleEditor extends JDialog implements Constants {
+public class StyleEditor extends JDialog {
 
     private JCheckBox italic_cb;
     private JCheckBox bold_cb;

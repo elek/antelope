@@ -63,6 +63,7 @@
       <!-- make the jar file. jEdit standards require just the name of the
         plugin, e.g. Antelope.jar. put it in $prep.dir -->
       <tstamp/>
+      
       <jar jarfile="${prep.dir}/${ant.project.name}.jar">
          <manifest>
             <attribute name="AppName" value="${ant.project.name}" />
@@ -72,23 +73,20 @@
             <attribute name="Created-On" value="${TODAY}"/>
          </manifest>
 
-            <!-- include everything in the build directory -->
          <fileset dir="${classes.dir}">
             <include name="**/*" />
-            <exclude name="**/ise/antelope/launcher/**/*"/>
-            <exclude name="**/ise/antelope/tasks/**/*"/>
+            <include name="**/ise/antelope/launcher/**/*"/>
+            <include name="**/ise/antelope/tasks/**/*"/>
             <exclude name="**/com/**/*"/>
             <exclude name="**/common/builder/**/*"/>
             <exclude name="**/common/dependency/**/*"/>
             <exclude name="**/testcases/**/*"/>
          </fileset>
 
-            <!-- include everything in the doc directory -->
          <fileset dir="${doc.dir}">
             <include name="**/*" />
          </fileset>
 
-         <!-- include everything in the config directory -->
          <fileset dir="${config.dir}">
             <include name="**/*" />
          </fileset>
