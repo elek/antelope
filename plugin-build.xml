@@ -4,8 +4,8 @@
 <!-- :folding=explicit:collapseFolds=1:                 -->
 <!-- ================================================== -->
 <project name="Antelope" default="build" basedir=".">
-    <property file="../build-support.properties" />
-	<property file="build-support.properties" />
+    <property file="../build.properties" />
+	<property file="build.properties" />
 	
 	<property name="javadoc.packagenames"	value="ise.antelope.*" />
 	<property name="plugin.dependencies" 	value="ErrorList,Console" />
@@ -17,6 +17,7 @@
 	<path id="project.class.path">
 		<pathelement location="${install.dir}/Console.jar" />
 		<pathelement location="${install.dir}/ErrorList.jar" />
+		<pathelement location="lib/gef.jar" />
 	</path>
 </project>
 
