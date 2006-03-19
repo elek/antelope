@@ -1,0 +1,23 @@
+<project name="antelopetest"
+        default="testy" basedir=".">
+    <description>
+       Testcase for Antelope
+    </description>
+
+    <property name="propertyfile.user" value="${user.home}/build.properties" />
+    <property name="propertyfile.local" value="${basedir}/build.properties" />
+
+    <!-- Load properties from the files -->
+    <property file="${propertyfile.user}"/>
+    <property file="${propertyfile.local}"/>
+
+    <property name="docbook.dir" value="foobar" />
+    
+    <target name="testy">
+      <echo message="docbook.dir=${docbook.dir}" />
+
+
+    </target>
+
+</project>
+

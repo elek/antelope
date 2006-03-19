@@ -63,9 +63,7 @@ import org.apache.tools.ant.BuildEvent;
 
 import java.io.*;
 import java.util.*;
-import javax.xml.parsers.*;
 import org.apache.tools.ant.*;
-import org.w3c.dom.*;
 import org.xml.sax.AttributeList;
 
 /**

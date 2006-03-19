@@ -316,7 +316,7 @@ public class FontDialog extends JDialog {
       _parent = parent;
       GUIUtils.center( parent, _fd );
       _fd.pack();
-      _fd.show();
+      _fd.setVisible(true);
       Font font = _fd.getSelectedFont();
       _fd.dispose();
       if ( !_fd.didCancel() )
@@ -333,7 +333,7 @@ public class FontDialog extends JDialog {
    public static void main( String[] args ) {
       JFrame f = new JFrame();
       FontDialog fd = new FontDialog( f );
-      fd.show();
+      fd.setVisible(true);
       System.out.println( fd.getSelectedFont() );
       System.exit( 0 );
    }

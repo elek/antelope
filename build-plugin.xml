@@ -1,4 +1,3 @@
-
 <project name="Antelope" default="dist" basedir=".">
    <description>
        This build file creates Antelope as a jEdit plugin.
@@ -10,6 +9,7 @@
       not work.
    ========================================================================= -->
     <!-- read build.props to override properties set below -->
+   <property file="../build.properties" />
    <property file="build.props"/>
 
     <!-- default location of jedit.jar -->
