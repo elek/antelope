@@ -10,6 +10,7 @@ import java.util.*;
  */
 public class FileList implements FileOp {
     
+    private String what = "files";
     private String separator = ",";
     private boolean includepath = true;
     
@@ -20,6 +21,23 @@ public class FileList implements FileOp {
     
     public void setIncludepath(boolean b) {
         includepath = b;   
+    }
+    
+    public void setWhat(String s) {
+        if (s == null || s.equals("files")) {
+            what = "files";
+            return;
+        }
+        else if (s.equals("dirs")) {
+            what = "dirs";
+            return;
+        }
+        else if (s.equals("all")) {
+            what = "all";
+            return;
+        }
+        else
+            what = "files";
     }
     
     /**
@@ -38,7 +56,9 @@ public class FileList implements FileOp {
         StringBuffer value = new StringBuffer();
         for (Iterator it = files.iterator(); it.hasNext(); ) {
             File file = (File)it.next();
-            if (file.isFile()){
+            if ( (what.equals("files") && file.isFile()) ||
+                 (what.equals("dirs" ) && file.isDirectory()) ||
+                 (what.equals("all"  )) ) {
                 String filename = includepath ? file.getAbsolutePath() : file.getName();
                 value.append(filename);
                 if (it.hasNext())

@@ -231,6 +231,10 @@ Start jEdit.
 </para>
 
 <para>
+Note that the Antelope plugin depends on the Console and ErrorList plugins, so you'll need to install those from the Plugin Manager also.
+</para>
+
+<para>
 First, download the plugin zip file. Unzip it. The file named Antelope.jar is the plugin jar file. 
 </para>
 <para>
@@ -265,6 +269,10 @@ Once Ant is found, the location will be stored by Antelope for future use. If yo
 </para>
 
 <para>
+As a plugin, Antelope provides two "dockable" windows.  Use jEdit's menu "Utilites, Global Options, Docking" to dock the windows.  I find it convenient to dock the "Antelope" window on the right, and the "Ant Output" window on the bottom.  The "Antelope" window is where you'll see the buttons to run targets, the "Ant Output" windows is where you'll see any output produced by Ant as it runs.  Technically, the "Ant Output" window shows anything written to the system standard output stream, so you may see messages produced by other plugins there also.
+</para>
+
+<para>
 To reiterate:
 <itemizedlist>
 <listitem>
@@ -277,7 +285,7 @@ Copy it to jEdit's jar directory.
 Check that ANT_HOME is set as an environment variable.
 </listitem>
 <listitem>
-Start jEdit.
+Start jEdit.  Dock Antelope.
 </listitem>
 </itemizedlist>
 </para>
@@ -602,6 +610,10 @@ Here is Antelope running in jEdit:
     <imagedata fileref="jedit.gif" format="GIF"/>
 </imageobject>
 </figure>
+</para>
+
+<para>
+Errors found by Ant during a build (for example, a compilation error) will be shown in the ErrorList plugin.
 </para>
 
 </section>

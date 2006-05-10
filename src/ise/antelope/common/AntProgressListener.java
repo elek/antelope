@@ -121,6 +121,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      */
     public void buildFinished( BuildEvent be ) {
         if ( be.getException() != null ) {
+            be.getException().printStackTrace();
             setForeground( errorColor );
             setString( "Failed" );
         }

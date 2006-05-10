@@ -1911,6 +1911,7 @@ Operations as nested elements:
 </para>
 
 <para>
+<emphasis role="bold">listfiles</emphasis> Create a list of files and/or directories. 
 <table frame="all">
 <title>listfiles</title>
 <tgroup cols="4">
@@ -1927,6 +1928,13 @@ Operations as nested elements:
 <tbody>
 
 <row>
+<entry>what</entry>
+<entry>What to list, valid values are "files", "dirs", or "all".</entry>
+<entry>files</entry>
+<entry>No</entry>
+</row>
+
+<row>
 <entry>separator</entry>
 <entry>The separator to use between individual items in the list of files.</entry>
 <entry>, (comma)</entry>
@@ -1935,7 +1943,7 @@ Operations as nested elements:
 
 <row>
 <entry>includepath</entry>
-<entry>If true, include the path with the filenames in the list.  If false, include only the filenames.</entry>
+<entry>If true, include the path with the names in the list.  If false, include only the names.</entry>
 <entry>true</entry>
 <entry>No</entry>
 </row>
@@ -1943,6 +1951,10 @@ Operations as nested elements:
 </tbody>
 </tgroup>
 </table>
+</para>
+
+<para>
+<emphasis role="bold">lastmodified</emphasis> Get the "last modified" date/timestamp of a file. 
 
 <table frame="all">
 <title>lastmodified</title>

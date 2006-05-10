@@ -46,9 +46,10 @@
          
          <zipfileset prefix="${app.name}/src" dir="${src.dir}">
             <include name="**/common/*"/>
+            <include name="**/launcher/**/*"/>
             <include name="**/tasks/**/*"/>
             <include name="**/plugin/*"/>
-            <include name="**/library/*"/>
+            <include name="**/library/**/*"/>
             <include name="**/config/*"/>
             <include name="**/docs/**/*"/>
             <include name="**/images/*"/>

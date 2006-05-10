@@ -1,5 +1,5 @@
 <project name="Antelope" default="dist" basedir=".">
-   <description>
+    <description>
        This build file creates Antelope as a jEdit plugin.
    </description>
     
@@ -13,39 +13,39 @@
    <property file="build.props"/>
 
     <!-- default location of jedit.jar -->
-   <property name="jedit.install.dir" value="../.."/> 
+    <property name="jedit.install.dir" value="../.."/> 
     
     <!-- default location of the finished plugin -->
-   <property name="install.dir" value=".." />
+    <property name="install.dir" value=".." />
     
     <!-- version number -->
-   <property name="build.num" value="3.2"/>
+    <property name="build.num" value="3.2"/>
 
    
    <!-- ========================================================================
       Set properties:  These properties should not need to be changed.
    ========================================================================= -->
     <!-- source code directory, this is where the .java files live -->
-   <property name="src.dir" location="src" />
+    <property name="src.dir" location="src" />
 
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
-   <property name="prep.dir" location="prep"/>
+    <property name="prep.dir" location="prep"/>
 
     <!-- configuration directory, this is where the configuration files for the
     plugin are placed for pre-processing prior to getting jarred. -->
-   <property name="config.dir" location="${prep.dir}/config" />
+    <property name="config.dir" location="${prep.dir}/config" />
 
     <!-- documentation directory, this is where the plugin documentation
     files live. Files in this directory will be distributed with the plugin -->
-   <property name="doc.dir" location="${prep.dir}/docs" />
+    <property name="doc.dir" location="${prep.dir}/docs" />
 
     <!-- the directory for the compiled classes. Files in this directory will be
     included in the finished jar file. -->
-   <property name="classes.dir" location="classes" />
+    <property name="classes.dir" location="classes" />
     
     <!-- where to put the finished distribution file -->
-   <property name="dist.dir" location="dist"/>
+    <property name="dist.dir" location="dist"/>
    
     
    <!-- ========================================================================
@@ -56,116 +56,116 @@
       second, it copies the jar file to $install.dir
       third, it zips the jar file and installation docs into $dist.dir
    ========================================================================= -->
-   <target name="dist"
-         description="Compiles, jars, puts the jar in the jEdit jars directory."
-         depends="init, clean, compile, prep_files, copy_resources">
-        
+    <target name="dist"
+            description="Compiles, jars, puts the jar in the jEdit jars directory."
+            depends="init, compile, prep_files, copy_resources">
       <!-- make the jar file. jEdit standards require just the name of the
         plugin, e.g. Antelope.jar. put it in $prep.dir -->
-      <tstamp/>
-      
-      <jar jarfile="${prep.dir}/${ant.project.name}.jar">
-         <manifest>
-            <attribute name="AppName" value="${ant.project.name}" />
-            <attribute name="AppVersion" value="${build.num}" />
-            <attribute name="Author" value="Dale Anson" />
-            <attribute name="Created-By" value="${user.name}"/>
-            <attribute name="Created-On" value="${TODAY}"/>
-         </manifest>
+        <tstamp/>
 
-         <fileset dir="${classes.dir}">
-            <include name="**/*" />
-            <include name="**/ise/antelope/launcher/**/*"/>
-            <include name="**/ise/antelope/tasks/**/*"/>
-            <exclude name="**/com/**/*"/>
-            <exclude name="**/common/builder/**/*"/>
-            <exclude name="**/common/dependency/**/*"/>
-            <exclude name="**/testcases/**/*"/>
-         </fileset>
+        <jar jarfile="${prep.dir}/${ant.project.name}.jar">
+            <manifest>
+                <attribute name="AppName" value="${ant.project.name}" />
+                <attribute name="AppVersion" value="${build.num}" />
+                <attribute name="Author" value="Dale Anson" />
+                <attribute name="Created-By" value="${user.name}"/>
+                <attribute name="Created-On" value="${TODAY}"/>
+            </manifest>
 
-         <fileset dir="${doc.dir}">
-            <include name="**/*" />
-         </fileset>
+            <fileset dir="${classes.dir}">
+                <include name="**/*" />
+                <include name="**/ise/antelope/launcher/**/*"/>
+                <include name="**/ise/antelope/tasks/**/*"/>
+                <exclude name="**/com/**/*"/>
+                <exclude name="**/common/builder/**/*"/>
+                <exclude name="**/common/dependency/**/*"/>
+                <exclude name="**/testcases/**/*"/>
+            </fileset>
 
-         <fileset dir="${config.dir}">
-            <include name="**/*" />
-         </fileset>
-      </jar>
+            <fileset dir="${doc.dir}">
+                <include name="**/*" />
+            </fileset>
+
+            <fileset dir="${config.dir}">
+                <include name="**/*" />
+            </fileset>
+        </jar>
       
       <!-- copy the jar to the right place per jEdit standards -->
-      <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
+        <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
         
       <!-- zip the jar and installation instructions and put the zip file in
       the $dist directory -->
-      <zip destfile="${dist.dir}/${ant.project.name}Plugin_${build.num}.zip">
-         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}">
-            <include name="${ant.project.name}.jar"/>
-         </zipfileset>
-         <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}/docs">
-            <include name="license.txt"/>
-            <include name="plugin_readme.txt"/>
-            <include name="ChangeLog.txt"/>
-         </zipfileset>
-      </zip>
+        <zip destfile="${dist.dir}/${ant.project.name}Plugin_${build.num}.zip">
+            <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}">
+                <include name="${ant.project.name}.jar"/>
+            </zipfileset>
+            <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}/docs">
+                <include name="license.txt"/>
+                <include name="plugin_readme.txt"/>
+                <include name="ChangeLog.txt"/>
+            </zipfileset>
+        </zip>
 
-   </target>
+    </target>
 
    <!-- ========================================================================
       Target: set classpath
    ========================================================================= -->
-   <target name="setClasspath">
-      <path id="classpathref">
+    <target name="setClasspath">
+        <path id="classpathref">
          <!-- include classes directory -->
-         <pathelement location="${classes.dir}" />
+            <pathelement location="${classes.dir}" />
          
          <!-- include standard classpath, need ant jars -->
-         <pathelement path="${java.class.path}"/>
+            <pathelement path="${java.class.path}"/>
          
          <!-- include jedit.jar and dependent plugins -->
-         <pathelement location="${jedit.install.dir}/jedit.jar" />
-         <fileset dir="${install.dir}">
-            <include name="**/Console*.jar"/>
-            <include name="**/ErrorList*.jar"/>
-         </fileset>
-      </path>
-   </target>
+            <pathelement location="${jedit.install.dir}/jedit.jar" />
+            <fileset dir="${install.dir}">
+                <include name="**/Console*.jar"/>
+                <include name="**/ErrorList*.jar"/>
+            </fileset>
+        </path>
+    </target>
 
    <!-- ========================================================================
       Target: clean
       deletes all files from the build directory
    ========================================================================= -->
-   <target name="clean" description="Delete all files from the classes directory.">
-      <delete>
-         <fileset dir="${classes.dir}" includes="**/*" />
-         <fileset dir="${prep.dir}">
-            <include name="**/*"/>
-            <exclude name="docs/**/*"/>
-         </fileset>
-      </delete>
-   </target>
+    <target name="clean" description="Delete all files from the classes directory.">
+        <delete>
+            <fileset dir="${classes.dir}" includes="**/*" />
+            <fileset dir="${prep.dir}">
+                <include name="**/*"/>
+                <exclude name="docs/**/*"/>
+            </fileset>
+        </delete>
+    </target>
     
    <!-- ========================================================================
       Target: compile
    ========================================================================= -->
-   <target name="compile"
-         description="Compile"
-         depends="init,setClasspath">
-      <javac deprecation="on"
-            debug="on"
-            nowarn="on"
-            destdir="${classes.dir}"
-            srcdir="${src.dir}"
-            source="1.4">
-         <classpath refid="classpathref" />
-         <exclude name="testcases/**/*"/>
-         <exclude name="**/app/**/*"/>
+    <target name="compile"
+            description="Compile"
+            depends="init,setClasspath">
+        <javac deprecation="on"
+                debug="on"
+                nowarn="on"
+                destdir="${classes.dir}"
+                srcdir="${src.dir}"
+                source="1.4"
+                target="1.4">
+            <classpath refid="classpathref" />
+            <exclude name="testcases/**/*"/>
+            <exclude name="**/app/**/*"/>
          <!-- this next bit is excluded until it is good -->
-         <exclude name="**/common/gui/*"/>
-         <exclude name="**/common/builder/*"/>
-         <exclude name="**/common/dependency/*"/>
-         <exclude name="**/com/wutka/**"/>
-      </javac>
-   </target>
+            <exclude name="**/common/gui/*"/>
+            <exclude name="**/common/builder/*"/>
+            <exclude name="**/common/dependency/*"/>
+            <exclude name="**/com/wutka/**"/>
+        </javac>
+    </target>
     
    <!-- ========================================================================
       Target: docs-xalan
@@ -173,133 +173,133 @@
       files in ${src.dir}/docs and puts the finished files in ${prep.dir}/docs.
       The files are NOT ready for distribution until after prep_files is ran.
    ========================================================================= -->
-   <target name="docs-xalan"
-         description="Generate user documentation in hmtl format with xalan"
-         depends="init,setClasspath,prep_files">
+    <target name="docs-xalan"
+            description="Generate user documentation in hmtl format with xalan"
+            depends="init,setClasspath,prep_files">
 
-      <fail unless="docbook.xsl" message="Please set docbook.xsl property."/>
+        <fail unless="docbook.xsl" message="Please set docbook.xsl property."/>
 
-      <delete>
-         <fileset dir="${doc.dir}" includes="manual/**/*" />
-      </delete>
+        <delete>
+            <fileset dir="${doc.dir}" includes="manual/**/*" />
+        </delete>
 
-      <copy todir="${doc.dir}/manual">
-         <fileset dir="${src.dir}/docs/manual" includes="**/*.gif" />
-         <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
-      </copy>
+        <copy todir="${doc.dir}/manual">
+            <fileset dir="${src.dir}/docs/manual" includes="**/*.gif" />
+            <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
+        </copy>
 
-      <property name="docbook-wrapper" location="${doc.dir}/docbook-wrapper.xsl"/>
-      <delete file="${docbook-wrapper}" />
-      <echo file="${docbook-wrapper}"
-            message="&lt;xsl:stylesheet"/>
-      <echo file="${docbook-wrapper}" append="true"
-            message=" xmlns:xsl='http://www.w3.org/1999/XSL/Transform'"/>
-      <echo file="${docbook-wrapper}" append="true"
-            message=" version='1.0'&gt;"/>
-      <echo file="${docbook-wrapper}" append="true"
-            message="&lt;xsl:import href='${docbook.xsl}/html/chunk.xsl'/&gt;"/>
-      <echo file="${docbook-wrapper}" append="true"
-            message="&lt;/xsl:stylesheet&gt;"/>
+        <property name="docbook-wrapper" location="${doc.dir}/docbook-wrapper.xsl"/>
+        <delete file="${docbook-wrapper}" />
+        <echo file="${docbook-wrapper}"
+                message="&lt;xsl:stylesheet"/>
+        <echo file="${docbook-wrapper}" append="true"
+                message=" xmlns:xsl='http://www.w3.org/1999/XSL/Transform'"/>
+        <echo file="${docbook-wrapper}" append="true"
+                message=" version='1.0'&gt;"/>
+        <echo file="${docbook-wrapper}" append="true"
+                message="&lt;xsl:import href='${docbook.xsl}/html/chunk.xsl'/&gt;"/>
+        <echo file="${docbook-wrapper}" append="true"
+                message="&lt;/xsl:stylesheet&gt;"/>
 
-      <style basedir="${src.dir}/docs/manual"
-            style="${docbook-wrapper}"
-            destdir="${doc.dir}/manual"
-            includes="userguide.xml">
-         <param name="html.stylesheet" expression="./style.css"/>
-      </style>
-   </target>
+        <style basedir="${src.dir}/docs/manual"
+                style="${docbook-wrapper}"
+                destdir="${doc.dir}/manual"
+                includes="userguide.xml">
+            <param name="html.stylesheet" expression="./style.css"/>
+        </style>
+    </target>
    
    
    <!-- ========================================================================
       Target: copy_resources
    ========================================================================= -->
-   <target name="copy_resources">
-      <copy todir="${classes.dir}/images">
-         <fileset dir="${src.dir}/images" includes="**/*" />
-      </copy>
-      <copy todir="${classes.dir}/ise/antelope/tasks">
-         <fileset dir="${src.dir}/ise/antelope/tasks" includes="antelope.taskdefs"/>
-         <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
-      </copy>
-      <copy todir="${classes.dir}/ise/antelope/common" file="${src.dir}/ise/antelope/common/version.txt"/>
-   </target>
+    <target name="copy_resources">
+        <copy todir="${classes.dir}/images">
+            <fileset dir="${src.dir}/images" includes="**/*" />
+        </copy>
+        <copy todir="${classes.dir}/ise/antelope/tasks">
+            <fileset dir="${src.dir}/ise/antelope/tasks" includes="antelope.taskdefs"/>
+            <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
+        </copy>
+        <copy todir="${classes.dir}/ise/antelope/common" file="${src.dir}/ise/antelope/common/version.txt"/>
+    </target>
     
    <!-- ========================================================================
       Target: prep_files
       prepares certain files for distribution by doing string replacement. 
       Assumes that the configuration files and documentation files are ready.
    ========================================================================= -->
-   <target name="prep_files"
-         description="Prepare files for distribution.">
-      <echo>preparing files ${config.dir} ${build.num}</echo>
+    <target name="prep_files"
+            description="Prepare files for distribution.">
+        <echo>preparing files ${config.dir} ${build.num}</echo>
         <!-- clean out the config directory -->
-      <delete>
-         <fileset dir="${config.dir}" includes="**/*"/>
-      </delete>
+        <delete>
+            <fileset dir="${config.dir}" includes="**/*"/>
+        </delete>
 
         <!-- copy the src files to deployment directory -->
-      <copy todir="${prep.dir}" overwrite="yes">
-         <fileset dir="${src.dir}">
-            <include name="config/**/*"/>
-            <include name="docs/*.txt"/>
-            <include name="docs/about.html"/>
-         </fileset>
-         <fileset dir="${src.dir}/images">
-            <include name="antelope.jpg"/>
-         </fileset>
-      </copy>
+        <copy todir="${prep.dir}" overwrite="yes">
+            <fileset dir="${src.dir}">
+                <include name="config/**/*"/>
+                <include name="docs/*.txt"/>
+                <include name="docs/about.html"/>
+            </fileset>
+            <fileset dir="${src.dir}/images">
+                <include name="antelope.jpg"/>
+            </fileset>
+        </copy>
 
 
         <!-- insert the build number into the documentation and configuration
         files -->
-      <replace dir="${prep.dir}" token="@@build.num@@"
-            value="${build.num}" />
-      <tstamp/>
-      <replace dir="${prep.dir}" token="@@tstamp@@"
-            value="${TODAY}" />
+        <replace dir="${prep.dir}" token="@@build.num@@"
+                value="${build.num}" />
+        <tstamp/>
+        <replace dir="${prep.dir}" token="@@tstamp@@"
+                value="${TODAY}" />
 
       <!-- insert the build number into the version file -->
-      <property name="version.txt" location="${src.dir}/ise/antelope/common/version.txt"/>
-      <delete file="${version.txt}"/>
-      <echo file="${version.txt}" message="VERSION=${build.num}${line.separator}"/>
-      <echo file="${version.txt}" message="DATE=${TODAY}" append="true"/>
+        <property name="version.txt" location="${src.dir}/ise/antelope/common/version.txt"/>
+        <delete file="${version.txt}"/>
+        <echo file="${version.txt}" message="VERSION=${build.num}${line.separator}"/>
+        <echo file="${version.txt}" message="DATE=${TODAY}" append="true"/>
       
       <!-- insert the style into the documentation -->
-      <replace dir="${prep.dir}" token="@@style@@"
-            value="&lt;STYLE TYPE=&quot;text/css&quot;&gt; &lt;!-- @import url(./style.css); --&gt; &lt;/STYLE&gt;" />
+        <replace dir="${prep.dir}" token="@@style@@"
+                value="&lt;STYLE TYPE=&quot;text/css&quot;&gt; &lt;!-- @import url(./style.css); --&gt; &lt;/STYLE&gt;" />
 
-   </target>
+    </target>
    
    <!-- ========================================================================
       Target: init
       this target creates the directories needed for this project and
       only needs to be done once.
    ========================================================================= -->
-   <target name="init"
-         description="Create directory structure."
-         unless="init.done">
-      <fail unless="jedit.install.dir" message="Please set jedit.install.dir property."/>
-      <available file="${jedit.install.dir}/jedit.jar" property="jedit.available"/>
-      <fail unless="jedit.available" message="jedit.jar not found, please set in properties."/>
+    <target name="init"
+            description="Create directory structure."
+            unless="init.done">
+        <fail unless="jedit.install.dir" message="Please set jedit.install.dir property."/>
+        <available file="${jedit.install.dir}/jedit.jar" property="jedit.available"/>
+        <fail unless="jedit.available" message="jedit.jar not found, please set in properties."/>
 
-      <mkdir dir="${src.dir}" />
-      <mkdir dir="${classes.dir}" />
-      <mkdir dir="${prep.dir}"/>
-      <mkdir dir="${doc.dir}" />
-      <mkdir dir="${config.dir}" />
-      <mkdir dir="${dist.dir}"/>
-      <property name="init.done" value="true"/>
-   </target>
+        <mkdir dir="${src.dir}" />
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${prep.dir}"/>
+        <mkdir dir="${doc.dir}" />
+        <mkdir dir="${config.dir}" />
+        <mkdir dir="${dist.dir}"/>
+        <property name="init.done" value="true"/>
+    </target>
 
-   <target name="test input">
-      <input
-            message="All data is going to be deleted from DB continue (y/n)?"
-            validargs="y,n"
-            addproperty="do.delete" />
-      <condition property="do.abort">
-         <equals arg1="n" arg2="${do.delete}"/>
-      </condition>
-      <fail if="do.abort">Build aborted by user.</fail>
-   </target>
+    <target name="test input">
+        <input
+                message="All data is going to be deleted from DB continue (y/n)?"
+                validargs="y,n"
+                addproperty="do.delete" />
+        <condition property="do.abort">
+            <equals arg1="n" arg2="${do.delete}"/>
+        </condition>
+        <fail if="do.abort">Build aborted by user.</fail>
+    </target>
 
 </project>

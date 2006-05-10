@@ -22,7 +22,7 @@
    <target name="run" 
            description="Runs Antelope as a standalone app."
            depends="-setClasspath">
-      <java classname="ise.antelope.app.Antelope" fork="true">
+      <java classname="ise.antelope.launcher.Launcher" fork="true">
          <classpath refid="antelopeCP"/>
       </java>
    </target>

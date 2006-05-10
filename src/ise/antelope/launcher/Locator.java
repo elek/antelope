@@ -35,6 +35,7 @@ import javax.swing.JOptionPane;
  * @since Ant 1.6
  */
 public final class Locator {
+    
     /**
      * Not instantiable
      */

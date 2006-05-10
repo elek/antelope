@@ -1,6 +1,6 @@
 
 <project name="AntelopeTasks" default="dist" basedir=".">
-   <description>
+    <description>
        This build file creates a zip file for distributing the Antelope tasks.
        Main targets: 
          dist - creates a complete zip file for distribution
@@ -15,78 +15,79 @@
     </description>
     
     <!-- read build.props to override properties set below -->
-   <property file="build.props"/>
+    <property file="build.props"/>
 
     <!-- version number, override in build.props if necessary -->
-   <property name="build.num" value="3.2.4"/>
+    <property name="build.num" value="3.2.4"/>
         
     
     <!-- shouldn't need to override the following properties -->
     
     <!-- source code directory, this is where the .java files live -->
-   <property name="src.dir" location="src" />
+    <property name="src.dir" location="src" />
     
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
-   <property name="prep.dir" location="prep"/>
+    <property name="prep.dir" location="prep"/>
 
     <!-- configuration directory, this is where the configuration files for the
     plugin are placed for pre-processing prior to getting jarred. -->
-   <property name="config.dir" location="${prep.dir}/config" />
+    <property name="config.dir" location="${prep.dir}/config" />
 
     <!-- documentation directory, this is where the plugin documentation
     files live. Files in this directory will be distributed with the plugin -->
-   <property name="doc.dir" location="${prep.dir}/docs" />
+    <property name="doc.dir" location="${prep.dir}/docs" />
 
     <!-- the directory for the compiled classes. Files in this directory will be
     included in the finished jar file. -->
-   <property name="classes.dir" location="classes" />
+    <property name="classes.dir" location="classes" />
     
     <!-- where to put the finished distribution file -->
-   <property name="dist.dir" location="dist"/>
+    <property name="dist.dir" location="dist"/>
     
 
     
    <!-- ========================================================================
       Target: set classpath
    ========================================================================= -->
-   <target name="setClasspath">
-      <path id="classpathref">
-         <pathelement location="${classes.dir}" />
-         <pathelement path="${java.class.path}"/>
-      </path>
-   </target>
+    <target name="setClasspath">
+        <path id="classpathref">
+            <pathelement location="${classes.dir}" />
+            <pathelement path="${java.class.path}"/>
+        </path>
+    </target>
 
    <!-- ========================================================================
       Target: clean
       deletes all files from the build directory
    ========================================================================= -->
-   <target name="clean" description="Delete all files from the classes directory.">
-      <delete>
-         <fileset dir="${classes.dir}" includes="**" />
-         <fileset dir="${prep.dir}">
-            <include name="**/*"/>
-            <exclude name="docs/**/*"/>
-         </fileset>
-      </delete>
-   </target>
+    <target name="clean" description="Delete all files from the classes directory.">
+        <delete>
+            <fileset dir="${classes.dir}" includes="**" />
+            <fileset dir="${prep.dir}">
+                <include name="**/*"/>
+                <exclude name="docs/**/*"/>
+            </fileset>
+        </delete>
+    </target>
     
    <!-- ========================================================================
       Target: compile
    ========================================================================= -->
-   <target name="compile"
-         description="Compile"
-         depends="init,setClasspath">
-      <javac deprecation="on"
-            debug="on"
-            nowarn="on"
-            destdir="${classes.dir}"
-            source="1.4">
-         <classpath refid="classpathref" />
-         <src path="${src.dir}/ise/antelope/tasks"/>
-         <src path="${src.dir}/ise/library"/>
-      </javac>
-   </target>
+    <target name="compile"
+            description="Compile"
+            depends="init,setClasspath">
+        <javac deprecation="on"
+                debug="on"
+                nowarn="on"
+                destdir="${classes.dir}"
+                source="1.4"
+                target="1.4">
+            <classpath refid="classpathref" />
+            <src path="${src.dir}/ise/antelope/tasks"/>
+            <src path="${src.dir}/ise/library"/>
+        </javac>
+    </target>
     
    <!-- ========================================================================
       Target: dist
@@ -96,61 +97,61 @@
       second, it copies the jar file to $install.dir
       third, it zips the jar file and installation docs into $dist.dir
    ========================================================================= -->
-   <target name="dist"
-         description="Compiles, jars, puts the jar in the jEdit jars directory."
-         depends="jar">
+    <target name="dist"
+            description="Compiles, jars, puts the jar in the jEdit jars directory."
+            depends="jar">
         
         <!-- zip the jar and installation instructions and put the zip file in
         the $dist directory -->
-      <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
-         <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}">
-            <include name="${ant.project.name}_${build.num}.jar"/>
-            <include name="docs/manual/bk03*"/>
-            <include name="docs/manual/*.css"/>
-         </zipfileset>
-         <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}/docs">
-            <include name="license.txt"/>
-            <include name="install_tasks.txt"/>
-            <include name="ChangeLog.txt"/>
-         </zipfileset>
-         <zipfileset prefix="${ant.project.name}_${build.num}/src" dir="${src.dir}">
-            <include name="**/tasks/**/*"/>
-            <include name="**/testcases/**/*"/>
-         </zipfileset>
-      </zip>
+        <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
+            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}">
+                <include name="${ant.project.name}_${build.num}.jar"/>
+                <include name="docs/manual/bk03*"/>
+                <include name="docs/manual/*.css"/>
+            </zipfileset>
+            <zipfileset prefix="${ant.project.name}_${build.num}" dir="${prep.dir}/docs">
+                <include name="license.txt"/>
+                <include name="install_tasks.txt"/>
+                <include name="ChangeLog.txt"/>
+            </zipfileset>
+            <zipfileset prefix="${ant.project.name}_${build.num}/src" dir="${src.dir}">
+                <include name="**/tasks/**/*"/>
+                <include name="**/testcases/**/*"/>
+            </zipfileset>
+        </zip>
 
-   </target>
+    </target>
 
    <!-- ========================================================================
       Target: jar
       this target creates a jar file in the prep directory. This is a finished
       jar file suitable for dropping into Ant's lib directory.
    ========================================================================= -->
-   <target name="jar"
-         description="Create a jar file of the task classes."
-         depends="init,clean,compile,copy_resources,prep_files">
+    <target name="jar"
+            description="Create a jar file of the task classes."
+            depends="init,clean,compile,copy_resources,prep_files">
       <!-- make the jar file, put it in $prep.dir -->
-      <tstamp/>
-      <jar jarfile="${prep.dir}/${ant.project.name}_${build.num}.jar">
-         <manifest>
-            <attribute name="AppName" value="${ant.project.name}" />
-            <attribute name="AppVersion" value="${build.num}" />
-            <attribute name="Author" value="Dale Anson" />
-            <attribute name="Created-By" value="${user.name}"/>
-            <attribute name="Created-On" value="${TODAY}"/>
-         </manifest>
+        <tstamp/>
+        <jar jarfile="${prep.dir}/${ant.project.name}_${build.num}.jar">
+            <manifest>
+                <attribute name="AppName" value="${ant.project.name}" />
+                <attribute name="AppVersion" value="${build.num}" />
+                <attribute name="Author" value="Dale Anson" />
+                <attribute name="Created-By" value="${user.name}"/>
+                <attribute name="Created-On" value="${TODAY}"/>
+            </manifest>
 
          <!-- include task and library classes -->
-         <fileset dir="${classes.dir}">
-            <include name="**/tasks/**/*" />
-            <include name="**/library/**/*"/>
-         </fileset>
-      </jar>
-      <copy todir="c:/apache-ant-1.6.5/lib">
-         <fileset dir="${prep.dir}" includes="**/AntelopeTasks*.jar" />
-      </copy>
-      
-   </target>
+            <fileset dir="${classes.dir}">
+                <include name="**/tasks/**/*" />
+                <include name="**/library/**/*"/>
+            </fileset>
+        </jar>
+        <copy todir="c:/apache-ant-1.6.5/lib">
+            <fileset dir="${prep.dir}" includes="**/AntelopeTasks*.jar" />
+        </copy>
+
+    </target>
     
    <!-- ========================================================================
       Target: docs-xalan
@@ -158,107 +159,107 @@
       files in ${src.dir}/docs and puts the finished files in ${prep.dir}/docs.
       The files are NOT ready for distribution until after prep_files is ran.
    ========================================================================= -->
-   <target name="docs-xalan"
-         description="Generate user documentation in hmtl format with xalan"
-         depends="init,setClasspath,prep_files">
+    <target name="docs-xalan"
+            description="Generate user documentation in hmtl format with xalan"
+            depends="init,setClasspath,prep_files">
 
-      <delete>
-         <fileset dir="${doc.dir}" includes="manual/**/*" />
-      </delete>
+        <delete>
+            <fileset dir="${doc.dir}" includes="manual/**/*" />
+        </delete>
 
-      <copy todir="${doc.dir}/manual">
-         <fileset dir="${src.dir}/docs/manual" includes="**/*.gif" />
-         <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
-      </copy>
+        <copy todir="${doc.dir}/manual">
+            <fileset dir="${src.dir}/docs/manual" includes="**/*.gif" />
+            <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
+        </copy>
 
-      <style basedir="${src.dir}/docs/manual"
-            style="${src.dir}/docs/users-guide.xsl"
-            destdir="${doc.dir}/manual"
-            includes="userguide.xml">
-         <param name="html.stylesheet" expression="./style.css"/>
-      </style>
-   </target>
+        <style basedir="${src.dir}/docs/manual"
+                style="${src.dir}/docs/users-guide.xsl"
+                destdir="${doc.dir}/manual"
+                includes="userguide.xml">
+            <param name="html.stylesheet" expression="./style.css"/>
+        </style>
+    </target>
     
    
    <!-- ========================================================================
       Target: Javadoc
    ========================================================================= -->
-   <target name="javadoc"
-         description="Create Javadoc API documentation in 'doc/api' directory.">
+    <target name="javadoc"
+            description="Create Javadoc API documentation in 'doc/api' directory.">
 
-      <javadoc sourcepath="${src.dir}"
-            destdir="${doc.dir}/api"
-            packagenames="ise.antelope.tasks"
-            classpathref="classpathref"
-            additionalparam="-source ${compile.source}"
-            Private="false"
-            Author="Dale Anson"
-            Windowtitle="Antelope Tasks">
-         <tag name="created" description="Created" enabled="false"/>
-      </javadoc>
+        <javadoc sourcepath="${src.dir}"
+                destdir="${doc.dir}/api"
+                packagenames="ise.antelope.tasks"
+                classpathref="classpathref"
+                additionalparam="-source ${compile.source}"
+                Private="false"
+                Author="Dale Anson"
+                Windowtitle="Antelope Tasks">
+            <tag name="created" description="Created" enabled="false"/>
+        </javadoc>
 
-   </target>
+    </target>
    
    <!-- ========================================================================
       Target: copy_resources
    ========================================================================= -->
-   <target name="copy_resources">
-      <copy todir="${classes.dir}/images">
-         <fileset dir="${src.dir}/images" includes="**/*" />
-      </copy>
-      <copy todir="${classes.dir}/ise/antelope/tasks">
-         <fileset dir="${src.dir}/ise/antelope/tasks" includes="antelope.taskdefs"/>
-         <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
-      </copy>
-   </target>
+    <target name="copy_resources">
+        <copy todir="${classes.dir}/images">
+            <fileset dir="${src.dir}/images" includes="**/*" />
+        </copy>
+        <copy todir="${classes.dir}/ise/antelope/tasks">
+            <fileset dir="${src.dir}/ise/antelope/tasks" includes="antelope.taskdefs"/>
+            <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
+        </copy>
+    </target>
     
    <!-- ========================================================================
       Target: prep_files
       prepares certain files for distribution by doing string replacement. 
       Assumes that the configuration files and documentation files are ready.
    ========================================================================= -->
-   <target name="prep_files"
-         description="Prepare files for distribution.">
-      <echo>preparing files ${config.dir} ${build.num}</echo>
+    <target name="prep_files"
+            description="Prepare files for distribution.">
+        <echo>preparing files ${config.dir} ${build.num}</echo>
         <!-- clean out the config directory -->
-      <delete>
-         <fileset dir="${config.dir}" includes="**/*"/>
-      </delete>
+        <delete>
+            <fileset dir="${config.dir}" includes="**/*"/>
+        </delete>
 
         <!-- copy the src files to deployment directory -->
-      <copy todir="${prep.dir}" overwrite="yes">
-         <fileset dir="${src.dir}">
-            <include name="config/**/*"/>
-            <include name="docs/*.txt"/>
-            <include name="docs/about.html"/>
-         </fileset>
-      </copy>
+        <copy todir="${prep.dir}" overwrite="yes">
+            <fileset dir="${src.dir}">
+                <include name="config/**/*"/>
+                <include name="docs/*.txt"/>
+                <include name="docs/about.html"/>
+            </fileset>
+        </copy>
 
 
         <!-- insert the build number into the documentation and configuration
         files -->
-      <replace dir="${prep.dir}" token="@@build.num@@"
-            value="${build.num}" />
-      <tstamp/>
-      <replace dir="${prep.dir}" token="@@tstamp@@"
-            value="${TODAY}" />
+        <replace dir="${prep.dir}" token="@@build.num@@"
+                value="${build.num}" />
+        <tstamp/>
+        <replace dir="${prep.dir}" token="@@tstamp@@"
+                value="${TODAY}" />
 
-   </target>
+    </target>
    
    <!-- ========================================================================
       Target: init
       this target creates the directories needed for this project and
       only needs to be done once.
    ========================================================================= -->
-   <target name="init"
-         description="Create directory structure."
-         unless="init.done">
-      <mkdir dir="${src.dir}" />
-      <mkdir dir="${classes.dir}" />
-      <mkdir dir="${prep.dir}"/>
-      <mkdir dir="${doc.dir}" />
-      <mkdir dir="${config.dir}" />
-      <mkdir dir="${dist.dir}"/>
-      <property name="init.done" value="true"/>
-   </target>
+    <target name="init"
+            description="Create directory structure."
+            unless="init.done">
+        <mkdir dir="${src.dir}" />
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${prep.dir}"/>
+        <mkdir dir="${doc.dir}" />
+        <mkdir dir="${config.dir}" />
+        <mkdir dir="${dist.dir}"/>
+        <property name="init.done" value="true"/>
+    </target>
 </project>

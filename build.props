@@ -10,7 +10,7 @@ docbook.xsl=file:///C:/cygwin/usr/share/docbook-xsl
 docbookx.dtd=file:///C:/cygwin/usr/share/docbook-xml42/docbookx.dtd
 
 install.dir=${user.home}/.jedit/jars
-build.num=3.2.10
+build.num=3.2.18
 
 # optional settings, remove if you don't use jikes
 #build.compiler=jikes
@@ -20,3 +20,10 @@ build.num=3.2.10
 showDebug=false
 showDeprecated=false
 showWarnings=false
+
+prep.dir=c:/tigris/antelope/prep
+config.dir=c:/tigris/antelope/prep/config
+doc.dir=c:/tigris/antelope/prep/docs
+classes.dir=c:/tigris/antelope/classes
+dist.dir=c:/tigris/antelope/dist
+

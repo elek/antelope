@@ -52,11 +52,14 @@
 *  <http://www.apache.org/>.
 */
 package ise.antelope.tasks;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -115,6 +118,8 @@ public class PostTask extends Task {
     private boolean wantResponse = true;
     /** store output in this property */
     private String property = null;
+    /** where to write downloads */
+    private File outdir = null;
 
     /** how long to wait for a response from the server */
     private long maxwait = 180000;   // units for maxwait is milliseconds
@@ -143,6 +148,18 @@ public class PostTask extends Task {
         to = name;
     }
 
+    
+	/**
+	 * Set a directory to store files that may be returned from the post.
+	 * @param dir the directory
+	 */
+    public void setOutdir( File dir) {
+        outdir = dir;
+        if (outdir != null && outdir.isFile()) {
+            outdir = outdir.getParentFile();
+        }
+    }
+
 
     /**
      * Set the name of a file to read a set of properties from.
@@ -164,7 +181,7 @@ public class PostTask extends Task {
         log = f;
     }
 
-
+    
     /**
      * Should the log file be appended to or overwritten? Default is true,
      * append to the file.
@@ -370,7 +387,10 @@ public class PostTask extends Task {
                             PrintWriter fw = null;
                             StringWriter sw = null;
                             PrintWriter pw = null;
-                            BufferedReader in = null;
+                            FileOutputStream dw = null;
+                            BufferedInputStream in = null;
+                            byte[] buffer = new byte[8192];
+                            File downloadFile = null;
                             try {
                                 if ( connection instanceof HttpURLConnection ) {
                                     // read and store cookies
@@ -391,8 +411,8 @@ public class PostTask extends Task {
                                     if ( verbose ) {
                                         log( String.valueOf( ( ( HttpURLConnection ) connection ).getResponseCode() ) );
                                         log( ( ( HttpURLConnection ) connection ).getResponseMessage() );
-                                        StringBuffer sb = new StringBuffer();
                                         map = ( ( HttpURLConnection ) connection ).getHeaderFields();
+                                        StringBuffer sb = new StringBuffer();
                                         for ( Iterator it = map.keySet().iterator(); it.hasNext(); ) {
                                             String name = ( String ) it.next();
                                             sb.append( name ).append( "=" );
@@ -412,9 +432,27 @@ public class PostTask extends Task {
                                             log( sb.toString() );
                                         }
                                     }
+                                    
+                                    // might have a download
+                                    map = ( ( HttpURLConnection ) connection ).getHeaderFields();
+                                    List values = (List)map.get("Content-Type");
+                                    String content_type = null;
+                                    if (values != null)
+                                        content_type = (String)values.get(0);
+                                    if (content_type != null && content_type.equals("application/download")) {
+                                        if (outdir == null) {
+                                            outdir = new File(getProject().getProperty("basedir"));   
+                                        }
+                                        String cd = (String)(((List)map.get("Content-Disposition")).get(0));
+                                        int index = cd.indexOf("filename=");
+                                        if (index >= 0) {
+                                            String filename = cd.substring(index + "filename=".length());
+                                            filename = filename.replaceAll("\"", "");
+                                            downloadFile = new File(outdir, filename);
+                                        }
+                                    }
                                 }
-                                in = new BufferedReader(
-                                         new InputStreamReader( connection.getInputStream() ) );
+                                in = new BufferedInputStream( connection.getInputStream() );
                                 if ( log != null ) {
                                     // user wants output stored to a file
                                     fw = new PrintWriter( new FileWriter( log, append ) );
@@ -424,8 +462,12 @@ public class PostTask extends Task {
                                     sw = new StringWriter();
                                     pw = new PrintWriter( sw );
                                 }
-                                String line;
-                                while ( null != ( ( line = in.readLine() ) ) ) {
+                                if (downloadFile != null) {
+                                    dw = new FileOutputStream( downloadFile );
+                                }
+                                int byte_count = in.read(buffer, 0, buffer.length);
+                                while ( byte_count > -1 ) {
+                                    String line = new String( buffer, 0, byte_count );
                                     if ( currentRunner != this ) {
                                         break;
                                     }
@@ -434,16 +476,20 @@ public class PostTask extends Task {
                                     }
                                     if ( fw != null ) {
                                         // write response to a file
-                                        fw.println( line );
+                                        fw.print( line );
                                     }
                                     if ( pw != null ) {
                                         // write response to a property
-                                        pw.println( line );
+                                        pw.print( line );
                                     }
+                                    if (dw != null) {
+                                        dw.write( buffer, 0, byte_count );   
+                                    }
+                                    byte_count = in.read(buffer, 0, buffer.length);
                                 }
                             }
                             catch ( Exception e ) {
-                                //e.printStackTrace();
+                                e.printStackTrace();
                                 if ( failOnError ) {
                                     throw new BuildException( e, getLocation() );
                                 }

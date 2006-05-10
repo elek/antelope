@@ -62,44 +62,37 @@ import console.*;
  * 
  * 
  */
-public class AntelopeShell extends Shell
-{
+public class AntelopeShell extends Shell {
 
-	private Thread runner = null;
+    private Thread runner = null;
 
-	public AntelopeShell()
-	{
-		super("Antelope");
-	}
+    public AntelopeShell() {
+        super( "Antelope" );
+    }
 
-	public void printInfoMessage(Output output)
-	{
-		output.print(null, "Antelope shell, shows output of running Ant targets.");
-	}
+    public void printInfoMessage( Output output ) {
+        output.print( null, "Antelope shell, shows output of running Ant targets." );
+    }
 
-	/**
-	 * Stops the build process.
-	 */
-	public void stop(Console console)
-	{
-		if (runner != null && runner.isAlive())
-			runner.interrupt();
-	}
+    /**
+     * Stops the build process.
+     */
+    public void stop( Console console ) {
+        if ( runner != null && runner.isAlive() )
+            runner.interrupt();
+    }
 
-	public boolean waitFor(Console console)
-	{
-		return false;
-	}
+    public boolean waitFor( Console console ) {
+        return false;
+    }
 
-	public void setRunner(Thread runner)
-	{
-		this.runner = runner;
-	}
+    public void setRunner( Thread runner ) {
+        this.runner = runner;
+    }
 
-	public void execute(Console console, String input, Output output, Output error,
-		String command)
-	{
-		// TODO Auto-generated method stub
+    public void execute( Console console, String input, Output output, Output error,
+            String command ) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

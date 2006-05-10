@@ -249,6 +249,17 @@
       
       
    </target>
+   
+   <target name="test15">
+      <property name="version" value="5.1.18.0"/>
+      <stringutil string="${version}" property="minor_index">
+         <indexOf string="." fromindex="4"/>
+      </stringutil>
+      <stringutil string="${version}" property="minor_version">
+         <substring beginindex="4" endindex="${minor_index}"/>
+      </stringutil>
+      <echo>Minor version = ${minor_version}</echo>
+   </target>
 
 
 </project>

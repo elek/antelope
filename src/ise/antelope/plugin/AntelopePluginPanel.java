@@ -48,6 +48,7 @@
 package ise.antelope.plugin;
 
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionListener;
@@ -60,7 +61,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.jar.*;
 import javax.swing.*;
-import org.gjt.sp.util.Log;
+import ise.library.Log;
 import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.View;
 import org.gjt.sp.jedit.EditPlugin;
@@ -117,12 +118,11 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
     public void init() {
         SwingUtilities.invokeLater( new Runnable() {
                     public void run() {
-
                         try {
                             // load ant
                             jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
                             String ant_jars = AntelopePlugin.getAntJars( true );
-                            Log.log( Log.MESSAGE, this, "ant_jars = " + ant_jars );
+                            //Log.log( "ant_jars = " + ant_jars );
                             if ( ant_jars != null ) {
                                 jEdit.setProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars", ant_jars );
                                 StringTokenizer st = new StringTokenizer( AntelopePlugin.getAntJars( false ) );
@@ -143,8 +143,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                             }
                         }
                         jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
-                        //Class antelope_panel_class = loadAnt();
-                        
+
                         // set up Antelope's menu
                         _view.getStatus().setMessageAndClear( "Loading Antelope..." );
                         JMenuItem mi = new JMenuItem( "Open Current Buffer" );
@@ -167,7 +166,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
 
                         // create and add Antelope
                         try {
-                            antelopePanel = new AntelopePanel( file, new CommonHelperWrapper(AntelopePluginPanel.this), true, menu_items );
+                            antelopePanel = new AntelopePanel( file, new CommonHelperWrapper( AntelopePluginPanel.this ), true, menu_items );
                         }
                         catch ( Throwable t ) {
                             t.printStackTrace();
@@ -188,12 +187,13 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                         // set up the logger
                         _console_handler = new ConsolePluginHandler( AntelopePluginPanel.this );
                         antelopePanel.addLogHandler( _console_handler );
-                        
+
                         _view.getStatus().setMessageAndClear( "Antelope loaded." );
                     }
                 }
                                   );
     }
+
 
     /**
      * Gets the view attribute of the AntelopePluginPanel class
@@ -285,7 +285,8 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      * @param thread  The new targetExecutionThread value
      */
     public void setTargetExecutionThread( Thread thread ) {
-        _console_handler.getShell().setRunner( thread );
+        if (_console_handler != null && _console_handler.getShell() != null)
+            _console_handler.getShell().setRunner( thread );
     }
 
     public void updateGUI() {}
@@ -432,53 +433,14 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
     }
 
     private Class loadAnt() {
-        System.out.println("loadAnt");
         try {
             File jar_file = AntelopePlugin.getAntelopePluginJAR().getFile();
             ise.antelope.launcher.Launcher launcher = new ise.antelope.launcher.Launcher();
-            return launcher.loadApp(null, jar_file);
+            return launcher.loadApp( null, jar_file );
         }
-        catch(Exception e) {
+        catch ( Exception e ) {
             e.printStackTrace();
             return null;
         }
-                        
-        /*
-        java.util.List ant_jars = getAntJarList();
-        if ( ant_jars != null ) {
-            System.out.println("got jar list: " + ant_jars);
-            // add the ant jars to the classpath
-            StringBuffer sb = new StringBuffer();
-            for ( Iterator it = ant_jars.iterator(); it.hasNext(); ) {
-                sb.append( it.next() ).append( File.pathSeparator );
-            }
-            String classpath = System.getProperty( "java.class.path" ) + File.pathSeparator + sb.toString();
-            System.setProperty( "java.class.path", classpath );
-            System.out.println("set java.class.path: " + System.getProperty("java.class.path"));
-            // add the ant classes to the classloader
-            ClassLoader my_cl = getClass().getClassLoader();
-            for ( Iterator it = ant_jars.iterator(); it.hasNext(); ) {
-                try {
-                    JarFile jf = new JarFile( ( File ) it.next() );
-                    System.out.println("loading classes from: " + jf.toString());
-                    Enumeration en = jf.entries();
-                    while ( en.hasMoreElements() ) {
-                        JarEntry je = ( JarEntry ) en.nextElement();
-                        if ( je.isDirectory() )
-                            continue;
-                        String classname = je.getName();
-                        if ( classname.endsWith( ".class" ) )
-                            classname = classname.substring( 0, classname.length() - 6 );
-                        classname = classname.replace( '/', '.' );
-                        my_cl.loadClass( classname );
-                    }
-                }
-                catch ( Exception e ) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        */
     }
 }
-

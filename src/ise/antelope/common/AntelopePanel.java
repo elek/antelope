@@ -214,15 +214,11 @@ public class AntelopePanel extends JPanel {
     private void init(File build_file, CommonHelperWrapper helper, boolean use_internal_menu,
             java.util.List menu_items ) {
 
-        Log.log("AntelopePanel constructor");
         setLayout( new BorderLayout() );
 
-        //_build_file = build_file;
         _helper = helper;
         _use_internal_menu = use_internal_menu;
-        Log.log("next set prefs");
         setPrefs( build_file );
-        Log.log("prefs set");
 
         try {
             // for some reason, the GUIUtils aren't always loaded in jEdit,
@@ -344,7 +340,6 @@ public class AntelopePanel extends JPanel {
         _reload_btn.setToolTipText( "Reload current build file" );
         _reload_btn.addActionListener( new ActionListener() {
                     public void actionPerformed( ActionEvent ae ) {
-                        Log.log("_reload_btn actionPerformed");
                         reload();
                     }
                 }
@@ -419,9 +414,7 @@ public class AntelopePanel extends JPanel {
         );
 
         // initialize the logger
-        Log.log("next init logger");
         initLogger();
-        Log.log("logger initialized");
 
         // initialize from the build file
         openBuildFile( build_file );
@@ -743,6 +736,11 @@ public class AntelopePanel extends JPanel {
         _build_logger.SHOW_TASK_EVENTS = _settings.getShowTaskEvents();
         _build_logger.SHOW_LOG_MSGS = _settings.getShowLogMessages();
 
+        /* switch to default Ant project helper, need to do this so that the
+        implicit target will get executed for <ant> tasks. */
+        System.setProperty( "org.apache.tools.ant.ProjectHelper", "org.apache.tools.ant.helper.ProjectHelper2" );
+
+        
         // set up the progress listener
         _progress.setExecutingTarget( _project, targets );
 
@@ -766,6 +764,9 @@ public class AntelopePanel extends JPanel {
                 break;
         }
         _project.fireBuildFinished( null );
+        
+        // reset project helper
+        System.setProperty( "org.apache.tools.ant.ProjectHelper", "ise.antelope.common.AntelopeProjectHelper2" );
     }
 
     /**
@@ -980,7 +981,6 @@ public class AntelopePanel extends JPanel {
      * @param build_file  an Ant build file.
      */
     public void openBuildFile( final File build_file ) {
-        Log.log("openBuildFile");
         if ( build_file == null || !build_file.exists() )
             return ;
         boolean new_file = !build_file.equals( _build_file );
@@ -993,21 +993,18 @@ public class AntelopePanel extends JPanel {
 
             // set up panels
             if ( _center_panel == null ) {
-                Log.log("adding new _center_panel");
                 _center_panel = new DeckPanel();
                 AntelopePanel.this.add( _center_panel, BorderLayout.CENTER );
-                Log.log("added new _center_panel");
             }
             else {
-                Log.log("next removeAll from _center_panel");
                 _center_panel.removeAll();
-                Log.log("did _center_panel.removeAll");
             }
             if ( _button_panel == null ) {
                 _button_panel = new JPanel( new KappaLayout() );
                 _button_panel.setBackground( Color.white );
                 _button_panel.setBorder( new javax.swing.border.EmptyBorder( 3, 3, 3, 3 ) );
                 _scroller = new JScrollPane( _button_panel );
+                _scroller.getVerticalScrollBar().setUnitIncrement(50);
                 _btn_container = new JPanel( new BorderLayout() );
                 _btn_container.add( _scroller, BorderLayout.CENTER );
                 JPanel multi_panel = new JPanel();
@@ -1092,9 +1089,11 @@ public class AntelopePanel extends JPanel {
                         //Log.log( "no targets in project" );
                         return ;   /// ??? really ???
                     }
-                    //for (Iterator it = targets.keySet().iterator(); it.hasNext(); ) {
-                    //    System.out.println(it.next());   
-                    //}
+                    ///
+                    ///for (Iterator it = targets.keySet().iterator(); it.hasNext(); ) {
+                    ///    Log.log("target in targets: " + it.next());   
+                    ///}
+                    ///
                     
 
                     // Ant 1.6 has an un-named target to hold project-level tasks, so
@@ -1116,11 +1115,19 @@ public class AntelopePanel extends JPanel {
                     else
                         _targets = new LinkedHashMap();
                     Map sax_targets = _sax_panel.getTargets();
+                    
+                    ///
+                    ///for (Iterator ix = sax_targets.keySet().iterator(); ix.hasNext(); ) {
+                    ///    String key = (String)ix.next();
+                    ///    Object value = sax_targets.get(key);
+                    ///    Log.log("sax_targets: " + key + ":" + value);
+                    ///}
+                    ///
+                    
                     Iterator it = sax_targets.keySet().iterator();///targets.keySet().iterator();
                     while ( it.hasNext() ) {
                         // adjust which targets are showing --
                         String target_name = ( String ) it.next();
-                        Log.log("AntelopePanel, target_name 1 = " + target_name);
                         // Ant 1.6 has an un-named target to hold project-level tasks.
                         // It has no name and shouldn't be executed by itself, so
                         // don't make a button for it.
@@ -1134,10 +1141,7 @@ public class AntelopePanel extends JPanel {
                             SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
                             if ( node.isImported() ) {
                                 target_name = node.getAttributeValue( "name" );
-                                Log.log("AntelopePanel, target_name = " + target_name);
                                 target = ( Target ) targets.get( target_name );
-                                if (target == null)
-                                    Log.log("AntelopePanel, target for " + target_name + " was null");
                             }
                             if ( target == null )
                                 continue;
@@ -1238,7 +1242,6 @@ public class AntelopePanel extends JPanel {
                             btn_text += target_name;
                             button.setText( btn_text );
                             button.addActionListener( _button_listener );
-                            Log.log("actionListener added");
                             if ( node != null && node.isDefaultTarget() )
                                 _default_btn = button;
                         }
@@ -1285,7 +1288,6 @@ public class AntelopePanel extends JPanel {
             e.printStackTrace();
         }
         fireEvent( _build_file );
-        Log.log("openBuildfile is done");
 
     }
 
@@ -1841,11 +1843,9 @@ public class AntelopePanel extends JPanel {
     //=============================================================
     /** Initializes the logger. */
     private void initLogger() {
-        Log.log("initLogger");
         _logger = Logger.getLogger( "ise.antelope.Antelope" );
         _logger.setUseParentHandlers( false );
         _build_logger = new AntLogger();
-        Log.log("created _build_logger");
         
         // do this after the AntLogger is created as the AntLogger
         // installs a ConsoleHandler by default, so remove all ConsoleHandlers
@@ -1860,10 +1860,9 @@ public class AntelopePanel extends JPanel {
             }
         }
         catch ( Throwable e ) {
-            e.printStackTrace();
+            Log.log(this, e);
         }
         _logger.setLevel( Level.ALL );
-        Log.log("initLogger done");
     }
 
 
@@ -1894,6 +1893,9 @@ public class AntelopePanel extends JPanel {
             initLogger();
         }
         h.setLevel( _log_level );
+        
+        // make sure it is really added, initLogger may remove it, so 
+        // explicitly add it again
         _logger.removeHandler( h );
         _logger.addHandler( h );
     }

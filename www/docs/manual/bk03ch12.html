@@ -11,13 +11,16 @@ To use this task in your build files, include a task definition like this:
    
 </pre>
 </p><p>
-<div class="table"><a name="N10BB1"></a><p class="title"><b>Table&nbsp;12.1.&nbsp;FileUtil Task Attributes</b></p><table summary="FileUtil Task Attributes" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Default</th><th>Required</th></tr></thead><tbody><tr><td>file</td><td>The file or directory in question.</td><td>None</td><td>No, but does nothing without a file.</td></tr><tr><td>property</td><td>Where to store the answer. Caution: this task will overwrite any existing property with this name.</td><td>None</td><td>No</td></tr></tbody></table></div>
+<div class="table"><a name="N10BB7"></a><p class="title"><b>Table&nbsp;12.1.&nbsp;FileUtil Task Attributes</b></p><table summary="FileUtil Task Attributes" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Default</th><th>Required</th></tr></thead><tbody><tr><td>file</td><td>The file or directory in question.</td><td>None</td><td>No, but does nothing without a file.</td></tr><tr><td>property</td><td>Where to store the answer. Caution: this task will overwrite any existing property with this name.</td><td>None</td><td>No</td></tr></tbody></table></div>
 </p><p>
 Operations as nested elements:
 </p><p>
-<div class="table"><a name="N10BD9"></a><p class="title"><b>Table&nbsp;12.2.&nbsp;listfiles</b></p><table summary="listfiles" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Default</th><th>Required</th></tr></thead><tbody><tr><td>separator</td><td>The separator to use between individual items in the list of files.</td><td>, (comma)</td><td>No</td></tr><tr><td>includepath</td><td>If true, include the path with the filenames in the list.  If false, include only the filenames.</td><td>true</td><td>No</td></tr></tbody></table></div>
+<span class="bold"><strong>listfiles</strong></span> Create a list of files and/or directories. 
+<div class="table"><a name="N10BE3"></a><p class="title"><b>Table&nbsp;12.2.&nbsp;listfiles</b></p><table summary="listfiles" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Default</th><th>Required</th></tr></thead><tbody><tr><td>what</td><td>What to list, valid values are "files", "dirs", or "all".</td><td>files</td><td>No</td></tr><tr><td>separator</td><td>The separator to use between individual items in the list of files.</td><td>, (comma)</td><td>No</td></tr><tr><td>includepath</td><td>If true, include the path with the names in the list.  If false, include only the names.</td><td>true</td><td>No</td></tr></tbody></table></div>
+</p><p>
+<span class="bold"><strong>lastmodified</strong></span> Get the "last modified" date/timestamp of a file. 
 
-<div class="table"><a name="N10BFD"></a><p class="title"><b>Table&nbsp;12.3.&nbsp;lastmodified</b></p><table summary="lastmodified" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Default</th><th>Required</th></tr></thead><tbody><tr><td>format</td><td>A format for the last modified timestamp.  Must comply with the standards listed in java.text.SimpleDateFormat.</td><td>&nbsp;</td><td>No</td></tr></tbody></table></div>
+<div class="table"><a name="N10C16"></a><p class="title"><b>Table&nbsp;12.3.&nbsp;lastmodified</b></p><table summary="lastmodified" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Default</th><th>Required</th></tr></thead><tbody><tr><td>format</td><td>A format for the last modified timestamp.  Must comply with the standards listed in java.text.SimpleDateFormat.</td><td>&nbsp;</td><td>No</td></tr></tbody></table></div>
 
 </p><p>
 These operations have no attributes:

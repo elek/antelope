@@ -11,6 +11,8 @@ Check that ANT_HOME is set as an environment variable.
 Start jEdit.
 </li></ul></div>
 </p><p>
+Note that the Antelope plugin depends on the Console and ErrorList plugins, so you'll need to install those from the Plugin Manager also.
+</p><p>
 First, download the plugin zip file. Unzip it. The file named Antelope.jar is the plugin jar file. 
 </p><p>
 Second, figure out where to put it. jEdit wants its plugins in one of two places, either $jedit_home/jars or $user_home/.jedit/jars. The best place is $user.home/.jedit/jars.
@@ -33,6 +35,8 @@ If Ant is not found in any of these locations, it will ask you.
 </li></ul></div>
 Once Ant is found, the location will be stored by Antelope for future use. If you want to change the location, use jEdit's "Plugin" menu, then "Plugin Options", then "Antelope" in the plugin list. If you erase the setting found there, Antelope will follow the same procedure to find Ant next time it is started.
 </p><p>
+As a plugin, Antelope provides two "dockable" windows.  Use jEdit's menu "Utilites, Global Options, Docking" to dock the windows.  I find it convenient to dock the "Antelope" window on the right, and the "Ant Output" window on the bottom.  The "Antelope" window is where you'll see the buttons to run targets, the "Ant Output" windows is where you'll see any output produced by Ant as it runs.  Technically, the "Ant Output" window shows anything written to the system standard output stream, so you may see messages produced by other plugins there also.
+</p><p>
 To reiterate:
 <div class="itemizedlist"><ul type="disc"><li>
 Download the Antelope plugin jar file.
@@ -41,6 +45,6 @@ Copy it to jEdit's jar directory.
 </li><li>
 Check that ANT_HOME is set as an environment variable.
 </li><li>
-Start jEdit.
+Start jEdit.  Dock Antelope.
 </li></ul></div>
 </p></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="bk01ch03s02.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="bk01ch03.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="bk01ch04.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Installing Antelope as a Stand-Alone Application&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;4.&nbsp;Requirements</td></tr></table></div></body></html>

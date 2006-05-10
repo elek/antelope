@@ -87,7 +87,10 @@ public class AntelopePlugin extends EBPlugin {
     public final static String MENU = "Antelope.menu";
 
     // a shell instance for output
-    public static AntelopeShell SHELL = new AntelopeShell();
+    //public static AntelopeShell shell = new AntelopeShell();
+	// holds a shared instance of the Antelope shell
+	private static AntelopeShell shell =
+		(AntelopeShell) ServiceManager.getService("console.Shell", "Antelope");
 
     // one panel per view
     private static HashMap panelList = new HashMap();
@@ -113,6 +116,15 @@ public class AntelopePlugin extends EBPlugin {
         jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
     }
 
+	/**
+	 * @return a shared AntelopeShell singleton instance
+	 */
+	public static AntelopeShell getShell(){
+        if (shell == null)
+            shell = (AntelopeShell) ServiceManager.getService("console.Shell", "Antelope");
+		return shell;
+	}
+    
     /**
      * This method is called every time a view is created to set up the Plugins
      * menu. Menus and menu items should be loaded using the methods in the
@@ -134,7 +146,7 @@ public class AntelopePlugin extends EBPlugin {
         // change the value when the AntelopePluginPanel starts up.
         jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
 
-        // add this plugin to the EditBus so this plugin can recieve
+        // add this plugin to the EditBus so this plugin can receive
         // edit bus messages
         EditBus.addToBus( this );
 
@@ -143,7 +155,7 @@ public class AntelopePlugin extends EBPlugin {
         // user, but not a requirement.
         MiscUtilities.isToolsJarAvailable();
 
-        Shell.registerShell( SHELL );
+        //Shell.registerShell( shell );
         //Log.log( Log.DEBUG, AntelopePlugin.class, ">>>>>>>>>> AntelopePlugin.start()" );
         
 
@@ -180,8 +192,8 @@ public class AntelopePlugin extends EBPlugin {
 
         antJars = null;
         panelList = null;
-        Shell.unregisterShell( SHELL );
-        SHELL = null;
+        //Shell.unregisterShell( shell );
+        //shell = null;
         _listeners = null;
     }
 

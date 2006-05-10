@@ -227,12 +227,12 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
    public AntLogger( String namespace ) {
       NAMESPACE = namespace;
       initLogger();
-      open();
+      ///open();
    }
 
 
    /**
-    * Opens this logger for logging. 
+    * Opens this logger for logging.  Intercepts standard in and out.
     */
    public void open() {
       if ( !open ) {
@@ -319,8 +319,8 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
     * @param event  Ignored.
     */
    public void buildStarted( BuildEvent event ) {
-      Log.log("build started");
       handleProperties( event );
+      open();
       log( " " );
       // note: ConsolePluginHandler uses this message to show the Console plugin,
       // so if you change this message, be sure to update the ConsolePluginHandler 
@@ -373,9 +373,9 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       // note: ConsolePluginHandler uses this message to set focus back to the buffer,
       // so if you change this message, be sure to update the ConsolePluginHandler 
       message.append( "===== BUILD FINISHED =====" ).append( lSep );
+      message.append( new java.util.Date().toString()).append(lSep);
 
       String msg = message.toString();
-      Log.log(msg);
       log( Level.CONFIG, msg );
       //}
       close();
@@ -451,7 +451,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
    public void messageLogged( BuildEvent event ) {
       String msg = event.getMessage();
       if ( msg == null || msg.length() == 0 ) {
-         return ;
+         msg = "" ;
       }
       if ( SHOW_LOG_MSGS ) {
          int priority = event.getPriority();
@@ -487,10 +487,10 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
     */
    protected void log( Level level, String message ) {
       if ( message == null ) {
-         return ;
+         message = "" ;
       }
       
-      Log.log("AntLogger, got message: " + message);
+      Log.log(this, message);
 
       // log the message
       LogRecord record = new LogRecord( level, message );
@@ -511,7 +511,6 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
     * however, zero-length strings are.
     */
    protected void log( String message ) {
-      Log.log("antLogger, got message: " + message);
       log( Level.INFO, message );
    }
 
@@ -662,7 +661,8 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
                   }
 
                   public void write( byte[] bytes, int offset, int length ) {
-                     log( new String( bytes, offset, length ) );
+                      String s = new String(bytes, offset, length);
+                      log(s);
                   }
                }
             );

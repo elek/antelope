@@ -9,7 +9,7 @@
        <pre class="programlisting">
        
          &lt;taskdef resource="ise.antelope.tasks.antelope.taskdefs
-                  classpath="path/to/AntelopeTasks_3.2.10.jar"/&gt;
+                  classpath="path/to/AntelopeTasks_3.2.18.jar"/&gt;
        
        </pre>
        This will load all Antelope tasks without further hassle, and will only load the tasks once. It is not good to load the tasks multiple times, this can cause problems with 'ant' and 'antcall' in particular.
@@ -26,7 +26,7 @@
     </p><p>
         Notice that you may name the tasks whatever you want via 'taskdef'. The names listed in the individual task descriptions are those that are set via the preferred method mentioned above. 
     </p><p>
-        As of Antelope version 2.64, the 'AntLib' feature of Ant 1.6 is supported, which provides an alternate way of loading optional tasks. If AntelopeTasks_3.2.10.jar is in the core classpath (in ${ant.home}/lib for example) one can use the namespace short-cut to load them:
+        As of Antelope version 2.64, the 'AntLib' feature of Ant 1.6 is supported, which provides an alternate way of loading optional tasks. If AntelopeTasks_3.2.18.jar is in the core classpath (in ${ant.home}/lib for example) one can use the namespace short-cut to load them:
         <pre class="programlisting">
         
         &lt;project xmlns:antelope="antlib:ise.antelope.tasks"&gt;

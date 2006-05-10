@@ -1,6 +1,7 @@
 package ise.library;
 
 import java.io.*;
+import java.util.Date;
 
 /**
  * Copyright 2003
@@ -15,7 +16,7 @@ public class Log {
     private static boolean canLog = true; //System.getProperty("antelope.log.on") != null;
     
     static {
-        System.out.println("starting Log");   
+        System.out.println(">>>>>>> Antelope debug log: " + outfile.getAbsolutePath());   
     }
 
     /**
@@ -24,10 +25,16 @@ public class Log {
      * @param msg
      */
     public static void log(CharSequence msg) {
+        log(null, msg);   
+    }
+    
+    public static void log(Object o, CharSequence msg) {
         if (!canLog)
             return;
         try {
             FileWriter fw = new FileWriter(outfile, true);
+            if (o != null)
+                fw.write(new Date().toString() + ": " + o.getClass().getName() + ": ");
             fw.write(msg.toString());
             fw.write(LS);
             fw.flush();
@@ -44,9 +51,13 @@ public class Log {
      * @param t
      */
     public static void log(Throwable t) {
+        log(null, t);   
+    }
+    
+    public static void log(Object o, Throwable t) {
         if (!canLog)
             return;
-        log(getStackTrace(t));
+        log(o, getStackTrace(t));
     }
     
     public static String getStackTrace(Throwable t) {
