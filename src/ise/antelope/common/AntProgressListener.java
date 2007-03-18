@@ -104,7 +104,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
 
     /**
      * Resets the progress bar to 0 and to default color.
-     * @param be not used    
+     * @param be not used
      */
     public void buildStarted( BuildEvent be ) {
         setStringPainted( true );
@@ -117,7 +117,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
     /**
      * Set the progress par to maximum and adjust the color based on build
      * failure or success.
-     * @param be not used    
+     * @param be not used
      */
     public void buildFinished( BuildEvent be ) {
         if ( be.getException() != null ) {
@@ -138,7 +138,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * as the maximum value for the progress bar.
      * @param project the project containing the executing target, must not be
      * null.
-     * @param target_list a list of target names to execute, must not be null.    
+     * @param target_list a list of target names to execute, must not be null.
      */
     public void setExecutingTarget( Project project, ArrayList target_list ) {
         // XXX this needs more work...
@@ -161,21 +161,21 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
     }
 
     /**
-     * Show the name of the currently executing target in the status.    
+     * Show the name of the currently executing target in the status.
      */
     public void targetStarted( BuildEvent be ) {
         setString( be.getTarget().getName() );
     }
 
     /**
-     * no-op    
+     * no-op
      */
     public void targetFinished( BuildEvent be ) {
         // does nothing
     }
 
     /**
-     * no-op    
+     * no-op
      */
     public void taskStarted( BuildEvent be ) {
         // does nothing
@@ -183,7 +183,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
 
     /**
      * Sets progress bar to maximum value.
-     * @param be not used    
+     * @param be not used
      */
     public void taskFinished( BuildEvent be ) {
         setValue( getValue() + 1 );
@@ -191,7 +191,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
     }
 
     /**
-     * no-op    
+     * no-op
      */
     public void messageLogged( BuildEvent be ) {
         // does nothing
@@ -200,11 +200,11 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
     /**
      * Counts the number of tasks performed by the given target. If this target calls
      * other targets (either via &lt;ant&gt; or &lt;antcall&gt; tasks), the returned
-     * count will include the count of those targets as well. Tasks contained by 
+     * count will include the count of those targets as well. Tasks contained by
      * dependency targets are automatically counted, as are task containers. Bottom
      * line is any task that will be executed by calling this target will be counted.
      * @param target the target to count tasks in
-     * @return the number of tasks performed by this target    
+     * @return the number of tasks performed by this target
      */
     public int countTasks( Target target ) {
         if ( target == null )
@@ -219,7 +219,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * other targets (either via &lt;ant&gt; or &lt;antcall&gt; tasks), the returned
      * count will include the count of those targets as well.
      * @param target the target to count tasks in
-     * @return the number of tasks performed by this target    
+     * @return the number of tasks performed by this target
      */
     private int doCountTasks( Target target ) {
         int dependency_count = doCountDependencies( target );
@@ -228,12 +228,12 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
     }
 
     /**
-     * Counts the number of tasks performed by targets that the given target 
+     * Counts the number of tasks performed by targets that the given target
      * depends on. If those targets call
      * other targets (either via &lt;ant&gt; or &lt;antcall&gt; tasks), the returned
      * count will include the count of those targets as well.
      * @param target the target to count dependency tasks for
-     * @return the number of tasks performed dependency targets for this target    
+     * @return the number of tasks performed dependency targets for this target
      */
     private int doCountDependencies( Target target ) {
         if ( target == null )
@@ -257,7 +257,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * other targets (either via &lt;ant&gt; or &lt;antcall&gt; tasks), the returned
      * count will include the count of those targets as well.
      * @param target the target to count tasks in
-     * @return the number of tasks performed by this target    
+     * @return the number of tasks performed by this target
      */
     private int doTasks( Target target ) {
         if ( target == null )
@@ -349,7 +349,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * itself if any of the tasks in the task container are also task containers.
      * @param target the target containing the task in question
      * @param rc the RuntimeConfigurable representing the task
-     * @return the number of nested tasks.     
+     * @return the number of nested tasks.
      */
     private int countSubTasks( Target target, RuntimeConfigurable rc ) {
         int task_count = 0;

@@ -2,8 +2,8 @@
 <project name="antelope_task_test" default="test" basedir=".">
 
    <typedef resource="ise/antelope/tasks/antelope.taskdefs"
-         classpath="${ant.library.dir}/AntelopeTasks_3.2.10.jar"/>
-         
+         classpath="${ant.library.dir}/AntelopeTasks_3.2.19.jar"/>
+
    <target name="test">
       <suite name="Antelope Task Tests">
          <testcase file="assert_test.xml"/>

@@ -1,116 +1,117 @@
+
 <project name="Antelope Master Build" basedir="." default="all">
-   <description>
+    <description>
       Master build file for Antelope, calls other build files to do the actual
       work:
       build-plugin.xml, target name is "plugin"
       build-app.xml, target name is "app"
       build-source.xml, target name is "source"
       build-tasks.xml, target name is "tasks"
-      
+
       The default target builds Antelope as a jEdit plugin. Call target "all"
       to build all distribution files, call target "transform-docs" to build
       the documentation prior to running any of the above.
    </description>
-   
+
    <!-- ========================================================================
       Property definition
    ========================================================================= -->
    <!-- read build.props to override default property values set below -->
-   <property file="build.props"/>
-    
+    <property file="build.props"/>
+
    <!-- source code directory, this is where the .java files live -->
-   <property name="src.dir" location="src" />
-   
-   <!-- build directory, configuration and documentation files contained in 
-   the src directory are copied to this directory for pre-processing (tag 
+    <property name="src.dir" location="src" />
+
+   <!-- build directory, configuration and documentation files contained in
+   the src directory are copied to this directory for pre-processing (tag
    substitution, mostly) -->
-   <property name="prep.dir" location="prep"/>
-   
+    <property name="prep.dir" location="prep"/>
+
    <!-- configuration directory, configuration files from the src directory are
    copied here for pre-processing -->
-   <property name="config.dir" location="${prep.dir}/config" />
-   
+    <property name="config.dir" location="${prep.dir}/config" />
+
    <!-- documentation directory, documentation files from the src directory are
    copied here for pre-processing -->
-   <property name="doc.dir" location="${prep.dir}/docs" />
-   
+    <property name="doc.dir" location="${prep.dir}/docs" />
+
    <!-- override with a local path to docbookx.dtd if disconnected -->
-   <property name="docbookx.dtd" value="http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd"/>
-   
+    <property name="docbookx.dtd" value="http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd"/>
+
    <!-- directory for the compiled classes -->
-   <property name="classes.dir" location="classes" />
-   
+    <property name="classes.dir" location="classes" />
+
    <!-- directory for the completed distribution files -->
-   <property name="dist.dir" location="dist" />
-    
+    <property name="dist.dir" location="dist" />
+
    <!-- ========================================================================
       Target: all
       this target creates a complete set of distribution files
    ========================================================================= -->
-   <target name="all" 
-           description="Build complete set of distribution files."
-           depends="clean,plugin,app,source,tasks"/>
-      
+    <target name="all"
+            description="Build complete set of distribution files."
+            depends="clean,plugin,app,source,tasks"/>
+
    <!-- ========================================================================
       Target: clean
       deletes all files from the dist directory
    ========================================================================= -->
     <target name="clean" description="Delete all files from the dist directory.">
-        <delete>
-	   <fileset dir="${dist.dir}">
-              <include name="**/*"/>
-	   </fileset>
-	</delete>
+        <delete failonerror="false">
+            <fileset dir="${dist.dir}">
+                <include name="**/*"/>
+            </fileset>
+        </delete>
     </target>
-    
+
    <!-- ========================================================================
       Target: plugin
       this target creates the distribution file for the jEdit plugin
    ========================================================================= -->
-   <target name="plugin" 
-           description="Build distribution file for jEdit plugin">
-      <ant antfile="build-plugin.xml"/>
-   </target>
-   
+    <target name="plugin"
+            description="Build distribution file for jEdit plugin">
+        <ant antfile="build-plugin.xml"/>
+    </target>
+
    <!-- ========================================================================
       Target: app
       this target creates the distribution file for the Antelope application
    ========================================================================= -->
-   <target name="app"  
-           description="Build distribution file for Antelope application">
-      <ant antfile="build-app.xml"/>
-   </target>
-   
+    <target name="app"
+            description="Build distribution file for Antelope application">
+        <ant antfile="build-app.xml"/>
+    </target>
+
    <!-- ========================================================================
       Target: source
       this target creates the distribution file for the Antelope source code
    ========================================================================= -->
-   <target name="source" 
-           description="Build distribution file for Antelope source.">
-      <ant antfile="build-source.xml"/>
-      <ant antfile="build-plugin-src.xml"/>
-   </target>
-   
+    <target name="source"
+            description="Build distribution file for Antelope source.">
+        <ant antfile="build-source.xml"/>
+        <ant antfile="build-plugin-src.xml"/>
+    </target>
+
    <!-- ========================================================================
       Target: tasks
       this target creates the distribution file for the Antelope tasks
    ========================================================================= -->
-   <target name="tasks" 
-           description="Build distribution file for Antelope tasks.">
-      <ant antfile="build-tasks.xml"/>
-   </target>
-   
+    <target name="tasks"
+            description="Build distribution file for Antelope tasks.">
+        <ant antfile="build-tasks.xml"/>
+    </target>
+
    <!-- ========================================================================
       Target: transform-docs
-      converts the xml docbook formatted documentation into html and puts it 
-      into the prep directory. 
+      converts the xml docbook formatted documentation into html and puts it
+      into the prep directory.
    ========================================================================= -->
-   <target name="transform-docs" 
-           description="Create html documentation from xml source."
-           depends="init"
-           unless="docs.done">
-      
-        <!-- first, remove any previous documentation files from the prep 
+    <target name="transform-docs"
+            description="Create html documentation from xml source."
+            depends="init"
+            unless="docs.done">
+
+        <!-- first, remove any previous documentation files from the prep
         directory -->
         <delete>
             <fileset dir="${doc.dir}" includes="manual/**/*" />
@@ -122,69 +123,69 @@
             <fileset dir="${src.dir}/docs/manual" includes="**/*.jpg" />
             <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
         </copy>
-        
+
         <!-- prepare a wrapper -->
         <property name="docbook-wrapper" location="${doc.dir}/docbook-wrapper.xsl"/>
         <delete file="${docbook-wrapper}" />
         <echo file="${docbook-wrapper}"
-              message="&lt;xsl:stylesheet"/>
+                message="&lt;xsl:stylesheet"/>
         <echo file="${docbook-wrapper}" append="true"
-              message=" xmlns:xsl='http://www.w3.org/1999/XSL/Transform'"/>
+                message=" xmlns:xsl='http://www.w3.org/1999/XSL/Transform'"/>
         <echo file="${docbook-wrapper}" append="true"
-              message=" version='1.0'&gt;"/>
+                message=" version='1.0'&gt;"/>
         <echo file="${docbook-wrapper}" append="true"
-              message="&lt;xsl:import href='${docbook.xsl}/html/chunk.xsl'/&gt;"/>
+                message="&lt;xsl:import href='${docbook.xsl}/html/chunk.xsl'/&gt;"/>
         <echo file="${docbook-wrapper}" append="true"
-              message="&lt;/xsl:stylesheet&gt;"/>
-            
+                message="&lt;/xsl:stylesheet&gt;"/>
+
         <!-- transform the xml docbook formatted documentation into html and
         place it in the prep directory -->
         <style basedir="${src.dir}/docs/manual"
-               style="${docbook-wrapper}"
-               destdir="${doc.dir}/manual"
-               includes="userguide.xml">
+                style="${docbook-wrapper}"
+                destdir="${doc.dir}/manual"
+                includes="userguide.xml">
             <param name="html.stylesheet" expression="./style.css"/>
             <xmlcatalog>
-               <dtd 
-                  publicId="-//OASIS//DTD DocBook XML V4.1.2//EN"
-                  location="${docbookx.dtd}"/>
-            </xmlcatalog>    
+                <dtd
+                        publicId="-//OASIS//DTD DocBook XML V4.1.2//EN"
+                        location="${docbookx.dtd}"/>
+            </xmlcatalog>
         </style>
         <property name="docs.done" value="true"/>
-   </target>
-   
+    </target>
+
    <!-- ========================================================================
       Target: run
       this target runs Antelope as a stand-alone application using the compiled
       classes
    ========================================================================= -->
-   <target name="run"  
-           description="Run Antelope">
-      <ant antfile="build-app.xml" target="run"/>
-   </target>
-   
-   <target name="test_deployment">
-      <echo>dist.dir = ${dist.dir}</echo>
-      <ant antfile="${src.dir}/test/antelope_deployment_suite.xml" 
-           dir="${src.dir}/test"
-           inheritAll="true"/>
-   </target>
-   
+    <target name="run"
+            description="Run Antelope">
+        <ant antfile="build-app.xml" target="run"/>
+    </target>
+
+    <target name="test_deployment">
+        <echo>dist.dir = ${dist.dir}</echo>
+        <ant antfile="${src.dir}/test/antelope_deployment_suite.xml"
+                dir="${src.dir}/test"
+                inheritAll="true"/>
+    </target>
+
    <!-- ========================================================================
       Target: init
       this target creates the directories needed for this project and
       only needs to be done once.
    ========================================================================= -->
-   <target name="init" 
-           description="Create directory structure."
-           unless="init.done">
-     <mkdir dir="${src.dir}" />
-     <mkdir dir="${classes.dir}" />
-     <mkdir dir="${prep.dir}"/>
-     <mkdir dir="${doc.dir}" />          
-     <mkdir dir="${config.dir}" />
-     <mkdir dir="${dist.dir}"/>
-     <property name="init.done" value="true"/>
-   </target>
-   
+    <target name="init"
+            description="Create directory structure."
+            unless="init.done">
+        <mkdir dir="${src.dir}" />
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${prep.dir}"/>
+        <mkdir dir="${doc.dir}" />
+        <mkdir dir="${config.dir}" />
+        <mkdir dir="${dist.dir}"/>
+        <property name="init.done" value="true"/>
+    </target>
+
 </project>

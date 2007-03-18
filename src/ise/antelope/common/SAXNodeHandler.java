@@ -1,12 +1,10 @@
 package ise.antelope.common;
 
 import java.awt.Point;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.util.*;
 import java.util.logging.*;
+import java.util.regex.*;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.xml.parsers.SAXParser;
@@ -48,7 +46,8 @@ public class SAXNodeHandler extends DefaultHandler {
 
     private HashMap propertyFiles = null;
 
-    private HashMap antProperties = null;
+    // holds properties found while parsing the file
+    private HashMap antProperties = new HashMap();
 
     private Logger _logger = Logger.getLogger("ise.antelope.Antelope");
 
@@ -86,7 +85,7 @@ public class SAXNodeHandler extends DefaultHandler {
         isImported = imported;
         init();
     }
-    
+
     private void init() {
         // this seems like a slick idea, and works when running as an app, but
         // not as a plugin.  Maybe a jEdit classloader issue???
@@ -182,6 +181,7 @@ public class SAXNodeHandler extends DefaultHandler {
                 int index = attributes.getIndex("file");
                 if (index > -1) {
                     String filename = attributes.getValue(index);
+                    filename = resolveValue(filename);
                     System.out.println("filename = " + filename);
                     File f = new File(filename);
                     if (!f.exists()) {
@@ -225,6 +225,53 @@ public class SAXNodeHandler extends DefaultHandler {
                                 throw new SAXException(e);
                         }
                     }
+                    ///
+                }
+            }
+
+            // load and resolve properties
+            if (qName.equals("property")) {
+                String value = null;
+                if (child.getAttributeValue("name") != null) {
+                    String name = child.getAttributeValue("name");
+                    if (child.getAttributeValue("value") != null) {
+                        value = child.getAttributeValue("value");
+                    }
+                    else if (child.getAttributeValue("location") != null) {
+                        value = child.getAttributeValue("location");
+                    }
+                    value = resolveValue(value);
+                    if (value != null) {
+                        antProperties.put(name, value);
+                    }
+                }
+                /// maybe shouldn't do the 'else'?
+                else if (child.getAttributeValue("file") != null) {
+                    String filename = child.getAttributeValue("file");
+                    filename = resolveValue(filename);
+                    File f = new File(filename);
+                    if (!f.exists()) {
+                        f = new File(infile.getParent(), filename);
+                    }
+                    System.out.println("+++++ property filename: " + f);
+                    if (f.exists()) {
+                        Properties props = new Properties();
+                        try {
+                            props.load(new FileInputStream(f));
+                        }
+                        catch(Exception e) {
+                            e.printStackTrace();
+                        }
+                        Enumeration en = props.propertyNames();
+                        while(en.hasMoreElements()) {
+                            String name = (String)en.nextElement();
+                            value = props.getProperty(name);
+                            value = resolveValue(value);
+                            if (value != null) {
+                                antProperties.put(name, value);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -262,6 +309,27 @@ public class SAXNodeHandler extends DefaultHandler {
             sb.append("The specific error is: ").append(se.getMessage()).append("<p>");
             throw new SAXException(sb.toString());
         }
+    }
+
+    private String resolveValue(String s) {
+        StringBuffer output = new StringBuffer();
+        String regex = "\\$\\{.*?\\}";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(s);
+        int i = 0;
+        while (m.find(i)) {
+            int start = m.start();
+            int end = m.end();
+            output.append(s.substring(i, start));
+            String name = s.substring(start + 2, end - 1);
+            String value = (String)antProperties.get(name);
+            if (value == null)
+                value = System.getProperty(name);
+            //System.out.println("+++++ name: " + name + ", value: " + value);
+            output.append(value == null ? "${" + name + "}" : value);
+            i = end;
+        }
+        return ( output.toString() + s.substring(i));
     }
 
 
@@ -383,8 +451,9 @@ public class SAXNodeHandler extends DefaultHandler {
      * @param node   the node itself
      */
     private void setKind(String qname, SAXTreeNode node) {
-        if (qname.equals("project"))
+        if (qname.equals("project")) {
             node.setProject(true);
+        }
         else if (qname.equals("target"))
             node.setTarget(true);
         else if (taskList.contains(qname))

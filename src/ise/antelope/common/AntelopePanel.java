@@ -175,7 +175,7 @@ public class AntelopePanel extends JPanel {
     public AntelopePanel( File build_file, CommonHelperWrapper helper, boolean use_internal_menu ) {
         this( build_file, helper, use_internal_menu, null );
     }
-    
+
     public AntelopePanel(java.util.List args) {
         switch(args.size()) {
             case 0:
@@ -210,7 +210,7 @@ public class AntelopePanel extends JPanel {
             java.util.List menu_items ) {
         init(build_file, helper, use_internal_menu, menu_items);
     }
-    
+
     private void init(File build_file, CommonHelperWrapper helper, boolean use_internal_menu,
             java.util.List menu_items ) {
 
@@ -740,7 +740,7 @@ public class AntelopePanel extends JPanel {
         implicit target will get executed for <ant> tasks. */
         System.setProperty( "org.apache.tools.ant.ProjectHelper", "org.apache.tools.ant.helper.ProjectHelper2" );
 
-        
+
         // set up the progress listener
         _progress.setExecutingTarget( _project, targets );
 
@@ -764,7 +764,7 @@ public class AntelopePanel extends JPanel {
                 break;
         }
         _project.fireBuildFinished( null );
-        
+
         // reset project helper
         System.setProperty( "org.apache.tools.ant.ProjectHelper", "ise.antelope.common.AntelopeProjectHelper2" );
     }
@@ -781,7 +781,7 @@ public class AntelopePanel extends JPanel {
     }
 
     /**
-     * Reruns the last ran target(s).   
+     * Reruns the last ran target(s).
      */
     public void executeLastRanTargets() {
         if ( _last_ran_targets != null ) {
@@ -1091,10 +1091,10 @@ public class AntelopePanel extends JPanel {
                     }
                     ///
                     ///for (Iterator it = targets.keySet().iterator(); it.hasNext(); ) {
-                    ///    Log.log("target in targets: " + it.next());   
+                    ///    Log.log("target in targets: " + it.next());
                     ///}
                     ///
-                    
+
 
                     // Ant 1.6 has an un-named target to hold project-level tasks, so
                     // find it and save it for later.
@@ -1115,7 +1115,7 @@ public class AntelopePanel extends JPanel {
                     else
                         _targets = new LinkedHashMap();
                     Map sax_targets = _sax_panel.getTargets();
-                    
+
                     ///
                     ///for (Iterator ix = sax_targets.keySet().iterator(); ix.hasNext(); ) {
                     ///    String key = (String)ix.next();
@@ -1123,7 +1123,7 @@ public class AntelopePanel extends JPanel {
                     ///    Log.log("sax_targets: " + key + ":" + value);
                     ///}
                     ///
-                    
+
                     Iterator it = sax_targets.keySet().iterator();///targets.keySet().iterator();
                     while ( it.hasNext() ) {
                         // adjust which targets are showing --
@@ -1136,12 +1136,15 @@ public class AntelopePanel extends JPanel {
                         }
 
                         Target target = ( Target ) targets.get( target_name );
-                        
+
                         if ( target == null ) {
                             SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
                             if ( node.isImported() ) {
                                 target_name = node.getAttributeValue( "name" );
                                 target = ( Target ) targets.get( target_name );
+                                ///
+                                System.out.println("+++++ " + node.getFile());
+                                ///
                             }
                             if ( target == null )
                                 continue;
@@ -1308,16 +1311,16 @@ public class AntelopePanel extends JPanel {
 
         // configure the project
         Project p = new Project();
-        
+
         // set the project helper -- the AntelopeProjectHelper2 is the same as the Ant
-        // ProjectHelper2, but has been slightly modified so it does not automatically 
+        // ProjectHelper2, but has been slightly modified so it does not automatically
         // run the implicit target
         System.setProperty( "org.apache.tools.ant.ProjectHelper", "ise.antelope.common.AntelopeProjectHelper2" );
-        
+
         try {
             ClassLoader cl = _helper.getAntClassLoader();
             p.setCoreLoader( cl );
-            
+
             /*
             try {
                 Log.log("loading antlib with _helper classloader");
@@ -1328,11 +1331,11 @@ public class AntelopePanel extends JPanel {
                 e.printStackTrace();
             }
             */
-            
+
             // add the antelope build logger now so that any output produced by the
             // ProjectHelper is captured
             p.addBuildListener( _build_logger );
-            
+
             // add the progress bar build listener
             p.addBuildListener( _progress );
 
@@ -1342,7 +1345,7 @@ public class AntelopePanel extends JPanel {
                     _performance_listener = new AntPerformanceListener();
                 p.addBuildListener( _performance_listener );
             }
-            
+
             // add the gui input handler
             setInputHandler( p, "ise.antelope.common.AntInputHandler" );
 
@@ -1406,14 +1409,14 @@ public class AntelopePanel extends JPanel {
             ProjectHelper helper = ProjectHelper.getProjectHelper();
             p.addReference("ant.projectHelper", helper);
             helper.parse(p, build_file);
-            
+
             //for (Iterator it = p.getTargets().keySet().iterator(); it.hasNext(); ) {
-            //    System.out.println("target: " + it.next());   
+            //    System.out.println("target: " + it.next());
             //}
-            
+
             /*
             // looks like a recent change for antlib has busted loading custom tasks from
-            // an antlib declaration. Need to check if this ever worked, I used to use 
+            // an antlib declaration. Need to check if this ever worked, I used to use
             // taskdef exclusively, and have only recently switched to using antlib.
             // Using antlib works when Antelope is running as an application, but not as
             // a plugin.  Seems to have something to do with classloading.
@@ -1447,8 +1450,8 @@ public class AntelopePanel extends JPanel {
                 e.printStackTrace();
             }
             */
-            
-            
+
+
             return p;
         }
         catch ( Exception e ) {
@@ -1502,7 +1505,7 @@ public class AntelopePanel extends JPanel {
 
     /**
      * Determines if a target should be considered a "private" target.
-     * @return true if the target name contains a "." or starts with "-" or has an 
+     * @return true if the target name contains a "." or starts with "-" or has an
      * empty description.
      */
     private boolean isPrivate( Target target ) {
@@ -1846,7 +1849,7 @@ public class AntelopePanel extends JPanel {
         _logger = Logger.getLogger( "ise.antelope.Antelope" );
         _logger.setUseParentHandlers( false );
         _build_logger = new AntLogger();
-        
+
         // do this after the AntLogger is created as the AntLogger
         // installs a ConsoleHandler by default, so remove all ConsoleHandlers
         // to be on the safe side.
@@ -1893,8 +1896,8 @@ public class AntelopePanel extends JPanel {
             initLogger();
         }
         h.setLevel( _log_level );
-        
-        // make sure it is really added, initLogger may remove it, so 
+
+        // make sure it is really added, initLogger may remove it, so
         // explicitly add it again
         _logger.removeHandler( h );
         _logger.addHandler( h );

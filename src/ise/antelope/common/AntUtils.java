@@ -31,6 +31,8 @@ public class AntUtils {
             return ant_version;
         }
 
+        if ( av.indexOf( "1.7" ) > -1 )
+            return 1.70;
         if ( av.indexOf( "1.6" ) > -1 )
             return 1.60;
         if ( av.indexOf( "1.5" ) > -1 )
@@ -43,7 +45,7 @@ public class AntUtils {
     /**
      * Returns ANT_HOME as defined by an OS environment variable or System
      * property. System property is checked first, so it takes precedence, that is,
-     * it can be added on the command line to override an environment setting. 
+     * it can be added on the command line to override an environment setting.
      * <p>
      * Changed to for ANT_HOME first in Antelope's preferences, then System,
      * then environment.
@@ -88,7 +90,7 @@ public class AntUtils {
     }
 
     /**
-     * @return a path containing directories that ant jars are loaded from   
+     * @return a path containing directories that ant jars are loaded from
      */
     public static String getAntLibDirs() {
         StringBuffer sb = new StringBuffer();

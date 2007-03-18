@@ -26,6 +26,11 @@ public class HostnameTask extends Task {
     private String nIC = null;
     private boolean failOnError = false;
     private boolean showAll = false;
+    private boolean canonical = true;
+    private int outputType = 0;
+    public static final int HOST = 0;
+    public static final int IP = 1;
+    public static final int CANON = 2;
 
     /**
      * @param p  The name of the property to hold the hostname or IP address.
@@ -42,6 +47,7 @@ public class HostnameTask extends Task {
      */
     public void setShowip(boolean b) {
         useIp = b;
+        outputType = IP;
     }
 
     /**
@@ -72,6 +78,11 @@ public class HostnameTask extends Task {
     public void setShowall(boolean b) {
         showAll = b;
     }
+    
+    public void setShowcanonical(boolean b) {
+        canonical = b;
+        outputType = CANON;
+    }   
 
     /** Description of the Method */
     public void execute() {
@@ -85,7 +96,7 @@ public class HostnameTask extends Task {
                     Enumeration addrs = nic.getInetAddresses();
                     while (addrs.hasMoreElements()) {
                         InetAddress addr = (InetAddress) addrs.nextElement();
-                        String hostname = useIp ? addr.getHostAddress() : addr.getHostName();
+                        String hostname = getAddress(addr);
                         if (hostname != null && hostname.trim().length() > 0)
                             hostnames.append(hostname);
                         if (addrs.hasMoreElements())
@@ -106,7 +117,7 @@ public class HostnameTask extends Task {
                         Enumeration addrs = nic.getInetAddresses();
                         while (addrs.hasMoreElements()) {
                             InetAddress addr = (InetAddress) addrs.nextElement();
-                            String hostname = useIp ? addr.getHostAddress() : addr.getHostName();
+                            String hostname = getAddress(addr);
                             if (hostname != null && hostname.trim().length() > 0)
                                 hostnames.append(hostname);
                             if (addrs.hasMoreElements())
@@ -118,7 +129,7 @@ public class HostnameTask extends Task {
             }
             else {
                 InetAddress addr = InetAddress.getLocalHost();
-                String hostname = useIp ? addr.getHostAddress() : addr.getHostName();
+                String hostname = getAddress(addr);
                 getProject().setProperty(property, hostname);
             }
         }
@@ -128,6 +139,21 @@ public class HostnameTask extends Task {
             else
                 log(e.getMessage());
         }
+    }
+    
+    private String getAddress(InetAddress addr) {
+        String hostname = "";
+        switch (outputType) {
+            case IP:
+                hostname = addr.getHostAddress();
+                break;
+            case CANON:
+                hostname = addr.getCanonicalHostName();
+                break;
+            default:
+                hostname = addr.getHostName();
+        }
+        return hostname;
     }
 }
 
