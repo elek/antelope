@@ -1,8 +1,8 @@
 # required settings
 # linux:
 jedit.install.dir=${user.home}/apps/jedit/4.3pre6
-docbook.xsl=file:///usr/share/sgml/docbook/xsl-stylesheets-1.60.1
-docbookx.dtd=file:///usr/share/sgml/docbook/xml-dtd-4.1.2/docbookx.dtd
+docbook.xsl=file:///usr/share/sgml/docbook/stylesheet/xsl/nwalsh
+docbookx.dtd=file:///usr/share/sgml/docbook/dtd/4.2/docbookx.dtd
 
 # windows:
 #jedit.install.dir=c:/jEdit
@@ -10,7 +10,7 @@ docbookx.dtd=file:///usr/share/sgml/docbook/xml-dtd-4.1.2/docbookx.dtd
 #docbookx.dtd=file:///C:/cygwin/usr/share/docbook-xml42/docbookx.dtd
 
 install.dir=${user.home}/.jedit/jars
-build.num=3.2.19
+build.num=3.4.0
 
 # optional settings, remove if you don't use jikes
 #build.compiler=jikes
@@ -21,9 +21,9 @@ showDebug=false
 showDeprecated=false
 showWarnings=false
 
-prep.dir=c:/tigris/antelope/prep
-config.dir=c:/tigris/antelope/prep/config
-doc.dir=c:/tigris/antelope/prep/docs
-classes.dir=c:/tigris/antelope/classes
-dist.dir=c:/tigris/antelope/dist
+prep.dir=/home/danson/src/antelope/prep
+config.dir=/home/danson/src/antelope/prep/config
+doc.dir=/home/danson/src/antelope/prep/docs
+classes.dir=/home/danson/src/antelope/classes
+dist.dir=/home/danson/src/antelope/dist
 

@@ -2,30 +2,30 @@
 <project name="AntelopeTasks" default="dist" basedir=".">
     <description>
        This build file creates a zip file for distributing the Antelope tasks.
-       Main targets: 
+       Main targets:
          dist - creates a complete zip file for distribution
          jar - creates a jar file for the tasks
-         
+
        Zip file contents:
          /build.xml
          /docs
          /AntelopeTasks_X.X.X.jar
          /tasks_readme.txt
-       
+
     </description>
-    
+
     <!-- read build.props to override properties set below -->
     <property file="build.props"/>
 
     <!-- version number, override in build.props if necessary -->
     <property name="build.num" value="3.2.4"/>
-        
-    
+
+
     <!-- shouldn't need to override the following properties -->
-    
+
     <!-- source code directory, this is where the .java files live -->
     <property name="src.dir" location="src" />
-    
+
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
     <property name="prep.dir" location="prep"/>
@@ -41,12 +41,12 @@
     <!-- the directory for the compiled classes. Files in this directory will be
     included in the finished jar file. -->
     <property name="classes.dir" location="classes" />
-    
+
     <!-- where to put the finished distribution file -->
     <property name="dist.dir" location="dist"/>
-    
 
-    
+
+
    <!-- ========================================================================
       Target: set classpath
    ========================================================================= -->
@@ -70,7 +70,7 @@
             </fileset>
         </delete>
     </target>
-    
+
    <!-- ========================================================================
       Target: compile
    ========================================================================= -->
@@ -88,7 +88,7 @@
             <src path="${src.dir}/ise/library"/>
         </javac>
     </target>
-    
+
    <!-- ========================================================================
       Target: dist
       this target does several things:
@@ -100,7 +100,7 @@
     <target name="dist"
             description="Compiles, jars, puts the jar in the jEdit jars directory."
             depends="jar">
-        
+
         <!-- zip the jar and installation instructions and put the zip file in
         the $dist directory -->
         <zip destfile="${dist.dir}/${ant.project.name}_${build.num}.zip">
@@ -147,15 +147,11 @@
                 <include name="**/library/**/*"/>
             </fileset>
         </jar>
-        <copy todir="c:/apache-ant-1.6.5/lib">
-            <fileset dir="${prep.dir}" includes="**/AntelopeTasks*.jar" />
-        </copy>
-
     </target>
-    
+
    <!-- ========================================================================
       Target: docs-xalan
-      Generate docs from docbook format xml files with Xalan. This uses the 
+      Generate docs from docbook format xml files with Xalan. This uses the
       files in ${src.dir}/docs and puts the finished files in ${prep.dir}/docs.
       The files are NOT ready for distribution until after prep_files is ran.
    ========================================================================= -->
@@ -179,8 +175,8 @@
             <param name="html.stylesheet" expression="./style.css"/>
         </style>
     </target>
-    
-   
+
+
    <!-- ========================================================================
       Target: Javadoc
    ========================================================================= -->
@@ -199,7 +195,7 @@
         </javadoc>
 
     </target>
-   
+
    <!-- ========================================================================
       Target: copy_resources
    ========================================================================= -->
@@ -212,10 +208,10 @@
             <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
         </copy>
     </target>
-    
+
    <!-- ========================================================================
       Target: prep_files
-      prepares certain files for distribution by doing string replacement. 
+      prepares certain files for distribution by doing string replacement.
       Assumes that the configuration files and documentation files are ready.
    ========================================================================= -->
     <target name="prep_files"
@@ -245,7 +241,7 @@
                 value="${TODAY}" />
 
     </target>
-   
+
    <!-- ========================================================================
       Target: init
       this target creates the directories needed for this project and

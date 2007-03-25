@@ -3,7 +3,7 @@
 
 <book>
 <bookinfo>
-    <title>Antelope Users Guide, Version @@build.num@@</title>
+    <title>Antelope Users Guide, Version @buildnum@</title>
 
     <authorgroup>
         <author><firstname>Dale</firstname><surname>Anson</surname></author>
@@ -12,17 +12,17 @@
 </bookinfo>
 
 <chapter id="legal">
-@@style@@
+@style@
     <title>Legalities</title>
     <para>
     Per the Apache license (see below):
     </para>
-    
+
     <para>
-"This product includes software developed by the 
+"This product includes software developed by the
 Apache Software Foundation (http://www.apache.org/)."
     </para>
-    
+
     <para>
         Antelope is licensed under the same Apache license as Ant:
     </para>
@@ -84,9 +84,9 @@ information on the Apache Software Foundation, please see
     ]]>
     </programlisting>
     </para>
-    
+
     <para>
-Some of the icons used in Antelope are from Sun's Java Look and Feel Graphics Repository. The following license pertains to those icons:    
+Some of the icons used in Antelope are from Sun's Java Look and Feel Graphics Repository. The following license pertains to those icons:
     <programlisting>
     <![CDATA[
 Copyright 2000 by Sun Microsystems, Inc. All
@@ -133,11 +133,11 @@ this Disclaimer to be otherwise enforceable in
 such jurisdiction.
     ]]>
     </programlisting>
-    </para>    
+    </para>
 </chapter>
 
 <chapter id="intro">
-@@style@@
+@style@
 <title>Introduction</title>
 
 <para>
@@ -150,19 +150,19 @@ Disclaimer: Typically, the documentation is not quite up-to-date with the softwa
 </para>
 
 <para>
-Antelope is a graphical user interface for running Ant. It provides a set of buttons, one per target, which makes it easy to start a specific Ant operation. Basically, an Ant build file is opened with Antelope and the targets defined in the build file can be executed by clicking a button. Antelope is much more than a thin wrapper around Ant, however. 
+Antelope is a graphical user interface for running Ant. It provides a set of buttons, one per target, which makes it easy to start a specific Ant operation. Basically, an Ant build file is opened with Antelope and the targets defined in the build file can be executed by clicking a button. Antelope is much more than a thin wrapper around Ant, however.
 </para>
 
 <para>
-Antelope can run in two different environments. It can run as a stand-alone GUI application and as a plugin to jEdit (www.jedit.org), an excellent open source editor for programmers. 
+Antelope can run in two different environments. It can run as a stand-alone GUI application and as a plugin to jEdit (www.jedit.org), an excellent open source editor for programmers.
 </para>
 
 <para>
-As a stand-alone application, Antelope provides the ability to create and edit Ant build files, the ability to run build file targets, and can trace target and task execution in a quasi-debug mode. Output from the build process can be captured to a file and/or to screen and performance statistics can be gathered to guide optimization efforts. Several very useful tasks to extend Ant are included. 
+As a stand-alone application, Antelope provides the ability to create and edit Ant build files, the ability to run build file targets, and can trace target and task execution in a quasi-debug mode. Output from the build process can be captured to a file and/or to screen and performance statistics can be gathered to guide optimization efforts. Several very useful tasks to extend Ant are included.
 </para>
 
 <para>
-As a jEdit plugin, Antelope expands the features of the stand-alone application to nicely integrate with the text editor and with the Console and ErrorList plugins. Antelope has an open API that allows other plugins to utilize Antelope's capabilities. 
+As a jEdit plugin, Antelope expands the features of the stand-alone application to nicely integrate with the text editor and with the Console and ErrorList plugins. Antelope has an open API that allows other plugins to utilize Antelope's capabilities.
 </para>
 
 <para>
@@ -180,15 +180,17 @@ In either mode, Antelope provides property and reference inspection and the abil
 </chapter>
 
 <chapter id="installation">
-@@style@@
+@style@
 <title>Installation</title>
 <section id="install_ant">
+@style@
 <title>Install Ant</title>
 <para>
 Antelope assumes you already have Ant installed. If you don't, you can get it from http://ant.apache.org. You need to have Ant installed before Antelope will run.
 </para>
 </section>
 <section id="install_app">
+@style@
 <title>Installing Antelope as a Stand-Alone Application</title>
 <para>
 This section assumes you'll install Antelope as a stand-alone application by hand. It's really quite easy:
@@ -200,14 +202,15 @@ Download the Antelope application zip file.
 Unzip the file.
 </para>
 <para>
-Change to the AntelopeApp_@@build.num@@ directory.
+Change to the AntelopeApp_@buildnum@ directory.
 </para>
 <para>
-Start Antelope by using this command: ant -f run.xml
+Start Antelope by using this command: java -jar AntelopeApp_@buildnum@.jar
 </para>
 </section>
 
 <section id="install_plugin">
+@style@
 <title>Installing Antelope as a jEdit Plugin</title>
 <para>
 You can install Antelope in jEdit by using the Plugin Manager. Just follow the instructions for installing any plugin found in the jEdit help system. This section assumes you'll install Antelope into jEdit by hand because Antelope is updated much more frequently than jEdit's Plugin Central. It's really quite easy:
@@ -235,13 +238,13 @@ Note that the Antelope plugin depends on the Console and ErrorList plugins, so y
 </para>
 
 <para>
-First, download the plugin zip file. Unzip it. The file named Antelope.jar is the plugin jar file. 
+First, download the plugin zip file. Unzip it. The file named Antelope.jar is the plugin jar file.
 </para>
 <para>
 Second, figure out where to put it. jEdit wants its plugins in one of two places, either $jedit_home/jars or $user_home/.jedit/jars. The best place is $user.home/.jedit/jars.
 </para>
 <para>
-So where is $user_home? That depends on your operating system. 
+So where is $user_home? That depends on your operating system.
 </para>
 <para>
 For Windows 95 and later, it's usually C:\Documents and Settings\yourusername, where yourusername is the name you use to log on to Windows. On my Windows 2000 machine, it's C:\Documents and Settings\danson, so I would copy the jar file into C:\Documents and Settings\danson\.jedit\jars.
@@ -250,16 +253,16 @@ For Windows 95 and later, it's usually C:\Documents and Settings\yourusername, w
 For Linux or Unix, $user_home is usually /home/yourusername or /export/home/yourusename. On my Linux box, it's /home/danson, so I would copy the jar file into /home/danson/.jedit/jars.
 </para>
 <para>
-The third step is letting Antelope know where you have Ant installed. This directory is known as "ANT_HOME". For example, on my Windows 2000 machine, I have Ant installed in c:\apache-ant-1.6.0, so that would be my ANT_HOME. Antelope looks in a few places when it starts: 
+The third step is letting Antelope know where you have Ant installed. This directory is known as "ANT_HOME". For example, on my Windows 2000 machine, I have Ant installed in c:\apache-ant-1.6.0, so that would be my ANT_HOME. Antelope looks in a few places when it starts:
 <itemizedlist>
 <listitem>
-First, it looks for a System property named ANT_HOME. You could set a System property on the command-line to start jEdit (something like java -mx64m -DANT_HOME=c:/apache-ant-1.6.0 -jar jedit.jar) or if you're using Windows, you can set something similar in the jEdit launcher tool (Start - Programs - jEdit - Set jEdit Parameters). 
+First, it looks for a System property named ANT_HOME. You could set a System property on the command-line to start jEdit (something like java -mx64m -DANT_HOME=c:/apache-ant-1.6.0 -jar jedit.jar) or if you're using Windows, you can set something similar in the jEdit launcher tool (Start - Programs - jEdit - Set jEdit Parameters).
 </listitem>
 <listitem>
-Second, it looks for an environment variable named ANT_HOME. This is actually the preferred method, and is recommended in the Ant installation instructions. How you set an environment variable depends on your operating system, on Windows, go to Start - Settings - Control Panel - System - Advanced - Environment Variables. On Linux or Unix, I'll assume you know what to do. 
+Second, it looks for an environment variable named ANT_HOME. This is actually the preferred method, and is recommended in the Ant installation instructions. How you set an environment variable depends on your operating system, on Windows, go to Start - Settings - Control Panel - System - Advanced - Environment Variables. On Linux or Unix, I'll assume you know what to do.
 </listitem>
 <listitem>
-If there is no environment variable set, then Antelope looks in the jEdit jars directories. You can copy the files from ANT_HOME/lib to the jEdit jars directory like you did with the Antelope jar file, and jEdit will automatically load them. This wasn't a bad solution with Ant 1.5 as there were only a couple of jars to maintain, but Ant 1.6 comes with about 20 jar files, so it's a bit more cumbersome. 
+If there is no environment variable set, then Antelope looks in the jEdit jars directories. You can copy the files from ANT_HOME/lib to the jEdit jars directory like you did with the Antelope jar file, and jEdit will automatically load them. This wasn't a bad solution with Ant 1.5 as there were only a couple of jars to maintain, but Ant 1.6 comes with about 20 jar files, so it's a bit more cumbersome.
 </listitem>
 <listitem>
 If Ant is not found in any of these locations, it will ask you.
@@ -293,7 +296,7 @@ Start jEdit.  Dock Antelope.
 </chapter>
 
 <chapter id="requirements">
-@@style@@
+@style@
 <title>Requirements</title>
 
 <para>
@@ -310,16 +313,17 @@ Antelope does require Ant 1.5.x or later, which is a separate download. Ant is a
 </para>
 
 <para>
-A note about Ant 1.6: With the release of Ant 1.6, the Ant developers have choosen to package the classes that formerly were part of "optional.jar" into a variety of smaller jar files. 
+A note about Ant 1.6: With the release of Ant 1.6, the Ant developers have choosen to package the classes that formerly were part of "optional.jar" into a variety of smaller jar files.
 </para>
 
 </chapter>
 
 <chapter id="runningantelope">
-@@style@@
+@style@
 <title>Running Antelope</title>
 
 <section id="options">
+@style@
 <title>Option Settings</title>
 <para>
 Either way, Antelope is operated almost identically. To set up Antelope, click on the "Options" button. This will display the following:
@@ -381,23 +385,23 @@ The available options on the "Targets" tab are:
     <itemizedlist>
     <listitem>
     <para>
-    One method of distinguishing between primary and subtargets is only giving descriptions to primary targets. Unchecking the "Show targets without descriptions" will cause Antelope to display buttons only for targets that have a description. 
+    One method of distinguishing between primary and subtargets is only giving descriptions to primary targets. Unchecking the "Show targets without descriptions" will cause Antelope to display buttons only for targets that have a description.
     </para>
     </listitem>
-    
+
     <listitem>
     <para>
     Another common method to designate subtargets is to use "dot" notation, for example, a "clean" target may have two helper targets, "clean.docs" and "clean.api.docs". Unchecking the "Show targets with dots" will cause Antelope to display a button for the "clean" target but not the "clean.docs" nor the "clean.api.docs" targets.
     </para>
     </listitem>
-    
+
     <listitem>
     <para>
     The third method of designating subtargets is to start the names of these targets with a dash, for example, "-clean.docs" and "-clean.api.docs". Unchecking the "Show targets with dash" will cause Antelope to display a button for each such target.
     </para>
     </listitem>
-    </itemizedlist>    
-By default, none of these options are selected. Antelope displays all private targets in italics.   
+    </itemizedlist>
+By default, none of these options are selected. Antelope displays all private targets in italics.
 </para>
 </listitem>
 <listitem>
@@ -452,15 +456,16 @@ The available options on the "Appearance" tab are:
 </itemizedlist>
 
 <para>
-All option settings are stored per build file (except for the Appearance settings), which means that when you close one file and open another, the option settings for the new file will be retrieved and automatically set. 
+All option settings are stored per build file (except for the Appearance settings), which means that when you close one file and open another, the option settings for the new file will be retrieved and automatically set.
 </para>
 </section>
 
 <section id="standalone">
+@style@
 <title>Antelope as a Stand-Alone Application</title>
 
 <para>
-As Antelope requires Ant to do anything useful, an Ant build file is provided that starts Antelope. This makes it easy to start Antelope on any platform, and makes it easy to set the proper classpath independent of any other classpath that may exist in your environment. It is assumed that you have a working installation of Ant on your system. The Antelope start script is named "run.xml" and can be found in the top level directory of your Antelope distribution.
+Note: previous releases of Antelope recommended using Ant with the included "run.xml" to start Antelope.  This is no longer recommended.  If you have Java 1.5 and Ant 1.6 or 1.7, just run the jar file as below, or in Windows and some Linux distributions, you can double click the jar file to start Antelope.
 </para>
 <para>
 Start Antelope by running:
@@ -469,8 +474,8 @@ Start Antelope by running:
 <para>
 <programlisting>
 <![CDATA[
-    cd AntelopeApp_@@build.num@@
-    ant -f run.xml
+    cd AntelopeApp_@buildnum@
+    java -jar AntelopeApp_@buildnum@.jar
 ]]>
 </programlisting>
 </para>
@@ -478,7 +483,7 @@ Start Antelope by running:
 <para>
 The first time you run this you will be asked to enter the location of the 'lib' directory of your Ant installation.
 </para>
- 
+
 <para>
 You can also install Antelope by hand. Antelope is packaged as a single jar file, Antelope.jar. Several other jar files may be necessary:
 </para>
@@ -512,21 +517,7 @@ You can also install Antelope by hand. Antelope is packaged as a single jar file
 </itemizedlist>
 
 <para>
-<emphasis role="bold">All of these jar files are included automatically in the classpath if you start Antelope with the run.xml file.</emphasis>
-</para>
-<para>
-The manifest file for Antelope.jar specifies ant.jar is to be found on the classpath, so all that should be necessary to start Antelope is:
-</para>
-<para>
-<computeroutput>java -jar Antelope.jar</computeroutput>
-</para>
-
-<para>
-If using the optional.jar and/or tools.jar:
-</para>
-
-<para>
-<computeroutput>java -cp optional.jar:tools.jar -jar Antelope.jar</computeroutput>
+<emphasis role="bold">Unless you are running an older version of Java and/or an older version of Ant, just running the jar file will automatically include all necessary files.</emphasis>
 </para>
 
 <para>
@@ -592,6 +583,7 @@ Printing is not available in this version, but is on the feature list for implem
 </section>
 
 <section id="plugin">
+@style@
 <title>Antelope as a jEdit Plugin</title>
 
 <para>
@@ -620,8 +612,7 @@ Errors found by Ant during a build (for example, a compilation error) will be sh
 </chapter>
 
 <chapter id="runningtargets">
-@@style@@
-
+@style@
 <title>Running Ant Targets</title>
 
 <para>
@@ -644,10 +635,10 @@ Multiple targets can be selected to run one right after another by selecting the
 </chapter>
 
 <chapter id="propertydisplay">
-@@style@@
+@style@
 <title>Displaying Ant Properties</title>
 <para>
-The "Properties" button displays the current properties and references known to Ant from the current build file and the system environment. This is handy for determining exactly what Ant thinks a specific property value is. "Properties" and "References" are for viewing only, not for editing. The "Properties" shows all properties known to the Ant project: system properties, user properties, and global properties set in the build file. The "References" tab shows all global references known to the Ant project. 
+The "Properties" button displays the current properties and references known to Ant from the current build file and the system environment. This is handy for determining exactly what Ant thinks a specific property value is. "Properties" and "References" are for viewing only, not for editing. The "Properties" shows all properties known to the Ant project: system properties, user properties, and global properties set in the build file. The "References" tab shows all global references known to the Ant project.
 </para>
 
 <para>
@@ -692,7 +683,7 @@ The "Description" tab shows some information about the build file project. The v
 </chapter>
 
 <chapter id="editing">
-@@style@@
+@style@
 <title>Editing the Build File</title>
 
 <para>
@@ -802,7 +793,7 @@ Right clicking on a target in the edit tree shows a dependency tree for that tar
 </chapter>
 
 <chapter id="tracing">
-@@style@@
+@style@
 <title>Tracing Target Execution</title>
 <para>
 Antelope is put into 'tracing mode' when the "Trace" button is clicked. When in tracing mode, the background of the button panel will be blue. When in tracing mode, clicking the target buttons will not actually execute the target. Instead, the output will show the specific order of execution of tasks performed by the target and targets that the selected target depends on. This is useful for figuring out exactly what a specific target does and the order of operations. To turn off tracing mode, click the "Trace" button a second time.
@@ -875,7 +866,7 @@ So the 'deploy_all' target first causes the 'clean' target to execute a 'delete'
 
 
 <chapter id="antlogger">
-@@style@@
+@style@
 <title>AntLogger</title>
 
 <para>
@@ -961,7 +952,7 @@ System.out and System.err print streams.</entry>
 </para>
 
 <para>
-- or - 
+- or -
 </para>
 
 <para>
@@ -1010,15 +1001,15 @@ Messages for certain build events are sent at a particular log Level. See java.u
 </chapter>
 
 <chapter id="for-developers">
-@@style@@
-
+@style@
 <title>For Developers</title>
 
 <section id="embedding-antelope">
-   <title>Embedding Antelope in Other Applications</title>
-   
+   @style@
+<title>Embedding Antelope in Other Applications</title>
+
 <para>
-Antelope has an open API that allows developers to easily embed Antelope into other applications.  
+Antelope has an open API that allows developers to easily embed Antelope into other applications.
 </para>
 
 <para>
@@ -1026,10 +1017,10 @@ The main object to embed is AntelopePanel. AntelopePanel has three constructors:
 <programlisting>
 <![CDATA[
    public AntelopePanel()
-   
+
    public AntelopePanel( CommonHelper helper )
-   
-   public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu ) 
+
+   public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu )
 ]]>
 </programlisting>
 </para>
@@ -1038,14 +1029,14 @@ The main object to embed is AntelopePanel. AntelopePanel has three constructors:
 The first no-argument constructor is identical to:
 <programlisting>
 <![CDATA[
-   public AntelopePanel( null, null, true ) 
+   public AntelopePanel( null, null, true )
 ]]>
 </programlisting>
 
 And the second constructor is identical to:
 <programlisting>
 <![CDATA[
-   public AntelopePanel( null, helper, true ) 
+   public AntelopePanel( null, helper, true )
 ]]>
 </programlisting>
 </para>
@@ -1054,7 +1045,7 @@ And the second constructor is identical to:
 The third constructor allows the most flexibility:
 <programlisting>
 <![CDATA[
-   public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu ) 
+   public AntelopePanel( File build_file, CommonHelper helper, boolean use_internal_menu )
 ]]>
 </programlisting>
 
@@ -1103,7 +1094,7 @@ public interface CommonHelper extends ActionListener {
    public final static int EDIT_EVENT = 470226;
 
    /**
-    * AntelopePanel will pass the target execution thread to the helper. 
+    * AntelopePanel will pass the target execution thread to the helper.
     * Implementors of this interface may interrupt the thread to cause
     * AntelopePanel to stop running a target.
     *
@@ -1124,7 +1115,7 @@ public interface CommonHelper extends ActionListener {
    public void saveBeforeRun();
 
    /**
-    * Tell the helper to clear its error source. This was implemented to 
+    * Tell the helper to clear its error source. This was implemented to
     * support the ErrorList plugin for jEdit, other editors may hava a similar
     * need.
     */
@@ -1162,7 +1153,7 @@ public interface CommonHelper extends ActionListener {
    public void openFile( java.io.File f );
 
    /**
-    * Generally, the classloader returned by the helper will probably be null, 
+    * Generally, the classloader returned by the helper will probably be null,
     * but some apps, like jEdit, use special classloaders. As AntProject needs
     * direct access to the classloader that loads Ant, the helper should pass
     * the classloader via this method.
@@ -1174,17 +1165,17 @@ public interface CommonHelper extends ActionListener {
    /**
     * The Ant installation that the helper uses may not be in the application classpath.
     * AntelopePanel needs to know where the Ant jars are located so it can run Ant
-    * properly. Implementers may return null, meaning that the Ant jars are already 
+    * properly. Implementers may return null, meaning that the Ant jars are already
     * in the classpath.
     * <p>
     * <strong>WARNING:</strong> this method is likely to change. The helper should
     * not need to provide a list of jars, rather, it should provide an ANT_HOME
     * directory. Antelope should be smart enough to find the jars given the
-    * directory, plus should automatically look in the standard Ant library 
+    * directory, plus should automatically look in the standard Ant library
     * locations.
     * @return a list of the jars used by Ant. The individual list items must be Strings
     * representing the file names of the jar files. Note that other jars may be included,
-    * such as custom Ant task libraries. 
+    * such as custom Ant task libraries.
     */
    public java.util.List getAntJarList();
 
@@ -1198,12 +1189,13 @@ public interface CommonHelper extends ActionListener {
 At a minimum, you'll need to include all classes in the ise.antelope.common and ise.library packages.
 </para>
 
-   
+
 </section>
 
 <section id="jedit">
-   <title>API for jEdit Plugin Developers</title>
-   
+   @style@
+<title>API for jEdit Plugin Developers</title>
+
 <para>
 Antelope can be used from other jEdit plugins that may desire to run Ant targets. The public API is described here, plus some examples of how to use this API from other plugins. You can also use this API from a beanshell macro, see the <link linkend="faq">FAQ section</link>.
 </para>
@@ -1212,14 +1204,14 @@ Antelope can be used from other jEdit plugins that may desire to run Ant targets
 <programlisting>
 public static File getBuildFile(View view);
 </programlisting>
-This method returns a reference to the current build file. 
+This method returns a reference to the current build file.
 </para>
 
 <para>
 <programlisting>
 public static String[] getTargetList(File buildFile);
 </programlisting>
-This method returns a list of the target names in the given build file. 
+This method returns a list of the target names in the given build file.
 </para>
 
 <para>
@@ -1237,7 +1229,7 @@ This method sets the current build file for the Antelope instance in the given v
 </para>
 
 <para>
-Following are some examples of calling these methods from your plugin. Notice that you do not need the Antelope source or classes to compile or run your plugin, so you do not need to make Antelope a dependency for the PluginManager. The examples only work if Antelope is actually installed as a jEdit plugin and do nothing otherwise. The best place to put these examples is in your plugin's Plugin class. These examples are suitable for copy and paste into your plugin's source code. You will need to import: org.gjt.sp.jedit.EditPlugin, org.gjt.sp.jedit.jEdit, org.gjt.sp.jedit.View, and java.io.File. 
+Following are some examples of calling these methods from your plugin. Notice that you do not need the Antelope source or classes to compile or run your plugin, so you do not need to make Antelope a dependency for the PluginManager. The examples only work if Antelope is actually installed as a jEdit plugin and do nothing otherwise. The best place to put these examples is in your plugin's Plugin class. These examples are suitable for copy and paste into your plugin's source code. You will need to import: org.gjt.sp.jedit.EditPlugin, org.gjt.sp.jedit.jEdit, org.gjt.sp.jedit.View, and java.io.File.
 </para>
 
 <para>
@@ -1251,7 +1243,7 @@ public static boolean isAntelopeAvailable() {
 </para>
 
 <para>
-This method returns a reference to the current build file or null if Antelope is not installed or on any other error. 
+This method returns a reference to the current build file or null if Antelope is not installed or on any other error.
 <programlisting>
    public static File getBuildFile(View view) {
       if (view == null){
@@ -1278,7 +1270,7 @@ This method returns a reference to the current build file or null if Antelope is
 </para>
 
 <para>
-This method returns a list of targets in the given build file or null if Antelope is not installed or on any other error. 
+This method returns a list of targets in the given build file or null if Antelope is not installed or on any other error.
 <programlisting>
    public static String[] getTargetList(File buildFile) {
       if (buildFile == null || !buildFile.exists()){
@@ -1331,7 +1323,7 @@ This method will execute an Ant target via Antelope.
 
 <para>
 This method will cause Antelope to load the given build file.
-<programlisting>   
+<programlisting>
    public static void setAntelopeBuildFile(View view, File buildFile) {
       if (buildFile == null || !buildFile.exists()){
          return;
@@ -1355,11 +1347,11 @@ This method will cause Antelope to load the given build file.
 </programlisting>
 </para>
 </section>
-   
+
 </chapter>
 
 <chapter id="faq">
-@@style@@
+@style@
 <title>Frequently Asked Questions</title>
 <para>
 <itemizedlist>
@@ -1440,7 +1432,7 @@ If you are starting Antelope from command-line java, add the -Xmx parameter to t
 </para>
 <para>
 <programlisting>
-java -Xmx128m -jar AntelopeApp_X.XX.jar
+java -Xmx128m -jar AntelopeApp_@buildnum@.jar
 </programlisting>
 </para>
 </listitem>
@@ -1490,11 +1482,11 @@ Antelope version 2.53 and earlier did not support external entities. Upgrade to 
 </chapter>
 
 <chapter id="support">
-@@style@@
+@style@
 <title>Support</title>
 
 <para>
-Please visit the project web pages at 
+Please visit the project web pages at
 <ulink url="http://antelope.tigris.org">
 http://antelope.tigris
 </ulink> for reporting bugs, user mailing lists, and other technical resources. This is also the location for finding the latest releases. In particular, if you are using Antelope as a jEdit plugin, you will invariably find newer versions on the Antelope project web site than from jEdit's plugin manager.

@@ -1,14 +1,16 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Antelope as a Stand-Alone Application</title><link href="./style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.69.1" name="generator"><link rel="start" href="index.html" title="Antelope Users Guide"><link rel="up" href="bk01ch05.html" title="Chapter&nbsp;5.&nbsp;Running Antelope"><link rel="prev" href="bk01ch05.html" title="Chapter&nbsp;5.&nbsp;Running Antelope"><link rel="next" href="bk01ch05s03.html" title="Antelope as a jEdit Plugin"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Antelope as a Stand-Alone Application</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="bk01ch05.html">Prev</a>&nbsp;</td><th align="center" width="60%">Chapter&nbsp;5.&nbsp;Running Antelope</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="bk01ch05s03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="standalone"></a>Antelope as a Stand-Alone Application</h2></div></div><div></div></div><p>
-As Antelope requires Ant to do anything useful, an Ant build file is provided that starts Antelope. This makes it easy to start Antelope on any platform, and makes it easy to set the proper classpath independent of any other classpath that may exist in your environment. It is assumed that you have a working installation of Ant on your system. The Antelope start script is named "run.xml" and can be found in the top level directory of your Antelope distribution.
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Antelope as a Stand-Alone Application</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="Antelope Users Guide"><link rel="up" href="bk01ch05.html" title="Chapter 5. Running Antelope"><link rel="prev" href="bk01ch05.html" title="Chapter 5. Running Antelope"><link rel="next" href="bk01ch05s03.html" title="Antelope as a jEdit Plugin"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Antelope as a Stand-Alone Application</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="bk01ch05.html">Prev</a> </td><th width="60%" align="center">Chapter 5. Running Antelope</th><td width="20%" align="right"> <a accesskey="n" href="bk01ch05s03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="standalone"></a>Antelope as a Stand-Alone Application</h2></div></div></div>
+<STYLE TYPE="text/css"> <!-- @import url(./style.css); --> </STYLE>
+<p>
+Note: previous releases of Antelope recommended using Ant with the included "run.xml" to start Antelope.  This is no longer recommended.  If you have Java 1.5 and Ant 1.6 or 1.7, just run the jar file as below, or in Windows and some Linux distributions, you can double click the jar file to start Antelope.
 </p><p>
 Start Antelope by running:
 </p><p>
-<pre class="programlisting">
+</p><pre class="programlisting">
 
-    cd AntelopeApp_3.2.18
-    ant -f run.xml
+    cd AntelopeApp_3.4.0
+    java -jar AntelopeApp_3.4.0.jar
 
-</pre>
+</pre><p>
 </p><p>
 The first time you run this you will be asked to enter the location of the 'lib' directory of your Ant installation.
 </p><p>
@@ -19,31 +21,23 @@ You can also install Antelope by hand. Antelope is packaged as a single jar file
 </p></li><li><p><span class="bold"><strong>tools.jar</strong></span> This is distributed with the Java Software Development Kit. If your build file makes use of any of the JDK tools (such as javac or javadoc), put this in your classpath.
 </p></li><li><p><span class="bold"><strong>An XML parser</strong></span> This can be one of several publicly available XML parsers. Ant is shipped with the Xerces parser. To use the Xerces parser shipped with Ant, add xercesImpl.jar and xml-api.jar from the ${ant.home}/lib directory to your classpath. If you have Java 1.4, it also comes with a built-in XML parser. See the <a href="">note</a> about having multiple parsers in your classpath and how to get around this problem.
 </p></li></ul></div><p>
-<span class="bold"><strong>All of these jar files are included automatically in the classpath if you start Antelope with the run.xml file.</strong></span>
-</p><p>
-The manifest file for Antelope.jar specifies ant.jar is to be found on the classpath, so all that should be necessary to start Antelope is:
-</p><p>
-<code class="computeroutput">java -jar Antelope.jar</code>
-</p><p>
-If using the optional.jar and/or tools.jar:
-</p><p>
-<code class="computeroutput">java -cp optional.jar:tools.jar -jar Antelope.jar</code>
+<span class="bold"><strong>Unless you are running an older version of Java and/or an older version of Ant, just running the jar file will automatically include all necessary files.</strong></span>
 </p><p>
 Here is Antelope running as a stand-alone application:
 </p><p>
-<div class="figure"><a name="N1018E"></a><p class="title"><b>Figure&nbsp;5.2.&nbsp;Antelope as a stand-alone application</b></p><img src="standalone.gif" alt="Antelope as a stand-alone application"></div>
+</p><div class="figure"><a name="id2466786"></a><p class="title"><b>Figure 5.2. Antelope as a stand-alone application</b></p><img src="standalone.gif" alt="Antelope as a stand-alone application"></div><p>
 </p><p>
 Antelope as a stand-alone application provides a few features not found in the plugin version. In the plugin version, these features are provided by jEdit, so are not duplicated. The additional features are:
 </p><p>
-<div class="itemizedlist"><ul type="disc"><li><p>The "File" menu deals with the build file, providing the ability to create a new build file, open a build file and to save changes to the build file. Antelope provides some basic editing capabilities, but is not intended to be a full-featured editor. You may find other editors more suited to editing build files. </p></li><li><p>Also on the "File" menu is the list of recently opened files. This is handy for choosing a file that was previously opened without using the file chooser.</p></li><li><p>The "Output" menu provides the ability to save the Ant output to a file and to clear the 'Output' window.</p></li><li><p>The "Options" menu provides the ability to set a number of options for the application:</p><p>
-<div class="figure"><a name="N101AA"></a><p class="title"><b>Figure&nbsp;5.3.&nbsp;Font chooser</b></p><img src="font_dialog.gif" alt="Font chooser"></div>
+</p><div class="itemizedlist"><ul type="disc"><li><p>The "File" menu deals with the build file, providing the ability to create a new build file, open a build file and to save changes to the build file. Antelope provides some basic editing capabilities, but is not intended to be a full-featured editor. You may find other editors more suited to editing build files. </p></li><li><p>Also on the "File" menu is the list of recently opened files. This is handy for choosing a file that was previously opened without using the file chooser.</p></li><li><p>The "Output" menu provides the ability to save the Ant output to a file and to clear the 'Output' window.</p></li><li><p>The "Options" menu provides the ability to set a number of options for the application:</p><p>
+</p><div class="figure"><a name="id2466848"></a><p class="title"><b>Figure 5.3. Font chooser</b></p><img src="font_dialog.gif" alt="Font chooser"></div><p>
 The same font will be used for both the editor and output window.
 </p><p>
-<div class="figure"><a name="N101B5"></a><p class="title"><b>Figure&nbsp;5.4.&nbsp;Editor options</b></p><img src="editor_options_dialog.gif" alt="Editor options"></div>
+</p><div class="figure"><a name="id2466874"></a><p class="title"><b>Figure 5.4. Editor options</b></p><img src="editor_options_dialog.gif" alt="Editor options"></div><p>
 </p><p>
-<div class="figure"><a name="N101C0"></a><p class="title"><b>Figure&nbsp;5.5.&nbsp;Syntax highlighting options</b></p><img src="syntax_dialog.gif" alt="Syntax highlighting options"></div>
+</p><div class="figure"><a name="id2466897"></a><p class="title"><b>Figure 5.5. Syntax highlighting options</b></p><img src="syntax_dialog.gif" alt="Syntax highlighting options"></div><p>
 Syntax hightlighting only applies to the editor window, not the output window.
-</p></li></ul></div>
+</p></li></ul></div><p>
 </p><p>
 Printing is not available in this version, but is on the feature list for implementation.
-</p></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="bk01ch05.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="bk01ch05.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="bk01ch05s03.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Chapter&nbsp;5.&nbsp;Running Antelope&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Antelope as a jEdit Plugin</td></tr></table></div></body></html>
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="bk01ch05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="bk01ch05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="bk01ch05s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 5. Running Antelope </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Antelope as a jEdit Plugin</td></tr></table></div></body></html>

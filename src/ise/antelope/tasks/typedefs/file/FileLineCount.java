@@ -9,7 +9,7 @@ import org.apache.tools.ant.BuildException;
  * @version   $Revision$
  */
 public class FileLineCount implements FileOp {
-    
+
     /**
      * Description of the Method
      *
@@ -19,7 +19,7 @@ public class FileLineCount implements FileOp {
     public String execute(File f) {
         if (f == null)
             throw new IllegalArgumentException("file cannot be null");
-        System.out.println(f);
+        //System.out.println(f);
         LineNumberReader lnr = null;
         try {
             lnr = new LineNumberReader(new FileReader(f));
@@ -41,7 +41,7 @@ public class FileLineCount implements FileOp {
                 // ignored
             }
         }
-        
+
     }
 }
 

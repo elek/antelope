@@ -751,15 +751,24 @@ public class AntelopePanel extends JPanel {
         // execute targets
         log( " " );
         _project.fireBuildStarted();
+
+        // execute implicit target
+        if (_unnamed_target != null) {
+            Log.log("executing implicit target");
+            _unnamed_target.execute();
+        }
+
         Iterator it = targets.iterator();
         while ( it.hasNext() ) {
             String target = ( String ) it.next();
             if ( target.equals( "" ) && _unnamed_target != null ) {
-                Hashtable ptargets = _project.getTargets();
-                ( ( Target ) ptargets.get( "" ) ).execute();
+                continue;   // already ran implicit target
             }
-            else
+            else {
+                Log.log("executing target " + target);
                 _project.executeTarget( target );
+            }
+            // check if execution should halt
             if ( _target_runner != runner )
                 break;
         }
@@ -1089,16 +1098,18 @@ public class AntelopePanel extends JPanel {
                         //Log.log( "no targets in project" );
                         return ;   /// ??? really ???
                     }
+
                     ///
-                    ///for (Iterator it = targets.keySet().iterator(); it.hasNext(); ) {
-                    ///    Log.log("target in targets: " + it.next());
-                    ///}
-                    ///
+                    for (Iterator it = targets.keySet().iterator(); it.hasNext(); ) {
+                        Log.log("target in targets: " + it.next());
+                    }
+
 
 
                     // Ant 1.6 has an un-named target to hold project-level tasks, so
                     // find it and save it for later.
                     _unnamed_target = null;
+                    Log.log("+++++ AntUtils.getAntVersion: "  + AntUtils.getAntVersion());
                     if ( AntUtils.getAntVersion() >= 1.6 ) {
                         Iterator iter = targets.keySet().iterator();
                         while ( iter.hasNext() ) {
@@ -1143,7 +1154,7 @@ public class AntelopePanel extends JPanel {
                                 target_name = node.getAttributeValue( "name" );
                                 target = ( Target ) targets.get( target_name );
                                 ///
-                                System.out.println("+++++ " + node.getFile());
+                                ///System.out.println("+++++ " + node.getFile());
                                 ///
                             }
                             if ( target == null )

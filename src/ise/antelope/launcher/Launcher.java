@@ -73,7 +73,7 @@ public class Launcher {
             System.exit( 1 );
         }
     }
-    
+
     public void runApp( String[] args ) throws LaunchException, MalformedURLException {
         Args myargs = init( args );
         URL[] jars = myargs.getURLs();
@@ -106,7 +106,7 @@ public class Launcher {
     }
 
     public Class loadApp( String[] args, File jar_file ) throws LaunchException, MalformedURLException {
-        System.out.println("========= Launcher, loadApp");
+        //System.out.println("========= Launcher, loadApp");
         if (jar_file != null)
             jarFile = jar_file;
         Args myargs = init( args );
@@ -130,11 +130,11 @@ public class Launcher {
         try {
             SubJarClassLoader loader = new SubJarClassLoader( jars, getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader );
-            System.out.println("========= Launcher, loadApp almost done");
+            //System.out.println("========= Launcher, loadApp almost done");
             return loader.loadClass( "ise.antelope.common.AntelopePanel", true );
         }
         catch(Exception e) {
-            e.printStackTrace();   
+            e.printStackTrace();
             return null;
         }
     }
@@ -175,7 +175,7 @@ public class Launcher {
      *            cannot be created.
      */
     private Args init( String[] args ) throws LaunchException, MalformedURLException {
-        System.out.println("===== Launcher, init starting");
+        //System.out.println("===== Launcher, init starting");
         if (args == null)
             args = new String[]{};
         String antHomeProperty = AntUtils.getAntHome();
@@ -205,7 +205,7 @@ public class Launcher {
             sourceJar = Locator.getClassSource( ise.antelope.launcher.Launcher.class );
         }
         if ( sourceJar == null ) {
-            System.out.println("===== Launcher, init is returning null, couldn't find sourceJar");
+            //System.out.println("===== Launcher, init is returning null, couldn't find sourceJar");
             return null;
         }
         File jarDir = sourceJar.getParentFile();
@@ -299,7 +299,7 @@ public class Launcher {
         Args myargs = new Args();
         myargs.setURLs( jars );
         myargs.setArgs( newArgs );
-        System.out.println("===== Launcher, init complete");
+        //System.out.println("===== Launcher, init complete");
         return myargs;
     }
 

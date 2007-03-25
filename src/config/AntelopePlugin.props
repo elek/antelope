@@ -1,5 +1,5 @@
 #--------------------------------
-# Properties for Antelope Plugin 
+# Properties for Antelope Plugin
 #--------------------------------
 
 
@@ -53,7 +53,7 @@ Antelope.menu.label=Antelope
 
 # this setting describes the submenu. Each menu item is listed in the
 # order it is shown. The dash is a special character and will cause a
-# menu separator to be inserted. This line also must start with the string 
+# menu separator to be inserted. This line also must start with the string
 # passed to the GUIUtilities.loadMenu method in createMenuItems. The items
 # are the action names as set in the actions.xml file.
 plugin.ise.antelope.plugin.AntelopePlugin.menu=antelope.show - antelope.hide - antelope.toggle - antelope.default antelope.lastran

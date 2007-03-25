@@ -2,7 +2,7 @@
     <description>
        This build file creates Antelope as a jEdit plugin.
    </description>
-    
+
    <!-- ========================================================================
       Set properties:  These first few properties can/should be overridden in
       either build.props or on the command line.  The default values may or may
@@ -13,15 +13,15 @@
    <property file="build.props"/>
 
     <!-- default location of jedit.jar -->
-    <property name="jedit.install.dir" value="../.."/> 
-    
+    <property name="jedit.install.dir" value="../.."/>
+
     <!-- default location of the finished plugin -->
     <property name="install.dir" value=".." />
-    
+
     <!-- version number -->
     <property name="build.num" value="3.2"/>
 
-   
+
    <!-- ========================================================================
       Set properties:  These properties should not need to be changed.
    ========================================================================= -->
@@ -43,11 +43,11 @@
     <!-- the directory for the compiled classes. Files in this directory will be
     included in the finished jar file. -->
     <property name="classes.dir" location="classes" />
-    
+
     <!-- where to put the finished distribution file -->
     <property name="dist.dir" location="dist"/>
-   
-    
+
+
    <!-- ========================================================================
       Target: dist
       this target does several things:
@@ -90,10 +90,10 @@
                 <include name="**/*" />
             </fileset>
         </jar>
-      
+
       <!-- copy the jar to the right place per jEdit standards -->
         <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
-        
+
       <!-- zip the jar and installation instructions and put the zip file in
       the $dist directory -->
         <zip destfile="${dist.dir}/${ant.project.name}Plugin_${build.num}.zip">
@@ -116,10 +116,10 @@
         <path id="classpathref">
          <!-- include classes directory -->
             <pathelement location="${classes.dir}" />
-         
+
          <!-- include standard classpath, need ant jars -->
             <pathelement path="${java.class.path}"/>
-         
+
          <!-- include jedit.jar and dependent plugins -->
             <pathelement location="${jedit.install.dir}/jedit.jar" />
             <fileset dir="${install.dir}">
@@ -142,7 +142,7 @@
             </fileset>
         </delete>
     </target>
-    
+
    <!-- ========================================================================
       Target: compile
    ========================================================================= -->
@@ -166,10 +166,10 @@
             <exclude name="**/com/wutka/**"/>
         </javac>
     </target>
-    
+
    <!-- ========================================================================
       Target: docs-xalan
-      Generate docs from docbook format xml files with Xalan. This uses the 
+      Generate docs from docbook format xml files with Xalan. This uses the
       files in ${src.dir}/docs and puts the finished files in ${prep.dir}/docs.
       The files are NOT ready for distribution until after prep_files is ran.
    ========================================================================= -->
@@ -208,8 +208,8 @@
             <param name="html.stylesheet" expression="./style.css"/>
         </style>
     </target>
-   
-   
+
+
    <!-- ========================================================================
       Target: copy_resources
    ========================================================================= -->
@@ -223,10 +223,10 @@
         </copy>
         <copy todir="${classes.dir}/ise/antelope/common" file="${src.dir}/ise/antelope/common/version.txt"/>
     </target>
-    
+
    <!-- ========================================================================
       Target: prep_files
-      prepares certain files for distribution by doing string replacement. 
+      prepares certain files for distribution by doing string replacement.
       Assumes that the configuration files and documentation files are ready.
    ========================================================================= -->
     <target name="prep_files"
@@ -249,27 +249,23 @@
             </fileset>
         </copy>
 
-
         <!-- insert the build number into the documentation and configuration
         files -->
-        <replace dir="${prep.dir}" token="@@build.num@@"
-                value="${build.num}" />
         <tstamp/>
-        <replace dir="${prep.dir}" token="@@tstamp@@"
-                value="${TODAY}" />
-
+        <replace dir="${prep.dir}" encoding="ISO-8859-1">
+            <replacefilter token="@buildnum@" value="${build.num}"/>
+            <replacefilter token="@tstamp@" value="${TODAY}" />
+            <replacefilter token="@style@"
+                value="&lt;STYLE TYPE=&quot;text/css&quot;&gt; &lt;!-- @import url(./style.css); --&gt; &lt;/STYLE&gt;" />
+        </replace>
       <!-- insert the build number into the version file -->
         <property name="version.txt" location="${src.dir}/ise/antelope/common/version.txt"/>
         <delete file="${version.txt}"/>
         <echo file="${version.txt}" message="VERSION=${build.num}${line.separator}"/>
         <echo file="${version.txt}" message="DATE=${TODAY}" append="true"/>
-      
-      <!-- insert the style into the documentation -->
-        <replace dir="${prep.dir}" token="@@style@@"
-                value="&lt;STYLE TYPE=&quot;text/css&quot;&gt; &lt;!-- @import url(./style.css); --&gt; &lt;/STYLE&gt;" />
 
     </target>
-   
+
    <!-- ========================================================================
       Target: init
       this target creates the directories needed for this project and

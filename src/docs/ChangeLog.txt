@@ -1,5 +1,10 @@
 Antelope Change Log
-Version: @@build.num@@
+Version: @buildnum@
+
+3.4.0:
+o updated for Ant 1.7.
+o finally, <import> is fully supported
+o targets are now sorted in edit mode.
 
 3.2.10:
 o fixed Trace so it works more or less correctly.
@@ -79,10 +84,10 @@ o Fixed the threading for running the default target from a jEdit shortcut.
 
 3.1.2:
 9 Apr 2004
-o Fixed a bug introduced in 3.1.0 that caused a NPE on an fresh install of Antelope as a jEdit plugin. I had added some icons to the button panel, but forgot that the default settings wouldn't be read unless there was a previously opened build file, which isn't the case on a new install. 
-o The default target is now shown with a green color text. 
-o Running the default target can be added as a short cut in jEdit. There's something a bit weird about how this works, no output is displayed until the target is complete, so it looks like nothing is happening, then all of a sudden the entire output is shown. Coincidentally, this specific feature was requested in e-mail yesterday. 
-o Added some new icons to the Edit tree. Private targets have gray target icons, the default target is green, public targets are black target icons. Imported (via the <import> task) are the same colors, except bulls eye on the targets is red. 
+o Fixed a bug introduced in 3.1.0 that caused a NPE on an fresh install of Antelope as a jEdit plugin. I had added some icons to the button panel, but forgot that the default settings wouldn't be read unless there was a previously opened build file, which isn't the case on a new install.
+o The default target is now shown with a green color text.
+o Running the default target can be added as a short cut in jEdit. There's something a bit weird about how this works, no output is displayed until the target is complete, so it looks like nothing is happening, then all of a sudden the entire output is shown. Coincidentally, this specific feature was requested in e-mail yesterday.
+o Added some new icons to the Edit tree. Private targets have gray target icons, the default target is green, public targets are black target icons. Imported (via the <import> task) are the same colors, except bulls eye on the targets is red.
 
 3.1.0:
 30 Mar 2004
@@ -111,7 +116,7 @@ Hopefully this won't change again.
 
 3.0.5:
 22 Mar 2004:
-o Updates to the dependency tree code. 
+o Updates to the dependency tree code.
 o Fixed a bug with included xml (using xml entity includes). The targets of included xml would show up as buttons in "Run" mode, but not in the tree in "Edit" mode. The targets are now in the Edit tree, and the dependency tree works with these targets also.
 o Added some nice icons to the edit tree to make it easier to pick out imported targets and projects.
 
@@ -137,7 +142,7 @@ o fixed bug in setting for auto-reload of build file. Now auto-reload is the def
 o added popup to properties dialog so that right clicking (option clicking) on any of the tables shows the cell value in a scrollable text area. This makes it easier to read and copy long values.
 
 
-3.0.1: 
+3.0.1:
 15 Feb 2004
 o Inadvertently dropped the Main-Class attribute from the manifest, so the -jar option didn't work.
 
@@ -220,7 +225,7 @@ o added "back" and "next" buttons in "Edit" mode. These work like the back and n
 o Added some new tasks. The "call" task is particularly useful.
 o Source distribution now includes the unit tests for the extra Ant tasks.
 o Updated run.xml so that tools.jar is automatically included in the claspath if it can be found.
-o Added some public API for running as a jEdit plugin so that other plugins can easily interact with Antelope for running targets. 
+o Added some public API for running as a jEdit plugin so that other plugins can easily interact with Antelope for running targets.
 
 21 Dec 2002
 o the editor is really nice now. The syntax highlighting is configurable, as is the font and many editor options. Documentation is lagging a bit on this, but hopefully the configuration is obvious enough.
@@ -263,7 +268,7 @@ o Updated documentation.
 
 
 23 Sep 2002
-o Adjusted AntProject.java to be able to work correctly when using Antelope as a plugin. The jEdit classloader was preventing certain property files in ant.jar from being accessible to AntProject.java. 
+o Adjusted AntProject.java to be able to work correctly when using Antelope as a plugin. The jEdit classloader was preventing certain property files in ant.jar from being accessible to AntProject.java.
 
 o Moved the config and docs directories inside the src directory. The build file copies them to the proper config and docs directories for distribution. This lets the build file adjust the build number automatically within the config and doc files, which keeps everything at the same displayed build number, and keeps all the source files in the src directory.
 
@@ -284,7 +289,7 @@ o Changed the "Edit" button to be a "mode" like the trace action. Now when the E
 o Fixed the Trace button to select the "Output" tab when clicked in stand-alone.
 
 6 Sep 2002
-O Fixed the abstraction mentioned below so that AntelopePanel and AntelopeOptions really don't depend on compiling AntelopePluginPanel. 
+O Fixed the abstraction mentioned below so that AntelopePanel and AntelopeOptions really don't depend on compiling AntelopePluginPanel.
 
 5 Sep 2002
 o Major rearrangement of package layout.
@@ -340,4 +345,4 @@ o Removed the option panel from jEdit's global plugin properties. There was a pr
 
 o Cleaned up some dead methods and old comments.
 
-o Converted all files to contain the same license. Antelope is licensed under an Apache license. 
+o Converted all files to contain the same license. Antelope is licensed under an Apache license.

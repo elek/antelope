@@ -124,34 +124,20 @@
             <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
         </copy>
 
-        <!-- prepare a wrapper -->
-        <property name="docbook-wrapper" location="${doc.dir}/docbook-wrapper.xsl"/>
-        <delete file="${docbook-wrapper}" />
-        <echo file="${docbook-wrapper}"
-                message="&lt;xsl:stylesheet"/>
-        <echo file="${docbook-wrapper}" append="true"
-                message=" xmlns:xsl='http://www.w3.org/1999/XSL/Transform'"/>
-        <echo file="${docbook-wrapper}" append="true"
-                message=" version='1.0'&gt;"/>
-        <echo file="${docbook-wrapper}" append="true"
-                message="&lt;xsl:import href='${docbook.xsl}/html/chunk.xsl'/&gt;"/>
-        <echo file="${docbook-wrapper}" append="true"
-                message="&lt;/xsl:stylesheet&gt;"/>
+        <property name="xsltproc.executable" value="/usr/bin/xsltproc"/>
+        <property name="user-doc.out" location="${doc.dir}/manual"/>
+        <property name="user-doc.xml" value="${src.dir}/docs/manual/userguide.xml"/>
+        <property name="user-doc.xsl" value="${src.dir}/docs/manual/users-guide.xsl"/>
+        <property name="docbook.catalog" value="/usr/share/sgml/docbook/dtd/catalog"/>
+        <exec executable="${xsltproc.executable}" dir="${user-doc.out}" failonerror="true">
+            <arg value="--output" />
+            <arg value="${user-doc.out}/manual" />
+            <arg value="--catalogs" />
+            <arg value="${user-doc.xsl}" />
+            <arg value="${user-doc.xml}" />
+            <env key="SGML_CATALOG_FILES" file="${docbook.catalog}" />
+        </exec>
 
-        <!-- transform the xml docbook formatted documentation into html and
-        place it in the prep directory -->
-        <style basedir="${src.dir}/docs/manual"
-                style="${docbook-wrapper}"
-                destdir="${doc.dir}/manual"
-                includes="userguide.xml">
-            <param name="html.stylesheet" expression="./style.css"/>
-            <xmlcatalog>
-                <dtd
-                        publicId="-//OASIS//DTD DocBook XML V4.1.2//EN"
-                        location="${docbookx.dtd}"/>
-            </xmlcatalog>
-        </style>
-        <property name="docs.done" value="true"/>
     </target>
 
    <!-- ========================================================================

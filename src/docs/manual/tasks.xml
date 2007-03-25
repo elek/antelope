@@ -13,11 +13,11 @@
 </bookinfo>
 
 <chapter id="introduction">
-@@style@@
+@style@
 <title>Introduction</title>
 
 <para>
-The Antelope tasks are now part of the Ant-Contrib project, http://ant-contrib.sourceforge.net. In this version, @@build.num@@, the tasks contained in the Antelope distribution are identical to those in Ant-Contrib other than the package name. The Antelope tasks will continue to be distributed as part of the Antelope distribution, but eventually, the package and code base will reside entirely with Ant-Contrib. Additionally, it is likely that the Ant-Contrib tasks that are not part of Antelope will be included in this distribution as well. The intent is to make Ant-Contrib the central location for additional Ant tasks.
+Many of the Antelope tasks are now part of the Ant-Contrib project, http://ant-contrib.sourceforge.net. In this version, @buildnum@, the tasks contained in the Antelope distribution are identical to those in Ant-Contrib other than the package name. The Antelope tasks will continue to be distributed as part of the Antelope distribution, but eventually, the package and code base will reside entirely with Ant-Contrib. Additionally, it is likely that the Ant-Contrib tasks that are not part of Antelope will be included in this distribution as well. The intent is to make Ant-Contrib the central location for additional Ant tasks.
 </para>
 
 <para>
@@ -51,9 +51,9 @@ These tasks have become indispensible for me in daily use. I think you will find
 </chapter>
 
 <chapter id="license">
-@@style@@
+@style@
     <title>License</title>
-    
+
     <para>
         These Ant tasks are licensed under the same Apache license as Ant:
     </para>
@@ -115,50 +115,50 @@ information on the Apache Software Foundation, please see
     ]]>
     </programlisting>
     </para>
-    
+
 </chapter>
 
 <chapter id="installation">
-@@style@@
+@style@
     <title>Installation</title>
     <para>
         If you are running your build files from Antelope, these tasks are already installed and nothing more needs to be done. The following discusses installing the tasks by hand for use outside of Antelope.
     </para>
-    
+
     <para>
         These Ant tasks are packaged as a part of Antelope, which is an application for running Ant build files. They may also be obtained as a separate package. Depending on the distribution you have on hand, copy either antelope.jar or antelope_tasks.jar into your ${ant.home}/lib directory or add it to your classpath. This is the directory where ant.jar and optional.jar are installed for your Ant distribution.
     </para>
-    
+
     <para>
         Once installed, each task that you want to use in a build file must be defined in that build file. Since several of the Antelope tasks are dependent on each other, the preferred way to define them is like this:
        <programlisting>
        <![CDATA[
          <taskdef resource="ise.antelope.tasks.antelope.taskdefs
-                  classpath="path/to/AntelopeTasks_@@build.num@@.jar"/>
+                  classpath="path/to/AntelopeTasks_@buildnum@.jar"/>
        ]]>
        </programlisting>
        This will load all Antelope tasks without further hassle, and will only load the tasks once. It is not good to load the tasks multiple times, this can cause problems with 'ant' and 'antcall' in particular.
-    </para>    
+    </para>
     <para>
         If you don't want to load all of the tasks, the documentation for each task explains in detail what you will need to add to your build file to use the individual task. For example, the Assert tasks says:
     </para>
-    
+
     <para>
         <programlisting>
         To use this task in your build files, include a task definition like this:
         <![CDATA[
         <taskdef name="assert" classname="ise.antelope.tasks.Assert"/>
         <property name="ant.enable.asserts" value="true"/>
-        ]]>    
+        ]]>
         </programlisting>
     </para>
-    
+
     <para>
-        Notice that you may name the tasks whatever you want via 'taskdef'. The names listed in the individual task descriptions are those that are set via the preferred method mentioned above. 
+        Notice that you may name the tasks whatever you want via 'taskdef'. The names listed in the individual task descriptions are those that are set via the preferred method mentioned above.
     </para>
-    
+
     <para>
-        As of Antelope version 2.64, the 'AntLib' feature of Ant 1.6 is supported, which provides an alternate way of loading optional tasks. If AntelopeTasks_@@build.num@@.jar is in the core classpath (in ${ant.home}/lib for example) one can use the namespace short-cut to load them:
+        As of Antelope version 2.64, the 'AntLib' feature of Ant 1.6 is supported, which provides an alternate way of loading optional tasks. If AntelopeTasks_@buildnum@.jar is in the core classpath (in ${ant.home}/lib for example) one can use the namespace short-cut to load them:
         <programlisting>
         <![CDATA[
         <project xmlns:antelope="antlib:ise.antelope.tasks">
@@ -174,25 +174,25 @@ information on the Apache Software Foundation, please see
         </programlisting>
         <emphasis role="italic">Thanks to Peter Reilly of the Ant development team for this pointer and example.</emphasis>
     </para>
-    
+
 </chapter>
 
 <chapter id="Assert">
-@@style@@
+@style@
     <title>Assert Task</title>
-    
+
 <para>
 The Assert task adds an assertion capability to Ant projects. This task works in a manner very similar to the Java <computeroutput>assert</computeroutput> keyword, and provides a limited "design by contract" facility to Ant. This is very useful for testing build scripts prior to putting them into production.
 </para>
 
 <para>
-The Assert task verifies that a given property has a 
-given value and throws a BuildException if the property value is not as expected 
+The Assert task verifies that a given property has a
+given value and throws a BuildException if the property value is not as expected
 or the property does not exist.
 </para>
 
 <para>
-Also like Java's <computeroutput>assert</computeroutput> keyword, the Assert task must be 'turned on' using the property <computeroutput>ant.enable.asserts</computeroutput>. If not set, or is set to <computeroutput>false</computeroutput>, the Assert task works exactly like the Sequential task. If the <link linkend="Variable">Variable task</link> is used to define this property, then it can be turned on and off as needed throughout a build. 
+Also like Java's <computeroutput>assert</computeroutput> keyword, the Assert task must be 'turned on' using the property <computeroutput>ant.enable.asserts</computeroutput>. If not set, or is set to <computeroutput>false</computeroutput>, the Assert task works exactly like the Sequential task. If the <link linkend="Variable">Variable task</link> is used to define this property, then it can be turned on and off as needed throughout a build.
 </para>
 
 <para>
@@ -220,7 +220,7 @@ To use this task in your build files, include a task definition like this:
 <![CDATA[
     <taskdef name="assert" classname="ise.antelope.tasks.Assert"/>
     <property name="ant.enable.asserts" value="true"/>
-]]>    
+]]>
 </programlisting>
 </para>
 
@@ -296,13 +296,13 @@ To use this task in your build files, include a task definition like this:
 
 <para>
 As stated above, the Assert task may contain a nested "bool" task, otherwise,
-the Assert task does not support any nested 
-elements apart from Ant tasks. Any valid Ant task may be embedded within the 
+the Assert task does not support any nested
+elements apart from Ant tasks. Any valid Ant task may be embedded within the
 assert task.
 </para>
 
 <para>
-The "level" attribute is only (so far) useful when Assert is used in conjunction with the <link linkend="testcasetask">Testcase task</link>. Setting this attribute to "warning", "info", or "debug" will force "failonerror" to false. 
+The "level" attribute is only (so far) useful when Assert is used in conjunction with the <link linkend="testcasetask">Testcase task</link>. Setting this attribute to "warning", "info", or "debug" will force "failonerror" to false.
 </para>
 
 <para>
@@ -323,7 +323,7 @@ In the following example, the first <computeroutput>assert</computeroutput> task
      <assert name="wait" value="2" execute="true">
         <echo>done waiting!</echo>
      </assert>
-]]>     
+]]>
 </programlisting>
 </para>
 
@@ -331,7 +331,7 @@ In the following example, the first <computeroutput>assert</computeroutput> task
 The next example shows Assert being used in a unit test for the "limit" task:
 <programlisting>
 <![CDATA[
-  <property name="ant.enable.asserts" value="true"/> 
+  <property name="ant.enable.asserts" value="true"/>
   <target name="test2">
     <!-- should not stop 'sleep' task, should print out '_passed_' -->
     <stopwatch name="timer"/>
@@ -346,22 +346,22 @@ The next example shows Assert being used in a unit test for the "limit" task:
         </bool>
     </assert>
   </target>
-]]>     
+]]>
 </programlisting>
 </para>
 
 <para>
 If the <computeroutput>ant.enable.asserts</computeroutput> property is set to false, then in the above example, the <computeroutput>echo</computeroutput>, <computeroutput>sleep</computeroutput>, and <computeroutput>echo</computeroutput> tasks will all execute.
 </para>
-    
+
 </chapter>
 
 <chapter id="IfTask">
-@@style@@
+@style@
     <title>If Task</title>
 
 <section>
-<title>If</title>    
+<title>If</title>
 <para>
 The If task provides a greatly improved "if" capability to Ant projects. This task works in a manner very similar to the Java <computeroutput>if</computeroutput> keyword. This is useful for performing certain tasks only if a property has a specific value or certain conditions are met.
 </para>
@@ -398,16 +398,16 @@ Here is a general outline of the If task:
     <bool>
         <some condition(s)/>
     </bool>
-    
+
     some tasks...
-    
+
     <!-- a break is allowed
     <break/>
     -->
-    
+
     <else>
         some other tasks...
-        
+
         <!-- a break is allowed
         <break/>
         -->
@@ -418,7 +418,7 @@ Here is a general outline of the If task:
 </para>
 
 <para>
- 
+
 <table frame="all">
 <title>If Task Attributes</title>
 <tgroup cols="4">
@@ -465,7 +465,7 @@ Here is a general outline of the If task:
 The If task can hold any number of Ant tasks. If the property value is correct or the "bool" element evaluates to true, these tasks will be executed.
 </para>
 
-<para> 
+<para>
 In addition, the If task supports three special nested elements:
 </para>
 <itemizedlist>
@@ -477,12 +477,12 @@ In addition, the If task supports three special nested elements:
 <listitem>
 <para>
 <emphasis role="bold">else</emphasis> This is very similar to the standard Ant Sequential task. The "else" can hold any number of Ant tasks. These tasks are executed if the "bool" element evaluates to false.
-</para> 
+</para>
 </listitem>
 <listitem>
 <para>
 <emphasis role="bold">break</emphasis> This is very similar to the Java "break" keyword. This is only useful if the If task is nested in another task that understands "break", such as the <link linkend="switch">Switch</link> task. Like the Java "break", when this element is encountered, no subsequent tasks will be executed and control passes outside the If.
-</para> 
+</para>
 </listitem>
 </itemizedlist>
 
@@ -575,7 +575,7 @@ The next example shows how to use If with Else. Notice that it doesn't matter wh
         </else>
         <echo>this will happen also</echo>
     </if>
-    
+
     <if name="foo" value="snarf">
         <echo>this won't happen</echo>
         <else>
@@ -603,7 +603,7 @@ The next example shows the "if" and "assert" tasks working together to validate 
    </if>
    <assert name="valid_email" value="true" failonerror="false">
       <try>
-          <mail from="${email_from}" tolist="${email_to}" 
+          <mail from="${email_from}" tolist="${email_to}"
               message="New release available"/>
       </try>
    </assert>
@@ -617,13 +617,13 @@ Here is the same thing, but using only If and Else:
 <para>
 <programlisting>
     <![CDATA[
-   <try> 
+   <try>
        <if name="email_from" value="buildteam@mycompany.com">
-          <mail from="${email_from}" tolist="${email_to}" 
+          <mail from="${email_from}" tolist="${email_to}"
               message="New release available"/>
           <else>
              <if name="email_from" value="buildsite@mycompany.com">
-                 <mail from="${email_from}" tolist="${email_to}" 
+                 <mail from="${email_from}" tolist="${email_to}"
                       message="New release available"/>
              </if>
           </else>
@@ -648,10 +648,10 @@ The next example shows how to use the "bool" element:
                 <available file="run.xml"/>
             </and>
         </bool>
-        
+
         <!-- if true, then tasks listed here will execute -->
         <echo>build.xml and run.xml are available</echo>
-        
+
         <!-- if false, then tasks inside the "else" will execute -->
         <else>
             <echo>didn't find one or both of build.xml and run.xml</echo>
@@ -671,11 +671,11 @@ The following example shows the "bool" element again:
         <bool>
             <equals arg1="${download.dir}" arg2="test.dir"/>
         </bool>
-        
-        <fail message="Download and test directories cannot be 
-            the same! You need to reset to use the production 
+
+        <fail message="Download and test directories cannot be
+            the same! You need to reset to use the production
             property set."/>
-            
+
         <else>
             <copy file="installer.zip" todir="${download.dir}"/>
         </else>
@@ -891,7 +891,7 @@ Given a property name, tests whether the value for that ends with with a specifi
 <para>
 Tests whether the first argument is greater than the second argument. Will
 automatically treat the arguments as numbers if both arguments consists of only the characters 0 through 9 and optionally a decimal point. Otherwise, a String
-comparison is used. 
+comparison is used.
 </para>
 <para>
 <table frame="all">
@@ -941,7 +941,7 @@ comparison is used.
 <para>
 Tests whether the first argument is less than the second argument. Will
 automatically treat the arguments as numbers if both arguments consists of only the characters 0 through 9 and optionally a decimal point. Otherwise, a String
-comparison is used. 
+comparison is used.
 </para>
 <para>
 <table frame="all">
@@ -988,7 +988,7 @@ comparison is used.
 
 <bridgehead renderas='sect3'>DateBefore, TimeBefore </bridgehead>
 <para>
-Tests whether the first date/time is before the second date/time.  
+Tests whether the first date/time is before the second date/time.
 </para>
 <para>
 <table frame="all">
@@ -1053,7 +1053,7 @@ Tests whether the first date/time is before the second date/time.
          </bool>
       </a:assert>
    </target>
-   
+
    <target name="test3">
       <a:assert>
          <bool>
@@ -1076,7 +1076,7 @@ Tests whether the first date/time is before the second date/time.
 
 <bridgehead renderas='sect3'>DateDifference, TimeDifference </bridgehead>
 <para>
-Tests that the difference between two dates or times is a certain value.  
+Tests that the difference between two dates or times is a certain value.
 </para>
 <para>
 <table frame="all">
@@ -1150,7 +1150,7 @@ Valid values are "millisecond", "second", "minute", "hour", "day", "week", "mont
          </bool>
       </a:assert>
    </target>
-   
+
    <target name="test3">
       <a:assert message="Difference between years is not 25.">
          <bool>
@@ -1184,11 +1184,11 @@ Valid values are "millisecond", "second", "minute", "hour", "day", "week", "mont
 </chapter>
 
 <chapter id="switch">
-@@style@@
+@style@
     <title>SwitchTask</title>
 <para>
 The "Switch" task works much like the Java "switch" construct. It supports nested "case" elements, which in turn, support nested "break" elements. There is also a "default" case element, so this should be very natural for Java developers to use.
-</para>    
+</para>
 
 <para>
 <table frame="all">
@@ -1278,9 +1278,9 @@ The "Switch" task works much like the Java "switch" construct. It supports neste
 </chapter>
 
 <chapter id="TryTask">
-@@style@@
+@style@
     <title>Try Task</title>
-    
+
 <para>
 The "Try" task works similarly to the try/catch/finally construct in Java. This task is useful when a particular task might fail, but the build should not fail if it does. An example is the "mail" task will fail if the mail server is not available, but the build should not fail if the mail message cannot be delivered.
 </para>
@@ -1301,7 +1301,7 @@ To use this task in your build files, include a task definition like this:
 A quick example is probably all that is necessary:
 <programlisting>
 <![CDATA[
- <tempfile property="temp.file" destdir="${java.io.tmpdir}" 
+ <tempfile property="temp.file" destdir="${java.io.tmpdir}"
      prefix="delete" suffix=".tmp"/>
  <try>
      <!-- use 'get' task to post to the unit test status servlet. It
@@ -1310,11 +1310,11 @@ A quick example is probably all that is necessary:
      <get
          src="http://mycompany.com/servlet/junit?testnum=${test.num}&status="${status}"
          dest="${temp.file}"/>
-     
+
      <catch>
          <echo>Unit test servlet update failed.</echo>
      </catch>
-     
+
      <finally>
          <delete file="${temp.file}"/>
      </finally>
@@ -1324,7 +1324,7 @@ A quick example is probably all that is necessary:
 </para>
 
 <para>
-Unlike the Java "try", neither the "catch" block nor the "finally" block are required. Also, the order does not matter, the "catch" block may be listed first, followed by the "finally", followed by the tasks that may fail. 
+Unlike the Java "try", neither the "catch" block nor the "finally" block are required. Also, the order does not matter, the "catch" block may be listed first, followed by the "finally", followed by the tasks that may fail.
 </para>
 
 <para>
@@ -1416,7 +1416,7 @@ This slightly more practical example uses the <link linkend="Variable">Variable<
             <antcall target="runImageUtilTests"/>
             <var name="testname" value="imageConversionTests"/>
             <antcall target="runImageConversionTests"/>
-            
+
             <catch>
               <!-- log a test failure -->
               <echo file="test.log" append="yes">
@@ -1434,7 +1434,7 @@ This slightly more practical example uses the <link linkend="Variable">Variable<
 The following example uses a nested Finally to clean up resources:
 <programlisting>
 <![CDATA[
-    <tempfile property="temp.file" destdir="${java.io.tmpdir}" 
+    <tempfile property="temp.file" destdir="${java.io.tmpdir}"
         prefix="delete" suffix=".tmp"/>
     <try>
         <!-- use 'get' task to post to the unit test status servlet. It
@@ -1443,11 +1443,11 @@ The following example uses a nested Finally to clean up resources:
         <get
             src="http://mycompany.com/servlet/junit?testnum=${test.num}&status="${status}"
             dest="${temp.file}"/>
-        
+
         <catch>
             <echo>Unit test servlet update failed.</echo>
         </catch>
-        
+
         <finally>
             <delete file="${temp.file}"/>
         </finally>
@@ -1460,11 +1460,11 @@ See the <link linkend="post">post</link> task for a better way to do a post.
 </chapter>
 
 <chapter id="Unset">
-@@style@@
+@style@
     <title>Unset Task</title>
-    
+
 <para>
-The Unset task provides easier access to one of the most used use cases of <link linkend="Variable">Variable</link>, the ability to unset a property.  By design, Ant properties are immutable, but sometimes it is handy to set a property to a new value. 
+The Unset task provides easier access to one of the most used use cases of <link linkend="Variable">Variable</link>, the ability to unset a property.  By design, Ant properties are immutable, but sometimes it is handy to set a property to a new value.
 </para>
 
 <para>
@@ -1525,8 +1525,8 @@ Example:
     <echo>unset: ${x}</echo>
     <property name="x" value="hello"/>
     <echo>new value = ${x}</echo>
-</project>    
-    
+</project>
+
 $ ant -f unset_example.xml
 Buildfile: unset_example.xml
      [echo] original value = 6
@@ -1534,16 +1534,16 @@ Buildfile: unset_example.xml
      [echo] new value = hello
 
 BUILD SUCCESSFUL
-Total time: 0 seconds    
+Total time: 0 seconds
 ]]>
 </programlisting>
 </para>
 </chapter>
 
 <chapter id="Variable">
-@@style@@
+@style@
     <title>Variable Task</title>
-    
+
 <para>
 The Variable task provides a mutable property to Ant and works much like variable assignment in Java. This task is similar to the standard Ant Property task, except that THESE PROPERTIES ARE MUTABLE. While this goes against the standard Ant use of properties, occasionally it is useful to be able to change a property value within the build. <emphasis role="bold">In general, use of this task is DISCOURAGED, and the standard Ant Property should be used if possible.</emphasis> Having said that, in real life I use this a lot.
 </para>
@@ -1624,48 +1624,48 @@ In the following example, the property <computeroutput>x</computeroutput> is fir
 
 <para>
 The following shows some more uses of the Variable task. It is especially handy for property appending. Notice a couple of things: the property task can't override a var value, however, if the var value is set to "", then it can as in the case of the format example.
-</para>    
+</para>
 
 <para>
 <programlisting>
 <![CDATA[
     <var name="x" value="6"/>
     <echo>x = ${x}</echo>   <!-- print: 6 -->
-    
+
     <var name="x" value="12"/>
     <echo>x = ${x}</echo>   <!-- print: 12 -->
-    
+
     <var name="x" value="6 + ${x}"/>
     <echo>x = ${x}</echo>   <!-- print: 6 + 12 -->
-    
+
     <var name="str" value="I "/>
     <var name="str" value="${str} am "/>
     <var name="str" value="${str} a "/>
     <var name="str" value="${str} string."/>
     <echo>${str}</echo>     <!-- print: I am a string. -->
-        
+
     <var name="x" value="6"/>
     <echo>x = ${x}</echo>   <!-- print: 6 -->
-    
+
     <property name="x" value="12"/>
     <echo>x = ${x}</echo>   <!-- print: 6 (property can't override) -->
-        
+
     <var name="x" value="blue"/>
     <tstamp>
         <format property="x" pattern="EEEE"/>
     </tstamp>
     <echo>Today is ${x}.</echo> <!-- print: Today is blue. -->
-    
+
     <var name="x" value=""/>
     <tstamp>
         <format property="x" pattern="EEEE"/>
     </tstamp>
     <echo>Today is ${x}.</echo> <!-- print: Today is Friday. -->
-    
+
 ]]>
 </programlisting>
 </para>
-    
+
 <para>
 The next example shows Variable, If, Assert, and Try working together to make sure e-mail is sent from the right address and that if the mail fails to be sent for any reason, the build will not fail.
 </para>
@@ -1681,7 +1681,7 @@ The next example shows Variable, If, Assert, and Try working together to make su
    </if>
    <assert name="valid_email" value="true" failonerror="false">
       <try>
-         <mail from="${email_from}" tolist="${email_to}" 
+         <mail from="${email_from}" tolist="${email_to}"
             message="New release available"/>
       </try>
    </assert>
@@ -1691,11 +1691,11 @@ The next example shows Variable, If, Assert, and Try working together to make su
 </chapter>
 
 <chapter id="stopwatch">
-@@style@@
+@style@
     <title>Stopwatch</title>
 <para>
 The Stopwatch task makes it easy to add performance timing to Ant targets. Stopwatches are named so that multiple watches can run simultaneously.
-</para>   
+</para>
 
 <para>
 To use this task in your build files, include a task definition like this:
@@ -1765,12 +1765,12 @@ Example:
 
 
 <chapter id="Limit">
-@@style@@
+@style@
    <title>Limit</title>
-   
+
 <para>
 The Limit task is a task container (that is, it holds other tasks) and sets a time limit on how long the nested tasks are allowed to run. This is useful for unit tests that go awry, hung socket connections, or other potentially long running tasks that need to be shut off without stopping the build.
-</para>   
+</para>
 
 <para>
 To use this task in your build files, include a task definition like this:
@@ -1852,12 +1852,12 @@ Neither the echo nor the fail will happen in this example. The build will not co
 
 
 <chapter id="FileUtils">
-@@style@@
+@style@
    <title>FileUtils</title>
-   
+
 <para>
 The FileUtils task provides a number of useful file information functions, such as readability, writability, length, etc.  <emphasis role="bold">Caution: this task does not follow the standard Ant convention of property immutability.</emphasis>
-</para>   
+</para>
 
 <para>
 To use this task in your build files, include a task definition like this:
@@ -1911,7 +1911,7 @@ Operations as nested elements:
 </para>
 
 <para>
-<emphasis role="bold">listfiles</emphasis> Create a list of files and/or directories. 
+<emphasis role="bold">listfiles</emphasis> Create a list of files and/or directories.
 <table frame="all">
 <title>listfiles</title>
 <tgroup cols="4">
@@ -1954,7 +1954,7 @@ Operations as nested elements:
 </para>
 
 <para>
-<emphasis role="bold">lastmodified</emphasis> Get the "last modified" date/timestamp of a file. 
+<emphasis role="bold">lastmodified</emphasis> Get the "last modified" date/timestamp of a file.
 
 <table frame="all">
 <title>lastmodified</title>
@@ -1995,27 +1995,27 @@ These operations have no attributes:
 <listitem>
 <para>
 <emphasis role="bold">canwrite</emphasis> Is the file writable?
-</para> 
+</para>
 </listitem>
 <listitem>
 <para>
 <emphasis role="bold">length</emphasis> Finds the length of the file.
-</para> 
+</para>
 </listitem>
 <listitem>
 <para>
 <emphasis role="bold">filecount</emphasis> Find the number of files in the directory.
-</para> 
+</para>
 </listitem>
 <listitem>
 <para>
 <emphasis role="bold">isdirectory</emphasis> Is the file a directory?
-</para> 
+</para>
 </listitem>
 <listitem>
 <para>
 <emphasis role="bold">isfile</emphasis> Is the file a file?
-</para> 
+</para>
 </listitem>
 </itemizedlist>
 
@@ -2034,12 +2034,12 @@ Examples: See the <link linkend="Split">Split</link> for several examples.
 </chapter>
 
 <chapter id="StringUtils">
-@@style@@
+@style@
    <title>StringUtils</title>
-   
+
 <para>
 The StringUtils task provides a number of useful string manipulation functions, such as converting a string to upper or lower case, trimming white space, finding a substring, etc. <emphasis role="bold">Caution: this task does not follow the standard Ant convention of property immutability.</emphasis>
-</para>   
+</para>
 
 <para>
 To use this task in your build files, include a task definition like this:
@@ -2249,10 +2249,10 @@ This is useful for sorting a comma separated list or a property value that spans
 <row>
 <entry>width</entry>
 <entry>
-Maximum width in characters for the message box. Lines 
-will be wrapped to fit inside the box.  The box will not 
-stretch to this width if the message is less than 
-width - 4 characters wide. 
+Maximum width in characters for the message box. Lines
+will be wrapped to fit inside the box.  The box will not
+stretch to this width if the message is less than
+width - 4 characters wide.
 </entry>
 <entry>60</entry>
 <entry>No</entry>
@@ -2275,17 +2275,17 @@ These operations have no attributes:
 <listitem>
 <para>
 <emphasis role="bold">uppercase</emphasis> Converts the string to uppercase.
-</para> 
+</para>
 </listitem>
 <listitem>
 <para>
 <emphasis role="bold">length</emphasis> Finds the length of the string.
-</para> 
+</para>
 </listitem>
 <listitem>
 <para>
 <emphasis role="bold">trim</emphasis> Removes white space from boths ends of the string.
-</para> 
+</para>
 </listitem>
 </itemizedlist>
 
@@ -2445,9 +2445,9 @@ Message boxes:
          <a:messagebox title="About Character Boundaries"/>
       </a:stringutil>
       <echo>prop13a in messagebox with title:${line.separator}${prop13a}</echo>
-      
+
    </target>
-   
+
 test13:
      [echo] prop13 before = Character boundary analysis allows users to interact with characters as they expect to, for
 example, when moving the cursor around through a text string. Character boundary analysis provides correct navigation of
@@ -2477,7 +2477,7 @@ d as a base character and a diacritical mark. What users consider to be a charac
      [echo] | be stored as a base character and a diacritical mark. What users     |
      [echo] | consider to be a character can differ between languages.             |
      [echo] +----------------------------------------------------------------------+
-[antlib:ise.antelope.tasks:testcase] test13 passed.   
+[antlib:ise.antelope.tasks:testcase] test13 passed.
 ]]>
 </programlisting>
 </para>
@@ -2489,12 +2489,12 @@ d as a base character and a diacritical mark. What users consider to be a charac
 
 
 <chapter id="UID">
-@@style@@
+@style@
    <title>UID</title>
-   
+
 <para>
 The UID task generates a unique ID.  This ID may be either a unique string or integer.
-</para>   
+</para>
 
 <para>
 To use this task in your build files, include a task definition like this:
@@ -2569,12 +2569,12 @@ Examples:
 
 
 <chapter id="math">
-@@style@@
+@style@
     <title>Math</title>
-    
+
 <para>
-The Math task provides support for all the basic mathematical operations 
-provided by the java.lang.Math and java.lang.StrictMath classed. It supports int, long, float and double data types. Nesting of operations is supported to allow computation of formulas like (6 + (7.25 * 3.9))/(2 * 3 * 3) or calculating the area of a circle given a radius (I'm sure this comes up often in builds controlled by Ant!).  
+The Math task provides support for all the basic mathematical operations
+provided by the java.lang.Math and java.lang.StrictMath classed. It supports int, long, float and double data types. Nesting of operations is supported to allow computation of formulas like (6 + (7.25 * 3.9))/(2 * 3 * 3) or calculating the area of a circle given a radius (I'm sure this comes up often in builds controlled by Ant!).
 </para>
 
 <para>
@@ -2753,7 +2753,7 @@ Some examples:
     <var name="op1" value="12"/>
     <var name="op2" value="6"/>
     <var name="op" value="+"/>
-    
+
     <!-- demo plus -->
     <math result="result" operand1="${op1}" operation="${op}" operand2="${op2}" datatype="int"/>
     <echo>${op1} ${op} ${op2} = ${result}</echo>
@@ -2781,7 +2781,7 @@ Some examples:
     <math result="result" operand1="${op1}" operation="${op}" operand2="${op2}" datatype="int"/>
     <echo>${op1} ${op} ${op2} = ${result}</echo>
     <assert name="result" value="2"/>
-    
+
     <!-- demo modulo -->
     <var name="op" value="%"/>
     <math result="result" operand1="${op1}" operation="${op}" operand2="${op2}" datatype="int"/>
@@ -2800,7 +2800,7 @@ Some examples:
         </op>
     </math>
     <echo> 1 * 2 * 3 * 4 * 5 = ${radius}</echo>
-    
+
     <!-- now calculate the area -->
     <math result="area" precision="float">
         <op type="*">
@@ -2812,7 +2812,7 @@ Some examples:
         </op>
     </math>
     <echo>area = PI * radius ^ 2 = ${area}</echo>
-    
+
     <!-- demo calculating a random number between 0 and 100 -->
     <math result="result">
         <op op="rint">
@@ -2823,7 +2823,7 @@ Some examples:
         </op>
     </math>
     <echo>a random number between 0 and 100: ${result}</echo>
-    
+
     <!-- demo another multiplication -->
     <math result="result" operation="multiply" operand1="17" operand2="13"/>
     <echo>${result}</echo>
@@ -2835,9 +2835,9 @@ Some examples:
 
 
 <chapter id="hostname">
-@@style@@
+@style@
     <title>Hostname</title>
-    
+
 <para>
 This task shows the hostname or IP address of the local machine.
 </para>
@@ -2916,9 +2916,9 @@ Examples:
 <![CDATA[
    <description>
       Unit tests for hostname task, not really good as hostname is machine
-      dependent, so writing a portable test is hard. 
+      dependent, so writing a portable test is hard.
    </description>
-   
+
    <target name="test1">
       <a:unset name="hostname"/>
       <a:hostname/>
@@ -2953,21 +2953,21 @@ Examples:
       <echo>nic lo: ${localhost}</echo>
       <a:assert name="localhost" value="lo:127.0.0.1" message="test 5 failed."/>
    </target>
-   
+
 Output:
 
 test1:
-     [echo] hostname: blackdog   
+     [echo] hostname: blackdog
 
 test2:
      [echo] localhost: blackdog
-     
+
 test3:
      [echo] all interfaces: lo:127.0.0.1, eth0:, eth1:blackdog.somewhere.com, eth2:blackdog.wireless.somewhere.com
-     
+
 test4:
      [echo] all interfaces by IP: lo:127.0.0.1, eth0:, eth1:192.168.1.3, eth2:192.168.44.12
-   
+
 test5:
      [echo] nic lo: lo:127.0.0.1
 ]]>
@@ -2979,9 +2979,9 @@ test5:
 
 
 <chapter id="post">
-@@style@@
+@style@
     <title>HTTP Post</title>
-    
+
 <para>
 The Post task is a companion to the standard Ant "Get" task. This task does a post and does not necessarily expect anything in return. Almost always, there will be some sort of returned data, this can be logged or written to a file if needed.
 </para>
@@ -2996,7 +2996,7 @@ To use this task in your build files, include a task definition like this:
 </para>
 
 <para>
-Basically, an HTTP POST sends name/value pairs to a web server. A very common usage is for html forms for submitting data. A typical use of this task is to send data to a servlet for updating a web page with the status of a build. 
+Basically, an HTTP POST sends name/value pairs to a web server. A very common usage is for html forms for submitting data. A typical use of this task is to send data to a servlet for updating a web page with the status of a build.
 </para>
 
 <para>
@@ -3185,7 +3185,7 @@ Then the following are equivalent:
 
 
 <para>
-I googled for the URL in the following example. 
+I googled for the URL in the following example.
 </para>
 <para>
 <programlisting>
@@ -3214,7 +3214,7 @@ Also see the <link linkend="greptask">Grep task</link> for additional examples.
 
 
 <chapter id="ssh">
-@@style@@
+@style@
 
 <title>SSH and SCP</title>
 
@@ -3224,11 +3224,11 @@ The ssh and scp tasks are no longer included in the main Antelope distribution a
 </chapter>
 
 <chapter id="antfetch">
-@@style@@
+@style@
     <title>AntFetch</title>
-    
+
 <para>
-AntFetch is identical to the standard 'Ant' task, except that it allows properties from the new project to be set in the original project. 
+AntFetch is identical to the standard 'Ant' task, except that it allows properties from the new project to be set in the original project.
 </para>
 
 <para>
@@ -3243,7 +3243,7 @@ To use this task in your build files, include a task definition like this:
 
 <para>
 Some background may be in order: When the &lt;ant&gt; task is used, in actuality, a new Ant project is created, and depending on the inheritAll property, it is populated with properties from the original project. Then the target in this new project is executed. Any properties set in the new project remain with that project, they do not get "passed back" to the original project. So, for example, if the target in the new project sets a property named "image.directory", there is no reference to that property in the original. Here's an example of what I mean:
-</para>    
+</para>
 
 <para>
 Suppose that the "fillImageDirectory" target sets a property named "image.directory" and I call the following:
@@ -3318,11 +3318,11 @@ For other attribute and nested element information and more examples, see the do
 
 
 <chapter id="antcallback">
-@@style@@
+@style@
     <title>AntCallBack</title>
-    
+
 <para>
-AntCallBack is identical to the standard 'antcall' task, except that it allows properties set in the called target to be available in the calling target. 
+AntCallBack is identical to the standard 'antcall' task, except that it allows properties set in the called target to be available in the calling target.
 </para>
 
 <para>
@@ -3337,7 +3337,7 @@ To use this task in your build files, include a task definition like this:
 
 <para>
 Some background may be in order: When the &lt;antcall&gt; task is used, in actuality, a new Ant project is created, and depending on the inheritAll property, it is populated with properties from the original project. Then the requested target in this new project is executed. Any properties set in the new project remain with that project, they do not get "passed back" to the original project. So, for example, if the target in the new project sets a property named "image.directory", there is no reference to that property in the original. Here's an example of what I mean:
-</para>    
+</para>
 
 <para>
 <programlisting>
@@ -3348,12 +3348,12 @@ Some background may be in order: When the &lt;antcall&gt; task is used, in actua
         <echo>a = ${a}</echo>
         <echo>b = ${b}</echo>
     </target>
-    
+
     <target name="-testcb">
-        <property name="a" value="A"/> 
-        <property name="b" value="B"/> 
+        <property name="a" value="A"/>
+        <property name="b" value="B"/>
     </target>
-]]>    
+]]>
 </programlisting>
 The output from executing "testCallback" looks like this:
 <programlisting>
@@ -3375,12 +3375,12 @@ This is an often requested feature for Ant, at least judging from the Ant mailin
         <echo>a = ${a}</echo>
         <echo>b = ${b}</echo>
     </target>
-    
+
     <target name="-testcb">
-        <property name="a" value="A"/> 
-        <property name="b" value="B"/> 
+        <property name="a" value="A"/>
+        <property name="b" value="B"/>
     </target>
-]]>    
+]]>
 </programlisting>
 This is actually looks cleaner in this situation, and is faster, too. There is significant overhead in using both "antcall" and "antcallback" in that they both require a lot of object instantiation and property copying. That said, many people prefer to use "antcall" and "antcallback" as it better fits their logic and style.
 </para>
@@ -3422,11 +3422,11 @@ For other attribute and nested element information and more examples, see the do
 </chapter>
 
 <chapter id="calltask">
-@@style@@
+@style@
     <title>Call Task</title>
 <para>
 This is the simplest and possibly the most obvious of the "call" type of tasks. It simply calls a target in the current build file and provides exactly the functionality expected by many users of "antcall".
-</para> 
+</para>
 <para>
 To use this task in your build files, include a task definition like this:
 <programlisting>
@@ -3437,7 +3437,7 @@ To use this task in your build files, include a task definition like this:
 </para>
 
 <para>
-There is only one attribute, that is the name of the target to call. 
+There is only one attribute, that is the name of the target to call.
 
 <table frame="all">
 <title>Call Task Attributes</title>
@@ -3475,21 +3475,21 @@ There is none of the weird property manipulation done by "ant", "antcall", "antf
      <echo>a = ${a}</echo>
      <echo>b = ${b}</echo>
  </target>
- 
+
  <target name="called">
-     <property name="a" value="A"/> 
-     <property name="b" value="B"/> 
+     <property name="a" value="A"/>
+     <property name="b" value="B"/>
  </target>
-]]>    
+]]>
 </programlisting>
-</para>   
+</para>
 </chapter>
 
 <chapter id="greptask">
-@@style@@
+@style@
     <title>Grep Task</title>
 <para>
-This task uses a regular expression to do pattern matching against a string and store the match in a property.  This is useful for extracting a substring, or checking that an html form contains a particular value.</para> 
+This task uses a regular expression to do pattern matching against a string and store the match in a property.  This is useful for extracting a substring, or checking that an html form contains a particular value.</para>
 <para>
 To use this task in your build files, include a task definition like this:
 <programlisting>
@@ -3610,9 +3610,9 @@ Examples:
       <grep in="${response}" regex="(account id=)([0-9]+)" group="2" property="AccountId"/>
       <echo>Account Id: ${AccountId} received for ${user}</echo>
  </target>
-]]>    
+]]>
 </programlisting>
-</para>   
+</para>
 <para>
 This example uses the 'unset' and 'post' tasks along with 'grep' to list the download url's for Ant:
 <programlisting>
@@ -3620,16 +3620,16 @@ This example uses the 'unset' and 'post' tasks along with 'grep' to list the dow
 
     <target name="test">
       <unset name="ant_download_page"/>
-      <post to="http://ant.apache.org/bindownload.cgi" 
-            verbose="no" 
+      <post to="http://ant.apache.org/bindownload.cgi"
+            verbose="no"
             property="ant_download_page"/>
-      <grep in="${ant_download_page}" 
-            regex="select name=&quot;Preferred.*?&lt;/select" 
-            dotall="yes" 
+      <grep in="${ant_download_page}"
+            regex="select name=&quot;Preferred.*?&lt;/select"
+            dotall="yes"
             property="options"/>
-      
+
       <unset name="urls"/>
-      <grep in="${options}" 
+      <grep in="${options}"
          regex="&lt;option.*?&gt;(.*?)&lt;/option&gt;"
          group="1"
          allmatches="yes"
@@ -3637,7 +3637,7 @@ This example uses the 'unset' and 'post' tasks along with 'grep' to list the dow
          property="urls"/>
       <echo>${urls}</echo>
     </target>
-      
+
      [echo] http://apache.gr-linux.com
      [echo] http://www.reverse.net/pub/apache
      [echo] http://government-grants.org/mirrors/apache.org
@@ -3685,18 +3685,18 @@ This example uses the 'unset' and 'post' tasks along with 'grep' to list the dow
      [echo] ftp://www.reverse.net/pub/apache
      [echo] ftp://apache.secsup.org/pub/apache/dist
      [echo] http://www.eu.apache.org/dist (backup)
-     [echo] http://www.apache.org/dist (backup)      
-]]>    
+     [echo] http://www.apache.org/dist (backup)
+]]>
 </programlisting>
-</para>   
+</para>
 
 </chapter>
 
 
 <chapter id="Split">
-@@style@@
+@style@
     <title>Split Task</title>
-    
+
 <para>
 This task splits a property or file into pieces.  This is similar to the "split" utility found on most Unix and Linux distributions.
 </para>
@@ -3834,18 +3834,18 @@ This more involved example shows how to split ant.jar into several files each 10
       <!-- make sure ant.jar is available -->
       <property name="ant.jar" value="${ant.library.dir}/ant.jar"/>
       <available property="ant.jar.available" file="${ant.jar}"/>
-      
+
       <a:if name="ant.jar.available" value="true">
          <!-- ant.jar generally runs around 1MB in size, so split into 100000 byte pieces -->
          <a:unset name="piece_size"/>
          <property name="piece_size" value="100000"/>
          <a:split file="${ant.jar}" bytes="${piece_size}" outputdir="${out_dir}" prefix="ant.jar"/>
-         
+
          <!-- count the parts -->
          <a:fileutil file="${out_dir}" property="file_count">
             <a:filecount/>
          </a:fileutil>
-         
+
          <!-- calculate how many parts there should be -->
          <a:fileutil file="${ant.jar}" property="ant_size">
             <a:filelength/>
@@ -3858,7 +3858,7 @@ This more involved example shows how to split ant.jar into several files each 10
                </a:op>
             </a:op>
          </a:math>
-         
+
          <!-- make sure there are the right number of parts -->
          <a:assert message="Expected ${split_size} files, got ${file_count}">
             <bool>
@@ -3874,7 +3874,7 @@ This more involved example shows how to split ant.jar into several files each 10
          <a:stringutil string="${file_list}" property="file_list">
             <a:sort/>
          </a:stringutil>
-         
+
          <!-- put them back together -->
          <concat destfile="${out_dir}/ant.jar" binary="true">
             <filelist dir="${out_dir}" files="${file_list}"/>
@@ -3891,17 +3891,17 @@ This more involved example shows how to split ant.jar into several files each 10
 ]]>
 </programlisting>
 </para>
-    
+
 </chapter>
 
 
 
 <chapter id="Repeat">
-@@style@@
+@style@
     <title>Repeat Task</title>
 <para>
 The Repeat task performs the same subtasks over and over a certain number of times or until a condition is met.  Since most tasks are configured when the build file is first loaded and never again, this task may not do what you want.
-</para> 
+</para>
 <para>
 To use this task in your build files, include a task definition like this:
 <programlisting>
@@ -4166,13 +4166,13 @@ Here are a number of examples taken from the unit tests for this task:
          <property name="log_contents" value="All tests passed ${call_count} times."/>
       </a:new>
    </target>
-]]>    
+]]>
 </programlisting>
-</para>   
+</para>
 </chapter>
 
 <chapter id="suitetask">
-@@style@@
+@style@
     <title>Suite Task</title>
 <para>
  Modeled after the TestSuite provided by jUnit, this class is an Ant task that
@@ -4182,8 +4182,11 @@ Here are a number of examples taken from the unit tests for this task:
  optional targets in the build file.  A build file may contain multiple suite tasks, note that each invocation will call 'setUp' and 'tearDown', so you may want to use some conditionals to only have them execute once.
 </para>
 <para>
+<emphasis role="bold">While this task and the associated 'testcase' task work very well, a similar test framework has been created by the Ant development team.  You may want to check out that framework as it is likely to be the "standard" Ant test framework.  Look for "AntUnit" at http://ant.apache.org.</emphasis>
+</para>
+<para>
  Typically, the nested tasks are TestCases, although they can be any task as appropriate to your testing.  The nested tasks may also be Suites, so you can group your tests easily.  Nested tasks are executed in order.
-</para> 
+</para>
 <para>
  Suite may also hold FileSets.  Each file in the FileSet will be treated as a file suitable for use by a TestCase and will be executed as such.  This makes it easy to run an entire directory of tests without having to specify a TestCase for each one individually.
 </para>
@@ -4252,13 +4255,13 @@ In the example below, the "suite" tasks is a top-level task, so will execute aut
    <description>
      Build file to run unit tests for the Math task
    </description>
-   
+
    <a:suite>
       <a:testcase file="math_basic_tests.xml"/>
       <a:testcase file="math_rules_tests.xml"/>
       <a:testcase file="math_precision_tests.xml"/>
    </a:suite>
-   
+
    <!-- alternatively, a fileset could be used:
    <a:suite>
       <fileset dir="${basedir}">
@@ -4373,29 +4376,29 @@ test8.0:
 
 BUILD SUCCESSFUL
 Total time: 1 second
-]]>    
+]]>
 </programlisting>
-</para>   
+</para>
 </chapter>
 
 <chapter id="testcasetask">
-@@style@@
+@style@
     <title>TestCase Task</title>
 <para>
  Modeled after the TestCase provided by jUnit, this class is an Ant task that
  looks through the build file that contains this task, calls a 'setUp' target
  (if it exists), then all targets whose names start with 'test', and last calls
  a target named 'tearDown' (if it exists).  Both 'setUp' and 'tearDown' are
- optional targets in the build file. 
+ optional targets in the build file.
 </para>
 <para>
  Ant stores targets in a hashtable, so there is no guaranteed order in which
  the 'test*' targets will be called.  If order is important, use the 'depends'
  attribue of a target to enforce order, and do not name dependent targets with
  a name starting with 'test'.
-</para> 
+</para>
 <para>
- Most unit tests will make use of Assert.  As the Assert task requires that the property "ant.enable.asserts" be set to true before it will do anything, this task automatically sets this property to true. The Assert task has a "level" attribute.  By default, the level is set to "error", so if the Assert fails, the TestCase fails.  If the level is set to "warning", the test case will be marked as a warning rather than a failure.  If the level is set to "info" or "debug" and the Assert fails, any message associated with the Assert will be written out, but otherwise will be ignored by TestCase. 
+ Most unit tests will make use of Assert.  As the Assert task requires that the property "ant.enable.asserts" be set to true before it will do anything, this task automatically sets this property to true. The Assert task has a "level" attribute.  By default, the level is set to "error", so if the Assert fails, the TestCase fails.  If the level is set to "warning", the test case will be marked as a warning rather than a failure.  If the level is set to "info" or "debug" and the Assert fails, any message associated with the Assert will be written out, but otherwise will be ignored by TestCase.
 </para>
 <para>
 To use this task in your build files, include a task definition like this:
@@ -4470,23 +4473,23 @@ TestCase is most often used in conjunction with the Suite task.
 <para>
 <programlisting>
 <![CDATA[
-<project name="mathtest" basedir="." default="suite" 
+<project name="mathtest" basedir="." default="suite"
    xmlns:a="antlib:ise.antelope.tasks">
-   
+
    <description>
      Build file to run unit tests for the Math task
    </description>
-   
+
    <a:suite>
       <a:testcase file="math_basic_tests.xml"/>
       <a:testcase file="math_rules_tests.xml"/>
       <a:testcase file="math_precision_tests.xml"/>
    </a:suite>
-   
-</project>   
-]]>    
+
+</project>
+]]>
 </programlisting>
-</para>   
+</para>
 
 <para>
 Here is an example build file containing actual tests.  The 'setUp' target will execute first, then the two test targets.
@@ -4494,13 +4497,13 @@ Here is an example build file containing actual tests.  The 'setUp' target will 
 <para>
 <programlisting>
 <![CDATA[
-<project name="math_precision_tests" basedir="." default="suite" 
+<project name="math_precision_tests" basedir="." default="suite"
    xmlns:a="antlib:ise.antelope.tasks">
-   
+
    <target name="setUp">
       <echo>Running math precision tests.</echo>
    </target>
-   
+
    <target name="test10">
       <echo>Circle area test</echo>
       <a:math result="pi">
@@ -4518,7 +4521,7 @@ Here is an example build file containing actual tests.  The 'setUp' target will 
          </a:bool>
       </a:assert>
    </target>
-   
+
    <target name="test11">
       <echo>Division by zero test</echo>
       <!-- division by zero -->
@@ -4535,25 +4538,25 @@ Here is an example build file containing actual tests.  The 'setUp' target will 
          </catch>
       </a:try>
    </target>
-   
+
 </project>
-]]>    
+]]>
 </programlisting>
-</para>   
+</para>
 
 </chapter>
 
 <chapter id="performance">
-@@style@@
+@style@
     <title>Performance Monitoring</title>
-    
+
 <para>
 In addition to the tasks described in this manual, Antelope also ships with a special Ant listener than can keep track of the amount of time that each target and task takes to execute. At the end of the build, these times will be sorted from fastest to slowest and displayed following the build output. This can be useful to pinpoint slow and/or inefficient spots in the build process and identify those areas that could benefit from optimization.
-</para> 
+</para>
 
 <para>
 The performance listener can be used outside of Antelope by passing a parameter to the command line for Ant:
-</para>   
+</para>
 
 <para>
 <programlisting>
@@ -4564,7 +4567,7 @@ The performance listener can be used outside of Antelope by passing a parameter 
 </para>
 
 <para>
-Following is an example of the results from using the listener. The result format is projectname.targetname for targets and projectname.targetname.taskname for tasks. All times are shown to the nearest millisecond. 
+Following is an example of the results from using the listener. The result format is projectname.targetname for targets and projectname.targetname.taskname for tasks. All times are shown to the nearest millisecond.
 <programlisting>
 <![CDATA[
 [danson@blackdog antelope]$ ant -listener ise.antelope.common.AntPerformanceListener dist
@@ -4656,7 +4659,7 @@ Total time: 8.476 sec
 </chapter>
 
 <chapter id="feedback">
-@@style@@
+@style@
     <title>Feedback</title>
 
 <para>

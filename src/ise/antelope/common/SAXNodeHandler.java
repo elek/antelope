@@ -182,7 +182,7 @@ public class SAXNodeHandler extends DefaultHandler {
                 if (index > -1) {
                     String filename = attributes.getValue(index);
                     filename = resolveValue(filename);
-                    System.out.println("filename = " + filename);
+                    //System.out.println("filename = " + filename);
                     File f = new File(filename);
                     if (!f.exists()) {
                         f = new File(infile.getParent(), filename);
@@ -253,7 +253,7 @@ public class SAXNodeHandler extends DefaultHandler {
                     if (!f.exists()) {
                         f = new File(infile.getParent(), filename);
                     }
-                    System.out.println("+++++ property filename: " + f);
+                    //System.out.println("+++++ property filename: " + f);
                     if (f.exists()) {
                         Properties props = new Properties();
                         try {
