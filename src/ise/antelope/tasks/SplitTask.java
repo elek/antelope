@@ -24,11 +24,16 @@ public class SplitTask extends Task {
     private File outputDir = null;
     private boolean failOnError = true;
 
+    /**
+     * Buffer size for read and write operations.
+     */
+    public static final int BUFFER_SIZE = 8192;
+
 
     /**
      * The start of the file names to write.  Files are named using this string,
      * followed by a "." and a number, e.g. x.0, x.1, etc.  The Unix/Linux split
-     * uses a letter scheme for the suffix, that is not supported here. 
+     * uses a letter scheme for the suffix, that is not supported here.
      *
      * Should the dot go away? If the user wants a dot, it could be part of this
      * attribute.  Right now, the dot is there, and there is no way for the user
@@ -44,7 +49,7 @@ public class SplitTask extends Task {
      * Set the number of bytes per part.  This is not a required parameter,
      * the default is to use lines rather than bytes.
      *
-     * Use bytes or lines, not both. In general, use bytes or size for binary 
+     * Use bytes or lines, not both. In general, use bytes or size for binary
      * files, lines for text files.
      *
      * @param b  number of bytes per part.
@@ -59,12 +64,13 @@ public class SplitTask extends Task {
      * Meg.  Use this method for a similar effect.  This is not a required
      * parameter, the default is to use lines rather than size.
      *
-     * Use bytes or lines, not both. In general, use bytes or size for binary 
+     * Use bytes or lines, not both. In general, use bytes or size for binary
      * files, lines for text files.
      *
      * @param b  the number of bytes per part, with an optional modifier. If
      *      there is no modifier, treat same as setBytes(int).  For example,
-     *      setSize("100k") is the same as setBytes(100 * 1024).
+     *      setSize("100k") is the same as setBytes(100 * 1024).  Note that the
+     *      maximum size must be smaller than Integer.MAX_VALUE (2147483647).
      */
     public void setSize( String b ) {
         if ( b == null || b.length() == 0 )
@@ -91,7 +97,7 @@ public class SplitTask extends Task {
             setBytes( size );
         }
         catch ( NumberFormatException e ) {
-            throw new BuildException( "Invalid size parameter." );
+            throw new BuildException( "Invalid size parameter: " + b );
         }
     }
 
@@ -99,7 +105,7 @@ public class SplitTask extends Task {
      * Set the number of lines per part, default is 1000.  This is not a required
      * parameter, but is the default setting for splitting.
      *
-     * Use bytes or lines, not both. In general, use bytes or size for binary 
+     * Use bytes or lines, not both. In general, use bytes or size for binary
      * files, lines for text files.
      *
      * @param x  The number of lines per part.
@@ -148,8 +154,8 @@ public class SplitTask extends Task {
     }
 
     /**
-     * Where to put the parts. If file has been set and output directory has not 
-     * set, output to directory containing file.
+     * Where to put the parts. If file has been set and output directory has not
+     * been set, output to directory containing file.
      *
      * @param d  the output directory
      */
@@ -200,7 +206,9 @@ public class SplitTask extends Task {
     }
 
     /**
-     * Split a string value into several files.
+     * Split a string value into several files.  Since the length of a String
+     * can be no more than Integer.MAX_VALUE, no special handling of the split
+     * sizes is required.
      *
      * @exception IOException  if there is an i/o problem
      */
@@ -233,7 +241,9 @@ public class SplitTask extends Task {
     }
 
     /**
-     * Split a file into several files.
+     * Split a file into several files.  Need some special handling here since
+     * a file could be larger than Integer.MAX_VALUE, in fact, a file can be at
+     * most Long.MAX_VALUE.
      *
      * @exception IOException  if there is an i/o problem
      */
@@ -248,29 +258,34 @@ public class SplitTask extends Task {
             throw new IOException( "Unable to create output directory." );
         }
 
-        int suffix = 0;
         if ( bytes > 0 ) {
-            // make files all the same number of bytes
+            int suffix = 0;
+            int num_parts = ( int ) ( file.length() / ( long ) bytes );
+            int last_part_size = ( int ) ( file.length() % ( long ) bytes );
+            boolean one_more = last_part_size > 0;
             BufferedInputStream bis = new BufferedInputStream( new FileInputStream( file ) );
-            int bytes_read = 0;
-            byte[] buffer = new byte[ bytes ];
-            while ( bytes_read > -1 ) {
-                bytes_read = bis.read( buffer, 0, bytes );
-                if ( bytes_read == -1 )
-                    break;
+            for ( int i = 0; i < num_parts; i++ ) {
+                // make files all the same number of bytes
                 FileOutputStream fos = new FileOutputStream( new File( outputDir, prefix + "." + String.valueOf( suffix ) ) );
-                fos.write( buffer, 0, bytes_read );
+                copyToStream( bis, fos, bytes );
                 fos.flush();
                 fos.close();
                 ++suffix;
             }
+            if ( one_more ) {
+                FileOutputStream fos = new FileOutputStream( new File( outputDir, prefix + "." + String.valueOf( suffix ) ) );
+                copyToStream( bis, fos, last_part_size );
+                fos.flush();
+                fos.close();
+            }
+            bis.close();
         }
         else {
             // make files all the same number of lines
             splitByLines( new FileReader( file ) );
         }
     }
-    
+
     private void splitByLines( Reader reader ) throws IOException {
         int suffix = 0;
         LineNumberReader lnr = new LineNumberReader( reader );
@@ -291,6 +306,33 @@ public class SplitTask extends Task {
         writer.close();
     }
 
+    /**
+     * Copies a stream to another stream.
+     *
+     * @param from           stream to copy from
+     * @param to             file to write
+     * @param size           number of bytes to copy from 'from' to 'to'
+     * @return               actual number of bytes copied from 'from' to 'to'
+     * @exception IOException  on any file error
+     */
+    private int copyToStream( InputStream from, OutputStream to, int size ) throws IOException {
+        int buffer_size = BUFFER_SIZE;
+        if ( size <= BUFFER_SIZE ) {
+            buffer_size = size;
+        }
+        byte[] buffer = new byte[ Math.min( BUFFER_SIZE, size ) ];
+        int bytes_read;
+        int total = 0;
+        int offset = 0;
+        while ( true ) {
+            bytes_read = from.read( buffer, 0, Math.min( buffer_size, size - offset ) );
+            if ( bytes_read == -1 )
+                break;
+            to.write( buffer, 0, bytes_read );
+            total += bytes_read;
+            offset += bytes_read;
+        }
+        to.flush();
+        return total;
+    }
 }
-
-
