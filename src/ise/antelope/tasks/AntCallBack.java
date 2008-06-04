@@ -370,7 +370,8 @@ public class AntCallBack extends Task {
                 + " in build file " + antFile.toString(),
                Project.MSG_VERBOSE );
          newProject.setUserProperty( "ant.file", antFile );
-         ProjectHelper.getProjectHelper().parse( newProject, new File( antFile ) );
+         ///ProjectHelper.getProjectHelper().parse( newProject, new File( antFile ) ); // old
+         ProjectHelper.configureProject(newProject, new File( antFile ));   // needed for Ant 1.7
 
          if ( target == null ) {
             target = newProject.getDefaultTarget();
@@ -389,7 +390,7 @@ public class AntCallBack extends Task {
          }
 
          newProject.executeTarget( target );
-         
+
          // copy back the props if possible
          if ( returnName != null ) {
             StringTokenizer st = new StringTokenizer( returnName, "," );
