@@ -320,12 +320,12 @@ public class SplitTask extends Task {
         if ( size <= BUFFER_SIZE ) {
             buffer_size = size;
         }
-        byte[] buffer = new byte[ Math.min( BUFFER_SIZE, size ) ];
+        byte[] buffer = new byte[ java.lang.Math.min( BUFFER_SIZE, size ) ];
         int bytes_read;
         int total = 0;
         int offset = 0;
         while ( true ) {
-            bytes_read = from.read( buffer, 0, Math.min( buffer_size, size - offset ) );
+            bytes_read = from.read( buffer, 0, java.lang.Math.min( buffer_size, size - offset ) );
             if ( bytes_read == -1 )
                 break;
             to.write( buffer, 0, bytes_read );

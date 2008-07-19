@@ -47,25 +47,19 @@
 */
 package ise.antelope.plugin;
 
-
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.util.*;
-import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.jar.*;
 import javax.swing.*;
-import ise.library.Log;
 import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.View;
-import org.gjt.sp.jedit.EditPlugin;
-import org.gjt.sp.jedit.PluginJAR;
 import org.gjt.sp.jedit.gui.DockableWindowManager;
 import org.gjt.sp.jedit.io.VFSManager;
 
@@ -73,7 +67,6 @@ import console.*;
 import errorlist.*;
 
 import ise.antelope.common.*;
-import ise.library.PrivilegedAccessor;
 
 /**
  * This is the panel displayed and manipulated by jEdit. It wraps the
@@ -95,7 +88,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      * the preferred size may or may not be set.
      *
      * Initially, this shows a "Loading Ant..." message. The actual loading of
-     * Ant happens in the Plugin class and in the <code>init()</code> method. Once 
+     * Ant happens in the Plugin class and in the <code>init()</code> method. Once
      * Ant is loaded, the AntelopePanel is shown.
      *
      * @param position  this is passed in by the DockableWindowManager, it will
@@ -104,7 +97,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      */
     public AntelopePluginPanel( View view, String position ) {
         super( new java.awt.BorderLayout() );
-        setBackground( java.awt.Color.WHITE );
+        setBackground( jEdit.getColorProperty("view.bgColor", Color.WHITE) );
         _view = view;
         JLabel label = new JLabel( "<html><center><b><i>Please wait,<p>Loading Ant...</i></b></center></html>", SwingConstants.CENTER );
         add( label );
@@ -167,6 +160,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                         // create and add Antelope
                         try {
                             antelopePanel = new AntelopePanel( file, new CommonHelperWrapper( AntelopePluginPanel.this ), true, menu_items );
+                            antelopePanel.setBackground( jEdit.getColorProperty("view.bgColor", Color.WHITE) );
                         }
                         catch ( Throwable t ) {
                             t.printStackTrace();
@@ -176,7 +170,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                             return ;
                         }
                         removeAll();
-                        setBackground( java.awt.Color.WHITE );
+                        setBackground( jEdit.getColorProperty("view.bgColor", Color.WHITE) );
                         add( antelopePanel );
                         AntelopePlugin.addPanel( _view, AntelopePluginPanel.this );
 
@@ -395,7 +389,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                             }
                         );
                     }
-                    catch ( Exception e ) {
+                    catch ( Exception e ) {     // NOPMD
                         // ignore this
                     }
                 }
@@ -432,6 +426,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
         }
     }
 
+    /*
     private Class loadAnt() {
         try {
             File jar_file = AntelopePlugin.getAntelopePluginJAR().getFile();
@@ -443,4 +438,5 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
             return null;
         }
     }
+    */
 }

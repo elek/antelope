@@ -2,7 +2,7 @@
 <project name="antelope_task_test" default="test" basedir=".">
 
    <typedef resource="ise/antelope/tasks/antelope.taskdefs"
-         classpath="${ant.library.dir}/AntelopeTasks_3.2.19.jar"/>
+         classpath="${ant.library.dir}/AntelopeTasks_3.4.2.jar"/>
 
    <target name="test">
       <suite name="Antelope Task Tests">
@@ -23,7 +23,8 @@
          <testcase file="repeattest.xml" enabled="false"/>
          <testcase file="unset_test.xml" enabled="false"/>
          <testcase file="split_test.xml" enabled="false"/>
-         <testcase file="stringutil_test.xml" enabled="true"/>
+         <testcase file="fileutil_test.xml" enabled="true"/>
+         <testcase file="stringutil_test.xml" enabled="false"/>
          <testcase file="uid_test.xml" enabled="false"/>
          <testcase file="trycatch_test.xml" enabled="false"/>
          <testcase file="hostname_test.xml" enabled="false"/>

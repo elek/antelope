@@ -94,7 +94,6 @@ public class AntelopePanel extends JPanel {
     private ArrayList _execute_targets = null;
     private DeckPanel _center_panel = null;
     private JPanel _button_panel = null;
-    private JTabbedPane _tabs = null;
     private SAXPanel _sax_panel = null;
 
     private JPanel _control_panel = null;
@@ -135,7 +134,6 @@ public class AntelopePanel extends JPanel {
 
     // basic logger settings
     private Logger _logger = null;
-    private Handler _console = null;
     private Level _log_level = Level.ALL;
 
     /** Description of the Field */
@@ -260,12 +258,11 @@ public class AntelopePanel extends JPanel {
                     _edit = false;
                     _trace = false;
                     _center_panel.show( "panel" );
-                    _button_panel.setBackground( Color.WHITE );
+                    _button_panel.setBackground( AntelopePanel.this.getBackground() );
                 }
             }
         );
-        if ( _helper != null ) {
-            if ( _helper.getRunButtonAction() != null )
+        if ( _helper != null && helper.getRunButtonAction() != null ) {
                 _run_btn.addActionListener( _helper.getRunButtonAction() );
         }
         _run_btn.setSelected( true );
@@ -284,8 +281,7 @@ public class AntelopePanel extends JPanel {
                 }
             }
         );
-        if ( _helper != null ) {
-            if ( _helper.getTraceButtonAction() != null )
+        if ( _helper != null && _helper.getTraceButtonAction() != null ) {
                 _trace_btn.addActionListener( _helper.getTraceButtonAction() );
         }
 
@@ -599,7 +595,6 @@ public class AntelopePanel extends JPanel {
         new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
                 final ActionEvent event = ae;
-                final AbstractButton button;
                 final String target_name = event.getActionCommand();
 
                 // maybe stop any running targets
@@ -1010,13 +1005,12 @@ public class AntelopePanel extends JPanel {
             }
             if ( _button_panel == null ) {
                 _button_panel = new JPanel( new KappaLayout() );
-                _button_panel.setBackground( Color.white );
+                _button_panel.setBackground( AntelopePanel.this.getBackground() );
                 _button_panel.setBorder( new javax.swing.border.EmptyBorder( 3, 3, 3, 3 ) );
                 _scroller = new JScrollPane( _button_panel );
                 _scroller.getVerticalScrollBar().setUnitIncrement(50);
                 _btn_container = new JPanel( new BorderLayout() );
                 _btn_container.add( _scroller, BorderLayout.CENTER );
-                JPanel multi_panel = new JPanel();
                 _btn_container.add( _multi, BorderLayout.SOUTH );
             }
             else {
@@ -1074,7 +1068,6 @@ public class AntelopePanel extends JPanel {
                     loadPropertyFiles();
 
                     // set up "Execute" button for multiple targets
-                    ArrayList last_used_targets = null;
                     if ( new_file ) {
                         _multi.setSelected( _settings.getMultipleTargets() );
                     }
@@ -1237,7 +1230,7 @@ public class AntelopePanel extends JPanel {
                             button.setText( btn_text );
                             button.addActionListener( _cb_listener );
                             button.setBackground( _button_panel.getBackground() );
-                            if ( node.isDefaultTarget() )
+                            if ( node != null && node.isDefaultTarget() )
                                 _default_btn = button;
                         }
                         else {
@@ -1358,7 +1351,7 @@ public class AntelopePanel extends JPanel {
             }
 
             // add the gui input handler
-            setInputHandler( p, "ise.antelope.common.AntInputHandler" );
+            setInputHandler( p );
 
             p.init();   // this takes as much as 9 seconds the first time, less than 1/2 second later
 
@@ -1487,7 +1480,7 @@ public class AntelopePanel extends JPanel {
         }
     }
 
-    private void setInputHandler( Project p, String inputHandler ) {
+    private void setInputHandler( Project p ) {
         try {
             AntInputHandler ih = new AntInputHandler(AntelopePanel.this);
             PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
@@ -1592,7 +1585,7 @@ public class AntelopePanel extends JPanel {
         try {
             recent = Constants.PREFS.get( Constants.RECENT_LIST, "" );
         }
-        catch ( Exception e ) {}
+        catch ( Exception e ) {}    // NOPMD
         ActionListener al =
             new ActionListener() {
                 public void actionPerformed( ActionEvent ae ) {
@@ -1622,7 +1615,7 @@ public class AntelopePanel extends JPanel {
         try {
             recent = Constants.PREFS.get( Constants.RECENT_LIST, "" );
         }
-        catch ( Exception e ) {}
+        catch ( Exception e ) {}    // NOPMD
         StringTokenizer st = new StringTokenizer( recent, File.pathSeparator );
         while ( st.hasMoreTokens() ) {
             String filename = st.nextToken();
@@ -1654,7 +1647,7 @@ public class AntelopePanel extends JPanel {
         try {
             recent = Constants.PREFS.get( Constants.RECENT_LIST, "" );
         }
-        catch ( Exception e ) {}
+        catch ( Exception e ) {}    // NOPMD
         if ( recent.startsWith( last_used.getAbsolutePath() ) )
             return ;
         ArrayList list = new ArrayList();

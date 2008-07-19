@@ -21,7 +21,6 @@
    <taskdef name="if" classname="ise.antelope.tasks.IfTask"/>
    <taskdef name="limit" classname="ise.antelope.tasks.Limit"/>
    <taskdef name="math" classname="ise.antelope.tasks.MathTask"/>
-   <taskdef name="new" classname="ise.antelope.tasks.New"/>
    <taskdef name="pw" classname="ise.antelope.tasks.PasswordHandlerTask"/>
    <taskdef name="post" classname="ise.antelope.tasks.PostTask"/>
    <taskdef name="readlog" classname="ise.antelope.tasks.ReadLog"/>
@@ -37,10 +36,9 @@
    <taskdef name="unset" classname="ise.antelope.tasks.Unset"/>
    <taskdef name="until" classname="ise.antelope.tasks.BooleanConditionTask"/>
    <taskdef name="var" classname="ise.antelope.tasks.Variable"/>
-   <taskdef name="xmlprop" classname="ise.antelope.tasks.XmlPropertyTask"/>
-   
+
    <typedef name="prop" classname="ise.antelope.tasks.typedefs.Prop"/>
-   
+
    <typedef name="contains" classname="ise.antelope.tasks.condition.Contains"/>
    <typedef name="datedifference" classname="ise.antelope.tasks.condition.DateTimeDifference"/>
    <typedef name="timedifference" classname="ise.antelope.tasks.condition.DateTimeDifference"/>
@@ -51,11 +49,11 @@
    <typedef name="mathequals" classname="ise.antelope.tasks.condition.MathEquals"/>
    <typedef name="endswith" classname="ise.antelope.tasks.condition.EndsWith"/>
    <typedef name="startswith" classname="ise.antelope.tasks.condition.StartsWith"/>
-   
+
    <typedef name="and" classname="ise.antelope.tasks.condition.And"/>
    <typedef name="or" classname="ise.antelope.tasks.condition.Or"/>
    <typedef name="not" classname="ise.antelope.tasks.condition.Not"/>
-   
+
    <typedef name="lowercase" classname="ise.antelope.tasks.typedefs.string.LowerCase"/>
    <typedef name="uppercase" classname="ise.antelope.tasks.typedefs.string.UpperCase"/>
    <typedef name="trim" classname="ise.antelope.tasks.typedefs.string.Trim"/>
@@ -66,7 +64,7 @@
    <typedef name="length" classname="ise.antelope.tasks.typedefs.string.Length"/>
    <typedef name="messagebox" classname="ise.antelope.tasks.typedefs.string.MessageBox"/>
    <typedef name="sort" classname="ise.antelope.tasks.typedefs.string.Sort"/>
-   
+
    <typedef name="canread" classname="ise.antelope.tasks.typedefs.file.CanRead"/>
    <typedef name="canwrite" classname="ise.antelope.tasks.typedefs.file.CanWrite"/>
    <typedef name="filecount" classname="ise.antelope.tasks.typedefs.file.FileCount"/>
@@ -76,5 +74,5 @@
    <typedef name="isdirectory" classname="ise.antelope.tasks.typedefs.file.IsDirectory"/>
    <typedef name="isfile" classname="ise.antelope.tasks.typedefs.file.IsFile"/>
    <typedef name="lastmodified" classname="ise.antelope.tasks.typedefs.file.LastModified"/>
-   
+
 </antlib>

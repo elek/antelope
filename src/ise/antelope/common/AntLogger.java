@@ -203,7 +203,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
    private AntFileHandler fileHandler = null;
 
    /**
-    * LogRecords can have parameters, the namespace is added as the only parameter.   
+    * LogRecords can have parameters, the namespace is added as the only parameter.
     */
    private Object[] parameters = new String[]{NAMESPACE};
 
@@ -323,7 +323,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       open();
       log( " " );
       // note: ConsolePluginHandler uses this message to show the Console plugin,
-      // so if you change this message, be sure to update the ConsolePluginHandler 
+      // so if you change this message, be sure to update the ConsolePluginHandler
       log( Level.CONFIG, "===== BUILD STARTED =====" + lSep );
       startTime = System.currentTimeMillis();
    }
@@ -367,13 +367,13 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
          log( Level.SEVERE, message.toString() );
       }
       message = new StringBuffer();
-      message.append( "Total time: " );
-      message.append( formatTime( System.currentTimeMillis() - startTime ) );
+      //message.append( "Total time: " );
+      //message.append( formatTime( System.currentTimeMillis() - startTime ) );
       message.append( lSep );
       // note: ConsolePluginHandler uses this message to set focus back to the buffer,
-      // so if you change this message, be sure to update the ConsolePluginHandler 
+      // so if you change this message, be sure to update the ConsolePluginHandler
       message.append( "===== BUILD FINISHED =====" ).append( lSep );
-      message.append( new java.util.Date().toString()).append(lSep);
+      //message.append( new java.util.Date().toString()).append(lSep);
 
       String msg = message.toString();
       log( Level.CONFIG, msg );
@@ -489,7 +489,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       if ( message == null ) {
          message = "" ;
       }
-      
+
       Log.log(this, message);
 
       // log the message
@@ -535,7 +535,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
       return echo;
    }
 
-   
+
    /**
     *  Initializes the logger. This will install a ConsoleHandler by default.
     */
@@ -653,7 +653,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
                         line = new StringBuffer();
                       }
                       else {
-                        line.append((byte)b);   
+                        line.append((byte)b);
                       }
                       */
                      byte[] bytes = {( byte ) b};

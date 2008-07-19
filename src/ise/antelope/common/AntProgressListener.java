@@ -54,6 +54,7 @@
 package ise.antelope.common;
 
 import ise.library.PrivilegedAccessor;
+import java.lang.reflect.Field;
 
 import java.awt.Color;
 import javax.swing.*;
@@ -179,6 +180,74 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      */
     public void taskStarted( BuildEvent be ) {
         // does nothing
+        /*
+        try {
+            Task task = be.getTask();
+            String name = task.getTaskName();
+            System.out.println("+++++ task name = " + name);
+            if ( "import".equals( name ) ) {
+                System.out.println( "+++++ executed an import task" );
+                if (task instanceof UnknownElement) {
+                    UnknownElement ue = (UnknownElement)task;
+                    ue.maybeConfigure();
+                    task = ue.getTask();
+                    String filename = ( String ) PrivilegedAccessor.getValue( task, "file" );
+                    System.out.println("+++++ filename: " + filename);
+                    File file = new File( filename );
+                    String ph = System.getProperty("org.apache.tools.ant.ProjectHelper");
+                    System.setProperty( "org.apache.tools.ant.ProjectHelper", "ise.antelope.common.AntelopeProjectHelper2" );
+                    Project p = new Project();
+                    p.init();
+                    ProjectHelper helper = ProjectHelper.getProjectHelper();
+                    p.addReference("ant.projectHelper", helper);
+                    helper.parse(p, file);
+                    p.executeTarget( "" );
+                    System.setProperty( "org.apache.tools.ant.ProjectHelper", ph );
+
+                      try {
+                         Object property_helper = be.getProject().getReference( "ant.PropertyHelper" );
+                         if ( property_helper != null ) {
+                            try {
+                               Hashtable build_properties = ( Hashtable ) getValue( property_helper, "properties" );
+                               if ( build_properties != null ) {
+                                   Hashtable import_properties = (Hashtable)getValue( helper, "properties");
+                                   if (import_properties != null) {
+                                        build_properties.putAll(import_properties);
+                                   }
+                               }
+                            }
+                            catch ( Exception e ) {
+                               // ignore
+                            }
+                            try {
+                               Hashtable build_user_properties = ( Hashtable ) getValue( property_helper, "userProperties" );
+                               if ( build_user_properties != null ) {
+                                   Hashtable import_user_properties = (Hashtable)getValue( helper, "userProperties");
+                                   if (import_user_properties != null) {
+                                        build_user_properties.putAll(import_user_properties);
+                                   }
+                               }
+                            }
+                            catch ( Exception e ) {
+                               // ignore
+                            }
+                         }
+                         ComponentHelper build_component_helper = ComponentHelper.getComponentHelper(be.getProject());
+                         ComponentHelper import_component_helper = ComponentHelper.getComponentHelper(p);
+                         Hashtable bch_dtd = build_component_helper.getDataTypeDefinitions();
+                         Hashtable ich_dtd = import_component_helper.getDataTypeDefinitions();
+                         bch_dtd.putAll(ich_dtd);
+                      }
+                      catch ( Exception e ) {
+                         // ignore, could be Ant 1.5
+                      }
+                }
+            }
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        */
     }
 
     /**
@@ -433,4 +502,23 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
         }
         return map;
     }
+
+   private Object getValue( Object instance, String fieldName )
+   throws IllegalAccessException, NoSuchFieldException {
+      Field field = getField( instance.getClass(), fieldName );
+      field.setAccessible( true );
+      return field.get( instance );
+   }
+   private Field getField( Class thisClass, String fieldName ) throws NoSuchFieldException {
+      if ( thisClass == null ) {
+         throw new NoSuchFieldException( "Invalid field : " + fieldName );
+      }
+      try {
+         return thisClass.getDeclaredField( fieldName );
+      }
+      catch ( NoSuchFieldException e ) {
+         return getField( thisClass.getSuperclass(), fieldName );
+      }
+   }
+
 }

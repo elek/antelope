@@ -3,19 +3,21 @@
    <description>
       Tests for the FileUtil task.
    </description>
-   
+
    <target name="setUp">
-      
+
    </target>
-   
+
    <target name="test1">
-      <length property="output" mode="each">
-         <fileset dir="${ant.library.dir}">
-            <include name="*.jar"/>
-         </fileset>
-      </length>
-      <echo>${output}</echo>
+      <fileutil file="${ant.library.dir}" property="file_list">
+        <listfiles includepath="false"/>
+      </fileutil>
+
+      <stringutil string="${file_list}" property="first_8">
+        <substring endindex="8"/>
+      </stringutil>
+      <echo>first 8 characters of file name = ${first_8}</echo>
    </target>
-</project>   
-   
+</project>
+
 

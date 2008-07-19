@@ -166,7 +166,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 
     /* executes the <property> targets in the implicit target so the imported
     targets show up in the Antelope panel. */
-    private void executeImplicitProperties( Project project, Target implicit ) {
+    public void executeImplicitProperties( Project project, Target implicit ) {
         Task[] tasks = implicit.getTasks();
         for ( int i = 0; i < tasks.length; i++ ) {
             if ( tasks[ i ].getTaskName().equals( "property" ) ) {
@@ -178,7 +178,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 
     /* executes the <import> targets in the implicit target so the imported
     targets show up in the Antelope panel. */
-    private void executeImplicitImports( Project project, Target implicit ) {
+    public void executeImplicitImports( Project project, Target implicit ) {
         Task[] tasks = implicit.getTasks();
         for ( int i = 0; i < tasks.length; i++ ) {
             if ( tasks[ i ].getTaskName().equals( "import" ) ) {
@@ -199,7 +199,10 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
      */
     public void parse( Project project, Object source, RootHandler handler )
     throws BuildException {
-
+        System.out.println("+++++ source: " + source.toString());
+        if (source != null) {
+            System.out.println("+++++ source is a " + source.getClass().getName());
+        }
         AntXMLContext context = handler.context;
 
         File buildFile = null;
@@ -228,6 +231,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
             throw new BuildException( "Source " + source.getClass().getName()
                     + " not supported by this plugin" );
         }
+        System.out.println("+++++ buildFileName: " + buildFileName);
 
         InputStream inputStream = null;
         InputSource inputSource = null;
@@ -241,6 +245,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 
             String uri = null;
             if ( buildFile != null ) {
+                System.out.println("+++++ buildFile = " + buildFile + ", absolutePath = " + buildFile.getAbsolutePath());
                 uri = fu.toURI( buildFile.getAbsolutePath() );
                 inputStream = new FileInputStream( buildFile );
             }

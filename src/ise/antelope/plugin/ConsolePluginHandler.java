@@ -1,13 +1,14 @@
 package ise.antelope.plugin;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import console.*;
 import errorlist.*;
+import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.View;
-import ise.library.Log;
 import org.gjt.sp.jedit.gui.DockableWindowManager;
 
 
@@ -24,12 +25,16 @@ public class ConsolePluginHandler extends Handler {
     private Console console = null;
     private AntelopeShell shell = null;
     private Color GREEN = new Color( 0, 153, 51 );
+    private Color YELLOW = new Color(0xefef8f);
+    private Color RED = new Color(0xff4444);
+    private Color foreground;
 
     public ConsolePluginHandler( AntelopePluginPanel panel ) {
         _panel = panel;
         view = panel.getView();
         error_source = panel.getErrorSource();
         setupConsole();
+        foreground = jEdit.getColorProperty("view.fgColor");
     }
 
     public ConsolePluginHandler( View view, DefaultErrorSource es ) {
@@ -48,6 +53,8 @@ public class ConsolePluginHandler extends Handler {
             console = ( Console ) mgr.getDockable( "console" );
         }
         console.setShell( shell );
+        Font font = view.getEditPane().getTextArea().getPainter().getFont();
+        console.getConsolePane().setFont(font);
     }
 
 
@@ -57,13 +64,13 @@ public class ConsolePluginHandler extends Handler {
      * @param record  a LogRecord
      */
     public void publish( LogRecord record ) {
-        
+
         /* some jedit 'update' messages get dumped on System.out, which is what
         Ant writes to, so those messages end up here mixed with the Ant output.
         This may not be sufficient, but all I've seen so far are DockableWindowUpdate
         and ErrorSourceUpdate messages, so this regex works for now. */
         if (record.getMessage().matches("(.*)?(Update\\[)(.*)")) {
-            return;   
+            return;
         }
         if ( _panel.getBuildFile() == null ) {
             return ;
@@ -115,12 +122,12 @@ public class ConsolePluginHandler extends Handler {
 
     private Color getColorForLevel( Level level ) {
         if ( level.equals( Level.SEVERE ) )
-            return Color.RED;
+            return RED;
         if ( level.equals( Level.CONFIG ) )
-            return Color.BLACK;
+            return YELLOW;
         if ( level.equals( Level.WARNING ) )
             return GREEN;
-        return Color.BLUE;
+        return foreground;
     }
 
     /**
