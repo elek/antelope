@@ -9,14 +9,12 @@ import java.awt.BorderLayout;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
-import java.beans.Beans;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.tree.*;
 import org.xml.sax.Attributes;
-import java.util.StringTokenizer;
 
 /**
  * Shows an xml file in a tree.
@@ -50,7 +48,7 @@ public class SAXPanel extends JPanel implements Navable {
                   }
                }
                                        );
-          
+
          MouseAdapter ma = new MouseAdapter() {
                   public void mouseClicked( MouseEvent evt ) {
                      int clicks = evt.getClickCount();
@@ -112,7 +110,7 @@ public class SAXPanel extends JPanel implements Navable {
                                     dialog.getContentPane().add( btn_panel, BorderLayout.SOUTH );
                                     close_btn.addActionListener( new ActionListener() {
                                              public void actionPerformed( ActionEvent ae ) {
-                                                dialog.hide();
+                                                dialog.setVisible(false);
                                                 dialog.dispose();
                                              }
                                           }
@@ -160,14 +158,14 @@ public class SAXPanel extends JPanel implements Navable {
 
                                  GUIUtils.showPopupMenu( popup, SAXPanel.this, me.getX(), me.getY() );
                               }
-                              catch ( Exception e ) {}
+                              catch ( Exception e ) {}  // NOPMD
                            }
                         }
                      }
                   }
                }
                ;
-               
+
          tree.addMouseListener( ma );
 
          _nav = new Nav( this );
@@ -181,9 +179,9 @@ public class SAXPanel extends JPanel implements Navable {
          e.printStackTrace();
       }
    }
-   
+
    public SAXTreeModel getModel() {
-      return (SAXTreeModel)tree.getModel();  
+      return (SAXTreeModel)tree.getModel();
    }
 
    public void setPosition( Object o ) {
@@ -227,7 +225,7 @@ public class SAXPanel extends JPanel implements Navable {
    }
 
    /**
-    * Looks through the given node for ant and antcall (and call, runtarget, and antcallback) tasks.   
+    * Looks through the given node for ant and antcall (and call, runtarget, and antcallback) tasks.
     * @return an array of child nodes representing ant and/or antcall tasks.
     * The array may be empty, but won't be null.
     */
@@ -375,15 +373,15 @@ public class SAXPanel extends JPanel implements Navable {
          }
          return candidate;
       }
-      catch ( Exception e ) {
+      catch ( Exception e ) {   // NOPMD
          // ignored
       }
       return null;
    }
 
    /**
-    * Get a list of target nodes that the given target depends on.   
-    * @param target_node a node representing a target   
+    * Get a list of target nodes that the given target depends on.
+    * @param target_node a node representing a target
     * @return an array of tree nodes that represent dependency targets. This
     * array may be empty.
     */
@@ -414,7 +412,7 @@ public class SAXPanel extends JPanel implements Navable {
    }
 
    /**
-    * @return true if the file is an Ant build file, false if not.   
+    * @return true if the file is an Ant build file, false if not.
     */
    public boolean openBuildFile( File f ) {
       SAXTreeModel model = new SAXTreeModel( f );

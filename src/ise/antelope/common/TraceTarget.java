@@ -331,7 +331,7 @@ public class TraceTarget {
         }
         if (found)
             sb.append(value.substring(index));
-        
+
         if ( !found ) {
             // could be a reference
             Object val = refs.get( value );
@@ -403,7 +403,7 @@ public class TraceTarget {
     public List getUnknownProperties() {
         return unknown_properties;
     }
-    
+
     private Target getImplicitTarget(Target target) {
         Project project = target.getProject();
         Hashtable targets = project.getTargets();

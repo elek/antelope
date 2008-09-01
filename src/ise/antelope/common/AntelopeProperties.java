@@ -49,7 +49,6 @@
 package ise.antelope.common;
 
 import ise.library.*;
-import ise.library.GUIUtils;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -78,14 +77,6 @@ public class AntelopeProperties {
     * Description of the Field
     */
    private AntelopePanel _parent;
-   /**
-    * Description of the Field
-    */
-   private HashMap _property_tfs;
-   /**
-    * Description of the Field
-    */
-   private File _build_file;
 
    // tab titles
    /**
@@ -104,8 +95,6 @@ public class AntelopeProperties {
    private final String DESC = "Description";
 
    private final String ABOUT = "About";
-
-   private final String ANTHOME = "Ant Home";
 
    private String lSep = System.getProperty( "line.separator" );
 
@@ -148,7 +137,7 @@ public class AntelopeProperties {
             model.setValueAt( key, i, 0 );
             model.setValueAt( value, i, 1 );
          }
-         catch ( Exception ignored ) {
+         catch ( Exception ignored ) {      // NOPMD
             // I wouldn't think an exception would ever be thrown, but occasionally
             // one is.
          }
@@ -168,7 +157,7 @@ public class AntelopeProperties {
             model.setValueAt( key, i, 0 );
             model.setValueAt( value, i, 1 );
          }
-         catch ( Exception ignored ) {
+         catch ( Exception ignored ) {      // NOPMD
             // bad key/value mapping will throw NPE, ignore
          }
       }
@@ -189,7 +178,7 @@ public class AntelopeProperties {
             user_model.setValueAt( key, i, 0 );
             user_model.setValueAt( value, i, 1 );
          }
-         catch ( Exception ignored ) {
+         catch ( Exception ignored ) {      // NOPMD
             // bad key/value mapping will throw NPE, ignore
          }
       }
@@ -268,9 +257,8 @@ public class AntelopeProperties {
                      user_prefs.put( key, value );
                }
                _parent.reload();
-               dialog.hide();
+               dialog.setVisible(false);
                dialog.dispose();
-               return ;
             }
          }
       );
@@ -279,9 +267,8 @@ public class AntelopeProperties {
       cancel_btn.addActionListener(
          new ActionListener() {
             public void actionPerformed( ActionEvent ae ) {
-               dialog.hide();
+               dialog.setVisible(false);
                dialog.dispose();
-               return ;
             }
          }
       );
@@ -312,7 +299,7 @@ public class AntelopeProperties {
    }
 
    /**
-    * Borrowed from Ant's Main class.   
+    * Borrowed from Ant's Main class.
     */
    public String getAntelopeVersion() throws BuildException {
       if ( antelopeVersion == null ) {
@@ -350,7 +337,7 @@ public class AntelopeProperties {
 
    /**
     * Prints a list of all targets in the specified project to
-    * <code>System.out</code>, optionally including subtargets. Swiped 
+    * <code>System.out</code>, optionally including subtargets. Swiped
     * from Ant's Main class.
     *
     * @param project The project to display a description of.
@@ -393,7 +380,7 @@ public class AntelopeProperties {
          }
       }
 
-      sb.append( printTargets( project, topNames, topDescriptions,
+      sb.append( printTargets( topNames, topDescriptions,
             "Main targets:", maxLength ) ).append( lSep );
       //if there were no main targets, we list all subtargets
       //as it means nothing has a description
@@ -401,7 +388,7 @@ public class AntelopeProperties {
          printSubTargets = true;
       }
       if ( printSubTargets ) {
-         sb.append( printTargets( project, subNames, null, "Subtargets:", 0 ) ).append( lSep );
+         sb.append( printTargets( subNames, null, "Subtargets:", 0 ) ).append( lSep );
       }
 
       String defaultTarget = project.getDefaultTarget();
@@ -430,7 +417,7 @@ public class AntelopeProperties {
     *               position so they line up (so long as the names really
     *               <i>are</i> shorter than this).
     */
-   private String printTargets( Project project, Vector names,
+   private String printTargets( Vector names,
          Vector descriptions, String heading,
          int maxlen ) {
       // now, start printing the targets and their descriptions

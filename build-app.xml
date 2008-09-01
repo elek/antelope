@@ -2,20 +2,20 @@
     <description>
        This build file creates Antelope as an Application.
     </description>
-    
+
     <!-- read build.props to override properties set below -->
     <property name="build.props" value="build.props"/>
     <property file="${build.props}"/>
 
     <!-- version number, override in build.props if necessary -->
     <property name="build.num" value="3.2.2"/>
-        
-    
+
+
     <!-- shouldn't need to override the following properties -->
-    
+
     <!-- source code directory, this is where the .java files live -->
     <property name="src.dir" location="src" />
-    
+
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
     <property name="prep.dir" location="prep"/>
@@ -31,24 +31,24 @@
     <!-- the directory for the compiled classes. Files in this directory will be
     included in the finished jar file. -->
     <property name="classes.dir" location="classes" />
-    
+
     <!-- location for third party library files -->
     <property name="lib.dir" location="lib"/>
-    
+
     <!-- where to put the finished distribution file -->
     <property name="dist.dir" location="dist"/>
-    
+
     <!-- compiler settings -->
     <property name="showDeprecated" value="false"/>
-    <property name="showDebug" value="false"/>
+    <property name="showDebug" value="true"/>
     <property name="showWarnings" value="false"/>
-    
 
-    
+
+
    <!-- ========================================================================
       Target: set classpath
    ========================================================================= -->
-   <target name="setClasspath">         
+   <target name="setClasspath">
       <path id="classpathref">
          <pathelement location="${classes.dir}" />
          <pathelement path="${java.class.path}"/>
@@ -73,7 +73,7 @@
             </fileset>
         </delete>
     </target>
-    
+
    <!-- ========================================================================
       Target: compile
    ========================================================================= -->
@@ -83,14 +83,14 @@
         <condition property="nowarn" value="no">
            <istrue value="${showWarnings}"/>
         </condition>
-        <javac deprecation="${showDeprecated}" 
-               debug="${showDebug}" 
-               nowarn="${nowarn}" 
+        <javac deprecation="${showDeprecated}"
+               debug="${showDebug}"
+               nowarn="${nowarn}"
                destdir="${classes.dir}"
                srcdir="${src.dir}"
-               source="1.4"
-               target="1.4">
-            
+               source="1.5"
+               target="1.5">
+
             <classpath refid="classpathref" />
             <exclude name="testcases/**/*"/>
             <exclude name="**/plugin/**/*"/>
@@ -102,7 +102,7 @@
         <copy file="${src.dir}/ant.dtd" todir="${classes.dir}/ise/antelope/common/builder"/>
         -->
     </target>
-    
+
    <!-- ========================================================================
       Target: dist
       this target does several things:
@@ -114,8 +114,8 @@
     <target name="dist"
             description="Compiles, jars, and puts a zip file in the dist directory."
             depends="init,clean,compile,prep_files,jar,zip"/>
-            
-    <target name="jar" description="make jar file">     
+
+    <target name="jar" description="make jar file">
         <!-- make the jar file, put it in $prep.dir -->
         <tstamp/>
         <jar jarfile="${prep.dir}/antelope_app.jar">
@@ -169,7 +169,7 @@
             </fileset>
         </delete>
     </target>
-    
+
     <target name="zip" description="make zip file">
         <!-- zip the jar and installation instructions and put the zip file in
         the $dist directory -->
@@ -193,26 +193,26 @@
               <include name="run.xml"/>
            </zipfileset>
         </zip>
-        
+
     </target>
-    
+
    <!-- ========================================================================
       Target: run
       Runs Antelope as a stand-alone application.
    ========================================================================= -->
-   <target name="run" 
+   <target name="run"
            description="Runs Antelope as a standalone app."
            depends="setClasspath, copy_resources">
       <java classname="ise.antelope.app.Antelope" fork="true">
          <classpath refid="classpathref"/>
       </java>
    </target>
-   
+
    <!-- ========================================================================
       Target: run
       Runs Antelope as a stand-alone application.
    ========================================================================= -->
-   <target name="runBuilder" 
+   <target name="runBuilder"
            description="Runs Antelope Builder as a standalone app."
            depends="setClasspath, copy_resources">
       <java classname="ise.library.FontDialog" fork="true">
@@ -220,10 +220,10 @@
          <classpath refid="classpathref"/>
       </java>
    </target>
-   
+
    <!-- ========================================================================
       Target: docs-xalan
-      Generate docs from docbook format xml files with Xalan. This uses the 
+      Generate docs from docbook format xml files with Xalan. This uses the
       files in ${src.dir}/docs and puts the finished files in ${prep.dir}/docs.
       The files are NOT ready for distribution until after prep_files is ran.
    ========================================================================= -->
@@ -262,7 +262,7 @@
          <param name="html.stylesheet" expression="./style.css"/>
       </style>
    </target>
-    
+
    <!-- ========================================================================
       Target: copy_resources
    ========================================================================= -->
@@ -270,7 +270,7 @@
         <copy todir="${classes.dir}/images">
             <fileset dir="${src.dir}/images" includes="**/*" />
         </copy>
-        
+
         <copy todir="${classes.dir}/ise/antelope/tasks">
             <fileset dir="${src.dir}/ise/antelope/tasks" includes="antelope.taskdefs"/>
             <fileset dir="${src.dir}/ise/antelope/tasks" includes="antlib.xml"/>
@@ -279,10 +279,10 @@
             <fileset dir="${src.dir}" includes="ant.dtd" />
         </copy>
     </target>
-    
+
    <!-- ========================================================================
       Target: prep_files
-      prepares certain files for distribution by doing string replacement. 
+      prepares certain files for distribution by doing string replacement.
       Assumes that the configuration files and documentation files are ready.
    ========================================================================= -->
     <target name="prep_files"
@@ -310,28 +310,28 @@
         <tstamp/>
         <replace dir="${prep.dir}" token="@@tstamp@@"
             value="${TODAY}" />
-            
+
     </target>
-   
+
    <!-- ========================================================================
       Target: init
       this target creates the directories needed for this project and
       only needs to be done once.
    ========================================================================= -->
-    <target name="init" 
+    <target name="init"
             description="Create directory structure."
             unless="init.done">
         <mkdir dir="${src.dir}" />
         <mkdir dir="${classes.dir}" />
         <mkdir dir="${prep.dir}"/>
-        <mkdir dir="${doc.dir}" />          
+        <mkdir dir="${doc.dir}" />
         <mkdir dir="${config.dir}" />
         <mkdir dir="${dist.dir}"/>
         <property name="init.done" value="true"/>
         <echo>init done</echo>
     </target>
-    
+
     <target name="test">
-    	<echo>just a test</echo>
+        <echo>just a test</echo>
     </target>
 </project>

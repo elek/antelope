@@ -49,22 +49,23 @@
 package ise.antelope.plugin;
 
 import console.*;
+import ise.library.swingworker.SwingWorker;
 
 /**
  * A Console shell to display Ant output. Also uses the "stop" button to stop a
  * running build.
- * 
+ *
  * 2006-03-18 Patched for Console 4.2.4
- *  
+ *
  * @version $Id$
- * 
+ *
  * @author Dale Anson, danson@germane-software.com
- * 
- * 
+ *
+ *
  */
 public class AntelopeShell extends Shell {
 
-    private Thread runner = null;
+    private SwingWorker runner = null;
 
     public AntelopeShell() {
         super( "Antelope" );
@@ -78,15 +79,16 @@ public class AntelopeShell extends Shell {
      * Stops the build process.
      */
     public void stop( Console console ) {
-        if ( runner != null && runner.isAlive() )
-            runner.interrupt();
+        if ( runner != null ) {
+            runner.cancel(true);
+        }
     }
 
     public boolean waitFor( Console console ) {
         return false;
     }
 
-    public void setRunner( Thread runner ) {
+    public void setRunner( SwingWorker runner ) {
         this.runner = runner;
     }
 

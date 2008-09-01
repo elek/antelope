@@ -97,18 +97,19 @@ public class ConsolePluginHandler extends Handler {
 
         if ( _panel.useErrorParsing() ) {
             int type = ConsolePlugin.parseLine( view, parseline, dir, error_source );
+            Output output = console.getOutput("Antelope");
             switch ( type ) {
                 case ErrorSource.ERROR:
-                    console.print( console.getErrorColor(), parseline );
+                    output.print( console.getErrorColor(), parseline );
                     return ;
                 case ErrorSource.WARNING:
-                    console.print( console.getWarningColor(), parseline );
+                    output.print( console.getWarningColor(), parseline );
                     return ;
                 default:
                     // fall through on purpose
             }
         }
-        console.print( getColorForLevel( record.getLevel() ), parseline );
+        console.getOutput("Antelope").print( getColorForLevel( record.getLevel() ), parseline );
     }
 
     public void showConsole( ) {

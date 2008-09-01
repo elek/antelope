@@ -59,6 +59,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import ise.library.*;
+import ise.library.swingworker.SwingWorker;
 import ise.antelope.tasks.*;
 
 import org.apache.tools.ant.*;
@@ -120,8 +121,8 @@ public class AntelopePanel extends JPanel {
     private boolean _edit = false;   // edit mode
 
     // target running threads
-    private Thread _runner = null;
-    private Thread _target_runner = null;
+    private SwingWorker _runner = null;
+    private SwingWorker _target_runner = null;
 
     private ArrayList _last_ran_targets = null;
 
@@ -174,23 +175,23 @@ public class AntelopePanel extends JPanel {
         this( build_file, helper, use_internal_menu, null );
     }
 
-    public AntelopePanel(java.util.List args) {
-        switch(args.size()) {
+    public AntelopePanel( java.util.List args ) {
+        switch ( args.size() ) {
             case 0:
-                init(null, null, true, null);
+                init( null, null, true, null );
                 break;
             case 1:
-                init(null, (CommonHelperWrapper)args.get(0), true, null);
+                init( null, ( CommonHelperWrapper ) args.get( 0 ), true, null );
                 break;
             case 3:
-                init((File)args.get(0), (CommonHelperWrapper)args.get(1), ((Boolean)args.get(2)).booleanValue(), null);
+                init( ( File ) args.get( 0 ), ( CommonHelperWrapper ) args.get( 1 ), ( ( Boolean ) args.get( 2 ) ).booleanValue(), null );
                 break;
             case 4:
-                File f = (File)args.get(0);
-                CommonHelperWrapper chw = (CommonHelperWrapper)args.get(1);
-                boolean b = ((Boolean)args.get(2)).booleanValue();
-                java.util.List m = (java.util.List)args.get(3);
-                init(f, chw, b, m);
+                File f = ( File ) args.get( 0 );
+                CommonHelperWrapper chw = ( CommonHelperWrapper ) args.get( 1 );
+                boolean b = ( ( Boolean ) args.get( 2 ) ).booleanValue();
+                java.util.List m = ( java.util.List ) args.get( 3 );
+                init( f, chw, b, m );
                 break;
         }
     }
@@ -206,10 +207,10 @@ public class AntelopePanel extends JPanel {
      */
     public AntelopePanel( File build_file, CommonHelperWrapper helper, boolean use_internal_menu,
             java.util.List menu_items ) {
-        init(build_file, helper, use_internal_menu, menu_items);
+        init( build_file, helper, use_internal_menu, menu_items );
     }
 
-    private void init(File build_file, CommonHelperWrapper helper, boolean use_internal_menu,
+    private void init( File build_file, CommonHelperWrapper helper, boolean use_internal_menu,
             java.util.List menu_items ) {
 
         setLayout( new BorderLayout() );
@@ -263,7 +264,7 @@ public class AntelopePanel extends JPanel {
             }
         );
         if ( _helper != null && helper.getRunButtonAction() != null ) {
-                _run_btn.addActionListener( _helper.getRunButtonAction() );
+            _run_btn.addActionListener( _helper.getRunButtonAction() );
         }
         _run_btn.setSelected( true );
 
@@ -282,7 +283,7 @@ public class AntelopePanel extends JPanel {
             }
         );
         if ( _helper != null && _helper.getTraceButtonAction() != null ) {
-                _trace_btn.addActionListener( _helper.getTraceButtonAction() );
+            _trace_btn.addActionListener( _helper.getTraceButtonAction() );
         }
 
         _edit_btn = new JToggleButton();
@@ -448,9 +449,9 @@ public class AntelopePanel extends JPanel {
                 String target_name = event.getActionCommand();
 
                 // maybe stop any currently running targets
-                if ( _runner != null && _runner.isAlive() ) {
+                if ( _runner != null && _runner.getState() != SwingWorker.StateValue.DONE ) {
                     _target_runner = null;
-                    _runner.interrupt();
+                    _runner.cancel( true );
                     return ;
                 }
 
@@ -471,119 +472,126 @@ public class AntelopePanel extends JPanel {
                 }
 
                 // execute multiple targets
-                _runner =
-                    new Thread() {
-                        public void run() {
+                class Runner extends SwingWorker<Object, Object> {
+                    Color original_color;
 
-                            // make a list of targets to run
-                            ArrayList targets = new ArrayList();
-                            if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null )
-                                targets.add( _unnamed_target.getName() );
-                            Iterator it = _execute_targets.iterator();
-                            while ( it.hasNext() ) {
-                                JCheckBox cb = ( JCheckBox ) it.next();
-                                targets.add( cb.getActionCommand() );
-                            }
+                    @Override
+                    public Object doInBackground() {
+                        // make a list of targets to run
+                        ArrayList targets = new ArrayList();
+                        if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null )
+                            targets.add( _unnamed_target.getName() );
+                        Iterator it = _execute_targets.iterator();
+                        while ( it.hasNext() ) {
+                            JCheckBox cb = ( JCheckBox ) it.next();
+                            targets.add( cb.getActionCommand() );
+                        }
 
-                            // reload the project if need be
-                            if ( _settings.getAutoReload() || shouldReload() ) {
-                                try {
-                                    reload();
-                                }
-                                catch ( Exception e ) {
-                                    e.printStackTrace();
-                                }
-                                // re-check the appropriate checkboxes, the reload replaces the buttons
-                                // on the button panel, so the button that caused this action event
-                                // is not the same button that were checked
-                                Component[] components = _button_panel.getComponents();
-                                int i = 0;
-                                for ( ; i < components.length; i++ ) {
-                                    AbstractButton btn = ( AbstractButton ) components[ i ];
-                                    if ( btn instanceof JCheckBox ) {
-                                        String target_name = btn.getActionCommand();
-                                        if ( !targets.contains( target_name ) ) {
-                                            targets.remove( target_name );
-                                        }
-                                    }
-                                }
-                                Iterator itr = targets.iterator();
-                                while ( itr.hasNext() ) {
-                                    String target_name = ( String ) itr.next();
-                                    for ( i = 0; i < components.length; i++ ) {
-                                        AbstractButton btn = ( AbstractButton ) components[ i ];
-                                        if ( target_name.equals( btn.getActionCommand() ) ) {
-                                            btn.doClick();
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            // set button color
-                            Color original_color = button.getForeground();
-                            button.setForeground( Color.RED );
-
-                            // maybe save all files before running the target
-                            saveBeforeRun();
-
-                            // execute the targets
+                        // reload the project if need be
+                        if ( _settings.getAutoReload() || shouldReload() ) {
                             try {
-                                if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
-                                    _performance_listener.reset();
-                                }
-
-                                // run the unnamed target if Ant 1.6
-                                if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null )
-                                    targets.add( _unnamed_target.getName() );
-
-                                // run the targets
-                                AntelopePanel.this.executeTargets( this, targets );
-
-                                // old code, before adding reload. This would change the
-                                // color of the currently running target to blue to give
-                                // a visual indicator of the progress of the build. It would
-                                // be nice to get this working again.
-                                /*
-                                Iterator it = _execute_targets.iterator();
-                                while ( it.hasNext() ) {
-                                   if ( _target_runner != this )
-                                      break;
-                                   JCheckBox cb = ( JCheckBox ) it.next();
-                                   Color cb_color = cb.getForeground();
-                                   cb.setForeground( Color.blue );
-                                   String target = cb.getActionCommand();
-                                   AntelopePanel.this.executeTarget( this, target );
-                                   cb.setForeground( cb_color );
-                                   JCheckBox cb = ( JCheckBox ) it.next();
-                                   targets.add( cb.getActionCommand() );
-                            }
-                                */
+                                reload();
                             }
                             catch ( Exception e ) {
-                                _project.fireBuildFinished( e );
+                                e.printStackTrace();
                             }
-                            finally {
-                                if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
-                                    log( _performance_listener.getPerformanceStatistics() );
-                                    _performance_listener.reset();
+                            // re-check the appropriate checkboxes, the reload replaces the buttons
+                            // on the button panel, so the button that caused this action event
+                            // is not the same button that were checked
+                            Component[] components = _button_panel.getComponents();
+                            int i = 0;
+                            for ( ; i < components.length; i++ ) {
+                                AbstractButton btn = ( AbstractButton ) components[ i ];
+                                if ( btn instanceof JCheckBox ) {
+                                    String target_name = btn.getActionCommand();
+                                    if ( !targets.contains( target_name ) ) {
+                                        targets.remove( target_name );
+                                    }
                                 }
-                                _build_logger.close();
-                                button.setForeground( original_color );
-                                button.setSelected( false );
+                            }
+                            Iterator itr = targets.iterator();
+                            while ( itr.hasNext() ) {
+                                String target_name = ( String ) itr.next();
+                                for ( i = 0; i < components.length; i++ ) {
+                                    AbstractButton btn = ( AbstractButton ) components[ i ];
+                                    if ( target_name.equals( btn.getActionCommand() ) ) {
+                                        btn.doClick();
+                                        break;
+                                    }
+                                }
                             }
                         }
 
-                        public void interrupt() {
-                            if ( !isAlive() ) {
-                                return ;
+                        // set button color
+                        original_color = button.getForeground();
+                        button.setForeground( Color.RED );
+
+                        // maybe save all files before running the target
+                        saveBeforeRun();
+
+                        // execute the targets
+                        try {
+                            if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
+                                _performance_listener.reset();
                             }
-                            super.interrupt();
-                            log( Level.SEVERE, "=====> BUILD INTERRUPTED <=====" );
+
+                            // run the unnamed target if Ant 1.6
+                            if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null )
+                                targets.add( _unnamed_target.getName() );
+
+                            // run the targets
+                            AntelopePanel.this.executeTargets( this, targets );
+
+                            // old code, before adding reload. This would change the
+                            // color of the currently running target to blue to give
+                            // a visual indicator of the progress of the build. It would
+                            // be nice to get this working again.
+                            /*
+                            Iterator it = _execute_targets.iterator();
+                            while ( it.hasNext() ) {
+                               if ( _target_runner != this )
+                                  break;
+                               JCheckBox cb = ( JCheckBox ) it.next();
+                               Color cb_color = cb.getForeground();
+                               cb.setForeground( Color.blue );
+                               String target = cb.getActionCommand();
+                               AntelopePanel.this.executeTarget( this, target );
+                               cb.setForeground( cb_color );
+                               JCheckBox cb = ( JCheckBox ) it.next();
+                               targets.add( cb.getActionCommand() );
                         }
-                    };
-                _target_runner = _runner;
-                _runner.start();
+                            */
+                        }
+                        catch ( Exception e ) {
+                            _project.fireBuildFinished( e );
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public boolean cancel( boolean mayInterruptIfRunning ) {
+                        Exception e = new Exception();
+                        e.printStackTrace();
+
+                        boolean canceled = super.cancel( mayInterruptIfRunning );
+                        log( Level.SEVERE, "=====> BUILD INTERRUPTED <=====" );
+                        done();
+                        return canceled;
+                    }
+
+                    @Override
+                    protected void done() {
+                        if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
+                            log( _performance_listener.getPerformanceStatistics() );
+                            _performance_listener.reset();
+                        }
+                        _build_logger.close();
+                        button.setForeground( original_color );
+                        button.setSelected( false );
+                    }
+                }
+                _runner = new Runner();
+                _runner.execute();
             }
         };
 
@@ -598,8 +606,8 @@ public class AntelopePanel extends JPanel {
                 final String target_name = event.getActionCommand();
 
                 // maybe stop any running targets
-                if ( _runner != null && _runner.isAlive() ) {
-                    _runner.interrupt();
+                if ( _runner != null && _runner.getState() != SwingWorker.StateValue.DONE ) {
+                    _runner.cancel( true );
                     return ;
                 }
 
@@ -636,76 +644,86 @@ public class AntelopePanel extends JPanel {
      */
     public void executeTarget( String target ) {
         final String target_name = target;
-        _runner =
-            new Thread() {
-                public void run() {
-                    // find the button again, the reload replaces the buttons
-                    // on the button panel, so the button that caused this action event
-                    // is not the same button that needs to change color
-                    Component[] components = _button_panel.getComponents();
-                    AbstractButton button = null;
-                    int i = 0;
-                    for ( ; i < components.length; i++ ) {
-                        if ( target_name.equals( ( ( AbstractButton ) components[ i ] ).getActionCommand() ) ) {
-                            button = ( AbstractButton ) components[ i ];
-                            break;
-                        }
-                    }
 
-                    // set button color
-                    Color original_color = null;
-                    if ( button != null ) {
-                        original_color = button.getForeground();
-                        button.setForeground( Color.RED );
-                    }
 
-                    // maybe save all files before running the target
-                    saveBeforeRun();
+        class Runner extends SwingWorker<Object, Object> {
+            Color original_color;
+            AbstractButton button;
 
-                    try {
-                        if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
-                            _performance_listener.reset();
-                        }
-
-                        ArrayList targets = new ArrayList();
-
-                        // run the unnamed target if Ant 1.6
-                        if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null ) {
-                            //targets.add( _unnamed_target.getName() );
-                            targets.add( "" );
-                        }
-
-                        // run the targets
-                        if ( !target_name.equals( IMPLICIT_TARGET_NAME ) )
-                            targets.add( target_name );
-                        AntelopePanel.this.executeTargets( this, targets );
-                    }
-                    catch ( Exception e ) {
-                        _project.fireBuildFinished( e );
-                    }
-                    finally {
-                        if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
-                            log( _performance_listener.getPerformanceStatistics() );
-                            _performance_listener.reset();
-                        }
-                        _build_logger.close();
-                        if ( button != null && original_color != null ) {
-                            button.setForeground( original_color );
-                            button.setSelected( false );
-                        }
+            @Override
+            public Object doInBackground() {
+                // find the button again, the reload replaces the buttons
+                // on the button panel, so the button that caused this action event
+                // is not the same button that needs to change color
+                Component[] components = _button_panel.getComponents();
+                int i = 0;
+                for ( ; i < components.length; i++ ) {
+                    if ( target_name.equals( ( ( AbstractButton ) components[ i ] ).getActionCommand() ) ) {
+                        button = ( AbstractButton ) components[ i ];
+                        break;
                     }
                 }
 
-                public void interrupt() {
-                    if ( !isAlive() ) {
-                        return ;
-                    }
-                    super.interrupt();
-                    log( Level.SEVERE, "=====> BUILD INTERRUPTED <=====" );
+                // set button color
+                original_color = null;
+                if ( button != null ) {
+                    original_color = button.getForeground();
+                    button.setForeground( Color.RED );
                 }
-            };
-        _target_runner = _runner;
-        _runner.start();
+
+                // maybe save all files before running the target
+                saveBeforeRun();
+
+                try {
+                    if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
+                        _performance_listener.reset();
+                    }
+
+                    ArrayList targets = new ArrayList();
+
+                    // run the unnamed target if Ant 1.6
+                    if ( AntUtils.getAntVersion() == 1.6 && _unnamed_target != null ) {
+                        //targets.add( _unnamed_target.getName() );
+                        targets.add( "" );
+                    }
+
+                    // run the targets
+                    if ( !target_name.equals( IMPLICIT_TARGET_NAME ) )
+                        targets.add( target_name );
+                    AntelopePanel.this.executeTargets( this, targets );
+                }
+                catch ( Exception e ) {
+                    _project.fireBuildFinished( e );
+                }
+                return null;
+            }
+
+            @Override
+            public boolean cancel( boolean mayInterruptIfRunning ) {
+                        Exception e = new Exception();
+                        e.printStackTrace();
+                log( Level.SEVERE, "=====> BUILD INTERRUPTED <=====" );
+                return super.cancel( mayInterruptIfRunning );
+            }
+
+            @Override
+            protected void done() {
+                if ( _settings.getShowPerformanceOutput() && _performance_listener != null ) {
+                    log( _performance_listener.getPerformanceStatistics() );
+                    _performance_listener.reset();
+                }
+                _build_logger.close();
+                if ( button != null && original_color != null ) {
+                    button.setForeground( original_color );
+                    button.setSelected( false );
+                }
+            }
+
+
+
+        }
+        _runner = new Runner();
+        _runner.execute();
     }
 
     /**
@@ -717,7 +735,7 @@ public class AntelopePanel extends JPanel {
      * button in the Console will stop the build.
      * @exception Exception  Description of Exception
      */
-    private void executeTargets( Thread runner, ArrayList targets ) throws Exception {
+    private void executeTargets( SwingWorker runner, ArrayList targets ) throws Exception {
         _last_ran_targets = targets;
 
         // maybe prep the error source
@@ -748,8 +766,8 @@ public class AntelopePanel extends JPanel {
         _project.fireBuildStarted();
 
         // execute implicit target
-        if (_unnamed_target != null) {
-            Log.log("executing implicit target");
+        if ( _unnamed_target != null ) {
+            Log.log( "executing implicit target" );
             _unnamed_target.execute();
         }
 
@@ -760,7 +778,7 @@ public class AntelopePanel extends JPanel {
                 continue;   // already ran implicit target
             }
             else {
-                Log.log("executing target " + target);
+                Log.log( "executing target " + target );
                 _project.executeTarget( target );
             }
             // check if execution should halt
@@ -1008,7 +1026,7 @@ public class AntelopePanel extends JPanel {
                 _button_panel.setBackground( AntelopePanel.this.getBackground() );
                 _button_panel.setBorder( new javax.swing.border.EmptyBorder( 3, 3, 3, 3 ) );
                 _scroller = new JScrollPane( _button_panel );
-                _scroller.getVerticalScrollBar().setUnitIncrement(50);
+                _scroller.getVerticalScrollBar().setUnitIncrement( 50 );
                 _btn_container = new JPanel( new BorderLayout() );
                 _btn_container.add( _scroller, BorderLayout.CENTER );
                 _btn_container.add( _multi, BorderLayout.SOUTH );
@@ -1093,8 +1111,8 @@ public class AntelopePanel extends JPanel {
                     }
 
                     ///
-                    for (Iterator it = targets.keySet().iterator(); it.hasNext(); ) {
-                        Log.log("target in targets: " + it.next());
+                    for ( Iterator it = targets.keySet().iterator(); it.hasNext(); ) {
+                        Log.log( "target in targets: " + it.next() );
                     }
 
 
@@ -1102,7 +1120,7 @@ public class AntelopePanel extends JPanel {
                     // Ant 1.6 has an un-named target to hold project-level tasks, so
                     // find it and save it for later.
                     _unnamed_target = null;
-                    Log.log("+++++ AntUtils.getAntVersion: "  + AntUtils.getAntVersion());
+                    Log.log( "+++++ AntUtils.getAntVersion: " + AntUtils.getAntVersion() );
                     if ( AntUtils.getAntVersion() >= 1.6 ) {
                         Iterator iter = targets.keySet().iterator();
                         while ( iter.hasNext() ) {
@@ -1128,14 +1146,14 @@ public class AntelopePanel extends JPanel {
                     ///}
                     ///
 
-                    Iterator it = sax_targets.keySet().iterator();///targets.keySet().iterator();
+                    Iterator it = sax_targets.keySet().iterator(); ///targets.keySet().iterator();
                     while ( it.hasNext() ) {
                         // adjust which targets are showing --
                         String target_name = ( String ) it.next();
                         // Ant 1.6 has an un-named target to hold project-level tasks.
                         // It has no name and shouldn't be executed by itself, so
                         // don't make a button for it.
-                        if ( target_name == null || target_name.equals("")) {
+                        if ( target_name == null || target_name.equals( "" ) ) {
                             continue;
                         }
 
@@ -1283,9 +1301,9 @@ public class AntelopePanel extends JPanel {
             SwingUtilities.invokeLater(
                 new Runnable() {
                     public void run() {
-                      _button_panel.validate();
-                      AntelopePanel.this.validate();
-                      AntelopePanel.this.repaint();
+                        _button_panel.validate();
+                        AntelopePanel.this.validate();
+                        AntelopePanel.this.repaint();
                     }
                 }
             );
@@ -1330,10 +1348,10 @@ public class AntelopePanel extends JPanel {
                 Log.log("loading antlib with _helper classloader");
                 cl.getResource( "ise/antelope/tasks/antlib.xml" );
                 Log.log("loaded antlib with _helper classloader");
-            }
+        }
             catch(Exception e) {
                 e.printStackTrace();
-            }
+        }
             */
 
             // add the antelope build logger now so that any output produced by the
@@ -1397,7 +1415,7 @@ public class AntelopePanel extends JPanel {
                 }
                 classpath = sb.toString();
                 p.setProperty( "java.class.path", classpath );
-                System.setProperty("java.class.path", classpath);
+                System.setProperty( "java.class.path", classpath );
             }
 
             // load any saved user properties for this build file. These are properties
@@ -1411,8 +1429,8 @@ public class AntelopePanel extends JPanel {
 
             //ProjectHelper.configureProject( p, build_file );      // deprecated
             ProjectHelper helper = ProjectHelper.getProjectHelper();
-            p.addReference("ant.projectHelper", helper);
-            helper.parse(p, build_file);
+            p.addReference( "ant.projectHelper", helper );
+            helper.parse( p, build_file );
 
             //for (Iterator it = p.getTargets().keySet().iterator(); it.hasNext(); ) {
             //    System.out.println("target: " + it.next());
@@ -1449,18 +1467,18 @@ public class AntelopePanel extends JPanel {
                 }
                 else
                     System.out.println("did not find class for EchoProperties");
-            }
+        }
             catch(Exception e) {
                 e.printStackTrace();
-            }
+        }
             */
 
 
             return p;
         }
         catch ( Exception e ) {
-            Log.log(e);
-            e.printStackTrace(System.out);
+            Log.log( e );
+            e.printStackTrace( System.out );
             JOptionPane.showMessageDialog( GUIUtils.getRootJFrame( this ),
                     "<html>Error:<br>" + e.getMessage(),
                     "Ant Error",
@@ -1468,8 +1486,8 @@ public class AntelopePanel extends JPanel {
             throw e;
         }
         catch ( NoClassDefFoundError error ) {
-            Log.log(error);
-            error.printStackTrace(System.out);
+            Log.log( error );
+            error.printStackTrace( System.out );
             JOptionPane.showMessageDialog( GUIUtils.getRootJFrame( this ),
                     "<html>Error: No Class Definition Found for<br>" + error.getMessage() +
                     "<br><p>This is most likely caused by a required third-party<br>" +
@@ -1482,7 +1500,7 @@ public class AntelopePanel extends JPanel {
 
     private void setInputHandler( Project p ) {
         try {
-            AntInputHandler ih = new AntInputHandler(AntelopePanel.this);
+            AntInputHandler ih = new AntInputHandler( AntelopePanel.this );
             PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
         }
         catch ( Exception e ) {
@@ -1866,8 +1884,8 @@ public class AntelopePanel extends JPanel {
                 }
             }
         }
-        catch ( Throwable e ) {
-            Log.log(this, e);
+        catch ( Throwable e ) {     // NOPMD
+            Log.log( this, e );
         }
         _logger.setLevel( Level.ALL );
     }
@@ -1970,4 +1988,3 @@ public class AntelopePanel extends JPanel {
         }
     }
 }
-

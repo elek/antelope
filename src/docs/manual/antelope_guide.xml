@@ -300,7 +300,7 @@ Start jEdit.  Dock Antelope.
 <title>Requirements</title>
 
 <para>
-See the <link linkend="installation">installation instructions</link> for the specific requirements for Antelope. Antelope does require Java 1.4 or later as it makes use of both java.util.logging and java.util.prefs APIs which were introduced in that version.
+See the <link linkend="installation">installation instructions</link> for the specific requirements for Antelope. Antelope does require Java 1.5 or later as it makes use of both java.util.logging and java.util.prefs APIs which were introduced in that version.
 </para>
 
 <para>
@@ -510,7 +510,7 @@ You can also install Antelope by hand. Antelope is packaged as a single jar file
 </listitem>
 
 <listitem>
-<para><emphasis role="bold">An XML parser</emphasis> This can be one of several publicly available XML parsers. Ant is shipped with the Xerces parser. To use the Xerces parser shipped with Ant, add xercesImpl.jar and xml-api.jar from the ${ant.home}/lib directory to your classpath. If you have Java 1.4, it also comes with a built-in XML parser. See the <link linkend="xmlparser">note</link> about having multiple parsers in your classpath and how to get around this problem.
+<para><emphasis role="bold">An XML parser</emphasis> This can be one of several publicly available XML parsers. Ant is shipped with the Xerces parser. To use the Xerces parser shipped with Ant, add xercesImpl.jar and xml-api.jar from the ${ant.home}/lib directory to your classpath. If you have Java 1.5, it also comes with a built-in XML parser. See the <link linkend="xmlparser">note</link> about having multiple parsers in your classpath and how to get around this problem.
 </para>
 </listitem>
 
@@ -816,7 +816,7 @@ Legend: <target>[task]
 <deploy-all>
 <clean>[delete]
 <deploy-all>[javac deprecation=on debug=on destdir=build srcdir=src
- includes=ise/ excludes=ise/antelope/plugin/ includejavaruntime=yes source=1.4]
+ includes=ise/ excludes=ise/antelope/plugin/ includejavaruntime=yes source=1.5]
 <deploy-all>[copy todir=build]
 <deploy-all>[jar jarfile=/usr/local/java/antelope/Antelope]
 </deploy-all>
@@ -839,7 +839,7 @@ And a line by line explanation:
 <row><entry>Legend: &lt;target&gt;[task]</entry><entry>Targets shown with angle brackets, tasks with square brackets.</entry></row>
 <row><entry>&lt;deploy-all&gt;</entry><entry>The trace is starting on the deploy-all target.</entry></row>
 <row><entry>&lt;clean&gt;[delete]</entry><entry>The deploy-all target depends on the clean target, which performs a 'delete' task.</entry></row>
-<row><entry>&lt;deploy-all&gt;[javac deprecation=on debug=on destdir=build srcdir=src includes=ise/ excludes=ise/antelope/plugin/ includejavaruntime=yes source=1.4]</entry><entry>The deploy-all target executes a 'javac' task. The parameters for the task are shown.</entry></row>
+<row><entry>&lt;deploy-all&gt;[javac deprecation=on debug=on destdir=build srcdir=src includes=ise/ excludes=ise/antelope/plugin/ includejavaruntime=yes source=1.5]</entry><entry>The deploy-all target executes a 'javac' task. The parameters for the task are shown.</entry></row>
 <row><entry>&lt;deploy-all&gt;[copy todir=build]</entry><entry>The deploy-all target executes a 'copy' tasks. Most likely, this tasks has nested includes and/or excludes, which are not shown in the trace.</entry></row>
 <row><entry>&lt;deploy-all&gt;[jar jarfile=/usr/local/java/antelope/Antelope]</entry><entry>The deploy-all target executes the 'jar' task.</entry></row>
 <row><entry>&lt;/deploy-all&gt;</entry><entry>The trace has reached the end of the deploy-all target.</entry></row>

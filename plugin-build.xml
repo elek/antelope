@@ -4,14 +4,14 @@
 <!-- :folding=explicit:collapseFolds=1:                 -->
 <!-- ================================================== -->
 <project name="Antelope" default="build" basedir=".">
-    <property file="../build.properties" />
+	<property file="../build.properties" />
 	<property file="build.properties" />
-	
+
 	<property name="javadoc.packagenames"	value="ise.antelope.*" />
 	<property name="plugin.dependencies" 	value="ErrorList,Console" />
 	<property name="dist.target" 			value="dist.complete" />
 
-	<import file="../build-support/plugin-build.xml" />
+	<import file="../plugins/build-support/plugin-build.xml" />
 
 	<!-- Add needed plugins to the classpath. -->
 	<path id="project.class.path">

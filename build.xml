@@ -127,7 +127,7 @@
         <property name="xsltproc.executable" value="/usr/bin/xsltproc"/>
         <property name="user-doc.out" location="${doc.dir}/manual"/>
         <property name="user-doc.xml" value="${src.dir}/docs/manual/userguide.xml"/>
-        <property name="user-doc.xsl" value="${src.dir}/docs/manual/users-guide.xsl"/>
+        <property name="user-doc.xsl" value="${src.dir}/docs/users-guide.xsl"/>
         <property name="docbook.catalog" value="/usr/share/sgml/docbook/dtd/catalog"/>
         <exec executable="${xsltproc.executable}" dir="${user-doc.out}" failonerror="true">
             <arg value="--output" />

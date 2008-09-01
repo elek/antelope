@@ -67,6 +67,7 @@ import console.*;
 import errorlist.*;
 
 import ise.antelope.common.*;
+import ise.library.swingworker.SwingWorker;
 
 /**
  * This is the panel displayed and manipulated by jEdit. It wraps the
@@ -142,8 +143,8 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                         JMenuItem mi = new JMenuItem( "Open Current Buffer" );
                         mi.addActionListener( new ActionListener() {
                                     public void actionPerformed( ActionEvent ae ) {
-                                        File f = getView().getBuffer().getFile();
-                                        antelopePanel.openBuildFile( f );
+                                        String f = getView().getBuffer().getPath();
+                                        antelopePanel.openBuildFile( new File(f) );
                                     }
                                 }
                                             );
@@ -278,7 +279,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      *
      * @param thread  The new targetExecutionThread value
      */
-    public void setTargetExecutionThread( Thread thread ) {
+    public void setTargetExecutionThread( SwingWorker thread ) {
         if (_console_handler != null && _console_handler.getShell() != null)
             _console_handler.getShell().setRunner( thread );
     }

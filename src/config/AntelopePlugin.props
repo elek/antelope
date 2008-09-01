@@ -14,13 +14,13 @@ plugin.ise.antelope.plugin.AntelopePlugin.name=Antelope
 plugin.ise.antelope.plugin.AntelopePlugin.author=Dale Anson
 
 # the version of the plugin
-plugin.ise.antelope.plugin.AntelopePlugin.version=@@build.num@@
+plugin.ise.antelope.plugin.AntelopePlugin.version=3.5.0
 
 # dependencies
-plugin.ise.antelope.plugin.AntelopePlugin.depend.0=jdk 1.4
-plugin.ise.antelope.plugin.AntelopePlugin.depend.1=jedit 04.02.01.00
-plugin.ise.antelope.plugin.AntelopePlugin.depend.2=plugin console.ConsolePlugin 3.3
-plugin.ise.antelope.plugin.AntelopePlugin.depend.3=plugin errorlist.ErrorListPlugin 1.2.2
+plugin.ise.antelope.plugin.AntelopePlugin.depend.0=jdk 1.5
+plugin.ise.antelope.plugin.AntelopePlugin.depend.1=jedit 04.03.15.00
+plugin.ise.antelope.plugin.AntelopePlugin.depend.2=plugin console.ConsolePlugin 4.3.7
+plugin.ise.antelope.plugin.AntelopePlugin.depend.3=plugin errorlist.ErrorListPlugin 1.8
 
 # title for DockableWindowManager
 Antelope.title=Antelope

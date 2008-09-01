@@ -64,6 +64,7 @@ import javax.swing.text.*;
 import ise.antelope.app.jedit.*;
 import ise.antelope.common.*;
 import ise.library.*;
+import ise.library.swingworker.SwingWorker;
 
 /**
  * Main entry point for Antelope application.
@@ -78,7 +79,7 @@ public class Antelope extends JFrame implements CommonHelper {
 
     /** Reference to the AntelopePanel  */
     private AntelopePanel _antelope_panel = null;
-    
+
     private JSplitPane _split_pane = null;
 
     /** Reference to the build file editor  */
@@ -102,19 +103,19 @@ public class Antelope extends JFrame implements CommonHelper {
     private File _build_file = null;
 
     private StatusBar status = null;
-    
+
     private String[] args = null;
 
     public Antelope() {
         super( );
         init(null);
     }
-    
+
     public Antelope(String[] args) {
         super( );
         init(args);
     }
-    
+
     /**
      * Constructor for the Antelope object
      *
@@ -122,20 +123,20 @@ public class Antelope extends JFrame implements CommonHelper {
      */
     public void init( String[] params ) {
         this.args = params;
-        
+
         Log.log("init");
-        
+
         setTitle("Antelope");
-        
+
         File build_file = null;
         if (args != null && args.length > 0) {
             build_file = new File(args[0]);
-            if (!build_file.exists()) { 
+            if (!build_file.exists()) {
                 JOptionPane.showMessageDialog(Antelope.this, "Build file " + args[0] + " does not exist.", "Build File Not Found", JOptionPane.WARNING_MESSAGE);
                 build_file = null;
             }
         }
-        
+
         _tabs = new JTabbedPane();
 
         if ( build_file == null ) {
@@ -157,8 +158,8 @@ public class Antelope extends JFrame implements CommonHelper {
                 }
                                          );
 
-        setIconImage(new ImageIcon(getClass().getClassLoader().getResource("images/red_ant.gif")).getImage());                                         
-        
+        setIconImage(new ImageIcon(getClass().getClassLoader().getResource("images/red_ant.gif")).getImage());
+
         JPanel contents = new JPanel(new BorderLayout());
         _split_pane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, _antelope_panel, _tabs );
         contents.add(_split_pane, BorderLayout.CENTER);
@@ -610,7 +611,7 @@ public class Antelope extends JFrame implements CommonHelper {
         status.setStatus("Antelope ready.");
         Log.log("ready");
     }
-    
+
     private void exit(int status) {
         try {
             Rectangle bounds = getBounds();
@@ -671,7 +672,7 @@ public class Antelope extends JFrame implements CommonHelper {
     }
 
     /**
-     * Loads the editor with the contents of the given build file.   
+     * Loads the editor with the contents of the given build file.
      */
     public void openFile( File file ) {
         final File build_file = file;
@@ -811,7 +812,7 @@ public class Antelope extends JFrame implements CommonHelper {
      *
      * @param thread  The new targetExecutionThread value
      */
-    public void setTargetExecutionThread( Thread thread ) {}
+    public void setTargetExecutionThread( SwingWorker thread ) {}
 
     /** Description of the Method */
     public void updateGUI() {
@@ -880,7 +881,7 @@ public class Antelope extends JFrame implements CommonHelper {
             }
             ;
     }
-    
+
      /**
      * Gets the traceButtonAction attribute of the Antelope object
      *

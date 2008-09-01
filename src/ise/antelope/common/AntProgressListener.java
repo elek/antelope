@@ -58,9 +58,6 @@ import java.lang.reflect.Field;
 
 import java.awt.Color;
 import javax.swing.*;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.BuildListener;
-import org.apache.tools.ant.BuildEvent;
 
 import java.io.*;
 import java.util.*;
@@ -92,7 +89,6 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
     private int total;  // total number of tasks that will be executed by the target
     private Color errorColor = Color.red;   // build failed
     private Color defaultColor = new Color( 0, 153, 51 );   // a nice green for build succeeded
-    private double ant_version = 0;
 
     private HashMap project_cache = new HashMap();
 
@@ -347,7 +343,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
                     attrs = makeMap( ( AttributeList ) PrivilegedAccessor.getValue( rc, "getAttributes" ) );
                 }
             }
-            catch ( Exception e ) {
+            catch ( Exception e ) {     // NOPMD
                 // ignored
             }
             if ( task instanceof TaskContainer ) {
@@ -509,6 +505,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
       field.setAccessible( true );
       return field.get( instance );
    }
+
    private Field getField( Class thisClass, String fieldName ) throws NoSuchFieldException {
       if ( thisClass == null ) {
          throw new NoSuchFieldException( "Invalid field : " + fieldName );
