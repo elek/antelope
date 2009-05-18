@@ -86,6 +86,7 @@
             <classpath refid="classpathref" />
             <src path="${src.dir}/ise/antelope/tasks"/>
             <src path="${src.dir}/ise/library"/>
+            <include name="${src.dir}/ise/antelope/common/AntPerformanceListener.java"/>
         </javac>
     </target>
 
@@ -117,6 +118,7 @@
             <zipfileset prefix="${ant.project.name}_${build.num}/src" dir="${src.dir}">
                 <include name="**/tasks/**/*"/>
                 <include name="**/testcases/**/*"/>
+                <include name="**/common/AntPerformanceListener.java"/>
             </zipfileset>
         </zip>
 
@@ -145,6 +147,7 @@
             <fileset dir="${classes.dir}">
                 <include name="**/tasks/**/*" />
                 <include name="**/library/**/*"/>
+                <include name="**/common/AntPerformanceListener.class"/>
             </fileset>
         </jar>
     </target>
