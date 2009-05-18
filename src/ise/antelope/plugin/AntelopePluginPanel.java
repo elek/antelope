@@ -129,6 +129,7 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
                             }
                         }
                         catch ( Exception e ) {
+                            e.printStackTrace();
                             // start Antelope anyway
                             /// really? what good is antelope without ant???
                             int rtn = JOptionPane.showConfirmDialog( AntelopePluginPanel.this, "<html>Error loading Ant:<p>" + e.getMessage() + "<p>Do you want to try again?", "Error Loading Ant", JOptionPane.YES_NO_OPTION );

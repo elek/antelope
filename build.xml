@@ -50,7 +50,7 @@
    ========================================================================= -->
     <target name="all"
             description="Build complete set of distribution files."
-            depends="clean,plugin,app,source,tasks"/>
+            depends="clean,plugin,app,source,plugin-source,tasks"/>
 
    <!-- ========================================================================
       Target: clean
@@ -89,8 +89,19 @@
     <target name="source"
             description="Build distribution file for Antelope source.">
         <ant antfile="build-source.xml"/>
+    </target>
+
+
+   <!-- ========================================================================
+      Target: plugin-source
+      this target creates the distribution file for the source code for the
+      Antelope plugin for jEdit
+   ========================================================================= -->
+    <target name="plugin-source"
+            description="Build distribution file for Antelope plugin source.">
         <ant antfile="build-plugin-src.xml"/>
     </target>
+
 
    <!-- ========================================================================
       Target: tasks

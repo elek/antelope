@@ -1,4 +1,4 @@
-<project name="Antelope" default="dist" basedir=".">
+<project name="AntelopePlugin" default="dist" basedir=".">
     <description>
        This build file creates Antelope as a jEdit plugin.
    </description>
@@ -92,10 +92,11 @@
         </jar>
 
       <!-- copy the jar to the right place per jEdit standards -->
-        <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
+      <copy file="${prep.dir}/${ant.project.name}.jar" todir="${install.dir}"/>
 
       <!-- zip the jar and installation instructions and put the zip file in
       the $dist directory -->
+      <!--
         <zip destfile="${dist.dir}/${ant.project.name}Plugin_${build.num}.zip">
             <zipfileset prefix="${ant.project.name}Plugin_${build.num}" dir="${prep.dir}">
                 <include name="${ant.project.name}.jar"/>
@@ -106,7 +107,7 @@
                 <include name="ChangeLog.txt"/>
             </zipfileset>
         </zip>
-
+        -->
     </target>
 
    <!-- ========================================================================
@@ -201,12 +202,19 @@
         <echo file="${docbook-wrapper}" append="true"
                 message="&lt;/xsl:stylesheet&gt;"/>
 
-        <style basedir="${src.dir}/docs/manual"
+        <!--
+        <xslt basedir="${src.dir}/docs/manual"
                 style="${docbook-wrapper}"
                 destdir="${doc.dir}/manual"
                 includes="userguide.xml">
             <param name="html.stylesheet" expression="./style.css"/>
-        </style>
+        </xslt>
+        -->
+        <xslt basedir="${src.dir}/docs/manual"
+              destdir="${doc.dir}/manual"
+              includes="userguide.xml"
+              extension=".html"
+              style="${docbook-wrapper}"/>
     </target>
 
 

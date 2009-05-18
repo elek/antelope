@@ -1,49 +1,51 @@
 
 <project name="Antelope Plugin Source" default="dist" basedir=".">
    <description>
-       This build file creates a source zip file that contains everything 
-       necessary to build Antelope as a jEdit plugin. 
+       This build file creates a source zip file that contains everything
+       necessary to build Antelope as a jEdit plugin.  Assumes documentation
+       has already been built.
     </description>
-    
+
    <!-- read build.props to override properties set below -->
    <property file="build.props"/>
 
-   <property name="app.name" value="Antelope"/>
-   
+   <property name="app.name" value="AntelopePlugin"/>
+
    <!-- version number, override in build.props if necessary -->
-   <property name="build.num" value="3.0.1"/>
-    
+   <property name="build.num" value="3.5.0"/>
+
     <!-- shouldn't need to override the following properties -->
-    
+
     <!-- source code directory, this is where the .java files live -->
    <property name="src.dir" location="src" />
-   
+
     <!-- build directory, all files contained in the src directory are copied
     to this directory for processing (tag substitution, mostly) -->
    <property name="prep.dir" location="prep"/>
 
     <!-- where to put the finished distribution file -->
    <property name="dist.dir" location="dist"/>
-    
-    
+
+
    <!-- ========================================================================
       Target: dist
    ========================================================================= -->
    <target name="dist" description="Package files for building a plugin.">
       <property name="app.name" value="Antelope"/>
-        
+
       <!-- zip the jar and installation instructions and put the zip file in
       the $dist directory -->
-      <zip destfile="${dist.dir}/${app.name}PluginSrc_${build.num}.zip" update="true">
-         <zipfileset prefix="${app.name}" dir="${prep.dir}/docs">
+      <zip destfile="${dist.dir}/${app.name}Src_${build.num}.zip" update="true">
+         <zipfileset prefix="${app.name}/prep/docs" dir="${prep.dir}/docs">
             <include name="license.txt"/>
             <include name="plugin_readme.txt"/>
+            <include name="manual/**"/>
          </zipfileset>
-         
+
          <zipfileset dir="${basedir}" includes="build-plugin.xml" fullpath="${app.name}/build.xml"/>
-         
+
          <zipfileset prefix="${app.name}" dir="${basedir}" includes="build.props"/>
-         
+
          <zipfileset prefix="${app.name}/src" dir="${src.dir}">
             <include name="**/common/*"/>
             <include name="**/launcher/**/*"/>
@@ -51,11 +53,11 @@
             <include name="**/plugin/*"/>
             <include name="**/library/**/*"/>
             <include name="**/config/*"/>
-            <include name="**/docs/**/*"/>
+            <!-- <include name="**/docs/**/*"/> -->
             <include name="**/images/*"/>
          </zipfileset>
       </zip>
 
    </target>
-    
+
 </project>

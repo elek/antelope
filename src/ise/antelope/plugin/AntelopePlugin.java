@@ -124,7 +124,7 @@ public class AntelopePlugin extends EBPlugin {
             shell = (AntelopeShell) ServiceManager.getService("console.Shell", "Antelope");
 		return shell;
 	}
-    
+
     /**
      * This method is called every time a view is created to set up the Plugins
      * menu. Menus and menu items should be loaded using the methods in the
@@ -157,7 +157,7 @@ public class AntelopePlugin extends EBPlugin {
 
         //Shell.registerShell( shell );
         //Log.log( Log.DEBUG, AntelopePlugin.class, ">>>>>>>>>> AntelopePlugin.start()" );
-        
+
 
     }
 
@@ -285,10 +285,10 @@ public class AntelopePlugin extends EBPlugin {
     }
 
     /**
-     * ActionListeners added via this method will receive an ActionEvent when a 
+     * ActionListeners added via this method will receive an ActionEvent when a
      * build file changes for a View (there is a 1-1 relationship between a View
      * and an Antelope instance). The ActionEvent will contain the name of the
-     * build file (full path included) as the action command (retrieve with 
+     * build file (full path included) as the action command (retrieve with
      * ActionEvent.getActionCommand()) and the View as the source object (retrieve
      * with ActionEvent.getSource()).
      *
@@ -378,10 +378,10 @@ public class AntelopePlugin extends EBPlugin {
         }
 
     }
-    
-    
+
+
     /**
-     * @return a list of targets found in the given build file.   
+     * @return a list of targets found in the given build file.
      */
     public static String[] getTargetList( File buildFile ) {
         Project project = new Project();
@@ -397,7 +397,7 @@ public class AntelopePlugin extends EBPlugin {
     }
 
     /**
-     * Cause Antelope to use the given build file.   
+     * Cause Antelope to use the given build file.
      */
     public static void setBuildFile( View view, File buildFile ) {
         try {
@@ -418,7 +418,7 @@ public class AntelopePlugin extends EBPlugin {
     }
 
     /**
-     * @return the current build file   
+     * @return the current build file
      */
     public static File getBuildFile( View view ) {
         try {
@@ -445,7 +445,7 @@ public class AntelopePlugin extends EBPlugin {
      * 2. check Antelope's preferences for ANT_HOME<p>
      * 3. check for a System property named ANT_HOME<p>
      * 4. check for an environment variable named ANT_HOME<p>
-     * 5. check if jEdit loaded ant.jar. This would happen if ant.jar is in the 
+     * 5. check if jEdit loaded ant.jar. This would happen if ant.jar is in the
      * $user.home/.jedit/jars directory.<p>
      * 6. ask the user, then store their choice in Antelope's preferences<p>
      * Once found, return a String containing a list of the jars found in $ANT_HOME/lib,
@@ -453,7 +453,7 @@ public class AntelopePlugin extends EBPlugin {
      * so any jars found there are included also.
      * @param relative use true to have the returned path use relative paths, false
      * for full paths.
-     * @return a path-separated list of jars from $ANT_HOME/lib and $user_home/.ant/lib.   
+     * @return a path-separated list of jars from $ANT_HOME/lib and $user_home/.ant/lib.
      */
     public static String getAntJars( boolean relative ) {
         // first check classpath, if in classpath, assume all jars necessary
@@ -618,6 +618,8 @@ public class AntelopePlugin extends EBPlugin {
         }
         return null;
     }
+
+    /// not used???
     public static File getAntelopeJar() {
         //EditPlugin.JAR[] jars = jEdit.getPluginJARs(); // use this line for jEdit 4.1
         PluginJAR[] jars = jEdit.getPluginJARs();       // use this line for jEdit 4.2
@@ -640,7 +642,7 @@ public class AntelopePlugin extends EBPlugin {
         for ( int i = 0; i < jars.length; i++ ) {
             if ( jars[ i ].getPath() != null ) {
                 File f = new File( jars[ i ].getPath() );
-                if ( f.getName().toLowerCase().equals( "antelope.jar" ) ) {
+                if ( f.getName().toLowerCase().equals( "antelopeplugin.jar" ) ) {
                     return jars[ i ];
                 }
             }

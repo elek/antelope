@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import javax.swing.SwingUtilities;
 import console.*;
 import errorlist.*;
 import org.gjt.sp.jedit.jEdit;
@@ -25,8 +26,8 @@ public class ConsolePluginHandler extends Handler {
     private Console console = null;
     private AntelopeShell shell = null;
     private Color GREEN = new Color( 0, 153, 51 );
-    private Color YELLOW = new Color(0xefef8f);
-    private Color RED = new Color(0xff4444);
+    private Color YELLOW = new Color( 0xefef8f );
+    private Color RED = new Color( 0xff4444 );
     private Color foreground;
 
     public ConsolePluginHandler( AntelopePluginPanel panel ) {
@@ -34,7 +35,7 @@ public class ConsolePluginHandler extends Handler {
         view = panel.getView();
         error_source = panel.getErrorSource();
         setupConsole();
-        foreground = jEdit.getColorProperty("view.fgColor");
+        foreground = jEdit.getColorProperty( "view.fgColor" );
     }
 
     public ConsolePluginHandler( View view, DefaultErrorSource es ) {
@@ -54,7 +55,7 @@ public class ConsolePluginHandler extends Handler {
         }
         console.setShell( shell );
         Font font = view.getEditPane().getTextArea().getPainter().getFont();
-        console.getConsolePane().setFont(font);
+        console.getConsolePane().setFont( font );
     }
 
 
@@ -69,8 +70,8 @@ public class ConsolePluginHandler extends Handler {
         Ant writes to, so those messages end up here mixed with the Ant output.
         This may not be sufficient, but all I've seen so far are DockableWindowUpdate
         and ErrorSourceUpdate messages, so this regex works for now. */
-        if (record.getMessage().matches("(.*)?(Update\\[)(.*)")) {
-            return;
+        if ( record.getMessage().matches( "(.*)?(Update\\[)(.*)" ) ) {
+            return ;
         }
         if ( _panel.getBuildFile() == null ) {
             return ;
@@ -97,7 +98,7 @@ public class ConsolePluginHandler extends Handler {
 
         if ( _panel.useErrorParsing() ) {
             int type = ConsolePlugin.parseLine( view, parseline, dir, error_source );
-            Output output = console.getOutput("Antelope");
+            Output output = console.getOutput( "Antelope" );
             switch ( type ) {
                 case ErrorSource.ERROR:
                     output.print( console.getErrorColor(), parseline );
@@ -109,12 +110,18 @@ public class ConsolePluginHandler extends Handler {
                     // fall through on purpose
             }
         }
-        console.getOutput("Antelope").print( getColorForLevel( record.getLevel() ), parseline );
+        console.getOutput( "Antelope" ).print( getColorForLevel( record.getLevel() ), parseline );
     }
 
     public void showConsole( ) {
-        DockableWindowManager mgr = view.getDockableWindowManager();
-        mgr.showDockableWindow( "console" );
+        SwingUtilities.invokeLater(
+            new Runnable() {
+                public void run() {
+                    DockableWindowManager mgr = view.getDockableWindowManager();
+                    mgr.showDockableWindow( "console" );
+                }
+            }
+        );
     }
 
     public AntelopeShell getShell() {

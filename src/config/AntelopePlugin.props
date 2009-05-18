@@ -14,13 +14,13 @@ plugin.ise.antelope.plugin.AntelopePlugin.name=Antelope
 plugin.ise.antelope.plugin.AntelopePlugin.author=Dale Anson
 
 # the version of the plugin
-plugin.ise.antelope.plugin.AntelopePlugin.version=3.5.0
+plugin.ise.antelope.plugin.AntelopePlugin.version=3.5.1
 
 # dependencies
 plugin.ise.antelope.plugin.AntelopePlugin.depend.0=jdk 1.5
 plugin.ise.antelope.plugin.AntelopePlugin.depend.1=jedit 04.03.15.00
 plugin.ise.antelope.plugin.AntelopePlugin.depend.2=plugin console.ConsolePlugin 4.3.7
-plugin.ise.antelope.plugin.AntelopePlugin.depend.3=plugin errorlist.ErrorListPlugin 1.8
+plugin.ise.antelope.plugin.AntelopePlugin.depend.3=plugin errorlist.ErrorListPlugin 1.7
 
 # title for DockableWindowManager
 Antelope.title=Antelope
@@ -31,6 +31,8 @@ AntelopeOutput.label=Ant Output
 
 # new setting for jEdit 4.2
 plugin.ise.antelope.plugin.AntelopePlugin.activate=defer
+
+plugin.ise.antelope.plugin.AntelopePlugin.description=Antelope, runs Ant build files.
 
 
 #-----------------------------------

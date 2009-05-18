@@ -48,11 +48,10 @@ import org.apache.tools.ant.RuntimeConfigurable;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Location;
 import org.apache.tools.ant.UnknownElement;
-import org.apache.tools.ant.taskdefs.ImportTask;
 
 import org.xml.sax.XMLReader;
 
-import ise.library.Log;
+//import ise.library.Log;
 
 /**
  * Sax2 based project reader
@@ -170,8 +169,13 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
         Task[] tasks = implicit.getTasks();
         for ( int i = 0; i < tasks.length; i++ ) {
             if ( tasks[ i ].getTaskName().equals( "property" ) ) {
-                tasks[i].maybeConfigure();
-                tasks[i].execute();
+                try {
+                    tasks[i].maybeConfigure();
+                    tasks[i].execute();
+                }
+                catch(Exception e) {
+                    throw new BuildException(e.getMessage());
+                }
             }
         }
     }
@@ -199,10 +203,12 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
      */
     public void parse( Project project, Object source, RootHandler handler )
     throws BuildException {
+        /*
         System.out.println("+++++ source: " + source.toString());
         if (source != null) {
             System.out.println("+++++ source is a " + source.getClass().getName());
         }
+        */
         AntXMLContext context = handler.context;
 
         File buildFile = null;
@@ -231,7 +237,8 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
             throw new BuildException( "Source " + source.getClass().getName()
                     + " not supported by this plugin" );
         }
-        System.out.println("+++++ buildFileName: " + buildFileName);
+
+        // System.out.println("+++++ buildFileName: " + buildFileName);
 
         InputStream inputStream = null;
         InputSource inputSource = null;
@@ -245,7 +252,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 
             String uri = null;
             if ( buildFile != null ) {
-                System.out.println("+++++ buildFile = " + buildFile + ", absolutePath = " + buildFile.getAbsolutePath());
+                //System.out.println("+++++ buildFile = " + buildFile + ", absolutePath = " + buildFile.getAbsolutePath());
                 uri = fu.toURI( buildFile.getAbsolutePath() );
                 inputStream = new FileInputStream( buildFile );
             }
@@ -315,7 +322,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
                 try {
                     inputStream.close();
                 }
-                catch ( IOException ioe ) {
+                catch ( IOException ioe ) {    // NOPMD
                     // ignore this
                 }
             }
@@ -662,7 +669,6 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
                 Attributes attrs,
                 AntXMLContext context )
         throws SAXParseException {
-            String id = null;
             String baseDir = null;
             boolean nameAttributeSet = false;
 
@@ -694,7 +700,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
 
                 if ( key.equals( "default" ) ) {
                     if ( value != null && !value.equals( "" ) ) {
-                        if ( !context.isIgnoringProjectTag() ) {
+                        if ( !context.isIgnoringProjectTag() ) {        // NOPMD
                             project.setDefault( value );
                         }
                     }
@@ -712,7 +718,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
                 else if ( key.equals( "id" ) ) {
                     if ( value != null ) {
                         // What's the difference between id and name ?
-                        if ( !context.isIgnoringProjectTag() ) {
+                        if ( !context.isIgnoringProjectTag() ) {        // NOPMD
                             project.addReference( value, project );
                         }
                     }
@@ -1055,7 +1061,7 @@ public class AntelopeProjectHelper2 extends ProjectHelper {
                         || ( ANT_CORE_URI.equals( attrUri )
                              && ANT_TYPE.equals( attrs.getLocalName( i ) ) ) ) {
                     name = ANT_TYPE;
-                    int index = value.indexOf( ":" );
+                    int index = value.indexOf( ':' );
                     if ( index != -1 ) {
                         String prefix = value.substring( 0, index );
                         String mappedUri = context.getPrefixMapping( prefix );
