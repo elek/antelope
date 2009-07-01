@@ -53,15 +53,9 @@
 */
 package ise.antelope.common;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.io.StringReader;
 import java.io.File;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.StringTokenizer;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -69,7 +63,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.SimpleFormatter;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.BuildEvent;
@@ -190,7 +183,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
    /**
     * Namespace for logger
     */
-   public static String NAMESPACE = "ise.antelope.Antelope";
+   public static String NAMESPACE = "ise.antelope.common.AntLogger";
 
    /**
     * java.util.logging.Logger for namespace
@@ -264,7 +257,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
             fileHandler.close();
          }
       }
-      catch ( Exception ignored ) {}
+      catch ( Exception ignored ) {}        // NOPMD
       open = false;
    }
 
@@ -623,7 +616,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
                fileHandler.setFormatter( new PlainFormatter() );
                logger.addHandler( fileHandler );
             }
-            catch ( Exception ignored ) {
+            catch ( Exception ignored ) {       // NOPMD
                // silently ignore any error -- the alternative is to bail out
                // of the build.
             }
@@ -645,17 +638,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
    private PrintStream createPrintStream() {
       PrintStream ps = new PrintStream(
                new java.io.OutputStream() {
-                   StringBuffer line = new StringBuffer();
                   public void write( int b ) {
-                      /*
-                      if ((byte)b == '\n') {
-                        log(line.toString());
-                        line = new StringBuffer();
-                      }
-                      else {
-                        line.append((byte)b);
-                      }
-                      */
                      byte[] bytes = {( byte ) b};
                      write( bytes, 0, 1 );
                   }

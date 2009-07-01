@@ -135,7 +135,6 @@ public class AntelopePanel extends JPanel {
 
     // basic logger settings
     private Logger _logger = null;
-    private Level _log_level = Level.ALL;
 
     /** Description of the Field */
     private ArrayList _listeners = null;
@@ -411,7 +410,7 @@ public class AntelopePanel extends JPanel {
         );
 
         // initialize the logger
-        initLogger();
+        initLoggers();
 
         // initialize from the build file
         openBuildFile( build_file );
@@ -1864,41 +1863,12 @@ public class AntelopePanel extends JPanel {
     }
 
     //=============================================================
-    // handle loggers, action listeners, and events
+    // handle loggers
     //=============================================================
     /** Initializes the logger. */
-    private void initLogger() {
-        _logger = Logger.getLogger( "ise.antelope.Antelope" );
-        _logger.setUseParentHandlers( false );
-        _build_logger = new AntLogger();
-
-        // do this after the AntLogger is created as the AntLogger
-        // installs a ConsoleHandler by default, so remove all ConsoleHandlers
-        // to be on the safe side.
-        Handler[] handlers = _logger.getHandlers();
-        try {
-            for ( int i = 0; i < handlers.length; i++ ) {
-                Handler handler = handlers[ i ];
-                if ( handler instanceof ConsoleHandler ) {
-                    _logger.removeHandler( handler ); ///
-                }
-            }
-        }
-        catch ( Throwable e ) {     // NOPMD
-            Log.log( this, e );
-        }
-        _logger.setLevel( Level.ALL );
-    }
-
-
-    /**
-     * Sets the log level for the default log handler. The default level is
-     * Level.ALL, which is the most useful.
-     *
-     * @param level  The new log level value
-     */
-    public void setLogLevel( Level level ) {
-        _log_level = level;
+    private void initLoggers() {
+        _logger = LoggerFactory.getInstance().createLogger();
+        _build_logger = LoggerFactory.getInstance().createAntLogger();
     }
 
 
@@ -1915,27 +1885,10 @@ public class AntelopePanel extends JPanel {
             return ;
         }
         if ( _logger == null ) {
-            initLogger();
+            _logger = LoggerFactory.getInstance().createLogger();
         }
-        h.setLevel( _log_level );
-
-        // make sure it is really added, initLogger may remove it, so
-        // explicitly add it again
-        _logger.removeHandler( h );
+        h.setLevel( Level.ALL );
         _logger.addHandler( h );
-    }
-
-
-    /**
-     * Removes the given handler from the logger for Antelope.
-     *
-     * @param h  the Handler to remove
-     */
-    public void removeLogHandler( Handler h ) {
-        if ( _logger == null ) {
-            return ;
-        }
-        _logger.removeHandler( h );
     }
 
 
