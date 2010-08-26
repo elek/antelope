@@ -3594,7 +3594,12 @@ To use this task in your build files, include a task definition like this:
 <entry>false</entry>
 <entry>No</entry>
 </row>
-
+<row>
+<entry>quiet</entry>
+<entry>Suppress log output.</entry>
+<entry>false</entry>
+<entry>No</entry>
+</row>
 </tbody>
 </tgroup>
 </table>

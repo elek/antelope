@@ -44,6 +44,8 @@
 
     <!-- where to put the finished distribution file -->
     <property name="dist.dir" location="dist"/>
+    
+    <property name="docbookx.dtd" value="${src.dir}/docs/docbookx.dtd"/>
 
 
 
@@ -100,7 +102,7 @@
    ========================================================================= -->
     <target name="dist"
             description="Compiles, jars, puts the jar in the jEdit jars directory."
-            depends="jar">
+            depends="jar,docs-xalan">
 
         <!-- zip the jar and installation instructions and put the zip file in
         the $dist directory -->
@@ -171,12 +173,20 @@
             <fileset dir="${src.dir}/docs/manual" includes="**/*.css" />
         </copy>
 
-        <style basedir="${src.dir}/docs/manual"
-                style="${src.dir}/docs/users-guide.xsl"
-                destdir="${doc.dir}/manual"
-                includes="userguide.xml">
-            <param name="html.stylesheet" expression="./style.css"/>
-        </style>
+        <xslt basedir="${src.dir}/docs/manual"
+              destdir="${doc.dir}/manual"
+              style="${src.dir}/docs/users-guide.xsl"
+              includes="userguide.xml">
+            <xmlcatalog>
+                <dtd publicId="-//OASIS//DTD DocBook XML V4.2//EN"
+                     location="${docbookx.dtd}" />
+            </xmlcatalog>
+        </xslt>
+        <!-- insert the style sheet -->
+        <replace dir="${doc.dir}/manual" encoding="ISO-8859-1">
+            <replacefilter token="@style@"
+                value="&lt;STYLE TYPE=&quot;text/css&quot;&gt; &lt;!-- @import url(./style.css); --&gt; &lt;/STYLE&gt;" />
+        </replace>
     </target>
 
 
@@ -242,7 +252,6 @@
         <tstamp/>
         <replace dir="${prep.dir}" token="@@tstamp@@"
                 value="${TODAY}" />
-
     </target>
 
    <!-- ========================================================================

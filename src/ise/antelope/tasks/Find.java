@@ -26,6 +26,7 @@ public class Find extends Task {
     private boolean unixLines = false;
     private boolean allMatches = false;
     private String separator = System.getProperty("line.separator");
+    private boolean quiet = false;
 
     /**
      * Where to look.
@@ -142,6 +143,15 @@ public class Find extends Task {
     public void setSeparator(String s) {
         separator = s;
     }
+    
+    /**
+     * This option will suppress logging output.
+     * 
+     * @param b Set to true to suppress loggint output.
+     */
+    public void setQuiet(boolean b) {
+        quiet = b;   
+    }
 
     /** Do the grep */
     public void execute() {
@@ -195,8 +205,9 @@ public class Find extends Task {
                 if (allMatches)
                     getProject().setUserProperty(property + "_count", String.valueOf(count));
             }
-            else
+            else if (!quiet) {
                 log("No match.");
+            }
         }
         catch (Exception e) {
             throw new BuildException(e.getMessage());
