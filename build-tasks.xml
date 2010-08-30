@@ -79,17 +79,21 @@
     <target name="compile"
             description="Compile"
             depends="init,setClasspath">
+        <echo>compiling....!!!! ${src.dir}</echo>
         <javac deprecation="on"
                 debug="on"
                 nowarn="on"
                 destdir="${classes.dir}"
                 source="1.5"
-                target="1.5">
+                target="1.5"
+                verbose="true">
             <classpath refid="classpathref" />
             <src path="${src.dir}/ise/antelope/tasks"/>
             <src path="${src.dir}/ise/library"/>
+            <include name="**/*"/>
             <include name="${src.dir}/ise/antelope/common/AntPerformanceListener.java"/>
         </javac>
+        <echo>done compiling</echo>
     </target>
 
    <!-- ========================================================================

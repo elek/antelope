@@ -112,7 +112,6 @@ public class ConsolePluginHandler extends Handler {
                     // fall through on purpose
             }
         }
-        System.out.println("+++++ ConsolePluginHandler.publish: " + parseline);
         console.getOutput( "Antelope" ).print( getColorForLevel( record.getLevel() ), parseline );
     }
 
@@ -153,5 +152,10 @@ public class ConsolePluginHandler extends Handler {
      */
     public void close() {
         // does nothing
+    }
+    
+    @Override
+    protected void finalize() {
+        Log.log(this, "finalized");   
     }
 }

@@ -182,7 +182,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
     /**
      * Namespace for logger
      */
-    public static String NAMESPACE = "ise.antelope.common.AntLogger";
+    public static String NAMESPACE = "ise.antelope.Antelope";//"ise.antelope.common.AntLogger";
 
     /**
      * java.util.logging.Logger for namespace
@@ -219,7 +219,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
         NAMESPACE = namespace;
         Log.log(this, "AntLogger constructor");
         initLogger();
-        ///open();
+        open();
     }
 
     /**
@@ -353,7 +353,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
         // note: ConsolePluginHandler uses this message to set focus back to the buffer,
         // so if you change this message, be sure to update the ConsolePluginHandler
         message.append("===== BUILD FINISHED =====").append(lSep);
-        //message.append( new java.util.Date().toString()).append(lSep);
+        message.append( new java.util.Date().toString()).append(lSep);
 
         String msg = message.toString();
         log(Level.CONFIG, msg);
@@ -532,7 +532,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
         synchronized (logger) {
             Handler[] handlers = logger.getHandlers();
             for (int i = 0; i < handlers.length; i++) {
-                logger.removeHandler(handlers[ i]);
+                logger.removeHandler(handlers[i]);
             }
         }
     }
@@ -614,7 +614,7 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
      * @return   a print stream
      */
     private PrintStream createPrintStream() {
-        PrintStream ps = new PrintStream( new java.io.OutputStream() {
+        PrintStream ps = new PrintStream(new java.io.OutputStream() {
             public void write(int b) {
                 byte[] bytes = { (byte) b} ;
                 write(bytes, 0, 1);
