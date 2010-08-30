@@ -1,7 +1,6 @@
 package ise.antelope.tasks;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.*;
 
 /**
  * Represents a mathematical operation.
@@ -13,10 +12,10 @@ public class Op {
    private String datatype = null;
 
    // storage for the numbers to execute the operation on
-   Vector nums = new Vector();
+   List<Num> nums = new ArrayList<Num>();
 
    // storage for nested Ops
-   Vector ops = new Vector();
+   List<Op> ops = new ArrayList<Op>();
 
    // storage for operation
    String operation = null;
@@ -47,7 +46,7 @@ public class Op {
          operation = "subtract";
       else if (op.equals("*") || op.equals("x"))
          operation = "multiply";
-      else if (op.equals("/") || op.equals( "÷" ) )
+      else if (op.equals("/") || op.equals( "\u00f7" ) )
          operation = "divide";
       else if (op.equals("%") || op.equals("\\"))
          operation = "mod";
@@ -61,7 +60,7 @@ public class Op {
     * @param num a number to use in this operation   
     */
    public void addConfiguredNum( Num num ) {
-      nums.addElement( num );
+      nums.add( num );
       //System.out.println("Op.addNum " + num);
       
    }
@@ -108,7 +107,7 @@ public class Op {
     */
    public Num calculate() {
       if ( operation == null )
-         throw new RuntimeException( "Operation not specified." );
+         throw new IllegalArgumentException( "Operation not specified." );
 
       // calculate nested Ops
       /*
@@ -124,14 +123,12 @@ public class Op {
       // make an array of operands
       //System.out.println("operation is " + operation + " on these numbers:");
       String[] operands = new String[ nums.size() ];
-      Enumeration en = nums.elements();
-      int i = 0;
-      while ( en.hasMoreElements() ) {
-         Num num = (Num)en.nextElement();
-         if (datatype != null)
-            num.setDatatype(datatype);
-         //System.out.println(num.toString());
-         operands[ i++ ] = num.toString();
+      for (int i = 0; i < nums.size(); i++) {
+          Num num = nums.get(i);   
+          if (datatype != null) {
+              num.setDatatype(datatype);
+          }
+          operands[i] = num.toString();
       }
 
       Math math = new Math(_strict);

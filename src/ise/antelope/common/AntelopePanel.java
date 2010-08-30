@@ -59,7 +59,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import ise.library.*;
-import ise.library.swingworker.SwingWorker;
 import ise.antelope.tasks.*;
 
 import org.apache.tools.ant.*;
@@ -97,7 +96,6 @@ public class AntelopePanel extends JPanel {
     private JPanel _button_panel = null;
     private SAXPanel _sax_panel = null;
 
-    private JPanel _control_panel = null;
     private JToggleButton _run_btn = null;
     private JToggleButton _trace_btn = null;
     private JToggleButton _edit_btn = null;
@@ -224,7 +222,7 @@ public class AntelopePanel extends JPanel {
             Class.forName( "ise.library.GUIUtils" );
         }
         catch ( ClassNotFoundException e ) {
-            throw new RuntimeException( e );
+            throw new RuntimeException( e );        // NOPMD
         }
 
         // make sure the xml parser is loaded
@@ -246,7 +244,7 @@ public class AntelopePanel extends JPanel {
         }
 
         // set up the control panel
-        _control_panel = new JPanel( );
+        JPanel _control_panel = new JPanel( );
         Insets ins = new Insets( 1, 1, 1, 1 );
 
         _run_btn = new JToggleButton();
@@ -567,6 +565,7 @@ public class AntelopePanel extends JPanel {
                         return null;
                     }
 
+                    /* not supported in Java 1.6 SwingWorker
                     @Override
                     public boolean cancel( boolean mayInterruptIfRunning ) {
                         Exception e = new Exception();
@@ -577,6 +576,7 @@ public class AntelopePanel extends JPanel {
                         done();
                         return canceled;
                     }
+                    */
 
                     @Override
                     protected void done() {
@@ -697,6 +697,7 @@ public class AntelopePanel extends JPanel {
                 return null;
             }
 
+            /* not supported in Java 1.6 SwingWorker
             @Override
             public boolean cancel( boolean mayInterruptIfRunning ) {
                         Exception e = new Exception();
@@ -704,6 +705,7 @@ public class AntelopePanel extends JPanel {
                 log( Level.SEVERE, "=====> BUILD INTERRUPTED <=====" );
                 return super.cancel( mayInterruptIfRunning );
             }
+            */
 
             @Override
             protected void done() {
@@ -734,7 +736,7 @@ public class AntelopePanel extends JPanel {
      * button in the Console will stop the build.
      * @exception Exception  Description of Exception
      */
-    private void executeTargets( SwingWorker runner, ArrayList targets ) throws Exception {
+    private void executeTargets( SwingWorker runner, ArrayList targets ) throws Exception {     // NOPMD
         _last_ran_targets = targets;
 
         // maybe prep the error source
@@ -1068,7 +1070,7 @@ public class AntelopePanel extends JPanel {
             try {
                 Constants.PREFS.put( Constants.LAST_OPEN_FILE, build_file.getAbsolutePath() );
             }
-            catch ( Throwable e ) {
+            catch ( Throwable e ) {     // NOPMD
                 e.printStackTrace();
             }
             adjustRecentFiles( build_file );
@@ -1175,12 +1177,12 @@ public class AntelopePanel extends JPanel {
                             _targets.put( target_name, target );
                         }
                         else {
-                            if ( target_name.indexOf( "." ) > 0 && _settings.getShowTargetsWDot() ) {
+                            if ( target_name.indexOf( '.' ) > 0 && _settings.getShowTargetsWDot() ) {
                                 // got dots and that's okay, show the target
                                 _targets.put( target_name, target );
                                 continue;
                             }
-                            if ( target_name.indexOf( "." ) > 0 && !_settings.getShowTargetsWDot() ) {
+                            if ( target_name.indexOf( '.' ) > 0 && !_settings.getShowTargetsWDot() ) {
                                 // got dots and that's not okay
                                 continue;
                             }
@@ -1202,7 +1204,7 @@ public class AntelopePanel extends JPanel {
                                 // got no desc and that's not okay
                                 continue;
                             }
-                            if ( target_name.indexOf( "." ) == -1 && description != null ) {
+                            if ( target_name.indexOf( '.' ) == -1 && description != null ) {
                                 // got no dots and got desc, show the target
                                 _targets.put( target_name, target );
                             }
@@ -1233,38 +1235,38 @@ public class AntelopePanel extends JPanel {
                                 continue;
                             SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
                             button = new JCheckBox( );
-                            String btn_text = "<html>";
+                            StringBuilder btn_text = new StringBuilder("<html>");
                             if ( node == null ) {
-                                btn_text += "<i>";
+                                btn_text.append( "<i>" );
                             }
                             else {
                                 if ( node.isPrivate() )
-                                    btn_text += "<i>";
+                                    btn_text.append("<i>");
                                 if ( node.isDefaultTarget() )
                                     button.setForeground( GREEN );
                             }
-                            btn_text += target_name;
-                            button.setText( btn_text );
+                            btn_text.append(target_name);
+                            button.setText( btn_text.toString() );
                             button.addActionListener( _cb_listener );
                             button.setBackground( _button_panel.getBackground() );
                             if ( node != null && node.isDefaultTarget() )
                                 _default_btn = button;
                         }
                         else {
-                            String btn_text = "<html>";
+                            StringBuilder btn_text = new StringBuilder("<html>");
                             SAXTreeNode node = ( SAXTreeNode ) sax_targets.get( target_name );
                             button = new JButton();
                             if ( node == null ) {   // this shouldn't happen
-                                btn_text += isPrivate( target ) ? "<i>" : "";
+                                btn_text.append(isPrivate( target ) ? "<i>" : "");
                             }
                             else {
                                 if ( node.isPrivate() )
-                                    btn_text += "<i>";
+                                    btn_text.append("<i>");
                                 if ( node.isDefaultTarget() )
                                     button.setForeground( GREEN );
                             }
-                            btn_text += target_name;
-                            button.setText( btn_text );
+                            btn_text.append(target_name);
+                            button.setText( btn_text.toString() );
                             button.addActionListener( _button_listener );
                             if ( node != null && node.isDefaultTarget() )
                                 _default_btn = button;
@@ -1323,7 +1325,7 @@ public class AntelopePanel extends JPanel {
      *      given build file
      * @exception Exception  Description of Exception
      */
-    public Project createProject( File build_file ) throws Exception {
+    public Project createProject( File build_file ) throws Exception {          // NOPMD
         if ( build_file == null || !build_file.exists() )
             return null;
 
@@ -1493,7 +1495,7 @@ public class AntelopePanel extends JPanel {
                     "jar file not being in the class path.",
                     "Ant Error",
                     JOptionPane.ERROR_MESSAGE );
-            throw new Exception( error.getMessage() );
+            throw new Exception( error.getMessage() );  // NOPMD
         }
     }
 
@@ -1533,7 +1535,7 @@ public class AntelopePanel extends JPanel {
         if ( target == null )
             return true;
         String target_name = target.getName();
-        if ( target_name.indexOf( "." ) > 0 ) {
+        if ( target_name.indexOf( '.' ) > 0 ) {
             return true;
         }
         if ( target_name.startsWith( "-" ) ) {
@@ -1718,9 +1720,9 @@ public class AntelopePanel extends JPanel {
                             String aname = btna.getText();
                             String bname = btnb.getText();
                             aname = aname.substring( 0, aname.length() - 1 );
-                            aname = aname.substring( aname.lastIndexOf( "(" ) + 1 );
+                            aname = aname.substring( aname.lastIndexOf( '(' ) + 1 );
                             bname = bname.substring( 0, bname.length() - 1 );
-                            bname = bname.substring( bname.lastIndexOf( "(" ) + 1 );
+                            bname = bname.substring( bname.lastIndexOf( '(' ) + 1 );
                             int aint = Integer.parseInt( aname );
                             int bint = Integer.parseInt( bname );
                             if ( aint < bint )
@@ -1884,6 +1886,7 @@ public class AntelopePanel extends JPanel {
         if ( h == null ) {
             return ;
         }
+        Log.log(this, "addLogHandler, handler is a " + h.getClass().getName());
         if ( _logger == null ) {
             _logger = LoggerFactory.getInstance().createLogger();
         }
@@ -1897,6 +1900,7 @@ public class AntelopePanel extends JPanel {
         if ( _logger == null ) {
             return ;
         }
+        Log.log(this, "removeAllLogHandlers");
         synchronized ( _logger ) {
             Handler[] handlers = _logger.getHandlers();
             for ( int i = 0; i < handlers.length; i++ ) {
@@ -1922,6 +1926,7 @@ public class AntelopePanel extends JPanel {
      * @param msg    Description of Parameter
      */
     private void log( Level level, String msg ) {
+        Log.log(this, "log, msg = " + msg);
         _logger.log( level, msg );
     }
 

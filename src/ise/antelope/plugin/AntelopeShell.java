@@ -49,7 +49,7 @@
 package ise.antelope.plugin;
 
 import console.*;
-import ise.library.swingworker.SwingWorker;
+import javax.swing.SwingWorker;
 
 /**
  * A Console shell to display Ant output. Also uses the "stop" button to stop a

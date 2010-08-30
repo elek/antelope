@@ -64,7 +64,7 @@ import javax.swing.text.*;
 import ise.antelope.app.jedit.*;
 import ise.antelope.common.*;
 import ise.library.*;
-import ise.library.swingworker.SwingWorker;
+import javax.swing.SwingWorker;
 
 /**
  * Main entry point for Antelope application.

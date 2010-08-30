@@ -2,7 +2,7 @@ package ise.antelope.common;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import ise.library.swingworker.SwingWorker;
+import javax.swing.SwingWorker;
 
 public class CommonHelperWrapper implements CommonHelper {
 

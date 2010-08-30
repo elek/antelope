@@ -2,7 +2,7 @@
 package ise.antelope.common;
 
 import java.awt.event.ActionListener;
-import ise.library.swingworker.SwingWorker;
+import javax.swing.SwingWorker;
 
 /**
  * Objects that want to manipulate AntelopePanel must implement this

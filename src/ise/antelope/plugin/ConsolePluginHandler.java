@@ -12,6 +12,7 @@ import org.gjt.sp.jedit.jEdit;
 import org.gjt.sp.jedit.View;
 import org.gjt.sp.jedit.gui.DockableWindowManager;
 
+import ise.library.Log;
 
 /**
  * This log handler writes messages to the Console plugin.
@@ -65,6 +66,7 @@ public class ConsolePluginHandler extends Handler {
      * @param record  a LogRecord
      */
     public void publish( LogRecord record ) {
+        Log.log(this, "ConsolePluginHandler.record: " + record.getMessage());
 
         /* some jedit 'update' messages get dumped on System.out, which is what
         Ant writes to, so those messages end up here mixed with the Ant output.
@@ -110,6 +112,7 @@ public class ConsolePluginHandler extends Handler {
                     // fall through on purpose
             }
         }
+        System.out.println("+++++ ConsolePluginHandler.publish: " + parseline);
         console.getOutput( "Antelope" ).print( getColorForLevel( record.getLevel() ), parseline );
     }
 

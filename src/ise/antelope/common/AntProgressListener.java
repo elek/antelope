@@ -86,9 +86,9 @@ import org.xml.sax.AttributeList;
  */
 public class AntProgressListener extends JProgressBar implements BuildListener {
 
-    private int total;  // total number of tasks that will be executed by the target
-    private Color errorColor = Color.red;   // build failed
-    private Color defaultColor = new Color( 0, 153, 51 );   // a nice green for build succeeded
+    private int total;    // total number of tasks that will be executed by the target
+    private Color errorColor = Color.red;    // build failed
+    private Color defaultColor = new Color(0, 153, 51);    // a nice green for build succeeded
 
     private HashMap project_cache = new HashMap();
 
@@ -96,19 +96,23 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * Default constructor sets up the progress bar values.
      */
     public AntProgressListener() {
-        setStringPainted( true );
+        setStringPainted(true);
     }
 
     /**
      * Resets the progress bar to 0 and to default color.
      * @param be not used
      */
-    public void buildStarted( BuildEvent be ) {
-        setStringPainted( true );
-        setValue( 0 );
-        setString( null );
+    public void buildStarted(BuildEvent be) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                setStringPainted(true);
+                setValue(0);
+                setString(null);
+                setForeground(defaultColor);
+            }
+        } );
         total = 0;
-        setForeground( defaultColor );
     }
 
     /**
@@ -116,17 +120,20 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * failure or success.
      * @param be not used
      */
-    public void buildFinished( BuildEvent be ) {
-        if ( be.getException() != null ) {
+    public void buildFinished(BuildEvent be) {
+        if (be.getException() != null) {
             be.getException().printStackTrace();
-            setForeground( errorColor );
-            setString( "Failed" );
+            setForeground(errorColor);
+            setString("Failed");
+        } else {
+            setString("Complete");
         }
-        else {
-            setString( "Complete" );
-        }
-        setIndeterminate( false );
-        setValue( getMaximum() );
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                setIndeterminate(false);
+                setValue(getMaximum());
+            }
+        } );
     }
 
     /**
@@ -137,44 +144,50 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * null.
      * @param target_list a list of target names to execute, must not be null.
      */
-    public void setExecutingTarget( Project project, ArrayList target_list ) {
+    public void setExecutingTarget(Project project, ArrayList target_list) {
         // XXX this needs more work...
-        if ( project == null )
-            throw new IllegalArgumentException( "project is null" );
-        if ( target_list == null )
-            throw new IllegalArgumentException( "target list is null" );
+        if (project == null) {
+            throw new IllegalArgumentException("project is null");
+        }
+        if (target_list == null) {
+            throw new IllegalArgumentException("target list is null");
+        }
         Hashtable targets = project.getTargets();
         Iterator it = target_list.iterator();
-        while ( it.hasNext() ) {
-            String target_name = ( String ) it.next();
-            Target target = ( Target ) targets.get( target_name );
-            total += countTasks( target );
+        while (it.hasNext()) {
+            String target_name = (String) it.next();
+            Target target = (Target) targets.get(target_name);
+            total += countTasks(target);
         }
 
-        if ( total == 1 ) {
-            setIndeterminate( true );
+        if (total == 1) {
+            setIndeterminate(true);
         }
-        setMaximum( total );
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                setMaximum(total);
+            }
+        } );
     }
 
     /**
      * Show the name of the currently executing target in the status.
      */
-    public void targetStarted( BuildEvent be ) {
-        setString( be.getTarget().getName() );
+    public void targetStarted(BuildEvent be) {
+        setString(be.getTarget().getName());
     }
 
     /**
      * no-op
      */
-    public void targetFinished( BuildEvent be ) {
+    public void targetFinished(BuildEvent be) {
         // does nothing
     }
 
     /**
      * no-op
      */
-    public void taskStarted( BuildEvent be ) {
+    public void taskStarted(BuildEvent be) {
         // does nothing
         /*
         try {
@@ -250,15 +263,19 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * Sets progress bar to maximum value.
      * @param be not used
      */
-    public void taskFinished( BuildEvent be ) {
-        setValue( getValue() + 1 );
+    public void taskFinished(BuildEvent be) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                setValue(getValue() + 1);
+            }
+        } );
         total += 1;
     }
 
     /**
      * no-op
      */
-    public void messageLogged( BuildEvent be ) {
+    public void messageLogged(BuildEvent be) {
         // does nothing
     }
 
@@ -271,10 +288,11 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * @param target the target to count tasks in
      * @return the number of tasks performed by this target
      */
-    public int countTasks( Target target ) {
-        if ( target == null )
+    public int countTasks(Target target) {
+        if (target == null) {
             return 0;
-        int cnt = doCountTasks( target );
+        }
+        int cnt = doCountTasks(target);
         return cnt;
     }
 
@@ -286,9 +304,9 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * @param target the target to count tasks in
      * @return the number of tasks performed by this target
      */
-    private int doCountTasks( Target target ) {
-        int dependency_count = doCountDependencies( target );
-        int task_count = doTasks( target );
+    private int doCountTasks(Target target) {
+        int dependency_count = doCountDependencies(target);
+        int task_count = doTasks(target);
         return dependency_count + task_count;
     }
 
@@ -300,22 +318,22 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * @param target the target to count dependency tasks for
      * @return the number of tasks performed dependency targets for this target
      */
-    private int doCountDependencies( Target target ) {
-        if ( target == null )
+    private int doCountDependencies(Target target) {
+        if (target == null) {
             return 0;
+        }
         int task_count = 0;
         Enumeration dependencies = target.getDependencies();
-        while ( dependencies.hasMoreElements() ) {
+        while (dependencies.hasMoreElements()) {
             Object depend = dependencies.nextElement();
             Project project = target.getProject();
             Hashtable targets = project.getTargets();
-            Target t = ( Target ) targets.get( depend.toString() );
-            int cnt = doCountTasks( t );
-            task_count += cnt ;
+            Target t = (Target) targets.get(depend.toString());
+            int cnt = doCountTasks(t);
+            task_count += cnt;
         }
         return task_count;
     }
-
 
     /**
      * Counts the number of tasks performed by the given target. If this target calls
@@ -324,86 +342,90 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * @param target the target to count tasks in
      * @return the number of tasks performed by this target
      */
-    private int doTasks( Target target ) {
-        if ( target == null )
+    private int doTasks(Target target) {
+        if (target == null) {
             return 0;
+        }
 
         int task_count = 0;
         Task[] tasks = target.getTasks();
-        for ( int i = 0; i < tasks.length; i++ ) {
-            Task task = tasks[ i ];
+        for (int i = 0; i < tasks.length; i++) {
+            Task task = tasks[i];
             String task_name = task.getTaskName();
             Hashtable attrs = null;
             RuntimeConfigurable rc = task.getRuntimeConfigurableWrapper();
             try {
-                if ( AntUtils.getAntVersion() >= 1.60 ) {
-                    attrs = ( Hashtable ) PrivilegedAccessor.getValue( rc, "getAttributeMap" );
+                if (AntUtils.getAntVersion() >= 1.60) {
+                    attrs = (Hashtable) PrivilegedAccessor.getValue(rc, "getAttributeMap");
+                } else {
+                    attrs = makeMap((AttributeList) PrivilegedAccessor.getValue(rc, "getAttributes"));
                 }
-                else {
-                    attrs = makeMap( ( AttributeList ) PrivilegedAccessor.getValue( rc, "getAttributes" ) );
-                }
-            }
-            catch ( Exception e ) {     // NOPMD
+            } catch (Exception e) {                // NOPMD
                 // ignored
             }
-            if ( task instanceof TaskContainer ) {
-                if ( attrs == null )
+            if (task instanceof TaskContainer) {
+                if (attrs == null) {
                     continue;
+                }
                 task_count += attrs.size();
-            }
-            else if ( task_name.equals( "antcall" ) || task_name.equals( "call" ) ) {
+            } else if (task_name.equals("antcall") || task_name.equals("call")) {
                 // count the tasks in the target specified by an 'antcall' task
-                if ( attrs == null )
+                if (attrs == null) {
                     continue;
+                }
                 Iterator it = attrs.keySet().iterator();
-                while ( it.hasNext() ) {
-                    String name = ( String ) it.next();
-                    String value = ( String ) attrs.get( name );
-                    if ( name.equals( "target" ) ) {
+                while (it.hasNext()) {
+                    String name = (String) it.next();
+                    String value = (String) attrs.get(name);
+                    if (name.equals("target")) {
                         Hashtable targets = target.getProject().getTargets();
-                        Target subtarget = ( Target ) targets.get( value );
-                        task_count += doCountTasks( subtarget );
+                        Target subtarget = (Target) targets.get(value);
+                        task_count += doCountTasks(subtarget);
                     }
                 }
-            }
-            else if ( task_name.equals( "ant" ) ) {
+            } else if (task_name.equals("ant")) {
                 // count the tasks in the target specified by an 'ant' task. This target will
                 // be in another build file, so need to grab the build file name
                 // and directory and load a project from it.
-                if ( attrs == null )
+                if (attrs == null) {
                     continue;
+                }
                 String antfile = "build.xml";
                 String dir = "";
                 String subtarget = "";
                 Iterator it = attrs.keySet().iterator();
-                while ( it.hasNext() ) {
-                    String name = ( String ) it.next();
-                    String value = ( String ) attrs.get( name );
-                    if ( name.equals( "antfile" ) )
+                while (it.hasNext()) {
+                    String name = (String) it.next();
+                    String value = (String) attrs.get(name);
+                    if (name.equals("antfile")) {
                         antfile = value;
-                    if ( name.equals( "dir" ) )
+                    }
+                    if (name.equals("dir")) {
                         dir = value;
-                    if ( name.equals( "target" ) )
+                    }
+                    if (name.equals("target")) {
                         subtarget = value;
+                    }
                 }
 
                 File f;
-                if ( dir.equals( "" ) )
-                    f = new File( target.getProject().getBaseDir(), antfile );
-                else
-                    f = new File( dir, antfile );
-                Project p = createProject( f, target.getProject().getProperties() );
-                if ( p != null ) {
-                    if ( subtarget.equals( "" ) )
-                        subtarget = p.getDefaultTarget();
-                    Hashtable targets = p.getTargets();
-                    Target remote_target = ( Target ) targets.get( subtarget );
-                    task_count += doCountTasks( remote_target );
+                if (dir.equals("")) {
+                    f = new File(target.getProject().getBaseDir(), antfile);
+                } else {
+                    f = new File(dir, antfile);
                 }
-            }
-            else {
-                task_count += countSubTasks( target, rc );
-                ++task_count;   // add 1 for this task
+                Project p = createProject(f, target.getProject().getProperties());
+                if (p != null) {
+                    if (subtarget.equals("")) {
+                        subtarget = p.getDefaultTarget();
+                    }
+                    Hashtable targets = p.getTargets();
+                    Target remote_target = (Target) targets.get(subtarget);
+                    task_count += doCountTasks(remote_target);
+                }
+            } else {
+                task_count += countSubTasks(target, rc);
+                ++task_count;                // add 1 for this task
             }
         }
         return task_count;
@@ -416,7 +438,7 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * @param rc the RuntimeConfigurable representing the task
      * @return the number of nested tasks.
      */
-    private int countSubTasks( Target target, RuntimeConfigurable rc ) {
+    private int countSubTasks(Target target, RuntimeConfigurable rc) {
         int task_count = 0;
         try {
             // too bad that RuntimeConfigurable didn't provide public
@@ -426,27 +448,26 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
             Enumeration children = null;
 
             // this is for Ant 1.5:
-            if ( AntUtils.getAntVersion() == 1.50 ) {
-                Vector kids = ( Vector ) PrivilegedAccessor.getValue( rc, "children" );
+            if (AntUtils.getAntVersion() == 1.50) {
+                Vector kids = (Vector) PrivilegedAccessor.getValue(rc, "children");
                 children = kids.elements();
-            }
-            else {
+            } else {
                 // this is for Ant 1.5.1 and later
-                children = ( Enumeration ) PrivilegedAccessor.invokeMethod( rc, "getChildren", null );
+                children = (Enumeration) PrivilegedAccessor.invokeMethod(rc, "getChildren", null);
             }
-            if ( children == null )
+            if (children == null) {
                 return 0;
+            }
             Hashtable task_defs = target.getProject().getTaskDefinitions();
-            while ( children.hasMoreElements() ) {
-                RuntimeConfigurable element = ( RuntimeConfigurable ) children.nextElement();
+            while (children.hasMoreElements()) {
+                RuntimeConfigurable element = (RuntimeConfigurable) children.nextElement();
                 String tag = element.getElementTag();
-                if ( task_defs.containsKey( tag ) ) {
+                if (task_defs.containsKey(tag)) {
                     ++task_count;
-                    task_count += countSubTasks( target, element );
+                    task_count += countSubTasks(target, element);
                 }
             }
-        }
-        catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return task_count;
@@ -460,62 +481,60 @@ public class AntProgressListener extends JProgressBar implements BuildListener {
      * @return            an Ant Project initialized and configured with the
      *      given build file
      */
-    private Project createProject( File build_file, Hashtable inherited ) {
+    private Project createProject(File build_file, Hashtable inherited) {
         // configure the project
-        Project p = ( Project ) project_cache.get( build_file );
-        if ( p == null ) {
+        Project p = (Project) project_cache.get(build_file);
+        if (p == null) {
             p = new Project();
-            project_cache.put( build_file, p );
+            project_cache.put(build_file, p);
             try {
-                p.init();   // this takes as much as 9 seconds the first time, less than 1/2 second later
+                p.init();                // this takes as much as 9 seconds the first time, less than 1/2 second later
                 ProjectHelper ph = ProjectHelper.getProjectHelper();
-                ph.parse( p, build_file );
-                p.setUserProperty( "ant.file", build_file.getAbsolutePath() );
+                ph.parse(p, build_file);
+                p.setUserProperty("ant.file", build_file.getAbsolutePath());
 
                 // copy the inherited properties
-                if ( inherited == null )
+                if (inherited == null) {
                     return p;
-                Iterator it = inherited.keySet().iterator();
-                while ( it.hasNext() ) {
-                    Object key = it.next();
-                    p.setUserProperty( ( String ) key, ( String ) inherited.get( key ) );
                 }
-            }
-            catch ( Exception e ) {
+                Iterator it = inherited.keySet().iterator();
+                while (it.hasNext()) {
+                    Object key = it.next();
+                    p.setUserProperty((String) key, (String) inherited.get(key));
+                }
+            } catch (Exception e) {
                 return null;
             }
         }
         return p;
     }
 
-
-    private Hashtable makeMap( AttributeList list ) {
-        if ( list == null )
+    private Hashtable makeMap(AttributeList list) {
+        if (list == null) {
             return null;
+        }
         Hashtable map = new Hashtable();
-        for ( int i = 0; i < list.getLength(); i++ ) {
-            map.put( list.getName( i ), list.getValue( i ) );
+        for (int i = 0; i < list.getLength(); i++) {
+            map.put(list.getName(i), list.getValue(i));
         }
         return map;
     }
 
-   private Object getValue( Object instance, String fieldName )
-   throws IllegalAccessException, NoSuchFieldException {
-      Field field = getField( instance.getClass(), fieldName );
-      field.setAccessible( true );
-      return field.get( instance );
-   }
+    private Object getValue(Object instance, String fieldName) throws IllegalAccessException, NoSuchFieldException {
+        Field field = getField(instance.getClass(), fieldName);
+        field.setAccessible(true);
+        return field.get(instance);
+    }
 
-   private Field getField( Class thisClass, String fieldName ) throws NoSuchFieldException {
-      if ( thisClass == null ) {
-         throw new NoSuchFieldException( "Invalid field : " + fieldName );
-      }
-      try {
-         return thisClass.getDeclaredField( fieldName );
-      }
-      catch ( NoSuchFieldException e ) {
-         return getField( thisClass.getSuperclass(), fieldName );
-      }
-   }
+    private Field getField(Class thisClass, String fieldName) throws NoSuchFieldException {
+        if (thisClass == null) {
+            throw new NoSuchFieldException("Invalid field : " + fieldName);
+        }
+        try {
+            return thisClass.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            return getField(thisClass.getSuperclass(), fieldName);
+        }
+    }
 
 }

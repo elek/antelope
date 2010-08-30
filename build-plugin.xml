@@ -58,7 +58,8 @@
    ========================================================================= -->
     <target name="dist"
             description="Compiles, jars, puts the jar in the jEdit jars directory."
-            depends="init, compile, docs-xalan, prep_files, copy_resources">
+            depends="init, compile, prep_files, copy_resources">
+            <!-- depends="init, compile, docs-xalan, prep_files, copy_resources"> -->
       <!-- make the jar file. jEdit standards require just the name of the
         plugin, e.g. Antelope.jar. put it in $prep.dir -->
         <tstamp/>
@@ -155,8 +156,8 @@
                 nowarn="on"
                 destdir="${classes.dir}"
                 srcdir="${src.dir}"
-                source="1.5"
-                target="1.5">
+                source="1.6"
+                target="1.6">
             <classpath refid="classpathref" />
             <exclude name="testcases/**/*"/>
             <exclude name="**/app/**/*"/>
@@ -215,6 +216,12 @@
               includes="userguide.xml"
               extension=".html"
               style="${docbook-wrapper}"/>
+        <replace dir="${doc.dir}/manual" encoding="ISO-8859-1">
+            <replacefilter token="@buildnum@" value="${build.num}"/>
+            <replacefilter token="@tstamp@" value="${TODAY}" />
+            <replacefilter token="@style@"
+                value="&lt;STYLE TYPE=&quot;text/css&quot;&gt; &lt;!-- @import url(./style.css); --&gt; &lt;/STYLE&gt;" />
+        </replace>
     </target>
 
 

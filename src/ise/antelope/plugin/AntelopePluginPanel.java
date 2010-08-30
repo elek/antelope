@@ -67,7 +67,7 @@ import console.*;
 import errorlist.*;
 
 import ise.antelope.common.*;
-import ise.library.swingworker.SwingWorker;
+import javax.swing.SwingWorker;
 
 /**
  * This is the panel displayed and manipulated by jEdit. It wraps the
