@@ -96,100 +96,95 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      * be one of DockableWindowManager.FLOATING, TOP, LEFT, RIGHT, or BOTTOM.
      * @param view      this is passed in by the DockableWindowManager.
      */
-    public AntelopePluginPanel( View view, String position ) {
-        super( new java.awt.BorderLayout() );
-        setBackground( jEdit.getColorProperty("view.bgColor", Color.WHITE) );
+    public AntelopePluginPanel(View view, String position) {
+        super(new java.awt.BorderLayout());
+        setBackground(jEdit.getColorProperty("view.bgColor", Color.WHITE));
         _view = view;
-        JLabel label = new JLabel( "<html><center><b><i>Please wait,<p>Loading Ant...</i></b></center></html>", SwingConstants.CENTER );
-        add( label );
+        JLabel label = new JLabel("<html><center><b><i>Please wait,<p>Loading Ant...</i></b></center></html>", SwingConstants.CENTER);
+        add(label);
 
-        if ( position.equals( DockableWindowManager.FLOATING ) ) {
-            setPreferredSize( new Dimension( 150, 300 ) );
+        if (position.equals(DockableWindowManager.FLOATING)) {
+            setPreferredSize(new Dimension(150, 300));
         }
         init();
     }
 
     public void init() {
-        SwingUtilities.invokeLater( new Runnable() {
-                    public void run() {
-                        try {
-                            // load ant
-                            jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
-                            String ant_jars = AntelopePlugin.getAntJars( true );
-                            //Log.log( "ant_jars = " + ant_jars );
-                            if ( ant_jars != null ) {
-                                jEdit.setProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars", ant_jars );
-                                StringTokenizer st = new StringTokenizer( AntelopePlugin.getAntJars( false ) );
-                                while ( st.hasMoreTokens() ) {
-                                    String token = st.nextToken();
-                                    jEdit.addPluginJAR( token );
-                                }
-                                AntelopePlugin.getAntelopePluginJAR().checkDependencies();
-                                _view.getStatus().setMessageAndClear( "Antelope finished loading Ant." );
-                            }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    // load ant
+                    jEdit.resetProperty("plugin.ise.antelope.plugin.AntelopePlugin.jars");
+                    String ant_jars = AntelopePlugin.getAntJars(true);
+                    //Log.log( "ant_jars = " + ant_jars );
+                    if (ant_jars != null) {
+                        jEdit.setProperty("plugin.ise.antelope.plugin.AntelopePlugin.jars", ant_jars);
+                        StringTokenizer st = new StringTokenizer(AntelopePlugin.getAntJars(false));
+                        while (st.hasMoreTokens()) {
+                            String token = st.nextToken();
+                            jEdit.addPluginJAR(token);
                         }
-                        catch ( Exception e ) {
-                            e.printStackTrace();
-                            // start Antelope anyway
-                            /// really? what good is antelope without ant???
-                            int rtn = JOptionPane.showConfirmDialog( AntelopePluginPanel.this, "<html>Error loading Ant:<p>" + e.getMessage() + "<p>Do you want to try again?", "Error Loading Ant", JOptionPane.YES_NO_OPTION );
-                            if ( rtn == JOptionPane.YES_OPTION ) {
-                                run();
-                            }
-                        }
-                        jEdit.resetProperty( "plugin.ise.antelope.plugin.AntelopePlugin.jars" );
-
-                        // set up Antelope's menu
-                        _view.getStatus().setMessageAndClear( "Loading Antelope..." );
-                        JMenuItem mi = new JMenuItem( "Open Current Buffer" );
-                        mi.addActionListener( new ActionListener() {
-                                    public void actionPerformed( ActionEvent ae ) {
-                                        String f = getView().getBuffer().getPath();
-                                        antelopePanel.openBuildFile( new File(f) );
-                                    }
-                                }
-                                            );
-                        ArrayList menu_items = new ArrayList();
-                        menu_items.add( mi );
-
-                        // get the last open file
-                        String name = Constants.PREFS.get( Constants.LAST_OPEN_FILE, null );
-                        File file = null;
-                        if ( name != null ) {
-                            file = new File( name );
-                        }
-
-                        // create and add Antelope
-                        try {
-                            antelopePanel = new AntelopePanel( file, new CommonHelperWrapper( AntelopePluginPanel.this ), true, menu_items );
-                            antelopePanel.setBackground( jEdit.getColorProperty("view.bgColor", Color.WHITE) );
-                        }
-                        catch ( Throwable t ) {
-                            t.printStackTrace();
-                            JOptionPane.showMessageDialog( null, "<html>Error starting Antelope:<p>" +
-                                    t.getMessage() + "<p>Usually this can be fixed by restarting jEdit.",
-                                    "Error", JOptionPane.ERROR_MESSAGE );
-                            return ;
-                        }
-                        removeAll();
-                        setBackground( jEdit.getColorProperty("view.bgColor", Color.WHITE) );
-                        add( antelopePanel );
-                        AntelopePlugin.addPanel( _view, AntelopePluginPanel.this );
-
-                        // set up the error source
-                        _error_source = new DefaultErrorSource( AntelopePlugin.NAME );
-                        ErrorSource.registerErrorSource( _error_source );
-
-                        // set up the logger
-                        _console_handler = new ConsolePluginHandler( AntelopePluginPanel.this );
-                        antelopePanel.addLogHandler( _console_handler );
-
-                        _view.getStatus().setMessageAndClear( "Antelope loaded." );
+                        AntelopePlugin.getAntelopePluginJAR().checkDependencies();
+                        _view.getStatus().setMessageAndClear("Antelope finished loading Ant.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // start Antelope anyway
+                    /// really? what good is antelope without ant???
+                    int rtn = JOptionPane.showConfirmDialog(AntelopePluginPanel.this, "<html>Error loading Ant:<p>" + e.getMessage() + "<p>Do you want to try again?", "Error Loading Ant", JOptionPane.YES_NO_OPTION);
+                    if (rtn == JOptionPane.YES_OPTION) {
+                        run();
                     }
                 }
-                                  );
-    }
+                jEdit.resetProperty("plugin.ise.antelope.plugin.AntelopePlugin.jars");
 
+                // set up Antelope's menu
+                _view.getStatus().setMessageAndClear("Loading Antelope...");
+                JMenuItem mi = new JMenuItem("Open Current Buffer");
+                mi.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        String f = getView().getBuffer().getPath();
+                        antelopePanel.openBuildFile(new File(f));
+                    }
+                }
+               );
+                ArrayList menu_items = new ArrayList();
+                menu_items.add(mi);
+
+                // get the last open file
+                String name = Constants.PREFS.get(Constants.LAST_OPEN_FILE, null);
+                File file = null;
+                if (name != null) {
+                    file = new File(name);
+                }
+
+                // create and add Antelope
+                try {
+                    antelopePanel = new AntelopePanel(file, new CommonHelperWrapper(AntelopePluginPanel.this), true, menu_items);
+                    antelopePanel.setBackground(jEdit.getColorProperty("view.bgColor", Color.WHITE));
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "<html>Error starting Antelope:<p>" + t.getMessage() + "<p>Usually this can be fixed by restarting jEdit.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return ;
+                }
+                removeAll();
+                setBackground(jEdit.getColorProperty("view.bgColor", Color.WHITE));
+                add(antelopePanel);
+                AntelopePlugin.addPanel(_view, AntelopePluginPanel.this);
+
+                // set up the error source
+                _error_source = new DefaultErrorSource(AntelopePlugin.NAME);
+                ErrorSource.registerErrorSource(_error_source);
+
+                // set up the logger
+                _console_handler = new ConsolePluginHandler(AntelopePluginPanel.this);
+                antelopePanel.addLogHandler(_console_handler);
+
+                _view.getStatus().setMessageAndClear("Antelope loaded.");
+            }
+        }
+       );
+    }
 
     /**
      * Gets the view attribute of the AntelopePluginPanel class
@@ -238,24 +233,32 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      *
      * @param f  Description of Parameter
      */
-    public void openFile( File f ) {
-        if ( f == null )
+    public void openFile(File f) {
+        if (f == null) {
             return ;
-        if ( f.isDirectory() )
+        }
+        if (f.isDirectory()) {
             return ;
-        if ( getView().getBuffer().getPath().equals( f.getAbsolutePath() ) )
+        }
+        if (getView().getBuffer().getPath().equals(f.getAbsolutePath())) {
             return ;
-        jEdit.openFile( getView(), f.getAbsolutePath() );
+        }
+        jEdit.openFile(getView(), f.getAbsolutePath());
     }
 
     /**
      * Save all jEdit buffers.
      */
-    public void saveBuffers( ) {
-        if ( getView() == null )
+    public void saveBuffers() {
+        if (getView() == null) {
             return ;
-        jEdit.saveAllBuffers( getView(), false );
-        VFSManager.waitForRequests();
+        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jEdit.saveAllBuffers(getView(), false);
+                VFSManager.waitForRequests();
+            }
+        } );
     }
 
     /**
@@ -280,12 +283,13 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      *
      * @param thread  The new targetExecutionThread value
      */
-    public void setTargetExecutionThread( SwingWorker thread ) {
-        if (_console_handler != null && _console_handler.getShell() != null)
-            _console_handler.getShell().setRunner( thread );
+    public void setTargetExecutionThread(SwingWorker thread) {
+        if (_console_handler != null && _console_handler.getShell() != null) {
+            _console_handler.getShell().setRunner(thread);
+        }
     }
 
-    public void updateGUI() {}
+    public void updateGUI() { }
 
     /**
      * Description of the Method
@@ -325,21 +329,20 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      * @return   The editButtonAction value
      */
     public ActionListener getEditButtonAction() {
-        return
-            new ActionListener() {
-                public void actionPerformed( ActionEvent ae ) {
-                    File build_file = getBuildFile();
-                    if ( build_file == null ) {
-                        JOptionPane.showMessageDialog( antelopePanel, "No build file is selected.", "Error", JOptionPane.ERROR_MESSAGE );
-                        return ;
-                    }
-                    if ( !build_file.exists() ) {
-                        JOptionPane.showMessageDialog( antelopePanel, "<html>Build file<p>" + build_file.toString() + "<p>doesn't exist.", "Error", JOptionPane.ERROR_MESSAGE );
-                        return ;
-                    }
-                    openFile( build_file );
+        return new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                File build_file = getBuildFile();
+                if (build_file == null) {
+                    JOptionPane.showMessageDialog(antelopePanel, "No build file is selected.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return ;
                 }
-            };
+                if (!build_file.exists()) {
+                    JOptionPane.showMessageDialog(antelopePanel, "<html>Build file<p>" + build_file.toString() + "<p>doesn't exist.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return ;
+                }
+                openFile(build_file);
+            }
+        } ;
     }
 
     public ActionListener getRunButtonAction() {
@@ -374,52 +377,47 @@ public class AntelopePluginPanel extends JPanel implements ise.antelope.common.C
      *
      * @param ae  an action event
      */
-    public void actionPerformed( ActionEvent ae ) {
-        switch ( ae.getID() ) {
+    public void actionPerformed(ActionEvent ae) {
+        switch (ae.getID()) {
             case EDIT_EVENT:
-                if ( ae.getSource() instanceof Point ) {
+                if (ae.getSource() instanceof Point) {
                     try {
-                        Point p = ( Point ) ae.getSource();
-                        final int offset = getView().getTextArea().getLineStartOffset( p.x - 1 );
-                        SwingUtilities.invokeLater(
-                            new Runnable() {
-                                public void run() {
-                                    getView().getTextArea().requestFocus();
-                                    getView().getTextArea().setCaretPosition( offset, true );
-                                    getView().getTextArea().scrollToCaret( true );
-                                }
+                        Point p = (Point) ae.getSource();
+                        final int offset = getView().getTextArea().getLineStartOffset(p.x - 1);
+                        SwingUtilities.invokeLater (new Runnable() {
+                            public void run() {
+                                getView().getTextArea().requestFocus();
+                                getView().getTextArea().setCaretPosition(offset, true);
+                                getView().getTextArea().scrollToCaret(true);
                             }
-                        );
-                    }
-                    catch ( Exception e ) {     // NOPMD
+                        }
+                       );
+                    } catch (Exception e) {                        // NOPMD
                         // ignore this
                     }
-                }
-                else {
+                } else {
                     try {
                         String target = ae.getActionCommand();
                         String doc = getView().getTextArea().getText();
-                        Pattern pattern = Pattern.compile( "(<target)(.+?)(>)", Pattern.DOTALL );
-                        Matcher matcher = pattern.matcher( doc );
-                        while ( matcher.find() ) {
+                        Pattern pattern = Pattern.compile("(<target)(.+?)(>)", Pattern.DOTALL);
+                        Matcher matcher = pattern.matcher(doc);
+                        while (matcher.find()) {
                             final int start = matcher.start();
                             int end = matcher.end();
-                            String target_line = doc.substring( start, end );
-                            if ( target_line.indexOf( "name=\"" + target + "\"" ) > 0 ) {
-                                SwingUtilities.invokeLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            getView().getTextArea().requestFocus();
-                                            getView().getTextArea().setCaretPosition( start, true );
-                                            getView().getTextArea().scrollToCaret( true );
-                                        }
+                            String target_line = doc.substring(start, end);
+                            if (target_line.indexOf("name=\"" + target + "\"") > 0) {
+                                SwingUtilities.invokeLater (new Runnable() {
+                                    public void run() {
+                                        getView().getTextArea().requestFocus();
+                                        getView().getTextArea().setCaretPosition(start, true);
+                                        getView().getTextArea().scrollToCaret(true);
                                     }
-                                );
+                                }
+                               );
                                 break;
                             }
                         }
-                    }
-                    catch ( Exception e ) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
