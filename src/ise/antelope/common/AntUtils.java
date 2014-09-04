@@ -31,6 +31,10 @@ public class AntUtils {
             return ant_version;
         }
 
+        if ( av.indexOf( "1.9" ) > -1 )
+            return 1.90;
+        if ( av.indexOf( "1.8" ) > -1 )
+            return 1.80;
         if ( av.indexOf( "1.7" ) > -1 )
             return 1.70;
         if ( av.indexOf( "1.6" ) > -1 )
