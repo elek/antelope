@@ -1501,7 +1501,7 @@ public class AntelopePanel extends JPanel {
 
     private void setInputHandler( Project p ) {
         try {
-            AntInputHandler ih = new AntInputHandler( AntelopePanel.this );
+            AntInputHandler ih = new AntInputHandler( AntelopePanel.this.getParent() );
             PrivilegedAccessor.invokeMethod( p, "setInputHandler", new Object[] {ih} );
         }
         catch ( Exception e ) {
