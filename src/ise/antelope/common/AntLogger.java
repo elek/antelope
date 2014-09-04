@@ -231,8 +231,8 @@ public class AntLogger implements org.apache.tools.ant.BuildLogger {
             systemErr = System.err;
             PrintStream ps_out = createPrintStream();
             PrintStream ps_err = createPrintStream();
-            System.setOut(ps_out);
-            System.setErr(ps_err);
+//            System.setOut(ps_out);
+//            System.setErr(ps_err);
             open = true;
         }
     }
